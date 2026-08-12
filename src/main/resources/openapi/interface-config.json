@@ -1,0 +1,15 @@
+{
+  "generatorName": "spring",
+  "library": "spring-boot",
+  "apiPackage": "dk.jamesbabz.madkursus.inbound.rest",
+  "modelPackage": "dk.jamesbabz.madkursus.inbound.rest.dto",
+  "useTags": true,
+  "delegatePattern": true,
+  "useBeanValidation": true,
+  "serializableModel": true,
+  "openApiNullable": false,
+  "useJakartaEe": true,
+  "useSpringBoot3": true,
+  "documentationProvider": "springdoc",
+  "hideGenerationTimestamp": true
+}

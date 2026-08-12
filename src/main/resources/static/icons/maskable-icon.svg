@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Madkursus">
+  <rect width="512" height="512" fill="#2f6846"/>
+  <circle cx="256" cy="256" r="142" fill="#f4f6f1"/>
+  <path d="M200 160v96c0 28 17 47 41 54v62h30v-62c24-7 41-26 41-54v-96h-26v91h-17v-91h-26v91h-17v-91z" fill="#2f6846"/>
+</svg>

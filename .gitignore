@@ -39,4 +39,6 @@ out/
 
 ### Local environment ###
 .env
+.env.*
+!.env.example
 *.log

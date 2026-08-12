@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f6846">
+  <meta name="description" content="Madkursus – et enkelt overblik over dine produkter.">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icons/icon.svg">
+  <link rel="stylesheet" href="/css/app.css">
+  <title>Madkursus</title>
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">Mit køkken</p>
+      <h1>Madkursus</h1>
+    </div>
+    <button class="add-button" id="open-form" type="button" aria-controls="product-form-panel" aria-expanded="false">
+      <span aria-hidden="true">+</span> Tilføj
+    </button>
+  </header>
+
+  <main>
+    <section class="form-panel" id="product-form-panel" aria-labelledby="form-title" hidden>
+      <div class="section-heading">
+        <h2 id="form-title">Nyt produkt</h2>
+        <button class="icon-button" id="close-form" type="button" aria-label="Luk formular">×</button>
+      </div>
+      <form id="product-form">
+        <label for="name">Navn</label>
+        <input id="name" name="name" type="text" autocomplete="off" maxlength="100" required>
+
+        <label for="category">Kategori</label>
+        <select id="category" name="category" required>
+          <option value="MEAT">Kød</option>
+          <option value="VEGETABLE">Grøntsag</option>
+          <option value="FRUIT">Frugt</option>
+          <option value="DAIRY">Mejeri</option>
+          <option value="DRY_GOODS">Tørvarer</option>
+          <option value="SPICE">Krydderi</option>
+          <option value="OTHER">Andet</option>
+        </select>
+
+        <label for="default-unit">Standardenhed</label>
+        <select id="default-unit" name="defaultUnit" required>
+          <option value="GRAM">Gram</option>
+          <option value="MILLILITER">Milliliter</option>
+          <option value="PIECE">Styk</option>
+        </select>
+
+        <button class="primary-button" id="save-product" type="submit">Gem produkt</button>
+      </form>
+    </section>
+
+    <div class="notice error" id="error-message" role="alert" hidden></div>
+    <div class="notice success" id="success-message" role="status" hidden></div>
+
+    <section aria-labelledby="products-title">
+      <div class="section-heading product-heading">
+        <div>
+          <p class="eyebrow">Produkter</p>
+          <h2 id="products-title">Dit udvalg</h2>
+        </div>
+        <button class="text-button" id="refresh-products" type="button">Opdater</button>
+      </div>
+      <p class="loading" id="loading-message" role="status">Henter produkter…</p>
+      <div class="product-list" id="product-list" aria-live="polite"></div>
+      <div class="empty-state" id="empty-state" hidden>
+        <p>Der er ingen produkter endnu.</p>
+        <button class="secondary-button" id="empty-add" type="button">Tilføj dit første produkt</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/app.js" defer></script>
+</body>
+</html>

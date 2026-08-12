@@ -1,0 +1,221 @@
+openapi: 3.0.3
+info:
+  title: Madkursus API
+  version: v1
+  description: API for managing products and inventory.
+servers:
+  - url: /
+tags:
+  - name: product
+  - name: inventory
+paths:
+  /v1/products:
+    get:
+      tags: [product]
+      operationId: getProducts
+      responses:
+        '200':
+          description: Products
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: '#/components/schemas/Product'}
+        '500': {$ref: '#/components/responses/serverException'}
+    post:
+      tags: [product]
+      operationId: createProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/CreateProduct'}
+      responses:
+        '201':
+          description: Product created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Product'}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '500': {$ref: '#/components/responses/serverException'}
+  /v1/products/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      tags: [product]
+      operationId: getProduct
+      responses:
+        '200':
+          description: Product
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Product'}
+        '404': {$ref: '#/components/responses/notFound'}
+        '500': {$ref: '#/components/responses/serverException'}
+    patch:
+      tags: [product]
+      operationId: updateProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/CreateProduct'}
+      responses:
+        '200':
+          description: Product updated
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Product'}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '404': {$ref: '#/components/responses/notFound'}
+        '500': {$ref: '#/components/responses/serverException'}
+    delete:
+      tags: [product]
+      operationId: deleteProduct
+      responses:
+        '204': {description: Product deleted}
+        '404': {$ref: '#/components/responses/notFound'}
+        '409': {$ref: '#/components/responses/conflict'}
+        '500': {$ref: '#/components/responses/serverException'}
+  /v1/inventory:
+    get:
+      tags: [inventory]
+      operationId: getInventory
+      responses:
+        '200':
+          description: Inventory items
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: '#/components/schemas/InventoryItem'}
+        '500': {$ref: '#/components/responses/serverException'}
+    post:
+      tags: [inventory]
+      operationId: createInventoryItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/CreateInventoryItem'}
+      responses:
+        '201':
+          description: Inventory item created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/InventoryItem'}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '404': {$ref: '#/components/responses/notFound'}
+        '500': {$ref: '#/components/responses/serverException'}
+  /v1/inventory/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      tags: [inventory]
+      operationId: getInventoryItem
+      responses:
+        '200':
+          description: Inventory item
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/InventoryItem'}
+        '404': {$ref: '#/components/responses/notFound'}
+        '500': {$ref: '#/components/responses/serverException'}
+    patch:
+      tags: [inventory]
+      operationId: updateInventoryItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/CreateInventoryItem'}
+      responses:
+        '200':
+          description: Inventory item updated
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/InventoryItem'}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '404': {$ref: '#/components/responses/notFound'}
+        '500': {$ref: '#/components/responses/serverException'}
+    delete:
+      tags: [inventory]
+      operationId: deleteInventoryItem
+      responses:
+        '204': {description: Inventory item deleted}
+        '404': {$ref: '#/components/responses/notFound'}
+        '500': {$ref: '#/components/responses/serverException'}
+components:
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+  responses:
+    badRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/ErrorMessage'}
+    notFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/ErrorMessage'}
+    conflict:
+      description: Request conflicts with current state
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/ErrorMessage'}
+    serverException:
+      description: Unexpected server error
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/ErrorMessage'}
+  schemas:
+    ProductCategory:
+      type: string
+      enum: [MEAT, VEGETABLE, FRUIT, DAIRY, DRY_GOODS, SPICE, OTHER]
+    Unit:
+      type: string
+      enum: [GRAM, MILLILITER, PIECE]
+    CreateProduct:
+      type: object
+      required: [name, category, defaultUnit]
+      properties:
+        name: {type: string, minLength: 1, example: Løg}
+        category: {$ref: '#/components/schemas/ProductCategory'}
+        defaultUnit: {$ref: '#/components/schemas/Unit'}
+    Product:
+      allOf:
+        - $ref: '#/components/schemas/CreateProduct'
+        - type: object
+          required: [id]
+          properties:
+            id: {type: string, format: uuid}
+    CreateInventoryItem:
+      type: object
+      required: [productId, quantity, unit]
+      properties:
+        productId: {type: string, format: uuid}
+        quantity: {type: number, minimum: 0, example: 4}
+        unit: {$ref: '#/components/schemas/Unit'}
+    InventoryItem:
+      type: object
+      required: [id, product, quantity, unit]
+      properties:
+        id: {type: string, format: uuid}
+        product: {$ref: '#/components/schemas/Product'}
+        quantity: {type: number, minimum: 0}
+        unit: {$ref: '#/components/schemas/Unit'}
+    ErrorMessage:
+      type: object
+      required: [message, errors, timestamp, correlationId]
+      properties:
+        message: {type: string}
+        errors:
+          type: array
+          items: {type: string}
+        timestamp: {type: string, format: date-time}
+        correlationId: {type: string, format: uuid}
