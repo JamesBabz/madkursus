@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: madkursus
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/madkursus}
+    username: ${DB_USERNAME:madkursus}
+    password: ${DB_PASSWORD:madkursus}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+
+server:
+  port: ${SERVER_PORT:8080}
