@@ -10,6 +10,7 @@ import dk.jamesbabz.madkursus.service.exceptions.DuplicateUsernameException;
 import dk.jamesbabz.madkursus.service.exceptions.RegistrationDisabledException;
 import dk.jamesbabz.madkursus.service.exceptions.InvalidInputException;
 import dk.jamesbabz.madkursus.service.exceptions.DuplicateProductException;
+import dk.jamesbabz.madkursus.service.exceptions.ConflictException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,11 @@ public class RestErrorHandler {
 
     @ExceptionHandler({DuplicateUsernameException.class, DuplicateProductException.class})
     ResponseEntity<ErrorMessageDTO> duplicate(RuntimeException exception) {
+        return response(HttpStatus.CONFLICT, exception.getMessage(), List.of());
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    ResponseEntity<ErrorMessageDTO> conflict(ConflictException exception) {
         return response(HttpStatus.CONFLICT, exception.getMessage(), List.of());
     }
 

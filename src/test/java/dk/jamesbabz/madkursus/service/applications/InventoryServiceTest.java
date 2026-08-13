@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import dk.jamesbabz.madkursus.service.exceptions.ResourceNotFoundException;
 import dk.jamesbabz.madkursus.service.exceptions.InvalidInputException;
+import dk.jamesbabz.madkursus.service.exceptions.ConflictException;
 import dk.jamesbabz.madkursus.service.models.InventoryItem;
 import dk.jamesbabz.madkursus.service.models.Product;
 import dk.jamesbabz.madkursus.service.models.ProductCategory;
@@ -136,6 +137,49 @@ class InventoryServiceTest {
         assertThatThrownBy(() -> service.setQuantity(UUID.randomUUID(), new BigDecimal("2.01")))
                 .isInstanceOf(InvalidInputException.class)
                 .hasMessage("Quantity must be a whole number");
+    }
+
+    @Test
+    void purchaseRollbackSubtractsExactQuantity() {
+        UUID userId = UUID.randomUUID(); Product product = product(UUID.randomUUID(), userId, "Æg", Unit.PIECE);
+        UUID itemId = UUID.randomUUID();
+        when(currentUserProvider.currentUserId()).thenReturn(userId);
+        when(productService.get(product.id())).thenReturn(product);
+        when(port.findByProductIdAndUserId(product.id(), userId))
+                .thenReturn(Optional.of(new InventoryItem(itemId, product, new BigDecimal("16"))));
+        when(port.save(any())).thenAnswer(call -> call.getArgument(0));
+
+        service.removePurchasedQuantity(product.id(), new BigDecimal("10"));
+
+        verify(port).save(new InventoryItem(itemId, product, new BigDecimal("6")));
+    }
+
+    @Test
+    void purchaseRollbackRemovesZeroInventoryRow() {
+        UUID userId = UUID.randomUUID(); Product product = product(UUID.randomUUID(), userId, "Æg", Unit.PIECE);
+        UUID itemId = UUID.randomUUID();
+        when(currentUserProvider.currentUserId()).thenReturn(userId);
+        when(productService.get(product.id())).thenReturn(product);
+        when(port.findByProductIdAndUserId(product.id(), userId))
+                .thenReturn(Optional.of(new InventoryItem(itemId, product, BigDecimal.TEN)));
+
+        service.removePurchasedQuantity(product.id(), BigDecimal.TEN);
+
+        verify(port).deleteByIdAndUserId(itemId, userId);
+    }
+
+    @Test
+    void purchaseRollbackCannotMakeInventoryNegative() {
+        UUID userId = UUID.randomUUID(); Product product = product(UUID.randomUUID(), userId, "Æg", Unit.PIECE);
+        UUID itemId = UUID.randomUUID();
+        when(currentUserProvider.currentUserId()).thenReturn(userId);
+        when(productService.get(product.id())).thenReturn(product);
+        when(port.findByProductIdAndUserId(product.id(), userId))
+                .thenReturn(Optional.of(new InventoryItem(itemId, product, new BigDecimal("4"))));
+
+        assertThatThrownBy(() -> service.removePurchasedQuantity(product.id(), BigDecimal.TEN))
+                .isInstanceOf(ConflictException.class);
+        verify(port, never()).save(any()); verify(port, never()).deleteByIdAndUserId(any(), any());
     }
 
     private Product product(UUID id, UUID userId, String name, Unit unit) {

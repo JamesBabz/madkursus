@@ -284,6 +284,116 @@ paths:
               schema: {$ref: '#/components/schemas/InventoryItem'}
         '400': {$ref: '#/components/responses/badRequest'}
         '404': {$ref: '#/components/responses/notFound'}
+  /v1/shopping-list:
+    get:
+      tags: [shopping-list]
+      operationId: getShoppingList
+      responses:
+        '200':
+          description: Current user's shopping list
+          content:
+            application/json:
+              schema: {type: array, items: {$ref: '#/components/schemas/ShoppingListItem'}}
+        '500': {$ref: '#/components/responses/serverException'}
+  /v1/shopping-list/items:
+    post:
+      tags: [shopping-list]
+      operationId: addShoppingListItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/AddShoppingListItem'}
+      responses:
+        '201':
+          description: Item added
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ShoppingListItem'}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '404': {$ref: '#/components/responses/notFound'}
+  /v1/shopping-list/items/from-template/{templateId}:
+    parameters:
+      - name: templateId
+        in: path
+        required: true
+        schema: {type: string, format: uuid}
+    post:
+      tags: [shopping-list]
+      operationId: addShoppingListItemFromTemplate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ShoppingListQuantity'}
+      responses:
+        '201':
+          description: Item added from template
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ShoppingListItem'}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '404': {$ref: '#/components/responses/notFound'}
+  /v1/shopping-list/items/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    patch:
+      tags: [shopping-list]
+      operationId: updateShoppingListItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ShoppingListQuantity'}
+      responses:
+        '200':
+          description: Item updated
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ShoppingListItem'}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '404': {$ref: '#/components/responses/notFound'}
+        '409': {$ref: '#/components/responses/conflict'}
+    delete:
+      tags: [shopping-list]
+      operationId: deleteShoppingListItem
+      responses:
+        '204': {description: Item deleted}
+        '404': {$ref: '#/components/responses/notFound'}
+        '409': {$ref: '#/components/responses/conflict'}
+  /v1/shopping-list/items/{id}/purchase:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    post:
+      tags: [shopping-list]
+      operationId: purchaseShoppingListItem
+      responses:
+        '200':
+          description: Item purchased and Inventory updated
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ShoppingListItem'}
+        '404': {$ref: '#/components/responses/notFound'}
+  /v1/shopping-list/items/{id}/undo-purchase:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    post:
+      tags: [shopping-list]
+      operationId: undoShoppingListItemPurchase
+      responses:
+        '200':
+          description: Purchase undone and Inventory reversed
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ShoppingListItem'}
+        '404': {$ref: '#/components/responses/notFound'}
+        '409': {$ref: '#/components/responses/conflict'}
+  /v1/shopping-list/purchased:
+    delete:
+      tags: [shopping-list]
+      operationId: clearPurchasedShoppingListItems
+      responses:
+        '204': {description: Purchased items cleared without changing Inventory}
 components:
   parameters:
     id:
@@ -405,6 +515,27 @@ components:
         product: {$ref: '#/components/schemas/Product'}
         quantity: {type: number, minimum: 0, multipleOf: 1}
         unit: {$ref: '#/components/schemas/Unit'}
+    AddShoppingListItem:
+      type: object
+      required: [productId, quantity]
+      properties:
+        productId: {type: string, format: uuid}
+        quantity: {type: number, minimum: 0, exclusiveMinimum: true, multipleOf: 1, example: 500}
+    ShoppingListQuantity:
+      type: object
+      required: [quantity]
+      properties:
+        quantity: {type: number, minimum: 0, exclusiveMinimum: true, multipleOf: 1, example: 10}
+    ShoppingListItem:
+      type: object
+      required: [id, product, quantity, unit, purchased]
+      properties:
+        id: {type: string, format: uuid}
+        product: {$ref: '#/components/schemas/Product'}
+        quantity: {type: number, minimum: 0, exclusiveMinimum: true, multipleOf: 1}
+        unit: {$ref: '#/components/schemas/Unit'}
+        purchased: {type: boolean}
+        purchasedAt: {type: string, format: date-time, nullable: true}
     ErrorMessage:
       type: object
       required: [message, errors, timestamp, correlationId]

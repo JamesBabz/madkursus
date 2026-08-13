@@ -52,6 +52,7 @@
 
   <nav class="primary-nav" aria-label="Primær navigation">
     <button class="nav-button active" id="show-inventory" type="button">Lager</button>
+    <button class="nav-button" id="show-shopping" type="button">Indkøb</button>
     <button class="nav-button" id="show-products" type="button">Produkter</button>
   </nav>
 
@@ -129,6 +130,22 @@
         <button class="secondary-button" id="inventory-empty-add" type="button">+ Tilføj vare</button>
       </div>
     </section>
+
+    <section id="shopping-view" aria-labelledby="shopping-title" hidden>
+      <div class="section-heading product-heading">
+        <div><p class="eyebrow">Indkøb</p><h2 id="shopping-title">Din indkøbsliste</h2></div>
+        <button class="add-button section-add-button" id="open-shopping-add" type="button"><span aria-hidden="true">+</span> Tilføj vare</button>
+      </div>
+      <p class="loading" id="shopping-loading" role="status">Henter indkøbsliste…</p>
+      <div class="shopping-section" id="shopping-active-section">
+        <div class="shopping-list" id="shopping-active-list" aria-live="polite"></div>
+      </div>
+      <section class="shopping-section purchased-section" id="shopping-purchased-section" hidden>
+        <div class="section-heading"><h3>Købt</h3><button class="text-button" id="clear-purchased" type="button">Ryd købte</button></div>
+        <div class="shopping-list" id="shopping-purchased-list" aria-live="polite"></div>
+      </section>
+      <div class="empty-state" id="shopping-empty" hidden><p>Din indkøbsliste er tom.</p><button class="secondary-button" id="shopping-empty-add" type="button">+ Tilføj vare</button></div>
+    </section>
   </main>
   </div>
 
@@ -200,7 +217,38 @@
     </form>
   </dialog>
 
-  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <dialog class="edit-dialog" id="shopping-add-dialog" aria-labelledby="shopping-add-title">
+    <div class="section-heading"><h2 id="shopping-add-title">Tilføj til indkøb</h2><button class="icon-button" id="close-shopping-add" type="button" aria-label="Luk">×</button></div>
+    <div id="shopping-search-step">
+      <label for="shopping-search">Søg varer</label>
+      <input id="shopping-search" type="search" placeholder="Fx æg, oksefars eller soya" autocomplete="off">
+      <div class="template-results" id="shopping-search-results" aria-live="polite"></div>
+    </div>
+    <form id="shopping-amount-form" hidden>
+      <h3 id="shopping-selected-name"></h3>
+      <label for="shopping-add-quantity">Mængde</label>
+      <div class="quantity-field"><input id="shopping-add-quantity" type="number" inputmode="numeric" min="1" step="1" required><span id="shopping-selected-unit"></span></div>
+      <p class="quantity-conversion" id="shopping-add-conversion" aria-live="polite"></p>
+      <div class="notice error" id="shopping-add-error" role="alert" hidden></div>
+      <div class="dialog-actions"><button class="secondary-button" id="back-shopping-search" type="button">Tilbage</button><button class="primary-button" type="submit">Tilføj</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="edit-dialog" id="edit-shopping-dialog" aria-labelledby="edit-shopping-title">
+    <form id="edit-shopping-form">
+      <div class="section-heading"><h2 id="edit-shopping-title">Rediger vare</h2><button class="icon-button" id="close-edit-shopping" type="button" aria-label="Luk">×</button></div>
+      <input id="edit-shopping-id" type="hidden">
+      <h3 id="edit-shopping-name"></h3>
+      <label for="edit-shopping-quantity">Mængde</label>
+      <div class="quantity-field"><input id="edit-shopping-quantity" type="number" inputmode="numeric" min="1" step="1" required><span id="edit-shopping-unit"></span></div>
+      <p class="quantity-conversion" id="edit-shopping-conversion" aria-live="polite"></p>
+      <div class="notice error" id="edit-shopping-error" role="alert" hidden></div>
+      <button class="danger-button" id="delete-shopping-item" type="button">Fjern fra listen</button>
+      <div class="dialog-actions"><button class="secondary-button" id="cancel-edit-shopping" type="button">Annuller</button><button class="primary-button" type="submit">Gem</button></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden><span id="toast-message"></span><button id="toast-action" type="button" hidden></button></div>
 
   <script src="/js/app.js" defer></script>
 </body>

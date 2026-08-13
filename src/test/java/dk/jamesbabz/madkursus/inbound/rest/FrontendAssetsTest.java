@@ -23,7 +23,7 @@ class FrontendAssetsTest {
         assertThat(html).contains("edit-product-dialog", "edit-product-form", "id=\"toast\"");
         assertThat(javascript).contains("showToast", "setTimeout", "2600", "searchRequestId",
                 "templateSearch.value = ''", "method: 'PATCH'", "openProductEditor");
-        assertThat(worker).contains("madkursus-shell-v8");
+        assertThat(worker).contains("madkursus-shell-v9");
         assertThat(html).contains("inventory-view", "inventory-add-dialog", "edit-inventory-dialog");
         assertThat(javascript).contains("/v1/inventory", "searchInventoryCandidates", "from-template",
                 "loadInventory", "showToast", "inventorySearchRequestId");
@@ -36,6 +36,12 @@ class FrontendAssetsTest {
         assertThat(html).contains("request-delete-product", "delete-product-confirmation", "+ Tilføj produkt")
                 .doesNotContain("id=\"refresh-products\"");
         assertThat(html.indexOf("id=\"open-form\"")).isGreaterThan(html.indexOf("id=\"products-title\""));
+        assertThat(html).contains("shopping-view", "shopping-add-dialog", "edit-shopping-dialog",
+                "shopping-active-list", "shopping-purchased-list", "toast-action");
+        assertThat(javascript).contains("/v1/shopping-list", "purchaseShoppingItem", "undo-purchase",
+                "attachShoppingGestures", "pointerdown", "pointermove", "600", "clear-purchased", "undoShoppingItem",
+                "searchShoppingCandidates", "shoppingSearchRequestId");
+        assertThat(worker).contains("request.method !== 'GET'", "url.pathname.startsWith('/v1/')");
     }
 
     private String resource(String path) throws Exception {

@@ -1,6 +1,7 @@
 const PRODUCT_API = '/v1/products';
 const AUTH_API = '/v1/auth';
 const INVENTORY_API = '/v1/inventory';
+const SHOPPING_API = '/v1/shopping-list';
 
 const categoryLabels = {
   BAKING:'Bagning', BREAD:'Brød', DAIRY:'Mejeri', EGG:'Æg', FISH:'Fisk', FROZEN:'Frostvarer',
@@ -42,6 +43,9 @@ let currentProducts = [];
 let inventorySearchTimer;
 let inventorySearchRequestId = 0;
 let selectedInventoryCandidate = null;
+let shoppingSearchTimer;
+let shoppingSearchRequestId = 0;
+let selectedShoppingCandidate = null;
 
 let csrfToken = '';
 let registrationEnabled = false;
@@ -51,13 +55,20 @@ function showMessage(element, message) {
   element.hidden = !message;
 }
 
-function showToast(message, variant = 'success') {
+function showToast(message, variant = 'success', action = null) {
   clearTimeout(toastTimer);
-  toast.textContent = `${variant === 'success' ? '✓ ' : ''}${message}`;
+  document.querySelector('#toast-message').textContent = `${variant === 'success' ? '✓ ' : ''}${message}`;
+  const actionButton = document.querySelector('#toast-action');
+  actionButton.hidden = !action;
+  actionButton.textContent = action?.label || '';
+  actionButton.onclick = action ? async () => {
+    clearTimeout(toastTimer); toast.hidden = true; actionButton.disabled = true;
+    try { await action.run(); } finally { actionButton.disabled = false; }
+  } : null;
   toast.classList.toggle('error-toast', variant === 'error');
   toast.setAttribute('role', variant === 'error' ? 'alert' : 'status');
   toast.hidden = false;
-  toastTimer = setTimeout(() => { toast.hidden = true; }, 2600);
+  toastTimer = setTimeout(() => { toast.hidden = true; }, action ? 5000 : 2600);
 }
 
 function apiError(response, body) {
@@ -296,12 +307,17 @@ async function loadProducts() {
 
 function showView(view) {
   const inventoryActive = view === 'inventory';
-  document.querySelector('#products-view').hidden = inventoryActive;
+  const shoppingActive = view === 'shopping';
+  const productsActive = view === 'products';
+  document.querySelector('#products-view').hidden = !productsActive;
   document.querySelector('#inventory-view').hidden = !inventoryActive;
-  document.querySelector('#show-products').classList.toggle('active', !inventoryActive);
+  document.querySelector('#shopping-view').hidden = !shoppingActive;
+  document.querySelector('#show-products').classList.toggle('active', productsActive);
   document.querySelector('#show-inventory').classList.toggle('active', inventoryActive);
-  openFormButton.hidden = inventoryActive;
+  document.querySelector('#show-shopping').classList.toggle('active', shoppingActive);
+  openFormButton.hidden = !productsActive;
   if (inventoryActive) { setFormOpen(false); loadInventory(); }
+  if (shoppingActive) { setFormOpen(false); loadShoppingList(); }
 }
 
 function displayUnit(unit) {
@@ -502,6 +518,140 @@ async function deleteProduct() {
   } finally { button.disabled = false; }
 }
 
+function shoppingRow(item) {
+  const row = document.createElement('article');
+  row.className = `shopping-row${item.purchased ? ' purchased' : ''}`;
+  row.tabIndex = 0; row.setAttribute('role', 'button');
+  row.setAttribute('aria-label', item.purchased ? `${item.product.name}, købt` : `Markér ${item.product.name} som købt`);
+  const check = document.createElement('span'); check.className = 'shopping-check'; check.textContent = item.purchased ? '✓' : '';
+  const name = document.createElement('span'); name.className = 'shopping-row-name'; name.textContent = item.product.name;
+  const quantity = document.createElement('span'); quantity.className = 'shopping-row-quantity'; quantity.textContent = `${item.quantity} ${displayUnit(item.unit)}`;
+  const edit = document.createElement('button'); edit.type = 'button'; edit.className = 'shopping-edit-button'; edit.textContent = '⋯';
+  edit.setAttribute('aria-label', `Rediger ${item.product.name}`); edit.hidden = item.purchased;
+  edit.addEventListener('click', event => { event.stopPropagation(); openShoppingEditor(item); });
+  row.append(check, name, quantity, edit);
+  if (!item.purchased) attachShoppingGestures(row, item);
+  else {
+    row.setAttribute('aria-label', `Fortryd køb af ${item.product.name}`);
+    row.addEventListener('click', () => undoShoppingItem(item));
+    row.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); undoShoppingItem(item); } });
+  }
+  return row;
+}
+
+function attachShoppingGestures(row, item) {
+  let timer = null; let startX = 0; let startY = 0; let longPressed = false;
+  const cancel = () => { clearTimeout(timer); timer = null; };
+  row.addEventListener('pointerdown', event => {
+    if (event.target.closest('button')) return;
+    startX = event.clientX; startY = event.clientY; longPressed = false;
+    timer = setTimeout(() => { longPressed = true; openShoppingEditor(item); }, 600);
+  });
+  row.addEventListener('pointermove', event => {
+    if (Math.hypot(event.clientX - startX, event.clientY - startY) > 10) cancel();
+  });
+  row.addEventListener('pointerup', cancel); row.addEventListener('pointercancel', cancel);
+  row.addEventListener('click', () => { if (longPressed) { longPressed = false; return; } purchaseShoppingItem(item); });
+  row.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); purchaseShoppingItem(item); } });
+}
+
+async function loadShoppingList() {
+  const loadingElement = document.querySelector('#shopping-loading'); loadingElement.hidden = false;
+  try {
+    const items = await jsonRequest(SHOPPING_API);
+    const active = items.filter(item => !item.purchased); const purchased = items.filter(item => item.purchased);
+    document.querySelector('#shopping-active-list').replaceChildren(...active.map(shoppingRow));
+    document.querySelector('#shopping-purchased-list').replaceChildren(...purchased.map(shoppingRow));
+    document.querySelector('#shopping-purchased-section').hidden = purchased.length === 0;
+    document.querySelector('#shopping-empty').hidden = items.length !== 0;
+  } catch (error) { showToast(`Indkøbslisten kunne ikke hentes. ${error.message}`, 'error'); }
+  finally { loadingElement.hidden = true; }
+}
+
+async function purchaseShoppingItem(item) {
+  try {
+    await jsonRequest(`${SHOPPING_API}/items/${item.id}/purchase`, { method: 'POST' });
+    await loadShoppingList();
+    showToast(`${item.product.name} er tilføjet til lageret`, 'success', {
+      label: 'Fortryd', run: () => undoShoppingItem(item)
+    });
+  } catch (error) { showToast(`Varen kunne ikke markeres som købt. ${error.message}`, 'error'); }
+}
+
+async function undoShoppingItem(item) {
+  try {
+    await jsonRequest(`${SHOPPING_API}/items/${item.id}/undo-purchase`, { method: 'POST' });
+    await Promise.all([loadShoppingList(), loadInventory()]); showToast(`${item.product.name} er tilbage på listen`);
+  } catch (error) { showToast(`Købet kunne ikke fortrydes. ${error.message}`, 'error'); }
+}
+
+function shoppingCandidateRow(candidate) {
+  const row = inventoryCandidateRow(candidate);
+  const replacement = row.cloneNode(true);
+  replacement.addEventListener('click', () => selectShoppingCandidate(candidate));
+  return replacement;
+}
+
+async function searchShoppingCandidates(search) {
+  const requestId = ++shoppingSearchRequestId;
+  try {
+    const [products, templates] = await Promise.all([jsonRequest(PRODUCT_API), jsonRequest(`/v1/product-templates?search=${encodeURIComponent(search)}`)]);
+    const input = document.querySelector('#shopping-search');
+    if (requestId !== shoppingSearchRequestId || input.value !== search) return;
+    const query = normalizeName(search);
+    const owned = products.filter(product => !query || normalizeName(product.name).includes(query)).map(product => ({ ...product, source: 'product' }));
+    const names = new Set(products.map(product => normalizeName(product.name)));
+    const catalog = templates.filter(template => !names.has(normalizeName(template.name))).map(template => ({ ...template, source: 'template' }));
+    document.querySelector('#shopping-search-results').replaceChildren(...[...owned, ...catalog].slice(0, 20).map(shoppingCandidateRow));
+  } catch (error) { if (requestId === shoppingSearchRequestId) showToast(`Søgningen mislykkedes. ${error.message}`, 'error'); }
+}
+
+function resetShoppingAdd() {
+  clearTimeout(shoppingSearchTimer); shoppingSearchRequestId++; selectedShoppingCandidate = null;
+  document.querySelector('#shopping-search').value = ''; document.querySelector('#shopping-search-results').replaceChildren();
+  document.querySelector('#shopping-search-step').hidden = false; document.querySelector('#shopping-amount-form').hidden = true;
+  document.querySelector('#shopping-amount-form').reset(); document.querySelector('#shopping-add-conversion').textContent = '';
+  showMessage(document.querySelector('#shopping-add-error'), '');
+}
+
+function openShoppingAdd() { resetShoppingAdd(); document.querySelector('#shopping-add-dialog').showModal(); document.querySelector('#shopping-search').focus(); searchShoppingCandidates(''); }
+function closeShoppingAdd() { const dialog = document.querySelector('#shopping-add-dialog'); if (dialog.open) dialog.close(); resetShoppingAdd(); }
+
+function selectShoppingCandidate(candidate) {
+  selectedShoppingCandidate = candidate; document.querySelector('#shopping-search-step').hidden = true; document.querySelector('#shopping-amount-form').hidden = false;
+  document.querySelector('#shopping-selected-name').textContent = candidate.name; document.querySelector('#shopping-selected-unit').textContent = displayUnit(candidate.defaultUnit);
+  const input = document.querySelector('#shopping-add-quantity'); input.dataset.unit = candidate.defaultUnit; input.focus();
+}
+
+async function addShoppingItem(event) {
+  event.preventDefault(); if (!selectedShoppingCandidate) return;
+  const quantity = Number(document.querySelector('#shopping-add-quantity').value);
+  const url = selectedShoppingCandidate.source === 'product' ? `${SHOPPING_API}/items` : `${SHOPPING_API}/items/from-template/${selectedShoppingCandidate.id}`;
+  const payload = selectedShoppingCandidate.source === 'product' ? { productId: selectedShoppingCandidate.id, quantity } : { quantity };
+  try { await jsonRequest(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const name = selectedShoppingCandidate.name; closeShoppingAdd(); await Promise.all([loadShoppingList(), loadProducts()]); showToast(`${name} er tilføjet til indkøb`); }
+  catch (error) { showMessage(document.querySelector('#shopping-add-error'), error.message); }
+}
+
+function openShoppingEditor(item) {
+  document.querySelector('#edit-shopping-id').value = item.id; document.querySelector('#edit-shopping-name').textContent = item.product.name;
+  const input = document.querySelector('#edit-shopping-quantity'); input.value = item.quantity; input.dataset.unit = item.unit;
+  document.querySelector('#edit-shopping-unit').textContent = displayUnit(item.unit); updateConversion(input, item.unit, document.querySelector('#edit-shopping-conversion'));
+  document.querySelector('#edit-shopping-dialog').showModal(); input.focus();
+}
+function closeShoppingEditor() { const dialog = document.querySelector('#edit-shopping-dialog'); if (dialog.open) dialog.close(); showMessage(document.querySelector('#edit-shopping-error'), ''); }
+
+async function saveShoppingItem(event) {
+  event.preventDefault(); const id = document.querySelector('#edit-shopping-id').value;
+  try { await jsonRequest(`${SHOPPING_API}/items/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ quantity: Number(document.querySelector('#edit-shopping-quantity').value) }) }); closeShoppingEditor(); await loadShoppingList(); showToast('Varen er gemt'); }
+  catch (error) { showMessage(document.querySelector('#edit-shopping-error'), error.message); }
+}
+
+async function deleteShoppingItem() {
+  const id = document.querySelector('#edit-shopping-id').value;
+  try { await jsonRequest(`${SHOPPING_API}/items/${id}`, { method: 'DELETE' }); closeShoppingEditor(); await loadShoppingList(); showToast('Varen er fjernet fra indkøbslisten'); }
+  catch (error) { showMessage(document.querySelector('#edit-shopping-error'), error.message); }
+}
+
 loginForm.addEventListener('submit', authenticate);
 registerForm.addEventListener('submit', register);
 document.querySelector('#logout').addEventListener('click', logout);
@@ -529,6 +679,7 @@ document.querySelector('#keep-product').addEventListener('click', cancelProductD
 document.querySelector('#confirm-delete-product').addEventListener('click', deleteProduct);
 document.querySelector('#show-products').addEventListener('click', () => showView('products'));
 document.querySelector('#show-inventory').addEventListener('click', () => showView('inventory'));
+document.querySelector('#show-shopping').addEventListener('click', () => showView('shopping'));
 document.querySelector('#open-inventory-add').addEventListener('click', openInventoryAdd);
 document.querySelector('#inventory-empty-add').addEventListener('click', openInventoryAdd);
 document.querySelector('#close-inventory-add').addEventListener('click', closeInventoryAdd);
@@ -554,6 +705,31 @@ document.querySelector('#edit-inventory-quantity').addEventListener('input', eve
 document.querySelector('#delete-inventory').addEventListener('click', deleteInventory);
 document.querySelector('#close-edit-inventory').addEventListener('click', closeInventoryEditor);
 document.querySelector('#cancel-edit-inventory').addEventListener('click', closeInventoryEditor);
+document.querySelector('#open-shopping-add').addEventListener('click', openShoppingAdd);
+document.querySelector('#shopping-empty-add').addEventListener('click', openShoppingAdd);
+document.querySelector('#close-shopping-add').addEventListener('click', closeShoppingAdd);
+document.querySelector('#shopping-add-dialog').addEventListener('close', resetShoppingAdd);
+document.querySelector('#back-shopping-search').addEventListener('click', () => {
+  selectedShoppingCandidate = null; document.querySelector('#shopping-amount-form').hidden = true;
+  document.querySelector('#shopping-search-step').hidden = false; document.querySelector('#shopping-search').focus();
+});
+document.querySelector('#shopping-search').addEventListener('input', event => {
+  clearTimeout(shoppingSearchTimer); shoppingSearchRequestId++; const search = event.target.value;
+  if (!search) searchShoppingCandidates(''); else shoppingSearchTimer = setTimeout(() => searchShoppingCandidates(search), 250);
+});
+document.querySelector('#shopping-amount-form').addEventListener('submit', addShoppingItem);
+document.querySelector('#shopping-add-quantity').addEventListener('input', event =>
+  updateConversion(event.target, event.target.dataset.unit, document.querySelector('#shopping-add-conversion')));
+document.querySelector('#edit-shopping-form').addEventListener('submit', saveShoppingItem);
+document.querySelector('#edit-shopping-quantity').addEventListener('input', event =>
+  updateConversion(event.target, event.target.dataset.unit, document.querySelector('#edit-shopping-conversion')));
+document.querySelector('#delete-shopping-item').addEventListener('click', deleteShoppingItem);
+document.querySelector('#close-edit-shopping').addEventListener('click', closeShoppingEditor);
+document.querySelector('#cancel-edit-shopping').addEventListener('click', closeShoppingEditor);
+document.querySelector('#clear-purchased').addEventListener('click', async () => {
+  try { await jsonRequest(`${SHOPPING_API}/purchased`, { method: 'DELETE' }); await loadShoppingList(); showToast('Købte varer er ryddet'); }
+  catch (error) { showToast(`Købte varer kunne ikke ryddes. ${error.message}`, 'error'); }
+});
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('/service-worker.js')

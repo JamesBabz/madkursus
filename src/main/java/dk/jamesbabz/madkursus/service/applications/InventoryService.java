@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import dk.jamesbabz.madkursus.service.exceptions.ResourceNotFoundException;
 import dk.jamesbabz.madkursus.service.exceptions.InvalidInputException;
+import dk.jamesbabz.madkursus.service.exceptions.ConflictException;
 import dk.jamesbabz.madkursus.service.models.InventoryItem;
 import dk.jamesbabz.madkursus.service.models.Product;
 import dk.jamesbabz.madkursus.service.models.ProductTemplate;
@@ -70,6 +71,21 @@ public class InventoryService {
     public void delete(UUID id) {
         get(id);
         inventoryPort.deleteByIdAndUserId(id, currentUserProvider.currentUserId());
+    }
+
+    @Transactional
+    public void removePurchasedQuantity(UUID productId, BigDecimal quantity) {
+        requirePositive(quantity);
+        Product product = productService.get(productId);
+        UUID userId = currentUserProvider.currentUserId();
+        InventoryItem existing = inventoryPort.findByProductIdAndUserId(productId, userId)
+                .orElseThrow(() -> new ConflictException("Inventory no longer contains the purchased quantity"));
+        BigDecimal remaining = existing.quantity().subtract(quantity);
+        if (remaining.signum() < 0) {
+            throw new ConflictException("Inventory is lower than the quantity added by this purchase");
+        }
+        if (remaining.signum() == 0) inventoryPort.deleteByIdAndUserId(existing.id(), userId);
+        else inventoryPort.save(new InventoryItem(existing.id(), product, remaining));
     }
 
     private void requirePositive(BigDecimal quantity) {
