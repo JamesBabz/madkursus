@@ -151,11 +151,15 @@
     <section id="recipes-view" aria-labelledby="recipes-title" hidden>
       <div class="section-heading product-heading">
         <div><p class="eyebrow">Opskrifter</p><h2 id="recipes-title">Dine opskrifter</h2></div>
-        <button class="add-button section-add-button" id="new-recipe" type="button"><span aria-hidden="true">+</span> Ny opskrift</button>
+        <div class="header-actions"><button class="add-button section-add-button" id="plan-recipes" type="button">Planlæg</button><button class="add-button section-add-button" id="new-recipe" type="button"><span aria-hidden="true">+</span> Ny</button></div>
       </div>
+      <div class="recipe-subnav"><button class="active" id="show-recipe-library" type="button">Opskrifter</button><button id="show-meal-plans" type="button">Madplaner</button></div>
+      <div id="recipe-library-panel">
       <p class="loading" id="recipes-loading" role="status">Henter opskrifter…</p>
       <div class="recipe-list" id="recipe-list" aria-live="polite"></div>
       <div class="empty-state" id="recipes-empty" hidden><p>Du har ingen opskrifter endnu.</p><button class="secondary-button" id="recipes-empty-add" type="button">+ Ny opskrift</button></div>
+      </div>
+      <div id="meal-plans-panel" hidden><p class="loading" id="meal-plans-loading" hidden>Henter madplaner…</p><div class="recipe-list" id="meal-plan-list"></div><div class="empty-state" id="meal-plans-empty" hidden><p>Du har ingen gemte madplaner endnu.</p><button class="secondary-button" id="meal-plans-empty-create" type="button">Planlæg mad</button></div></div>
     </section>
   </main>
   </div>
@@ -274,7 +278,28 @@
     <h3>Ingredienser</h3><div id="recipe-detail-ingredients" class="recipe-ingredients"></div>
     <h3>Fremgangsmåde</h3><ol id="recipe-detail-steps" class="recipe-steps"></ol>
     <section class="inline-confirmation" id="delete-recipe-confirmation" hidden><p>Vil du slette opskriften?</p><div class="dialog-actions"><button class="danger-button" id="confirm-delete-recipe" type="button">Slet</button><button class="secondary-button" id="keep-recipe" type="button">Behold</button></div></section>
-    <div class="dialog-actions"><button class="danger-button" id="delete-recipe" type="button">Slet</button><button class="primary-button" id="edit-recipe" type="button">Rediger</button></div>
+    <button class="primary-button full-button" id="cook-recipe" type="button">Marker som lavet</button>
+    <div class="notice" id="cook-recipe-summary" hidden></div>
+    <div class="dialog-actions"><button class="danger-button" id="delete-recipe" type="button">Slet</button><button class="secondary-button" id="edit-recipe" type="button">Rediger</button></div>
+  </dialog>
+
+  <dialog class="edit-dialog recipe-editor-dialog" id="recipe-plan-dialog" aria-labelledby="recipe-plan-title">
+    <div class="section-heading"><h2 id="recipe-plan-title">Planlæg mad</h2><button class="icon-button" id="close-recipe-plan" type="button" aria-label="Luk">×</button></div>
+    <div id="recipe-plan-list" class="recipe-plan-list"></div>
+    <button class="primary-button full-button" id="calculate-recipe-plan" type="button">Beregn hvad jeg mangler</button>
+    <button class="secondary-button full-button" id="request-save-meal-plan" type="button">Gem madplan</button>
+    <form id="save-meal-plan-form" class="sub-panel" hidden><label for="meal-plan-name">Navn på madplan</label><input id="meal-plan-name" maxlength="255" placeholder="Fx Uge 33" required><div class="dialog-actions"><button class="secondary-button" id="cancel-save-meal-plan" type="button">Annuller</button><button class="primary-button" type="submit">Gem</button></div></form>
+    <section id="recipe-plan-results" hidden><h3>Samlet behov</h3><div id="recipe-plan-requirements" class="requirement-list"></div><button class="primary-button full-button" id="add-recipe-missing" type="button">Tilføj mangler til indkøb</button></section>
+    <div class="notice error" id="recipe-plan-error" hidden></div>
+  </dialog>
+
+  <dialog class="edit-dialog recipe-editor-dialog" id="meal-plan-detail-dialog" aria-labelledby="meal-plan-detail-title">
+    <div class="section-heading"><div><h2 id="meal-plan-detail-title"></h2><p id="meal-plan-detail-summary" class="product-meta"></p></div><button class="icon-button" id="close-meal-plan-detail" type="button" aria-label="Luk">×</button></div>
+    <div id="meal-plan-recipes" class="meal-plan-recipes"></div>
+    <button class="secondary-button full-button" id="meal-plan-requirements" type="button">Se hvad jeg mangler</button>
+    <section id="meal-plan-results" hidden><h3>Samlet behov</h3><div id="meal-plan-requirement-list" class="requirement-list"></div><button class="primary-button full-button" id="meal-plan-add-missing" type="button">Tilføj mangler til indkøb</button></section>
+    <section class="inline-confirmation" id="delete-meal-plan-confirmation" hidden><p>Vil du slette madplanen?</p><div class="dialog-actions"><button class="danger-button" id="confirm-delete-meal-plan" type="button">Slet</button><button class="secondary-button" id="keep-meal-plan" type="button">Behold</button></div></section>
+    <button class="danger-button full-button" id="delete-meal-plan" type="button">Slet madplan</button><div class="notice error" id="meal-plan-error" hidden></div>
   </dialog>
 
   <dialog class="edit-dialog recipe-editor-dialog" id="recipe-editor-dialog" aria-labelledby="recipe-editor-title">

@@ -49,6 +49,21 @@ public class ShoppingListService {
     }
 
     @Transactional
+    public ShoppingListItem ensureAtLeastFromTemplate(UUID templateId, BigDecimal requiredQuantity) {
+        ProductTemplate template = templateService.get(templateId);
+        Product product = productService.createFromTemplate(template.id(), template.name(), template.category(),
+                template.defaultUnit(), template.defaultTrackingMode());
+        var active = port.findActiveByProductIdAndUserId(product.id(), currentUserProvider.currentUserId());
+        if (product.inventoryTrackingMode() == InventoryTrackingMode.PRESENCE) {
+            return active.orElseGet(() -> add(product.id(), null));
+        }
+        requireValidQuantity(product, requiredQuantity);
+        if (active.isPresent() && active.get().quantity().compareTo(requiredQuantity) >= 0) return active.get();
+        BigDecimal difference = active.map(item -> requiredQuantity.subtract(item.quantity())).orElse(requiredQuantity);
+        return add(product.id(), difference);
+    }
+
+    @Transactional
     public ShoppingListItem update(UUID id, BigDecimal quantity) {
         ShoppingListItem item = ownedForUpdate(id);
         if (item.purchased()) throw new ConflictException("Undo purchase before editing this item");

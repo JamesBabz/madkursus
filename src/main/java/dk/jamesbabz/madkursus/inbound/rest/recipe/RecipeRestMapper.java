@@ -8,6 +8,8 @@ import dk.jamesbabz.madkursus.inbound.rest.dto.RecipeStepDTO;
 import dk.jamesbabz.madkursus.inbound.rest.dto.RecipeUnitDTO;
 import dk.jamesbabz.madkursus.inbound.rest.producttemplate.ProductTemplateRestMapper;
 import dk.jamesbabz.madkursus.service.models.Recipe;
+import dk.jamesbabz.madkursus.service.models.RecipeRequirement;
+import dk.jamesbabz.madkursus.inbound.rest.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -29,4 +31,15 @@ public class RecipeRestMapper {
                 recipe.createdAt().atOffset(ZoneOffset.UTC), recipe.updatedAt().atOffset(ZoneOffset.UTC))
                 .description(recipe.description());
     }
+
+    public RecipeRequirementDTO toDto(RecipeRequirement requirement) {
+        return new RecipeRequirementDTO(productTemplateMapper.toDto(requirement.productTemplate()),
+                InventoryTrackingModeDTO.valueOf(requirement.trackingMode().name()),
+                UnitDTO.valueOf(requirement.unit().name()), requirement.satisfied())
+                .productId(requirement.product() == null ? null : requirement.product().id())
+                .requiredQuantity(requirement.requiredQuantity()).availableQuantity(requirement.availableQuantity())
+                .missingQuantity(requirement.missingQuantity()).warning(requirement.warning());
+    }
+    public RecipeRequirementCalculationDTO toDto(dk.jamesbabz.madkursus.service.models.RecipeRequirementCalculation calculation) { return new RecipeRequirementCalculationDTO(calculation.requirements().stream().map(this::toDto).toList()); }
+    public CookRecipeResultDTO toDto(dk.jamesbabz.madkursus.service.models.RecipeCookResult result) { return new CookRecipeResultDTO(toDto(result.recipe()),result.portions(),result.history().cookedAt().atOffset(ZoneOffset.UTC),result.deductions().stream().map(this::toDto).toList(),result.warnings()); }
 }

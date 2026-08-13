@@ -429,6 +429,129 @@ paths:
       responses:
         '204': {description: Recipe deleted}
         '404': {$ref: '#/components/responses/notFound'}
+  /v1/recipes/calculate-requirements:
+    post:
+      tags: [recipe]
+      operationId: calculateRecipeRequirements
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/RecipeSelections'}}}}
+      responses:
+        '200': {description: Aggregated requirements, content: {application/json: {schema: {$ref: '#/components/schemas/RecipeRequirementCalculation'}}}}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '404': {$ref: '#/components/responses/notFound'}
+  /v1/recipes/add-missing-to-shopping-list:
+    post:
+      tags: [recipe]
+      operationId: addMissingRecipeRequirementsToShoppingList
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/RecipeSelections'}}}}
+      responses:
+        '200': {description: Missing requirements added, content: {application/json: {schema: {$ref: '#/components/schemas/RecipeRequirementCalculation'}}}}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '404': {$ref: '#/components/responses/notFound'}
+  /v1/recipes/{id}/cook:
+    parameters: [{$ref: '#/components/parameters/id'}]
+    post:
+      tags: [recipe]
+      operationId: cookRecipe
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CookRecipeRequest'}}}}
+      responses:
+        '200': {description: Recipe cooked and Inventory adjusted, content: {application/json: {schema: {$ref: '#/components/schemas/CookRecipeResult'}}}}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '404': {$ref: '#/components/responses/notFound'}
+  /v1/meal-plans:
+    get:
+      tags: [meal-plan]
+      operationId: getMealPlans
+      responses:
+        '200': {description: Meal plans, content: {application/json: {schema: {type: array, items: {$ref: '#/components/schemas/MealPlan'}}}}}
+    post:
+      tags: [meal-plan]
+      operationId: createMealPlan
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CreateMealPlan'}}}}
+      responses:
+        '201': {description: Meal plan created, content: {application/json: {schema: {$ref: '#/components/schemas/MealPlan'}}}}
+        '400': {$ref: '#/components/responses/badRequest'}
+  /v1/meal-plans/{id}:
+    parameters: [{$ref: '#/components/parameters/id'}]
+    get:
+      tags: [meal-plan]
+      operationId: getMealPlan
+      responses:
+        '200': {description: Meal plan, content: {application/json: {schema: {$ref: '#/components/schemas/MealPlan'}}}}
+        '404': {$ref: '#/components/responses/notFound'}
+    patch:
+      tags: [meal-plan]
+      operationId: updateMealPlan
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/UpdateMealPlan'}}}}
+      responses:
+        '200': {description: Meal plan updated, content: {application/json: {schema: {$ref: '#/components/schemas/MealPlan'}}}}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '404': {$ref: '#/components/responses/notFound'}
+    delete:
+      tags: [meal-plan]
+      operationId: deleteMealPlan
+      responses:
+        '204': {description: Meal plan deleted}
+        '404': {$ref: '#/components/responses/notFound'}
+  /v1/meal-plans/{id}/recipes:
+    parameters: [{$ref: '#/components/parameters/id'}]
+    post:
+      tags: [meal-plan]
+      operationId: addPlannedRecipe
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CreatePlannedRecipe'}}}}
+      responses:
+        '200': {description: Recipe added, content: {application/json: {schema: {$ref: '#/components/schemas/MealPlan'}}}}
+        '404': {$ref: '#/components/responses/notFound'}
+  /v1/meal-plans/{id}/recipes/{plannedRecipeId}:
+    parameters:
+      - {$ref: '#/components/parameters/id'}
+      - {name: plannedRecipeId, in: path, required: true, schema: {type: string, format: uuid}}
+    patch:
+      tags: [meal-plan]
+      operationId: updatePlannedRecipe
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/UpdatePlannedRecipe'}}}}
+      responses:
+        '200': {description: Planned recipe updated, content: {application/json: {schema: {$ref: '#/components/schemas/MealPlan'}}}}
+        '409': {$ref: '#/components/responses/conflict'}
+    delete:
+      tags: [meal-plan]
+      operationId: deletePlannedRecipe
+      responses:
+        '200': {description: Planned recipe deleted, content: {application/json: {schema: {$ref: '#/components/schemas/MealPlan'}}}}
+        '404': {$ref: '#/components/responses/notFound'}
+  /v1/meal-plans/{id}/recipes/{plannedRecipeId}/cook:
+    parameters:
+      - {$ref: '#/components/parameters/id'}
+      - {name: plannedRecipeId, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      tags: [meal-plan]
+      operationId: cookPlannedRecipe
+      responses:
+        '200': {description: Planned recipe cooked, content: {application/json: {schema: {$ref: '#/components/schemas/CookRecipeResult'}}}}
+        '409': {$ref: '#/components/responses/conflict'}
+  /v1/meal-plans/{id}/recipes/{plannedRecipeId}/skip:
+    parameters:
+      - {$ref: '#/components/parameters/id'}
+      - {name: plannedRecipeId, in: path, required: true, schema: {type: string, format: uuid}}
+    post:
+      tags: [meal-plan]
+      operationId: toggleSkipPlannedRecipe
+      responses:
+        '200': {description: Skip toggled, content: {application/json: {schema: {$ref: '#/components/schemas/MealPlan'}}}}
+        '409': {$ref: '#/components/responses/conflict'}
+  /v1/meal-plans/{id}/requirements:
+    parameters: [{$ref: '#/components/parameters/id'}]
+    get:
+      tags: [meal-plan]
+      operationId: getMealPlanRequirements
+      responses:
+        '200': {description: Outstanding requirements, content: {application/json: {schema: {$ref: '#/components/schemas/RecipeRequirementCalculation'}}}}
+  /v1/meal-plans/{id}/add-missing-to-shopping-list:
+    parameters: [{$ref: '#/components/parameters/id'}]
+    post:
+      tags: [meal-plan]
+      operationId: addMealPlanMissingToShoppingList
+      responses:
+        '200': {description: Missing items ensured on Shopping List, content: {application/json: {schema: {$ref: '#/components/schemas/RecipeRequirementCalculation'}}}}
 components:
   parameters:
     id:
@@ -631,6 +754,93 @@ components:
         steps: {type: array, items: {$ref: '#/components/schemas/RecipeStep'} }
         createdAt: {type: string, format: date-time}
         updatedAt: {type: string, format: date-time}
+    RecipeSelection:
+      type: object
+      required: [recipeId, portions]
+      properties:
+        recipeId: {type: string, format: uuid}
+        portions: {type: number, exclusiveMinimum: 0}
+    RecipeSelections:
+      type: object
+      required: [recipes]
+      properties:
+        recipes: {type: array, minItems: 1, items: {$ref: '#/components/schemas/RecipeSelection'}}
+    RecipeRequirement:
+      type: object
+      required: [productTemplate, trackingMode, unit, satisfied]
+      properties:
+        productTemplate: {$ref: '#/components/schemas/ProductTemplate'}
+        productId: {type: string, format: uuid, nullable: true}
+        trackingMode: {$ref: '#/components/schemas/InventoryTrackingMode'}
+        requiredQuantity: {type: number, nullable: true}
+        unit: {$ref: '#/components/schemas/Unit'}
+        availableQuantity: {type: number, nullable: true}
+        missingQuantity: {type: number, nullable: true}
+        satisfied: {type: boolean}
+        warning: {type: string, nullable: true}
+    RecipeRequirementCalculation:
+      type: object
+      required: [requirements]
+      properties:
+        requirements: {type: array, items: {$ref: '#/components/schemas/RecipeRequirement'}}
+    CookRecipeRequest:
+      type: object
+      required: [portions]
+      properties:
+        portions: {type: number, exclusiveMinimum: 0}
+    CookRecipeResult:
+      type: object
+      required: [recipe, portions, cookedAt, deductions, warnings]
+      properties:
+        recipe: {$ref: '#/components/schemas/Recipe'}
+        portions: {type: number}
+        cookedAt: {type: string, format: date-time}
+        deductions: {type: array, items: {$ref: '#/components/schemas/RecipeRequirement'}}
+        warnings: {type: array, items: {type: string}}
+    PlannedRecipeStatus:
+      type: string
+      enum: [PLANNED, COOKED, SKIPPED]
+    CreateMealPlan:
+      type: object
+      required: [name, recipes]
+      properties:
+        name: {type: string, minLength: 1}
+        recipes: {type: array, minItems: 1, items: {$ref: '#/components/schemas/RecipeSelection'}}
+    UpdateMealPlan:
+      type: object
+      required: [name]
+      properties: {name: {type: string, minLength: 1}}
+    CreatePlannedRecipe:
+      type: object
+      required: [recipeId, portions]
+      properties:
+        recipeId: {type: string, format: uuid}
+        portions: {type: integer, minimum: 1}
+    UpdatePlannedRecipe:
+      type: object
+      required: [portions]
+      properties:
+        portions: {type: integer, minimum: 1}
+        sortOrder: {type: integer, minimum: 1, nullable: true}
+    PlannedRecipe:
+      type: object
+      required: [id, recipe, portions, sortOrder, status]
+      properties:
+        id: {type: string, format: uuid}
+        recipe: {$ref: '#/components/schemas/Recipe'}
+        portions: {type: integer}
+        sortOrder: {type: integer}
+        status: {$ref: '#/components/schemas/PlannedRecipeStatus'}
+    MealPlan:
+      type: object
+      required: [id, name, createdAt, updatedAt, recipes, completed]
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string}
+        createdAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+        recipes: {type: array, items: {$ref: '#/components/schemas/PlannedRecipe'}}
+        completed: {type: boolean}
     ErrorMessage:
       type: object
       required: [message, errors, timestamp, correlationId]

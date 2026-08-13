@@ -55,6 +55,20 @@ class ShoppingListServiceTest {
         assertThat(service.addFromTemplate(templateId, new BigDecimal("500")).product()).isEqualTo(product);
     }
 
+    @Test void ensureAtLeastAccountsForExistingActiveQuantityAndIsRepeatSafe() {
+        UUID user=UUID.randomUUID(), templateId=UUID.randomUUID();Product product=product(user,"Oksekød",Unit.GRAM);ProductTemplate template=new ProductTemplate(templateId,product.name(),ProductCategory.MEAT,Unit.GRAM,java.util.List.of(),false);ShoppingListItem active=item(UUID.randomUUID(),user,product,"300",false);
+        when(templateService.get(templateId)).thenReturn(template);when(productService.createFromTemplate(template.id(),template.name(),template.category(),template.defaultUnit(),template.defaultTrackingMode())).thenReturn(product);when(currentUserProvider.currentUserId()).thenReturn(user);when(port.findActiveByProductIdAndUserId(product.id(),user)).thenReturn(Optional.of(active));when(productService.get(product.id())).thenReturn(product);when(port.save(any())).thenAnswer(i->i.getArgument(0));
+        assertThat(service.ensureAtLeastFromTemplate(templateId,new BigDecimal("500")).quantity()).isEqualByComparingTo("500");
+        ShoppingListItem enough=item(active.id(),user,product,"500",false);when(port.findActiveByProductIdAndUserId(product.id(),user)).thenReturn(Optional.of(enough));
+        assertThat(service.ensureAtLeastFromTemplate(templateId,new BigDecimal("500"))).isSameAs(enough);
+    }
+
+    @Test void ensureAtLeastDoesNotDuplicatePresenceRestock() {
+        UUID user=UUID.randomUUID(),templateId=UUID.randomUUID();Product product=new Product(UUID.randomUUID(),user,templateId,"Salt",ProductCategory.SPICE,Unit.GRAM,InventoryTrackingMode.PRESENCE);ProductTemplate template=new ProductTemplate(templateId,"Salt",ProductCategory.SPICE,Unit.GRAM,InventoryTrackingMode.PRESENCE,java.util.List.of(),false);ShoppingListItem active=new ShoppingListItem(UUID.randomUUID(),user,product,null,false,null);
+        when(templateService.get(templateId)).thenReturn(template);when(productService.createFromTemplate(any(),any(),any(),any(),any())).thenReturn(product);when(currentUserProvider.currentUserId()).thenReturn(user);when(port.findActiveByProductIdAndUserId(product.id(),user)).thenReturn(Optional.of(active));
+        assertThat(service.ensureAtLeastFromTemplate(templateId,null)).isSameAs(active);verify(port,never()).save(any());
+    }
+
     @Test void purchaseUpdatesInventoryOnceAndRecordsTimestamp() {
         UUID user = UUID.randomUUID(), id = UUID.randomUUID(); Product product = product(user, "Mælk", Unit.MILLILITER);
         ShoppingListItem item = item(id, user, product, "1000", false); owned(item); when(port.save(any())).thenAnswer(i -> i.getArgument(0));

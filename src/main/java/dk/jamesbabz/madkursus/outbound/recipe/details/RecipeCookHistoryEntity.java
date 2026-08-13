@@ -1,0 +1,4 @@
+package dk.jamesbabz.madkursus.outbound.recipe.details;
+import java.math.BigDecimal; import java.time.Instant; import java.util.UUID; import jakarta.persistence.*; import lombok.*;
+@Entity @Table(name="recipe_cook_history") @Getter @NoArgsConstructor(access=AccessLevel.PROTECTED)
+public class RecipeCookHistoryEntity { @Id @GeneratedValue(strategy=GenerationType.UUID) private UUID id; @Column(nullable=false) private UUID userId; @ManyToOne @JoinColumn(name="recipe_id") private RecipeEntity recipe; private String recipeName; private BigDecimal portions; private Instant cookedAt; public RecipeCookHistoryEntity(UUID id,UUID userId,RecipeEntity recipe,String recipeName,BigDecimal portions,Instant cookedAt){this.id=id;this.userId=userId;this.recipe=recipe;this.recipeName=recipeName;this.portions=portions;this.cookedAt=cookedAt;} }

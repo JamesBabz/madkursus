@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class InventoryService {
+    public record Consumption(BigDecimal deducted, BigDecimal shortage) {}
     private final InventoryPort inventoryPort;
     private final ProductService productService;
     private final ProductTemplateService productTemplateService;
@@ -107,6 +108,21 @@ public class InventoryService {
         UUID userId = currentUserProvider.currentUserId();
         inventoryPort.findByProductIdAndUserId(productId, userId)
                 .ifPresent(item -> inventoryPort.deleteByIdAndUserId(item.id(), userId));
+    }
+
+    @Transactional
+    public Consumption consumeUpToAvailable(UUID productId, BigDecimal requested) {
+        Product product = productService.get(productId);
+        if (product.inventoryTrackingMode() == InventoryTrackingMode.PRESENCE) return new Consumption(BigDecimal.ZERO, BigDecimal.ZERO);
+        requireValidQuantity(requested, product.defaultUnit());
+        UUID userId = currentUserProvider.currentUserId();
+        var item = inventoryPort.findByProductIdAndUserId(productId, userId);
+        if (item.isEmpty()) return new Consumption(BigDecimal.ZERO, requested);
+        BigDecimal deducted = item.get().quantity().min(requested);
+        BigDecimal remaining = item.get().quantity().subtract(deducted);
+        if (remaining.signum() == 0) inventoryPort.deleteByIdAndUserId(item.get().id(), userId);
+        else inventoryPort.save(new InventoryItem(item.get().id(), product, remaining));
+        return new Consumption(deducted, requested.subtract(deducted));
     }
 
     private void requireValidQuantity(BigDecimal quantity, dk.jamesbabz.madkursus.service.models.Unit unit) {

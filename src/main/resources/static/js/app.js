@@ -3,6 +3,7 @@ const AUTH_API = '/v1/auth';
 const INVENTORY_API = '/v1/inventory';
 const SHOPPING_API = '/v1/shopping-list';
 const RECIPE_API = '/v1/recipes';
+const MEAL_PLAN_API = '/v1/meal-plans';
 
 const categoryLabels = {
   BAKING:'Bagning', BREAD:'Brød', DAIRY:'Mejeri', EGG:'Æg', FISH:'Fisk', FROZEN:'Frostvarer',
@@ -56,6 +57,9 @@ let recipeSteps = [];
 let selectedRecipeTemplate = null;
 let recipeSearchTimer;
 let recipeSearchRequestId = 0;
+let recipePlanSelections = new Map();
+let currentMealPlans = [];
+let currentMealPlan = null;
 
 let csrfToken = '';
 let registrationEnabled = false;
@@ -333,7 +337,7 @@ function showView(view) {
   openFormButton.hidden = !productsActive;
   if (inventoryActive) { setFormOpen(false); loadInventory(); }
   if (shoppingActive) { setFormOpen(false); loadShoppingList(); }
-  if (recipesActive) { setFormOpen(false); loadRecipes(); }
+  if (recipesActive) { setFormOpen(false); showRecipeSection('recipes'); loadRecipes(); }
 }
 
 function displayUnit(unit) {
@@ -765,11 +769,11 @@ function renderRecipeDetail() {
   document.querySelector('#recipe-detail-steps').replaceChildren(...currentRecipe.steps.sort((a,b) => a.sortOrder-b.sortOrder).map(step => { const li = document.createElement('li'); li.textContent = step.instruction; return li; }));
 }
 
-async function openRecipe(id) {
-  try { currentRecipe = await jsonRequest(`${RECIPE_API}/${id}`); recipePortions = 2;
+async function openRecipe(id, initialPortions = 2) {
+  try { currentRecipe = await jsonRequest(`${RECIPE_API}/${id}`); recipePortions = initialPortions;
     document.querySelector('#recipe-detail-title').textContent = currentRecipe.name;
     const description = document.querySelector('#recipe-detail-description'); description.textContent = currentRecipe.description || ''; description.hidden = !currentRecipe.description;
-    document.querySelector('#delete-recipe-confirmation').hidden = true; renderRecipeDetail(); document.querySelector('#recipe-detail-dialog').showModal();
+    document.querySelector('#delete-recipe-confirmation').hidden = true; document.querySelector('#cook-recipe-summary').hidden = true; renderRecipeDetail(); document.querySelector('#recipe-detail-dialog').showModal();
   } catch (error) { showToast(`Opskriften kunne ikke åbnes. ${error.message}`, 'error'); }
 }
 
@@ -839,6 +843,57 @@ async function saveRecipe(event) {
 }
 
 async function deleteRecipe() { if (!currentRecipe) return; try { const name=currentRecipe.name; await jsonRequest(`${RECIPE_API}/${currentRecipe.id}`,{method:'DELETE'}); closeRecipeDetail(); await loadRecipes(); showToast(`${name} er slettet`); } catch(error){ showToast(`Opskriften kunne ikke slettes. ${error.message}`,'error'); } }
+
+function selectedRecipePayload() { return { recipes:[...recipePlanSelections.entries()].filter(([,value])=>value.selected).map(([recipeId,value])=>({recipeId,portions:value.portions})) }; }
+function renderRecipePlanPreview(recipe, portions, container) {
+  const label=document.createElement('p'); label.className='recipe-plan-preview-label'; label.textContent='Skal bruge:';
+  const ingredients=document.createElement('ul');
+  ingredients.replaceChildren(...[...recipe.ingredients].sort((a,b)=>a.sortOrder-b.sortOrder).map(ingredient=>{
+    const item=document.createElement('li'); const amount=danishDecimal(scaledDecimal(ingredient.quantity,portions));
+    item.textContent=`${amount} ${recipeUnitLabels[ingredient.unit]} ${ingredient.productTemplate.name}${ingredient.preparation?` · ${ingredient.preparation}`:''}`; return item;
+  }));
+  container.replaceChildren(label,ingredients);
+}
+function renderRecipePlan() {
+  document.querySelector('#recipe-plan-list').replaceChildren(...currentRecipes.map(recipe => {
+    const state=recipePlanSelections.get(recipe.id) || {selected:false,portions:2}; recipePlanSelections.set(recipe.id,state);
+    const row=document.createElement('div'); row.className='recipe-plan-row'; const label=document.createElement('label'); const checkbox=document.createElement('input'); checkbox.type='checkbox'; checkbox.checked=state.selected; const name=document.createElement('strong'); name.textContent=recipe.name; label.append(checkbox,name);
+    const controls=document.createElement('div'); controls.className='mini-portions'; const down=document.createElement('button'); down.type='button'; down.textContent='−'; const count=document.createElement('span'); count.textContent=`${state.portions} portioner`; const up=document.createElement('button'); up.type='button'; up.textContent='+'; const preview=document.createElement('div'); preview.className='recipe-plan-preview';
+    const sync=()=>{controls.hidden=!state.selected;preview.hidden=!state.selected;checkbox.checked=state.selected;count.textContent=`${state.portions} ${state.portions===1?'portion':'portioner'}`;if(state.selected)renderRecipePlanPreview(recipe,state.portions,preview);document.querySelector('#recipe-plan-results').hidden=true;}; checkbox.onchange=()=>{state.selected=checkbox.checked;sync();}; down.onclick=()=>{if(state.portions>1)state.portions--;sync();}; up.onclick=()=>{state.portions++;sync();}; controls.append(down,count,up); row.append(label,controls,preview); sync(); return row;
+  }));
+}
+function openRecipePlan(){recipePlanSelections=new Map(currentRecipes.map(r=>[r.id,{selected:false,portions:2}]));renderRecipePlan();document.querySelector('#recipe-plan-results').hidden=true;document.querySelector('#save-meal-plan-form').hidden=true;document.querySelector('#meal-plan-name').value='';showMessage(document.querySelector('#recipe-plan-error'),'');document.querySelector('#recipe-plan-dialog').showModal();}
+function closeRecipePlan(){const dialog=document.querySelector('#recipe-plan-dialog');if(dialog.open)dialog.close();}
+function requirementAmount(value,unit){return `${danishDecimal(value)} ${displayUnit(unit)}`;}
+function requirementValue(label,value){const line=document.createElement('div');line.className='requirement-value';const key=document.createElement('span');key.textContent=label;const amount=document.createElement('b');amount.textContent=value;line.append(key,amount);return line;}
+function requirementResultRow(r){const row=document.createElement('div');row.className='requirement-row';const name=document.createElement('strong');name.textContent=r.productTemplate.name;row.append(name);
+  if(r.warning){row.classList.add('warning');const warning=document.createElement('span');warning.textContent=`⚠ ${r.warning}`;row.append(warning);return row;}
+  if(r.trackingMode==='PRESENCE'){row.classList.add(r.satisfied?'satisfied':'missing');const status=document.createElement('span');status.className=`requirement-status${r.satisfied?'':' missing'}`;status.textContent=r.satisfied?'✓ På lager':'Mangler';row.append(status);return row;}
+  const available=r.availableQuantity??0;const missing=r.missingQuantity??0;row.append(requirementValue('Behov',requirementAmount(r.requiredQuantity,r.unit)),requirementValue('På lager',requirementAmount(available,r.unit)));
+  const status=document.createElement('span');if(r.satisfied){row.classList.add('satisfied');status.className='requirement-status';status.textContent='✓ Du har nok';}else{row.classList.add(Number(available)>0?'partial':'missing');status.className='requirement-status missing';status.textContent=`Mangler: ${requirementAmount(missing,r.unit)}`;}row.append(status);return row;}
+function renderRequirementResults(calculation){const rows=calculation.requirements.map(requirementResultRow);const hasMissing=calculation.requirements.some(r=>!r.satisfied&&!r.warning);document.querySelector('#recipe-plan-requirements').replaceChildren(...rows);document.querySelector('#recipe-plan-results').hidden=false;document.querySelector('#add-recipe-missing').hidden=!hasMissing;}
+async function calculateRecipePlan(){const payload=selectedRecipePayload();if(!payload.recipes.length){showMessage(document.querySelector('#recipe-plan-error'),'Vælg mindst én opskrift.');return;}const button=document.querySelector('#calculate-recipe-plan');button.disabled=true;try{renderRequirementResults(await jsonRequest(`${RECIPE_API}/calculate-requirements`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}));showMessage(document.querySelector('#recipe-plan-error'),'');}catch(error){showMessage(document.querySelector('#recipe-plan-error'),error.message);}finally{button.disabled=false;}}
+async function addRecipeMissing(){const button=document.querySelector('#add-recipe-missing');button.disabled=true;try{await jsonRequest(`${RECIPE_API}/add-missing-to-shopping-list`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(selectedRecipePayload())});closeRecipePlan();showToast('Manglerne er tilføjet til indkøb');}catch(error){showMessage(document.querySelector('#recipe-plan-error'),error.message);}finally{button.disabled=false;}}
+async function cookCurrentRecipe(){if(!currentRecipe)return;const button=document.querySelector('#cook-recipe');button.disabled=true;try{const result=await jsonRequest(`${RECIPE_API}/${currentRecipe.id}/cook`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({portions:recipePortions})});showToast(`${currentRecipe.name} er markeret som lavet`);const summary=document.querySelector('#cook-recipe-summary');summary.textContent=result.warnings.length?result.warnings.join(' · '):'Lageret er opdateret.';summary.classList.toggle('error',result.warnings.length>0);summary.hidden=false;await loadInventory();}catch(error){showToast(`Opskriften kunne ikke markeres som lavet. ${error.message}`,'error');}finally{button.disabled=false;}}
+
+function showRecipeSection(section){const plans=section==='plans';document.querySelector('#recipe-library-panel').hidden=plans;document.querySelector('#meal-plans-panel').hidden=!plans;document.querySelector('#show-recipe-library').classList.toggle('active',!plans);document.querySelector('#show-meal-plans').classList.toggle('active',plans);if(plans)loadMealPlans();}
+function mealPlanCard(plan){const button=document.createElement('button');button.type='button';button.className='recipe-card';const name=document.createElement('strong');name.textContent=plan.name;const meta=document.createElement('span');meta.textContent=plan.completed?`${plan.recipes.length} retter · Færdig ✓`:`${plan.recipes.length} ${plan.recipes.length===1?'ret':'retter'}`;button.append(name,meta);button.onclick=()=>openMealPlan(plan.id);return button;}
+async function loadMealPlans(){const loading=document.querySelector('#meal-plans-loading');loading.hidden=false;try{currentMealPlans=await jsonRequest(MEAL_PLAN_API);document.querySelector('#meal-plan-list').replaceChildren(...currentMealPlans.map(mealPlanCard));document.querySelector('#meal-plans-empty').hidden=currentMealPlans.length>0;}catch(error){showToast(`Madplanerne kunne ikke hentes. ${error.message}`,'error');}finally{loading.hidden=true;}}
+async function saveCurrentMealPlan(event){event.preventDefault();const payload=selectedRecipePayload();const name=document.querySelector('#meal-plan-name').value.trim();if(!name||!payload.recipes.length){showMessage(document.querySelector('#recipe-plan-error'),!name?'Giv madplanen et navn.':'Vælg mindst én opskrift.');return;}const button=event.currentTarget.querySelector('button[type="submit"]');button.disabled=true;try{await jsonRequest(MEAL_PLAN_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,recipes:payload.recipes})});closeRecipePlan();showRecipeSection('plans');showToast(`${name} er gemt`);}catch(error){showMessage(document.querySelector('#recipe-plan-error'),error.message);}finally{button.disabled=false;}}
+function plannedStatus(status){return {PLANNED:'Planlagt',COOKED:'✓ Lavet',SKIPPED:'Sprunget over'}[status]||status;}
+function plannedRecipeRow(item){const row=document.createElement('article');row.className='planned-recipe-row';const main=document.createElement('div');main.className='planned-recipe-main';main.tabIndex=0;main.setAttribute('role','button');const text=document.createElement('div');const name=document.createElement('strong');name.textContent=item.recipe.name;const portions=document.createElement('div');portions.className='product-meta';portions.textContent=`${item.portions} ${item.portions===1?'portion':'portioner'}`;text.append(name,portions);const status=document.createElement('span');status.className='planned-recipe-status';status.textContent=plannedStatus(item.status);main.append(text,status);const open=()=>openRecipe(item.recipe.id,item.portions);main.onclick=open;main.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}};row.append(main);
+  const actions=document.createElement('div');actions.className='planned-recipe-actions';if(item.status==='PLANNED'){const down=document.createElement('button');down.type='button';down.textContent='− portion';down.disabled=item.portions===1;down.onclick=()=>changePlannedPortions(item,item.portions-1);const up=document.createElement('button');up.type='button';up.textContent='+ portion';up.onclick=()=>changePlannedPortions(item,item.portions+1);const cook=document.createElement('button');cook.type='button';cook.textContent='Markér lavet';cook.onclick=()=>cookPlanned(item,cook);const skip=document.createElement('button');skip.type='button';skip.textContent='Spring over';skip.onclick=()=>togglePlannedSkip(item);actions.append(down,up,cook,skip);}else if(item.status==='SKIPPED'){const undo=document.createElement('button');undo.type='button';undo.textContent='Planlæg igen';undo.onclick=()=>togglePlannedSkip(item);actions.append(undo);}if(item.status!=='COOKED'){const remove=document.createElement('button');remove.type='button';remove.textContent='Fjern';remove.onclick=()=>removePlannedRecipe(item);actions.append(remove);}row.append(actions);return row;}
+function renderMealPlan(plan){currentMealPlan=plan;document.querySelector('#meal-plan-detail-title').textContent=plan.name;document.querySelector('#meal-plan-detail-summary').textContent=plan.completed?`${plan.recipes.length} retter · Færdig ✓`:`${plan.recipes.filter(r=>r.status==='PLANNED').length} planlagt`;document.querySelector('#meal-plan-recipes').replaceChildren(...[...plan.recipes].sort((a,b)=>a.sortOrder-b.sortOrder).map(plannedRecipeRow));document.querySelector('#meal-plan-results').hidden=true;document.querySelector('#delete-meal-plan-confirmation').hidden=true;}
+async function openMealPlan(id){try{renderMealPlan(await jsonRequest(`${MEAL_PLAN_API}/${id}`));document.querySelector('#meal-plan-detail-dialog').showModal();}catch(error){showToast(`Madplanen kunne ikke åbnes. ${error.message}`,'error');}}
+function closeMealPlan(){const d=document.querySelector('#meal-plan-detail-dialog');if(d.open)d.close();}
+async function refreshMealPlan(){renderMealPlan(await jsonRequest(`${MEAL_PLAN_API}/${currentMealPlan.id}`));await loadMealPlans();}
+async function changePlannedPortions(item,portions){try{await jsonRequest(`${MEAL_PLAN_API}/${currentMealPlan.id}/recipes/${item.id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({portions,sortOrder:item.sortOrder})});await refreshMealPlan();}catch(error){showMessage(document.querySelector('#meal-plan-error'),error.message);}}
+async function cookPlanned(item,button){button.disabled=true;try{const result=await jsonRequest(`${MEAL_PLAN_API}/${currentMealPlan.id}/recipes/${item.id}/cook`,{method:'POST'});showToast(`${item.recipe.name} er markeret som lavet`);if(result.warnings.length)showMessage(document.querySelector('#meal-plan-error'),result.warnings.join(' · '));await Promise.all([refreshMealPlan(),loadInventory()]);}catch(error){showMessage(document.querySelector('#meal-plan-error'),error.message);}finally{button.disabled=false;}}
+async function togglePlannedSkip(item){try{await jsonRequest(`${MEAL_PLAN_API}/${currentMealPlan.id}/recipes/${item.id}/skip`,{method:'POST'});await refreshMealPlan();}catch(error){showMessage(document.querySelector('#meal-plan-error'),error.message);}}
+async function removePlannedRecipe(item){try{const plan=await jsonRequest(`${MEAL_PLAN_API}/${currentMealPlan.id}/recipes/${item.id}`,{method:'DELETE'});renderMealPlan(plan);await loadMealPlans();showToast(`${item.recipe.name} er fjernet fra madplanen`);}catch(error){showMessage(document.querySelector('#meal-plan-error'),error.message);}}
+async function calculateMealPlan(){const button=document.querySelector('#meal-plan-requirements');button.disabled=true;try{const result=await jsonRequest(`${MEAL_PLAN_API}/${currentMealPlan.id}/requirements`);const rows=result.requirements.map(requirementResultRow);document.querySelector('#meal-plan-requirement-list').replaceChildren(...rows);document.querySelector('#meal-plan-results').hidden=false;document.querySelector('#meal-plan-add-missing').hidden=!result.requirements.some(r=>!r.satisfied&&!r.warning);}catch(error){showMessage(document.querySelector('#meal-plan-error'),error.message);}finally{button.disabled=false;}}
+async function addMealPlanMissing(){const button=document.querySelector('#meal-plan-add-missing');button.disabled=true;try{await jsonRequest(`${MEAL_PLAN_API}/${currentMealPlan.id}/add-missing-to-shopping-list`,{method:'POST'});showToast('Manglerne er sikret på indkøbslisten');}catch(error){showMessage(document.querySelector('#meal-plan-error'),error.message);}finally{button.disabled=false;}}
+async function deleteMealPlan(){try{const name=currentMealPlan.name;await jsonRequest(`${MEAL_PLAN_API}/${currentMealPlan.id}`,{method:'DELETE'});closeMealPlan();await loadMealPlans();showToast(`${name} er slettet`);}catch(error){showMessage(document.querySelector('#meal-plan-error'),error.message);}}
 
 loginForm.addEventListener('submit', authenticate);
 registerForm.addEventListener('submit', register);
@@ -920,6 +975,7 @@ document.querySelector('#clear-purchased').addEventListener('click', async () =>
   catch (error) { showToast(`Købte varer kunne ikke ryddes. ${error.message}`, 'error'); }
 });
 document.querySelector('#new-recipe').addEventListener('click', () => openRecipeEditor());
+document.querySelector('#plan-recipes').addEventListener('click', openRecipePlan);
 document.querySelector('#recipes-empty-add').addEventListener('click', () => openRecipeEditor());
 document.querySelector('#close-recipe-detail').addEventListener('click', closeRecipeDetail);
 document.querySelector('#recipe-portions-down').addEventListener('click', () => { if (recipePortions > 1) { recipePortions--; renderRecipeDetail(); } });
@@ -936,6 +992,22 @@ document.querySelector('#cancel-recipe-ingredient').addEventListener('click', re
 document.querySelector('#save-recipe-ingredient').addEventListener('click', addRecipeIngredient);
 document.querySelector('#recipe-template-search').addEventListener('input', event => { clearTimeout(recipeSearchTimer); recipeSearchRequestId++; const search=event.target.value; if (!search) searchRecipeTemplates(''); else recipeSearchTimer=setTimeout(()=>searchRecipeTemplates(search),250); });
 document.querySelector('#add-recipe-step').addEventListener('click', () => { recipeSteps.push({instruction:''}); renderRecipeEditor(); document.querySelector('#recipe-editor-steps textarea:last-of-type')?.focus(); });
+document.querySelector('#close-recipe-plan').addEventListener('click', closeRecipePlan);
+document.querySelector('#calculate-recipe-plan').addEventListener('click', calculateRecipePlan);
+document.querySelector('#add-recipe-missing').addEventListener('click', addRecipeMissing);
+document.querySelector('#cook-recipe').addEventListener('click', cookCurrentRecipe);
+document.querySelector('#show-recipe-library').addEventListener('click',()=>showRecipeSection('recipes'));
+document.querySelector('#show-meal-plans').addEventListener('click',()=>showRecipeSection('plans'));
+document.querySelector('#meal-plans-empty-create').addEventListener('click',openRecipePlan);
+document.querySelector('#request-save-meal-plan').addEventListener('click',()=>{const form=document.querySelector('#save-meal-plan-form');form.hidden=false;document.querySelector('#meal-plan-name').focus();});
+document.querySelector('#cancel-save-meal-plan').addEventListener('click',()=>{document.querySelector('#save-meal-plan-form').hidden=true;});
+document.querySelector('#save-meal-plan-form').addEventListener('submit',saveCurrentMealPlan);
+document.querySelector('#close-meal-plan-detail').addEventListener('click',closeMealPlan);
+document.querySelector('#meal-plan-requirements').addEventListener('click',calculateMealPlan);
+document.querySelector('#meal-plan-add-missing').addEventListener('click',addMealPlanMissing);
+document.querySelector('#delete-meal-plan').addEventListener('click',()=>{document.querySelector('#delete-meal-plan-confirmation').hidden=false;});
+document.querySelector('#keep-meal-plan').addEventListener('click',()=>{document.querySelector('#delete-meal-plan-confirmation').hidden=true;});
+document.querySelector('#confirm-delete-meal-plan').addEventListener('click',deleteMealPlan);
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('/service-worker.js')

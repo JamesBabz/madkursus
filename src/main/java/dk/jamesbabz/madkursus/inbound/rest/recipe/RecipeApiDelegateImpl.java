@@ -7,8 +7,12 @@ import java.util.UUID;
 import dk.jamesbabz.madkursus.inbound.rest.RecipeApiDelegate;
 import dk.jamesbabz.madkursus.inbound.rest.dto.RecipeDTO;
 import dk.jamesbabz.madkursus.inbound.rest.dto.RecipeInputDTO;
+import dk.jamesbabz.madkursus.inbound.rest.dto.*;
 import dk.jamesbabz.madkursus.service.applications.RecipeService;
+import dk.jamesbabz.madkursus.service.applications.RecipeInteractionService;
 import dk.jamesbabz.madkursus.service.models.RecipeUnit;
+import dk.jamesbabz.madkursus.service.models.RecipeSelection;
+import java.time.ZoneOffset;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -18,6 +22,7 @@ import org.springframework.stereotype.Component;
 public class RecipeApiDelegateImpl implements RecipeApiDelegate {
     private final RecipeService service;
     private final RecipeRestMapper mapper;
+    private final RecipeInteractionService interactionService;
 
     @Override
     public ResponseEntity<List<RecipeDTO>> getRecipes() {
@@ -47,6 +52,12 @@ public class RecipeApiDelegateImpl implements RecipeApiDelegate {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Override public ResponseEntity<RecipeRequirementCalculationDTO> calculateRecipeRequirements(RecipeSelectionsDTO request) { return ResponseEntity.ok(calculation(interactionService.calculate(selections(request)))); }
+    @Override public ResponseEntity<RecipeRequirementCalculationDTO> addMissingRecipeRequirementsToShoppingList(RecipeSelectionsDTO request) { return ResponseEntity.ok(calculation(interactionService.addMissingToShoppingList(selections(request)))); }
+    @Override public ResponseEntity<CookRecipeResultDTO> cookRecipe(UUID id, CookRecipeRequestDTO request) { return ResponseEntity.ok(mapper.toDto(interactionService.cook(id,request.getPortions()))); }
+    private List<RecipeSelection> selections(RecipeSelectionsDTO request){return request.getRecipes().stream().map(s->new RecipeSelection(s.getRecipeId(),s.getPortions())).toList();}
+    private RecipeRequirementCalculationDTO calculation(dk.jamesbabz.madkursus.service.models.RecipeRequirementCalculation c){return mapper.toDto(c);}
 
     private List<RecipeService.IngredientInput> ingredients(RecipeInputDTO request) {
         return request.getIngredients().stream().map(i -> new RecipeService.IngredientInput(

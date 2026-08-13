@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,6 +35,27 @@ class InventoryServiceTest {
     @Mock ProductTemplateService templateService;
     @Mock CurrentUserProvider currentUserProvider;
     @InjectMocks InventoryService service;
+
+    @Test
+    void cookingConsumesOnlyAvailableStockAndReportsShortageWithoutGoingNegative() {
+        UUID userId=UUID.randomUUID(), productId=UUID.randomUUID(), itemId=UUID.randomUUID();
+        Product product=product(productId,userId,"Oksekød",Unit.GRAM);
+        when(currentUserProvider.currentUserId()).thenReturn(userId); when(productService.get(productId)).thenReturn(product);
+        when(port.findByProductIdAndUserId(productId,userId)).thenReturn(Optional.of(new InventoryItem(itemId,product,new BigDecimal("300"))));
+
+        InventoryService.Consumption result=service.consumeUpToAvailable(productId,new BigDecimal("400"));
+
+        assertThat(result.deducted()).isEqualByComparingTo("300"); assertThat(result.shortage()).isEqualByComparingTo("100");
+        verify(port).deleteByIdAndUserId(itemId,userId); verify(port,never()).save(any());
+    }
+
+    @Test
+    void cookingSupportsHalfPieceDeduction() {
+        UUID userId=UUID.randomUUID(), productId=UUID.randomUUID(), itemId=UUID.randomUUID(); Product product=product(productId,userId,"Løg",Unit.PIECE);
+        when(currentUserProvider.currentUserId()).thenReturn(userId);when(productService.get(productId)).thenReturn(product);when(port.findByProductIdAndUserId(productId,userId)).thenReturn(Optional.of(new InventoryItem(itemId,product,new BigDecimal("2"))));when(port.save(any())).thenAnswer(c->c.getArgument(0));
+        var result=service.consumeUpToAvailable(productId,new BigDecimal("0.5"));
+        assertThat(result.shortage()).isZero();verify(port).save(argThat(i->i.quantity().compareTo(new BigDecimal("1.5"))==0));
+    }
 
     @Test
     void addsOwnedProductAndDerivesUnitFromIt() {
