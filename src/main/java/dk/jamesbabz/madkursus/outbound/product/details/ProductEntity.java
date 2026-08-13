@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,14 +23,17 @@ public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(nullable = false)
+    private UUID userId;
     private String name;
     @Enumerated(EnumType.STRING)
     private ProductCategory category;
     @Enumerated(EnumType.STRING)
     private Unit defaultUnit;
 
-    public ProductEntity(UUID id, String name, ProductCategory category, Unit defaultUnit) {
+    public ProductEntity(UUID id, UUID userId, String name, ProductCategory category, Unit defaultUnit) {
         this.id = id;
+        this.userId = userId;
         this.name = name;
         this.category = category;
         this.defaultUnit = defaultUnit;

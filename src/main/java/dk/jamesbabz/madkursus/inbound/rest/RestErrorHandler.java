@@ -6,6 +6,9 @@ import java.util.UUID;
 
 import dk.jamesbabz.madkursus.inbound.rest.dto.ErrorMessageDTO;
 import dk.jamesbabz.madkursus.service.exceptions.ResourceNotFoundException;
+import dk.jamesbabz.madkursus.service.exceptions.DuplicateUsernameException;
+import dk.jamesbabz.madkursus.service.exceptions.RegistrationDisabledException;
+import dk.jamesbabz.madkursus.service.exceptions.InvalidInputException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -13,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 
 @RestControllerAdvice
 @Slf4j
@@ -27,11 +32,31 @@ public class RestErrorHandler {
         return response(HttpStatus.CONFLICT, "The resource is still referenced by other data", List.of());
     }
 
+    @ExceptionHandler(DuplicateUsernameException.class)
+    ResponseEntity<ErrorMessageDTO> duplicateUsername(DuplicateUsernameException exception) {
+        return response(HttpStatus.CONFLICT, exception.getMessage(), List.of());
+    }
+
+    @ExceptionHandler(RegistrationDisabledException.class)
+    ResponseEntity<ErrorMessageDTO> registrationDisabled(RegistrationDisabledException exception) {
+        return response(HttpStatus.FORBIDDEN, exception.getMessage(), List.of());
+    }
+
+    @ExceptionHandler({BadCredentialsException.class, DisabledException.class})
+    ResponseEntity<ErrorMessageDTO> invalidCredentials(RuntimeException exception) {
+        return response(HttpStatus.UNAUTHORIZED, "Invalid username or password", List.of());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<ErrorMessageDTO> validation(MethodArgumentNotValidException exception) {
         List<String> errors = exception.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage()).toList();
         return response(HttpStatus.BAD_REQUEST, "Validation failed", errors);
+    }
+
+    @ExceptionHandler(InvalidInputException.class)
+    ResponseEntity<ErrorMessageDTO> invalidInput(InvalidInputException exception) {
+        return response(HttpStatus.BAD_REQUEST, exception.getMessage(), List.of());
     }
 
     @ExceptionHandler(Exception.class)

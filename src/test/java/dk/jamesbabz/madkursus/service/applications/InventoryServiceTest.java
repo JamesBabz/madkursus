@@ -29,7 +29,7 @@ class InventoryServiceTest {
     @Test
     void createsInventoryItem() {
         UUID productId = UUID.randomUUID();
-        Product product = new Product(productId, "Løg", ProductCategory.VEGETABLE, Unit.PIECE);
+        Product product = new Product(productId, UUID.randomUUID(), "Løg", ProductCategory.VEGETABLE, Unit.PIECE);
         when(productService.get(productId)).thenReturn(product);
         when(port.save(any())).thenAnswer(call -> call.getArgument(0));
         InventoryItem result = service.create(productId, BigDecimal.valueOf(4), Unit.PIECE);

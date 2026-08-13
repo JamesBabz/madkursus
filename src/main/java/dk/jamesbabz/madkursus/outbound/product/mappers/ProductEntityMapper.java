@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductEntityMapper {
     public Product toModel(ProductEntity entity) {
-        return new Product(entity.getId(), entity.getName(), entity.getCategory(), entity.getDefaultUnit());
+        return new Product(entity.getId(), entity.getUserId(), entity.getName(), entity.getCategory(), entity.getDefaultUnit());
     }
 
     public ProductEntity toEntity(Product model) {
-        return new ProductEntity(model.id(), model.name(), model.category(), model.defaultUnit());
+        return new ProductEntity(model.id(), model.userId(), model.name(), model.category(), model.defaultUnit());
     }
 }

@@ -139,3 +139,21 @@ docker compose down
 
 Do not use `docker compose down -v` unless you intentionally want to delete the
 PostgreSQL volume and all databases stored in it.
+
+## Authentication configuration
+
+Registration is disabled by default. Set `REGISTRATION_ENABLED=true` only while
+new accounts should be allowed; the backend rejects registration with HTTP 403
+when it is false. Existing users can still log in.
+
+Authentication uses the server-side HTTP session. In HTTPS production keep
+`SESSION_COOKIE_SECURE=true`. If testing the container directly over plain HTTP
+on port 8080, temporarily set it to `false`, then restore it before putting the
+application behind HTTPS.
+
+CSRF protection remains enabled. The PWA first requests
+`GET /v1/auth/csrf`, then sends the returned short-lived value in the
+`X-XSRF-TOKEN` header for login, registration, logout, and Product mutations.
+Authentication data is never stored in browser storage; the browser sends the
+HTTP-only, SameSite session cookie automatically. API responses, including
+authentication responses, are excluded from service-worker caching.

@@ -7,6 +7,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
 body { margin: 0; min-width: 320px; }
 
@@ -49,6 +50,16 @@ main { width: min(100% - 2rem, 44rem); margin: 1.5rem auto 3rem; }
 
 .add-button { flex: none; color: #28563b; background: #fff; border: 0; }
 .add-button span { font-size: 1.3rem; vertical-align: -.05em; }
+.header-actions { display: flex; align-items: center; gap: .4rem; }
+.logout-button { min-height: 2.75rem; padding: .5rem; color: #fff; background: transparent; border: 0; font-weight: 700; }
+
+.auth-screen { min-height: 100vh; padding: max(2rem, env(safe-area-inset-top)) 1rem 2rem; background: #2f6846; }
+.auth-card { width: min(100%, 26rem); margin: 5vh auto 0; padding: 1.4rem; background: #fff; border-radius: 1.4rem; box-shadow: 0 18px 50px rgb(20 45 29 / 25%); }
+.auth-card > .eyebrow { color: #55715f; }
+.auth-card > h1 { margin-bottom: 2rem; color: #2f6846; }
+.auth-card > h2 { margin-bottom: 1rem; }
+.auth-card #register-form { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #dce4da; }
+.auth-card form h2 { margin-bottom: .5rem; }
 
 .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .product-heading { margin: 1.75rem 0 1rem; }

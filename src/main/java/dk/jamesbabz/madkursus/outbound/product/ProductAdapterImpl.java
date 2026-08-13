@@ -10,6 +10,7 @@ import dk.jamesbabz.madkursus.service.models.Product;
 import dk.jamesbabz.madkursus.service.ports.ProductPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -18,7 +19,12 @@ public class ProductAdapterImpl implements ProductPort {
     private final ProductEntityMapper mapper;
 
     public Product save(Product product) { return mapper.toModel(repository.save(mapper.toEntity(product))); }
-    public Optional<Product> findById(UUID id) { return repository.findById(id).map(mapper::toModel); }
-    public List<Product> findAll() { return repository.findAll().stream().map(mapper::toModel).toList(); }
-    public void deleteById(UUID id) { repository.deleteById(id); }
+    public Optional<Product> findByIdAndUserId(UUID id, UUID userId) {
+        return repository.findByIdAndUserId(id, userId).map(mapper::toModel);
+    }
+    public List<Product> findAllByUserId(UUID userId) {
+        return repository.findAllByUserIdOrderByNameAsc(userId).stream().map(mapper::toModel).toList();
+    }
+    @Transactional
+    public void deleteByIdAndUserId(UUID id, UUID userId) { repository.deleteByIdAndUserId(id, userId); }
 }

@@ -23,6 +23,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16'
 	compileOnly 'org.projectlombok:lombok'
@@ -32,6 +33,7 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -62,4 +64,27 @@ tasks.named('check') {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+// This service is deployed as Spring Boot's executable archive. Producing a
+// second dependency-free *-plain.jar makes it easy to launch the wrong artifact.
+tasks.named('jar') {
+	enabled = false
+}
+
+tasks.register('verifyBootJarSecurity') {
+	dependsOn tasks.named('bootJar')
+	doLast {
+		def archive = tasks.named('bootJar').get().archiveFile.get().asFile
+		def securityCorePresent = zipTree(archive).matching {
+			include 'BOOT-INF/lib/spring-security-core-*.jar'
+		}.files
+		if (securityCorePresent.empty) {
+			throw new GradleException("Executable Boot JAR is missing spring-security-core")
+		}
+	}
+}
+
+tasks.named('check') {
+	dependsOn tasks.named('verifyBootJarSecurity')
 }

@@ -8,6 +8,7 @@ import dk.jamesbabz.madkursus.service.models.Product;
 import dk.jamesbabz.madkursus.service.models.ProductCategory;
 import dk.jamesbabz.madkursus.service.models.Unit;
 import dk.jamesbabz.madkursus.service.ports.ProductPort;
+import dk.jamesbabz.madkursus.service.ports.CurrentUserProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,24 +16,26 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductPort productPort;
+    private final CurrentUserProvider currentUserProvider;
 
     public Product create(String name, ProductCategory category, Unit defaultUnit) {
-        return productPort.save(new Product(null, name, category, defaultUnit));
+        return productPort.save(new Product(null, currentUserProvider.currentUserId(), name, category, defaultUnit));
     }
 
     public Product get(UUID id) {
-        return productPort.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product", id));
+        return productPort.findByIdAndUserId(id, currentUserProvider.currentUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("Product", id));
     }
 
-    public List<Product> getAll() { return productPort.findAll(); }
+    public List<Product> getAll() { return productPort.findAllByUserId(currentUserProvider.currentUserId()); }
 
     public Product update(UUID id, String name, ProductCategory category, Unit defaultUnit) {
         get(id);
-        return productPort.save(new Product(id, name, category, defaultUnit));
+        return productPort.save(new Product(id, currentUserProvider.currentUserId(), name, category, defaultUnit));
     }
 
     public void delete(UUID id) {
         get(id);
-        productPort.deleteById(id);
+        productPort.deleteByIdAndUserId(id, currentUserProvider.currentUserId());
     }
 }

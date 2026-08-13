@@ -8,7 +8,7 @@ import dk.jamesbabz.madkursus.service.models.Product;
 
 public interface ProductPort {
     Product save(Product product);
-    Optional<Product> findById(UUID id);
-    List<Product> findAll();
-    void deleteById(UUID id);
+    Optional<Product> findByIdAndUserId(UUID id, UUID userId);
+    List<Product> findAllByUserId(UUID userId);
+    void deleteByIdAndUserId(UUID id, UUID userId);
 }
