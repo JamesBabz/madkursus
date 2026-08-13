@@ -58,4 +58,16 @@ class RecipeAdapterImplTest {
         verify(entityManager).getReference(ProductTemplateEntity.class,templateId);
         verifyNoMoreInteractions(entityManager);
     }
+
+    @Test
+    void newRecipePersistsAndReturnsItsSourceTemplateId() {
+        UUID userId=UUID.randomUUID(), sourceId=UUID.randomUUID(); Instant now=Instant.now();
+        Recipe input=new Recipe(null,userId,sourceId,"Template recipe",null,now,now,List.of(),List.of());
+        when(repository.save(any())).thenAnswer(call->call.getArgument(0));
+
+        Recipe result=new RecipeAdapterImpl(repository,templateMapper,entityManager).save(input);
+
+        assertThat(result.sourceTemplateId()).isEqualTo(sourceId);
+        verify(repository).save(argThat(entity->sourceId.equals(entity.getSourceTemplateId())));
+    }
 }

@@ -470,6 +470,31 @@ paths:
       responses:
         '201': {description: Meal plan created, content: {application/json: {schema: {$ref: '#/components/schemas/MealPlan'}}}}
         '400': {$ref: '#/components/responses/badRequest'}
+  /v1/recipe-templates:
+    get:
+      tags: [recipe-template]
+      operationId: getRecipeTemplates
+      parameters:
+        - {name: query, in: query, required: false, schema: {type: string}}
+      responses:
+        '200': {description: Shared recipe templates, content: {application/json: {schema: {type: array, items: {$ref: '#/components/schemas/RecipeTemplateSummary'}}}}}
+  /v1/recipe-templates/{id}:
+    parameters: [{$ref: '#/components/parameters/id'}]
+    get:
+      tags: [recipe-template]
+      operationId: getRecipeTemplate
+      responses:
+        '200': {description: Recipe template detail, content: {application/json: {schema: {$ref: '#/components/schemas/RecipeTemplate'}}}}
+        '404': {$ref: '#/components/responses/notFound'}
+  /v1/recipe-templates/{id}/add-to-my-recipes:
+    parameters: [{$ref: '#/components/parameters/id'}]
+    post:
+      tags: [recipe-template]
+      operationId: addRecipeTemplateToMyRecipes
+      responses:
+        '201': {description: User Recipe created, content: {application/json: {schema: {$ref: '#/components/schemas/Recipe'}}}}
+        '404': {$ref: '#/components/responses/notFound'}
+        '409': {$ref: '#/components/responses/conflict'}
   /v1/meal-plans/{id}:
     parameters: [{$ref: '#/components/parameters/id'}]
     get:
@@ -754,6 +779,44 @@ components:
         steps: {type: array, items: {$ref: '#/components/schemas/RecipeStep'} }
         createdAt: {type: string, format: date-time}
         updatedAt: {type: string, format: date-time}
+        sourceTemplateId: {type: string, format: uuid, nullable: true, readOnly: true}
+    RecipeTemplateIngredient:
+      type: object
+      required: [id, productTemplate, quantity, unit, sortOrder]
+      properties:
+        id: {type: string, format: uuid}
+        productTemplate: {$ref: '#/components/schemas/ProductTemplate'}
+        quantity: {type: number, exclusiveMinimum: 0}
+        unit: {$ref: '#/components/schemas/RecipeUnit'}
+        preparation: {type: string, nullable: true}
+        sortOrder: {type: integer, minimum: 1}
+    RecipeTemplateStep:
+      type: object
+      required: [id, instruction, sortOrder]
+      properties:
+        id: {type: string, format: uuid}
+        instruction: {type: string}
+        sortOrder: {type: integer, minimum: 1}
+    RecipeTemplateSummary:
+      type: object
+      required: [id, name, active, added]
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string}
+        description: {type: string, nullable: true}
+        active: {type: boolean}
+        added: {type: boolean}
+        userRecipeId: {type: string, format: uuid, nullable: true}
+    RecipeTemplate:
+      allOf:
+        - $ref: '#/components/schemas/RecipeTemplateSummary'
+        - type: object
+          required: [createdAt, updatedAt, ingredients, steps]
+          properties:
+            createdAt: {type: string, format: date-time}
+            updatedAt: {type: string, format: date-time}
+            ingredients: {type: array, items: {$ref: '#/components/schemas/RecipeTemplateIngredient'}}
+            steps: {type: array, items: {$ref: '#/components/schemas/RecipeTemplateStep'}}
     RecipeSelection:
       type: object
       required: [recipeId, portions]

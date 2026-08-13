@@ -1,0 +1,3 @@
+package dk.jamesbabz.madkursus.outbound.recipetemplate.details;
+import java.time.Instant; import java.util.*; import jakarta.persistence.*; import lombok.*;
+@Entity @Table(name="recipe_templates") @Getter @NoArgsConstructor(access=AccessLevel.PROTECTED) public class RecipeTemplateEntity {@Id private UUID id;private String name;private String normalizedName;private String description;private boolean active;private Instant createdAt;private Instant updatedAt;@OneToMany(mappedBy="recipeTemplate")@OrderBy("sortOrder")private List<RecipeTemplateIngredientEntity> ingredients=new ArrayList<>();@OneToMany(mappedBy="recipeTemplate")@OrderBy("sortOrder")private List<RecipeTemplateStepEntity> steps=new ArrayList<>();}

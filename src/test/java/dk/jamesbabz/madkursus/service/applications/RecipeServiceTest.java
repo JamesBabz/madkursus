@@ -11,6 +11,7 @@ import dk.jamesbabz.madkursus.service.exceptions.ResourceNotFoundException;
 import dk.jamesbabz.madkursus.service.models.ProductCategory;
 import dk.jamesbabz.madkursus.service.models.ProductTemplate;
 import dk.jamesbabz.madkursus.service.models.Recipe;
+import dk.jamesbabz.madkursus.service.models.RecipeTemplate;
 import dk.jamesbabz.madkursus.service.models.RecipeUnit;
 import dk.jamesbabz.madkursus.service.models.Unit;
 import dk.jamesbabz.madkursus.service.ports.CurrentUserProvider;
@@ -108,5 +109,24 @@ class RecipeServiceTest {
         assertThat(updated.ingredients().getFirst().quantity()).isEqualByComparingTo("2.5");
         assertThat(updated.steps()).extracting(s -> s.instruction()).containsExactly("Nyt første trin", "Nyt andet trin");
         assertThat(onion.name()).isEqualTo("Løg"); assertThat(salt.name()).isEqualTo("Salt");
+    }
+    @Test
+    void createsAnIndependentUserRecipeFromAnAuthoritativeTemplate() {
+        UUID userId=UUID.randomUUID(), sourceId=UUID.randomUUID();
+        ProductTemplate onion=new ProductTemplate(UUID.randomUUID(),"Onion",ProductCategory.VEGETABLE,Unit.PIECE,List.of(),false);
+        RecipeTemplate source=new RecipeTemplate(sourceId,"Onion soup","Easy",true,Instant.now(),Instant.now(),
+                List.of(new dk.jamesbabz.madkursus.service.models.RecipeTemplateIngredient(UUID.randomUUID(),onion,new BigDecimal("1.5"),RecipeUnit.PIECE,"sliced",1)),
+                List.of(new dk.jamesbabz.madkursus.service.models.RecipeTemplateStep(UUID.randomUUID(),"Fry the onions.",1)));
+        when(currentUser.currentUserId()).thenReturn(userId);
+        when(port.save(any())).thenAnswer(call->call.getArgument(0));
+
+        Recipe copied=service.createFromTemplate(source);
+
+        assertThat(copied.id()).isNull();
+        assertThat(copied.userId()).isEqualTo(userId);
+        assertThat(copied.sourceTemplateId()).isEqualTo(sourceId);
+        assertThat(copied.ingredients()).extracting(i->i.id()).containsOnlyNulls();
+        assertThat(copied.steps()).extracting(s->s.id()).containsOnlyNulls();
+        assertThat(copied.ingredients().getFirst().quantity()).isEqualByComparingTo("1.5");
     }
 }

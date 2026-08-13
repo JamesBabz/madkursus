@@ -1,0 +1,3 @@
+package dk.jamesbabz.madkursus.outbound.recipetemplate.details;
+import java.util.*;import org.springframework.data.jpa.repository.*;import org.springframework.data.repository.query.Param;
+public interface RecipeTemplateJpaRepository extends JpaRepository<RecipeTemplateEntity,UUID>{@Query("select distinct r from RecipeTemplateEntity r where r.active=true and (:q='' or lower(r.name) like lower(concat('%',:q,'%')) or lower(coalesce(r.description,'')) like lower(concat('%',:q,'%'))) order by r.name")List<RecipeTemplateEntity> search(@Param("q")String query);Optional<RecipeTemplateEntity> findByIdAndActiveTrue(UUID id);}

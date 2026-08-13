@@ -29,7 +29,7 @@ public class RecipeRestMapper {
                 .toList();
         return new RecipeDTO(recipe.id(), recipe.name(), ingredients, steps,
                 recipe.createdAt().atOffset(ZoneOffset.UTC), recipe.updatedAt().atOffset(ZoneOffset.UTC))
-                .description(recipe.description());
+                .description(recipe.description()).sourceTemplateId(recipe.sourceTemplateId());
     }
 
     public RecipeRequirementDTO toDto(RecipeRequirement requirement) {

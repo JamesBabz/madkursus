@@ -153,11 +153,18 @@
         <div><p class="eyebrow">Opskrifter</p><h2 id="recipes-title">Dine opskrifter</h2></div>
         <div class="header-actions"><button class="add-button section-add-button" id="plan-recipes" type="button">Planlæg</button><button class="add-button section-add-button" id="new-recipe" type="button"><span aria-hidden="true">+</span> Ny</button></div>
       </div>
-      <div class="recipe-subnav"><button class="active" id="show-recipe-library" type="button">Opskrifter</button><button id="show-meal-plans" type="button">Madplaner</button></div>
+      <div class="recipe-subnav"><button class="active" id="show-recipe-library" type="button">Mine opskrifter</button><button id="show-recipe-templates" type="button">Find opskrifter</button><button id="show-meal-plans" type="button">Madplaner</button></div>
       <div id="recipe-library-panel">
       <p class="loading" id="recipes-loading" role="status">Henter opskrifter…</p>
       <div class="recipe-list" id="recipe-list" aria-live="polite"></div>
       <div class="empty-state" id="recipes-empty" hidden><p>Du har ingen opskrifter endnu.</p><button class="secondary-button" id="recipes-empty-add" type="button">+ Ny opskrift</button></div>
+      </div>
+      <div id="recipe-templates-panel" hidden>
+        <label for="recipe-template-catalog-search">Søg i opskrifter</label>
+        <input id="recipe-template-catalog-search" type="search" autocomplete="off" placeholder="Fx kylling eller pasta">
+        <p class="loading" id="recipe-templates-loading" hidden>Henter opskrifter…</p>
+        <div class="recipe-list" id="recipe-template-list"></div>
+        <div class="empty-state" id="recipe-templates-empty" hidden><p>Ingen opskrifter matcher din søgning.</p></div>
       </div>
       <div id="meal-plans-panel" hidden><p class="loading" id="meal-plans-loading" hidden>Henter madplaner…</p><div class="recipe-list" id="meal-plan-list"></div><div class="empty-state" id="meal-plans-empty" hidden><p>Du har ingen gemte madplaner endnu.</p><button class="secondary-button" id="meal-plans-empty-create" type="button">Planlæg mad</button></div></div>
     </section>
@@ -199,6 +206,16 @@
         <button class="primary-button" id="save-edit-product" type="submit">Gem</button>
       </div>
     </form>
+  </dialog>
+
+  <dialog class="edit-dialog recipe-detail-dialog" id="recipe-template-detail-dialog" aria-labelledby="recipe-template-detail-title">
+    <div class="section-heading"><h2 id="recipe-template-detail-title"></h2><button class="icon-button" id="close-recipe-template-detail" type="button" aria-label="Luk">×</button></div>
+    <p id="recipe-template-detail-description" class="product-meta"></p>
+    <div class="portion-control" aria-label="Antal portioner"><button id="recipe-template-portions-down" type="button" aria-label="Færre portioner">−</button><strong id="recipe-template-portions">2 portioner</strong><button id="recipe-template-portions-up" type="button" aria-label="Flere portioner">+</button></div>
+    <h3>Ingredienser</h3><div id="recipe-template-detail-ingredients" class="recipe-ingredients"></div>
+    <h3>Fremgangsmåde</h3><ol id="recipe-template-detail-steps" class="recipe-steps"></ol>
+    <button class="primary-button full-button" id="add-recipe-template" type="button">Føj til mine opskrifter</button>
+    <div class="notice error" id="recipe-template-error" hidden></div>
   </dialog>
 
   <dialog class="edit-dialog" id="inventory-add-dialog" aria-labelledby="inventory-add-title">

@@ -23,7 +23,7 @@ class FrontendAssetsTest {
         assertThat(html).contains("edit-product-dialog", "edit-product-form", "id=\"toast\"");
         assertThat(javascript).contains("showToast", "setTimeout", "2600", "searchRequestId",
                 "templateSearch.value = ''", "method: 'PATCH'", "openProductEditor");
-        assertThat(worker).contains("madkursus-shell-v14");
+        assertThat(worker).contains("madkursus-shell-v15");
         assertThat(html).contains("inventory-view", "inventory-add-dialog", "edit-inventory-dialog");
         assertThat(javascript).contains("/v1/inventory", "searchInventoryCandidates", "from-template",
                 "loadInventory", "showToast", "inventorySearchRequestId");
@@ -69,6 +69,10 @@ class FrontendAssetsTest {
                 "meal-plan-requirements", "meal-plan-add-missing");
         assertThat(javascript).contains("/v1/meal-plans", "saveCurrentMealPlan", "loadMealPlans", "openMealPlan",
                 "changePlannedPortions", "cookPlanned", "togglePlannedSkip", "Færdig ✓");
+        assertThat(html).contains("show-recipe-templates", "recipe-templates-panel", "recipe-template-detail-dialog",
+                "Føj til mine opskrifter");
+        assertThat(javascript).contains("/v1/recipe-templates", "loadRecipeTemplates", "recipeTemplatePortions=2",
+                "add-to-my-recipes", "userRecipeId");
     }
 
     private String resource(String path) throws Exception {

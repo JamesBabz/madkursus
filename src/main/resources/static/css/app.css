@@ -204,7 +204,7 @@ button:disabled { cursor: wait; opacity: .65; }
 .requirement-status { margin-top: .15rem; color: #2f6846; font-size: .86rem; font-weight: 750; }
 .requirement-status.missing { color: #8a392f; }
 .requirement-row.warning { color: #6c4c12; background: #fff5d9; }
-.recipe-subnav { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem; margin-bottom: 1rem; padding: .25rem; background: #e5ebe3; border-radius: .8rem; }
+.recipe-subnav { display: grid; grid-template-columns: repeat(3, 1fr); gap: .35rem; margin-bottom: 1rem; padding: .25rem; background: #e5ebe3; border-radius: .8rem; }
 .recipe-subnav button { min-height: 2.7rem; color: #55715f; background: transparent; border: 0; border-radius: .65rem; font-weight: 700; }
 .recipe-subnav button.active { color: #2f6846; background: #fff; box-shadow: 0 1px 4px rgb(20 45 29 / 10%); }
 .meal-plan-recipes { display: grid; gap: .65rem; margin: 1rem 0; }
