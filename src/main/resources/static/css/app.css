@@ -52,7 +52,7 @@ main { width: min(100% - 2rem, 44rem); margin: 1.5rem auto 3rem; }
 .add-button span { font-size: 1.3rem; vertical-align: -.05em; }
 .header-actions { display: flex; align-items: center; gap: .4rem; }
 .logout-button { min-height: 2.75rem; padding: .5rem; color: #fff; background: transparent; border: 0; font-weight: 700; }
-.primary-nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: .35rem; max-width: 44rem; margin: .75rem auto 0; padding: 0 1rem; }
+.primary-nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: .35rem; max-width: 44rem; margin: .75rem auto 0; padding: 0 1rem; }
 .nav-button { min-height: 3rem; color: #55715f; background: transparent; border: 0; border-bottom: 3px solid transparent; border-radius: 0; }
 .nav-button.active { color: #2f6846; border-color: #2f6846; }
 
@@ -91,6 +91,8 @@ input, select {
   border: 1px solid #bdcbbf;
   border-radius: .75rem;
 }
+textarea { width: 100%; padding: .7rem .8rem; resize: vertical; color: #1e2b22; background: #fbfcfa; border: 1px solid #bdcbbf; border-radius: .75rem; font: inherit; }
+textarea:focus { outline: 3px solid #a6cfb2; outline-offset: 2px; }
 input:focus, select:focus, button:focus-visible { outline: 3px solid #a6cfb2; outline-offset: 2px; }
 .primary-button { margin-top: .8rem; color: #fff; background: #2f6846; border: 0; }
 .secondary-button { color: #2f6846; background: #fff; border: 1px solid #81a38b; }
@@ -161,6 +163,26 @@ button:disabled { cursor: wait; opacity: .65; }
 .shopping-row.purchased { opacity: .62; }
 .shopping-row.purchased .shopping-check { color: #fff; background: #2f6846; }
 .shopping-row.purchased .shopping-row-name { text-decoration: line-through; }
+.recipe-list, .editor-items, .recipe-ingredients { display: grid; gap: .7rem; }
+.recipe-card { display: block; width: 100%; min-height: 4.5rem; padding: .9rem 1rem; color: inherit; background: #fff; border: 1px solid #dfe6dd; border-radius: 1rem; text-align: left; }
+.recipe-card strong { display: block; margin-bottom: .25rem; font-size: 1.05rem; }
+.recipe-card span { color: #66736a; }
+.portion-control { display: flex; align-items: center; justify-content: center; gap: 1rem; margin: 1.2rem 0; }
+.portion-control button { width: 2.75rem; height: 2.75rem; color: #2f6846; background: #e5efe5; border: 0; border-radius: 50%; font-size: 1.4rem; }
+.recipe-ingredient-row { display: flex; justify-content: space-between; gap: .8rem; padding: .55rem 0; border-bottom: 1px solid #e5e9e3; }
+.recipe-ingredient-row small { color: #66736a; }
+.recipe-steps { padding-left: 1.4rem; }
+.recipe-steps li { margin-bottom: .75rem; padding-left: .25rem; }
+.recipe-editor-dialog { width: min(calc(100% - 1rem), 36rem); max-height: calc(100vh - 1rem); }
+.recipe-editor-heading { margin-top: 1.25rem; }
+.recipe-editor-heading h3 { margin: 0; }
+.sub-panel { margin-top: .7rem; padding: .8rem; background: #f4f6f1; border-radius: .9rem; }
+.editor-item { padding: .75rem; background: #f4f6f1; border-radius: .8rem; }
+.editor-item p { margin: 0 0 .45rem; }
+.editor-item-actions { display: flex; justify-content: flex-end; gap: .25rem; }
+.editor-item-actions button { min-width: 2.5rem; min-height: 2.5rem; color: #2f6846; background: #fff; border: 1px solid #d6dfd4; border-radius: .6rem; }
+.step-input-row { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .5rem; align-items: start; }
+.optional { color: #66736a; font-weight: 400; }
 
 @media (min-width: 40rem) {
   .app-header { padding-inline: max(2rem, calc((100% - 44rem) / 2)); }

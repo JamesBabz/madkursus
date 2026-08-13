@@ -23,7 +23,7 @@ class FrontendAssetsTest {
         assertThat(html).contains("edit-product-dialog", "edit-product-form", "id=\"toast\"");
         assertThat(javascript).contains("showToast", "setTimeout", "2600", "searchRequestId",
                 "templateSearch.value = ''", "method: 'PATCH'", "openProductEditor");
-        assertThat(worker).contains("madkursus-shell-v10");
+        assertThat(worker).contains("madkursus-shell-v11");
         assertThat(html).contains("inventory-view", "inventory-add-dialog", "edit-inventory-dialog");
         assertThat(javascript).contains("/v1/inventory", "searchInventoryCandidates", "from-template",
                 "loadInventory", "showToast", "inventorySearchRequestId");
@@ -53,6 +53,11 @@ class FrontendAssetsTest {
         assertThat(html).contains("id=\"inventory-add-quantity\"", "id=\"shopping-add-quantity\"")
                 .doesNotContain("id=\"inventory-add-quantity\" name=\"quantity\" type=\"number\" inputmode=\"numeric\" min=\"0.5\"",
                         "id=\"shopping-add-quantity\" type=\"number\" inputmode=\"numeric\" min=\"0.5\"");
+        assertThat(html).contains("show-recipes", "recipes-view", "recipe-editor-dialog", "recipe-detail-dialog",
+                "recipe-template-search", "recipe-portions");
+        assertThat(html.indexOf("id=\"show-recipes\"")).isLessThan(html.indexOf("id=\"show-products\""));
+        assertThat(javascript).contains("/v1/recipes", "searchRecipeTemplates", "scaledDecimal", "recipePortions = 2",
+                "productTemplateId", "method:editingRecipeId?'PATCH':'POST'");
     }
 
     private String resource(String path) throws Exception {

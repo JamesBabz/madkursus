@@ -53,6 +53,7 @@
   <nav class="primary-nav" aria-label="Primær navigation">
     <button class="nav-button active" id="show-inventory" type="button">Lager</button>
     <button class="nav-button" id="show-shopping" type="button">Indkøb</button>
+    <button class="nav-button" id="show-recipes" type="button">Opskrifter</button>
     <button class="nav-button" id="show-products" type="button">Produkter</button>
   </nav>
 
@@ -145,6 +146,16 @@
         <div class="shopping-list" id="shopping-purchased-list" aria-live="polite"></div>
       </section>
       <div class="empty-state" id="shopping-empty" hidden><p>Din indkøbsliste er tom.</p><button class="secondary-button" id="shopping-empty-add" type="button">+ Tilføj vare</button></div>
+    </section>
+
+    <section id="recipes-view" aria-labelledby="recipes-title" hidden>
+      <div class="section-heading product-heading">
+        <div><p class="eyebrow">Opskrifter</p><h2 id="recipes-title">Dine opskrifter</h2></div>
+        <button class="add-button section-add-button" id="new-recipe" type="button"><span aria-hidden="true">+</span> Ny opskrift</button>
+      </div>
+      <p class="loading" id="recipes-loading" role="status">Henter opskrifter…</p>
+      <div class="recipe-list" id="recipe-list" aria-live="polite"></div>
+      <div class="empty-state" id="recipes-empty" hidden><p>Du har ingen opskrifter endnu.</p><button class="secondary-button" id="recipes-empty-add" type="button">+ Ny opskrift</button></div>
     </section>
   </main>
   </div>
@@ -253,6 +264,39 @@
       <div class="notice error" id="edit-shopping-error" role="alert" hidden></div>
       <button class="danger-button" id="delete-shopping-item" type="button">Fjern fra listen</button>
       <div class="dialog-actions"><button class="secondary-button" id="cancel-edit-shopping" type="button">Annuller</button><button class="primary-button" type="submit">Gem</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="edit-dialog recipe-detail-dialog" id="recipe-detail-dialog" aria-labelledby="recipe-detail-title">
+    <div class="section-heading"><h2 id="recipe-detail-title"></h2><button class="icon-button" id="close-recipe-detail" type="button" aria-label="Luk">×</button></div>
+    <p id="recipe-detail-description" class="product-meta"></p>
+    <div class="portion-control" aria-label="Antal portioner"><button id="recipe-portions-down" type="button" aria-label="Færre portioner">−</button><strong id="recipe-portions">2 portioner</strong><button id="recipe-portions-up" type="button" aria-label="Flere portioner">+</button></div>
+    <h3>Ingredienser</h3><div id="recipe-detail-ingredients" class="recipe-ingredients"></div>
+    <h3>Fremgangsmåde</h3><ol id="recipe-detail-steps" class="recipe-steps"></ol>
+    <section class="inline-confirmation" id="delete-recipe-confirmation" hidden><p>Vil du slette opskriften?</p><div class="dialog-actions"><button class="danger-button" id="confirm-delete-recipe" type="button">Slet</button><button class="secondary-button" id="keep-recipe" type="button">Behold</button></div></section>
+    <div class="dialog-actions"><button class="danger-button" id="delete-recipe" type="button">Slet</button><button class="primary-button" id="edit-recipe" type="button">Rediger</button></div>
+  </dialog>
+
+  <dialog class="edit-dialog recipe-editor-dialog" id="recipe-editor-dialog" aria-labelledby="recipe-editor-title">
+    <form id="recipe-form">
+      <div class="section-heading"><h2 id="recipe-editor-title">Ny opskrift</h2><button class="icon-button" id="close-recipe-editor" type="button" aria-label="Luk">×</button></div>
+      <label for="recipe-name">Navn</label><input id="recipe-name" maxlength="150" required>
+      <label for="recipe-description">Beskrivelse <span class="optional">(valgfri)</span></label><textarea id="recipe-description" rows="2" maxlength="1000"></textarea>
+      <div class="section-heading recipe-editor-heading"><h3>Ingredienser</h3><button class="text-button" id="add-recipe-ingredient" type="button">+ Tilføj</button></div>
+      <div id="recipe-editor-ingredients" class="editor-items"></div>
+      <section id="ingredient-picker" class="sub-panel" hidden>
+        <label for="recipe-template-search">Søg ingrediens</label><input id="recipe-template-search" type="search" autocomplete="off" placeholder="Fx løg eller oksefars">
+        <div id="recipe-template-results" class="template-results"></div>
+        <div id="recipe-ingredient-fields" hidden><h4 id="recipe-selected-template"></h4><label for="recipe-ingredient-quantity">Mængde pr. portion</label><input id="recipe-ingredient-quantity" type="text" inputmode="decimal" placeholder="Fx 0,5">
+          <label for="recipe-ingredient-unit">Enhed</label><select id="recipe-ingredient-unit"><option value="GRAM">g</option><option value="MILLILITER">ml</option><option value="PIECE">stk</option><option value="TEASPOON">tsk</option><option value="TABLESPOON">spsk</option><option value="DECILITER">dl</option></select>
+          <label for="recipe-ingredient-preparation">Forberedelse <span class="optional">(valgfri)</span></label><input id="recipe-ingredient-preparation" maxlength="200" placeholder="Fx finthakket">
+          <div class="dialog-actions"><button class="secondary-button" id="cancel-recipe-ingredient" type="button">Annuller</button><button class="primary-button" id="save-recipe-ingredient" type="button">Tilføj</button></div>
+        </div>
+      </section>
+      <div class="section-heading recipe-editor-heading"><h3>Fremgangsmåde</h3><button class="text-button" id="add-recipe-step" type="button">+ Tilføj trin</button></div>
+      <div id="recipe-editor-steps" class="editor-items"></div>
+      <div class="notice error" id="recipe-error" role="alert" hidden></div>
+      <div class="dialog-actions"><button class="secondary-button" id="cancel-recipe" type="button">Annuller</button><button class="primary-button" type="submit">Gem opskrift</button></div>
     </form>
   </dialog>
 

@@ -2,6 +2,7 @@ const PRODUCT_API = '/v1/products';
 const AUTH_API = '/v1/auth';
 const INVENTORY_API = '/v1/inventory';
 const SHOPPING_API = '/v1/shopping-list';
+const RECIPE_API = '/v1/recipes';
 
 const categoryLabels = {
   BAKING:'Bagning', BREAD:'Brød', DAIRY:'Mejeri', EGG:'Æg', FISH:'Fisk', FROZEN:'Frostvarer',
@@ -46,6 +47,15 @@ let selectedInventoryCandidate = null;
 let shoppingSearchTimer;
 let shoppingSearchRequestId = 0;
 let selectedShoppingCandidate = null;
+let currentRecipes = [];
+let currentRecipe = null;
+let recipePortions = 2;
+let editingRecipeId = null;
+let recipeIngredients = [];
+let recipeSteps = [];
+let selectedRecipeTemplate = null;
+let recipeSearchTimer;
+let recipeSearchRequestId = 0;
 
 let csrfToken = '';
 let registrationEnabled = false;
@@ -311,15 +321,19 @@ function showView(view) {
   const inventoryActive = view === 'inventory';
   const shoppingActive = view === 'shopping';
   const productsActive = view === 'products';
+  const recipesActive = view === 'recipes';
   document.querySelector('#products-view').hidden = !productsActive;
   document.querySelector('#inventory-view').hidden = !inventoryActive;
   document.querySelector('#shopping-view').hidden = !shoppingActive;
+  document.querySelector('#recipes-view').hidden = !recipesActive;
   document.querySelector('#show-products').classList.toggle('active', productsActive);
   document.querySelector('#show-inventory').classList.toggle('active', inventoryActive);
   document.querySelector('#show-shopping').classList.toggle('active', shoppingActive);
+  document.querySelector('#show-recipes').classList.toggle('active', recipesActive);
   openFormButton.hidden = !productsActive;
   if (inventoryActive) { setFormOpen(false); loadInventory(); }
   if (shoppingActive) { setFormOpen(false); loadShoppingList(); }
+  if (recipesActive) { setFormOpen(false); loadRecipes(); }
 }
 
 function displayUnit(unit) {
@@ -712,6 +726,120 @@ async function deleteShoppingItem() {
   catch (error) { showMessage(document.querySelector('#edit-shopping-error'), error.message); }
 }
 
+const recipeUnitLabels = { GRAM:'g', MILLILITER:'ml', PIECE:'stk', TEASPOON:'tsk', TABLESPOON:'spsk', DECILITER:'dl' };
+
+function recipeCard(recipe) {
+  const button = document.createElement('button'); button.type = 'button'; button.className = 'recipe-card';
+  const name = document.createElement('strong'); name.textContent = recipe.name;
+  const description = document.createElement('span'); description.textContent = recipe.description || `${recipe.ingredients.length} ingredienser`;
+  button.append(name, description); button.addEventListener('click', () => openRecipe(recipe.id)); return button;
+}
+
+async function loadRecipes() {
+  const loading = document.querySelector('#recipes-loading'); loading.hidden = false;
+  try { currentRecipes = await jsonRequest(RECIPE_API); document.querySelector('#recipe-list').replaceChildren(...currentRecipes.map(recipeCard)); document.querySelector('#recipes-empty').hidden = currentRecipes.length > 0; }
+  catch (error) { showToast(`Opskrifterne kunne ikke hentes. ${error.message}`, 'error'); }
+  finally { loading.hidden = true; }
+}
+
+function scaledDecimal(value, multiplier) {
+  const source = String(value); const negative = source.startsWith('-'); const unsigned = negative ? source.slice(1) : source;
+  const [whole, fraction = ''] = unsigned.split('.'); const scale = 10n ** BigInt(fraction.length);
+  const scaled = BigInt((whole || '0') + fraction) * BigInt(multiplier); const integral = scaled / scale; const remainder = (scaled % scale).toString().padStart(fraction.length, '0').replace(/0+$/, '');
+  return `${negative ? '-' : ''}${integral}${remainder ? `.${remainder}` : ''}`;
+}
+
+function danishDecimal(value) { return String(value).replace('.', ','); }
+
+function renderRecipeDetail() {
+  if (!currentRecipe) return;
+  document.querySelector('#recipe-portions').textContent = `${recipePortions} ${recipePortions === 1 ? 'portion' : 'portioner'}`;
+  document.querySelector('#recipe-portions-down').disabled = recipePortions === 1;
+  document.querySelector('#recipe-detail-ingredients').replaceChildren(...currentRecipe.ingredients.sort((a,b) => a.sortOrder-b.sortOrder).map(ingredient => {
+    const row = document.createElement('div'); row.className = 'recipe-ingredient-row';
+    const text = document.createElement('span'); text.textContent = ingredient.productTemplate.name;
+    if (ingredient.preparation) { const prep = document.createElement('small'); prep.textContent = ` · ${ingredient.preparation}`; text.append(prep); }
+    const amount = document.createElement('strong'); amount.textContent = `${danishDecimal(scaledDecimal(ingredient.quantity, recipePortions))} ${recipeUnitLabels[ingredient.unit]}`;
+    row.append(text, amount); return row;
+  }));
+  document.querySelector('#recipe-detail-steps').replaceChildren(...currentRecipe.steps.sort((a,b) => a.sortOrder-b.sortOrder).map(step => { const li = document.createElement('li'); li.textContent = step.instruction; return li; }));
+}
+
+async function openRecipe(id) {
+  try { currentRecipe = await jsonRequest(`${RECIPE_API}/${id}`); recipePortions = 2;
+    document.querySelector('#recipe-detail-title').textContent = currentRecipe.name;
+    const description = document.querySelector('#recipe-detail-description'); description.textContent = currentRecipe.description || ''; description.hidden = !currentRecipe.description;
+    document.querySelector('#delete-recipe-confirmation').hidden = true; renderRecipeDetail(); document.querySelector('#recipe-detail-dialog').showModal();
+  } catch (error) { showToast(`Opskriften kunne ikke åbnes. ${error.message}`, 'error'); }
+}
+
+function closeRecipeDetail() { const dialog = document.querySelector('#recipe-detail-dialog'); if (dialog.open) dialog.close(); }
+
+function resetIngredientPicker() {
+  clearTimeout(recipeSearchTimer); recipeSearchRequestId++; selectedRecipeTemplate = null;
+  document.querySelector('#ingredient-picker').hidden = true; document.querySelector('#recipe-template-search').value = '';
+  document.querySelector('#recipe-template-results').replaceChildren(); document.querySelector('#recipe-ingredient-fields').hidden = true;
+  document.querySelector('#recipe-ingredient-quantity').value = ''; document.querySelector('#recipe-ingredient-preparation').value = '';
+}
+
+function renderRecipeEditor() {
+  document.querySelector('#recipe-editor-ingredients').replaceChildren(...recipeIngredients.map((ingredient, index) => {
+    const row = document.createElement('div'); row.className = 'editor-item';
+    const text = document.createElement('p'); text.textContent = `${ingredient.template.name} · ${danishDecimal(ingredient.quantity)} ${recipeUnitLabels[ingredient.unit]}${ingredient.preparation ? ` · ${ingredient.preparation}` : ''}`;
+    row.append(text, editorActions(index, recipeIngredients, renderRecipeEditor)); return row;
+  }));
+  document.querySelector('#recipe-editor-steps').replaceChildren(...recipeSteps.map((step, index) => {
+    const row = document.createElement('div'); row.className = 'editor-item step-input-row'; const number = document.createElement('strong'); number.textContent = `${index + 1}.`;
+    const body = document.createElement('div'); const input = document.createElement('textarea'); input.rows = 2; input.value = step.instruction; input.setAttribute('aria-label', `Trin ${index + 1}`); input.addEventListener('input', () => { recipeSteps[index].instruction = input.value; });
+    body.append(input, editorActions(index, recipeSteps, renderRecipeEditor)); row.append(number, body); return row;
+  }));
+}
+
+function editorActions(index, collection, rerender) {
+  const actions = document.createElement('div'); actions.className = 'editor-item-actions';
+  [['↑',-1,'Flyt op'],['↓',1,'Flyt ned']].forEach(([label, delta, aria]) => { const button = document.createElement('button'); button.type='button'; button.textContent=label; button.setAttribute('aria-label', aria); button.disabled = index + delta < 0 || index + delta >= collection.length; button.onclick=() => { [collection[index], collection[index+delta]]=[collection[index+delta],collection[index]]; rerender(); }; actions.append(button); });
+  const remove = document.createElement('button'); remove.type='button'; remove.textContent='×'; remove.setAttribute('aria-label','Fjern'); remove.onclick=() => { collection.splice(index,1); rerender(); }; actions.append(remove); return actions;
+}
+
+function openRecipeEditor(recipe = null) {
+  editingRecipeId = recipe?.id || null; document.querySelector('#recipe-editor-title').textContent = recipe ? 'Rediger opskrift' : 'Ny opskrift';
+  document.querySelector('#recipe-name').value = recipe?.name || ''; document.querySelector('#recipe-description').value = recipe?.description || '';
+  recipeIngredients = (recipe?.ingredients || []).sort((a,b)=>a.sortOrder-b.sortOrder).map(i => ({ template:i.productTemplate, quantity:String(i.quantity), unit:i.unit, preparation:i.preparation || '' }));
+  recipeSteps = (recipe?.steps || []).sort((a,b)=>a.sortOrder-b.sortOrder).map(s => ({ instruction:s.instruction }));
+  resetIngredientPicker(); renderRecipeEditor(); showMessage(document.querySelector('#recipe-error'), '');
+  document.querySelector('#recipe-editor-dialog').showModal(); document.querySelector('#recipe-name').focus();
+}
+
+function closeRecipeEditor() { const dialog = document.querySelector('#recipe-editor-dialog'); if (dialog.open) dialog.close(); resetIngredientPicker(); }
+
+async function searchRecipeTemplates(search) {
+  const requestId = ++recipeSearchRequestId;
+  try { const templates = await jsonRequest(`/v1/product-templates?search=${encodeURIComponent(search)}`); if (requestId !== recipeSearchRequestId || document.querySelector('#recipe-template-search').value !== search) return;
+    document.querySelector('#recipe-template-results').replaceChildren(...templates.slice(0,15).map(template => { const button=document.createElement('button'); button.type='button'; button.className='template-row inventory-result'; const text=document.createElement('span'); const name=document.createElement('strong'); name.textContent=template.name; const unit=document.createElement('small'); unit.textContent=displayUnit(template.defaultUnit); text.append(name,unit); button.append(text); button.onclick=()=>selectRecipeTemplate(template); return button; }));
+  } catch (error) { if (requestId === recipeSearchRequestId) showToast(`Søgningen mislykkedes. ${error.message}`, 'error'); }
+}
+
+function selectRecipeTemplate(template) { selectedRecipeTemplate=template; document.querySelector('#recipe-template-results').replaceChildren(); document.querySelector('#recipe-selected-template').textContent=template.name; document.querySelector('#recipe-ingredient-unit').value=template.defaultUnit; document.querySelector('#recipe-ingredient-fields').hidden=false; document.querySelector('#recipe-ingredient-quantity').focus(); }
+
+function addRecipeIngredient() {
+  const raw = document.querySelector('#recipe-ingredient-quantity').value.trim().replace(',','.');
+  if (!selectedRecipeTemplate || !/^\d+(\.\d+)?$/.test(raw) || Number(raw) <= 0) { showMessage(document.querySelector('#recipe-error'),'Angiv en gyldig mængde større end nul.'); return; }
+  recipeIngredients.push({ template:selectedRecipeTemplate, quantity:raw, unit:document.querySelector('#recipe-ingredient-unit').value, preparation:document.querySelector('#recipe-ingredient-preparation').value.trim() });
+  resetIngredientPicker(); renderRecipeEditor(); showMessage(document.querySelector('#recipe-error'),'');
+}
+
+async function saveRecipe(event) {
+  event.preventDefault(); const name=document.querySelector('#recipe-name').value.trim();
+  if (!name || recipeSteps.some(step=>!step.instruction.trim())) { showMessage(document.querySelector('#recipe-error'),'Navn og alle trin skal være udfyldt.'); return; }
+  const payload={ name, description:document.querySelector('#recipe-description').value.trim() || null,
+    ingredients:recipeIngredients.map((i,index)=>({productTemplateId:i.template.id,quantity:i.quantity,unit:i.unit,preparation:i.preparation||null,sortOrder:index+1})),
+    steps:recipeSteps.map((s,index)=>({instruction:s.instruction.trim(),sortOrder:index+1})) };
+  try { const url=editingRecipeId ? `${RECIPE_API}/${editingRecipeId}` : RECIPE_API; await jsonRequest(url,{method:editingRecipeId?'PATCH':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); closeRecipeEditor(); closeRecipeDetail(); await loadRecipes(); showToast(`${name} er gemt`); }
+  catch(error){ showMessage(document.querySelector('#recipe-error'),error.message); }
+}
+
+async function deleteRecipe() { if (!currentRecipe) return; try { const name=currentRecipe.name; await jsonRequest(`${RECIPE_API}/${currentRecipe.id}`,{method:'DELETE'}); closeRecipeDetail(); await loadRecipes(); showToast(`${name} er slettet`); } catch(error){ showToast(`Opskriften kunne ikke slettes. ${error.message}`,'error'); } }
+
 loginForm.addEventListener('submit', authenticate);
 registerForm.addEventListener('submit', register);
 document.querySelector('#logout').addEventListener('click', logout);
@@ -740,6 +868,7 @@ document.querySelector('#confirm-delete-product').addEventListener('click', dele
 document.querySelector('#show-products').addEventListener('click', () => showView('products'));
 document.querySelector('#show-inventory').addEventListener('click', () => showView('inventory'));
 document.querySelector('#show-shopping').addEventListener('click', () => showView('shopping'));
+document.querySelector('#show-recipes').addEventListener('click', () => showView('recipes'));
 document.querySelector('#open-inventory-add').addEventListener('click', openInventoryAdd);
 document.querySelector('#inventory-empty-add').addEventListener('click', openInventoryAdd);
 document.querySelector('#close-inventory-add').addEventListener('click', closeInventoryAdd);
@@ -790,6 +919,23 @@ document.querySelector('#clear-purchased').addEventListener('click', async () =>
   try { await jsonRequest(`${SHOPPING_API}/purchased`, { method: 'DELETE' }); await loadShoppingList(); showToast('Købte varer er ryddet'); }
   catch (error) { showToast(`Købte varer kunne ikke ryddes. ${error.message}`, 'error'); }
 });
+document.querySelector('#new-recipe').addEventListener('click', () => openRecipeEditor());
+document.querySelector('#recipes-empty-add').addEventListener('click', () => openRecipeEditor());
+document.querySelector('#close-recipe-detail').addEventListener('click', closeRecipeDetail);
+document.querySelector('#recipe-portions-down').addEventListener('click', () => { if (recipePortions > 1) { recipePortions--; renderRecipeDetail(); } });
+document.querySelector('#recipe-portions-up').addEventListener('click', () => { recipePortions++; renderRecipeDetail(); });
+document.querySelector('#edit-recipe').addEventListener('click', () => { const recipe=currentRecipe; closeRecipeDetail(); openRecipeEditor(recipe); });
+document.querySelector('#delete-recipe').addEventListener('click', () => { document.querySelector('#delete-recipe-confirmation').hidden=false; });
+document.querySelector('#keep-recipe').addEventListener('click', () => { document.querySelector('#delete-recipe-confirmation').hidden=true; });
+document.querySelector('#confirm-delete-recipe').addEventListener('click', deleteRecipe);
+document.querySelector('#close-recipe-editor').addEventListener('click', closeRecipeEditor);
+document.querySelector('#cancel-recipe').addEventListener('click', closeRecipeEditor);
+document.querySelector('#recipe-form').addEventListener('submit', saveRecipe);
+document.querySelector('#add-recipe-ingredient').addEventListener('click', () => { resetIngredientPicker(); document.querySelector('#ingredient-picker').hidden=false; document.querySelector('#recipe-template-search').focus(); searchRecipeTemplates(''); });
+document.querySelector('#cancel-recipe-ingredient').addEventListener('click', resetIngredientPicker);
+document.querySelector('#save-recipe-ingredient').addEventListener('click', addRecipeIngredient);
+document.querySelector('#recipe-template-search').addEventListener('input', event => { clearTimeout(recipeSearchTimer); recipeSearchRequestId++; const search=event.target.value; if (!search) searchRecipeTemplates(''); else recipeSearchTimer=setTimeout(()=>searchRecipeTemplates(search),250); });
+document.querySelector('#add-recipe-step').addEventListener('click', () => { recipeSteps.push({instruction:''}); renderRecipeEditor(); document.querySelector('#recipe-editor-steps textarea:last-of-type')?.focus(); });
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('/service-worker.js')
