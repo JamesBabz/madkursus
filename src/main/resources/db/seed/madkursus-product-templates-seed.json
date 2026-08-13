@@ -1,0 +1,3129 @@
+{
+  "metadata": {
+    "version": 1,
+    "language": "da",
+    "description": "Seed-katalog til Madkursus. Generiske madlavningsingredienser uden brands.",
+    "storageUnits": [
+      "GRAM",
+      "MILLILITER",
+      "PIECE"
+    ],
+    "productCount": 383,
+    "commonCount": 94
+  },
+  "categories": [
+    "BAKING",
+    "BREAD",
+    "DAIRY",
+    "EGG",
+    "FISH",
+    "FROZEN",
+    "FRUIT",
+    "GRAIN_PASTA",
+    "HERB",
+    "LEGUME",
+    "MEAT",
+    "NUT_SEED",
+    "OIL_FAT",
+    "OTHER",
+    "PRESERVED",
+    "SAUCE_CONDIMENT",
+    "SPICE",
+    "STOCK",
+    "SWEETENER",
+    "VEGETABLE",
+    "VINEGAR_ACID"
+  ],
+  "products": [
+    {
+      "name": "Bagepulver",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Durummel",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "durumhvedemel"
+      ],
+      "common": false
+    },
+    {
+      "name": "Frisk gær",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "gær"
+      ],
+      "common": true
+    },
+    {
+      "name": "Fuldkornshvedemel",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "fuldkornsmel"
+      ],
+      "common": false
+    },
+    {
+      "name": "Gelatine",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "husblas"
+      ],
+      "common": false
+    },
+    {
+      "name": "Grahamsmel",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Havregryn",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Hvedemel",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "mel"
+      ],
+      "common": true
+    },
+    {
+      "name": "Kakao",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "kakaopulver"
+      ],
+      "common": false
+    },
+    {
+      "name": "Kartoffelmel",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Majsmel",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Majsstivelse",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "maizena"
+      ],
+      "common": true
+    },
+    {
+      "name": "Natron",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "bikarbonat"
+      ],
+      "common": false
+    },
+    {
+      "name": "Panko",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "pankorasp"
+      ],
+      "common": false
+    },
+    {
+      "name": "Rasp",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Rugmel",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Tipo 00-mel",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "tipo 00",
+        "pizzamel"
+      ],
+      "common": false
+    },
+    {
+      "name": "Tørgær",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Vaniljesukker",
+      "category": "BAKING",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Baguette",
+      "category": "BREAD",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "flute"
+      ],
+      "common": false
+    },
+    {
+      "name": "Burgerbolle",
+      "category": "BREAD",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "burgerboller"
+      ],
+      "common": false
+    },
+    {
+      "name": "Ciabatta",
+      "category": "BREAD",
+      "defaultUnit": "PIECE",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Franskbrød",
+      "category": "BREAD",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Hotdogbrød",
+      "category": "BREAD",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "pølsebrød"
+      ],
+      "common": false
+    },
+    {
+      "name": "Pitabrød",
+      "category": "BREAD",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "pita"
+      ],
+      "common": false
+    },
+    {
+      "name": "Rugbrød",
+      "category": "BREAD",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Sandwichbrød",
+      "category": "BREAD",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Toastbrød",
+      "category": "BREAD",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "toast"
+      ],
+      "common": false
+    },
+    {
+      "name": "Tortillawrap",
+      "category": "BREAD",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "wrap",
+        "tortilla"
+      ],
+      "common": true
+    },
+    {
+      "name": "Cheddar",
+      "category": "DAIRY",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Creme fraiche",
+      "category": "DAIRY",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "crème fraîche"
+      ],
+      "common": true
+    },
+    {
+      "name": "Feta",
+      "category": "DAIRY",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "fetaost"
+      ],
+      "common": false
+    },
+    {
+      "name": "Flødeost",
+      "category": "DAIRY",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Gouda",
+      "category": "DAIRY",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Græsk yoghurt",
+      "category": "DAIRY",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Hytteost",
+      "category": "DAIRY",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Kærnemælk",
+      "category": "DAIRY",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Letmælk",
+      "category": "DAIRY",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Madlavningsfløde",
+      "category": "DAIRY",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "madfløde"
+      ],
+      "common": true
+    },
+    {
+      "name": "Mascarpone",
+      "category": "DAIRY",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Minimælk",
+      "category": "DAIRY",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Mozzarella",
+      "category": "DAIRY",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Parmesan",
+      "category": "DAIRY",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "parmesanost"
+      ],
+      "common": false
+    },
+    {
+      "name": "Piskefløde",
+      "category": "DAIRY",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "fløde"
+      ],
+      "common": true
+    },
+    {
+      "name": "Ricotta",
+      "category": "DAIRY",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Skummetmælk",
+      "category": "DAIRY",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Skyr",
+      "category": "DAIRY",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Smør",
+      "category": "DAIRY",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Smørbar",
+      "category": "DAIRY",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "smørbart blandingsprodukt"
+      ],
+      "common": false
+    },
+    {
+      "name": "Sødmælk",
+      "category": "DAIRY",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "mælk"
+      ],
+      "common": true
+    },
+    {
+      "name": "Yoghurt naturel",
+      "category": "DAIRY",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "naturel yoghurt"
+      ],
+      "common": false
+    },
+    {
+      "name": "Æg",
+      "category": "EGG",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "hønseæg"
+      ],
+      "common": true
+    },
+    {
+      "name": "Blæksprutte",
+      "category": "FISH",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "calamari"
+      ],
+      "common": false
+    },
+    {
+      "name": "Kuller",
+      "category": "FISH",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "kullerfilet"
+      ],
+      "common": false
+    },
+    {
+      "name": "Laks",
+      "category": "FISH",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "laksefilet"
+      ],
+      "common": true
+    },
+    {
+      "name": "Makrel",
+      "category": "FISH",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Muslinger",
+      "category": "FISH",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "blåmuslinger"
+      ],
+      "common": false
+    },
+    {
+      "name": "Rejer",
+      "category": "FISH",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "pillede rejer"
+      ],
+      "common": false
+    },
+    {
+      "name": "Rødspætte",
+      "category": "FISH",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "rødspættefilet"
+      ],
+      "common": false
+    },
+    {
+      "name": "Sej",
+      "category": "FISH",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "sejfilet"
+      ],
+      "common": false
+    },
+    {
+      "name": "Sild",
+      "category": "FISH",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Tigerrejer",
+      "category": "FISH",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "kongerejer"
+      ],
+      "common": false
+    },
+    {
+      "name": "Torsk",
+      "category": "FISH",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "torskefilet"
+      ],
+      "common": false
+    },
+    {
+      "name": "Tun",
+      "category": "FISH",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "tunfisk"
+      ],
+      "common": false
+    },
+    {
+      "name": "Frosne blandede bær",
+      "category": "FROZEN",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "frosne bær"
+      ],
+      "common": false
+    },
+    {
+      "name": "Frosne blåbær",
+      "category": "FROZEN",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Frosne hindbær",
+      "category": "FROZEN",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Frosne jordbær",
+      "category": "FROZEN",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Frosne majs",
+      "category": "FROZEN",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "majs frost"
+      ],
+      "common": false
+    },
+    {
+      "name": "Frosne ærter",
+      "category": "FROZEN",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "ærter frost"
+      ],
+      "common": false
+    },
+    {
+      "name": "Frossen blomkål",
+      "category": "FROZEN",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Frossen broccoli",
+      "category": "FROZEN",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Frossen spinat",
+      "category": "FROZEN",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "spinat frost"
+      ],
+      "common": false
+    },
+    {
+      "name": "Grøntsagsblanding",
+      "category": "FROZEN",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "frosne grøntsager"
+      ],
+      "common": false
+    },
+    {
+      "name": "Kartoffelbåde",
+      "category": "FROZEN",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Pommes frites",
+      "category": "FROZEN",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "fritter"
+      ],
+      "common": false
+    },
+    {
+      "name": "Wokgrøntsager",
+      "category": "FROZEN",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "wokblanding"
+      ],
+      "common": false
+    },
+    {
+      "name": "Ananas",
+      "category": "FRUIT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Appelsin",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "appelsiner"
+      ],
+      "common": true
+    },
+    {
+      "name": "Avocado",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "avokado"
+      ],
+      "common": true
+    },
+    {
+      "name": "Banan",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "bananer"
+      ],
+      "common": true
+    },
+    {
+      "name": "Blomme",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "blommer"
+      ],
+      "common": false
+    },
+    {
+      "name": "Blåbær",
+      "category": "FRUIT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Brombær",
+      "category": "FRUIT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Cantaloupe",
+      "category": "FRUIT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Citron",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "citroner"
+      ],
+      "common": true
+    },
+    {
+      "name": "Clementin",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "clementiner"
+      ],
+      "common": false
+    },
+    {
+      "name": "Fersken",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "ferskner"
+      ],
+      "common": false
+    },
+    {
+      "name": "Granatæble",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Grapefrugt",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Hindbær",
+      "category": "FRUIT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Honningmelon",
+      "category": "FRUIT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Jordbær",
+      "category": "FRUIT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Kirsebær",
+      "category": "FRUIT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Kiwi",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Lime",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "limefrugt"
+      ],
+      "common": true
+    },
+    {
+      "name": "Mandarin",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "mandariner"
+      ],
+      "common": false
+    },
+    {
+      "name": "Mango",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Nektarin",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "nektariner"
+      ],
+      "common": false
+    },
+    {
+      "name": "Passionsfrugt",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Pære",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "pærer"
+      ],
+      "common": false
+    },
+    {
+      "name": "Ribs",
+      "category": "FRUIT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Solbær",
+      "category": "FRUIT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Vandmelon",
+      "category": "FRUIT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Vindruer",
+      "category": "FRUIT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "druer"
+      ],
+      "common": false
+    },
+    {
+      "name": "Æble",
+      "category": "FRUIT",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "æbler"
+      ],
+      "common": true
+    },
+    {
+      "name": "Basmatiris",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "basmati"
+      ],
+      "common": true
+    },
+    {
+      "name": "Brune ris",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "fuldkornsris"
+      ],
+      "common": false
+    },
+    {
+      "name": "Bulgur",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Couscous",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Farfalle",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "sløjfepasta"
+      ],
+      "common": false
+    },
+    {
+      "name": "Fettuccine",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Fusilli",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "pastaskruer"
+      ],
+      "common": false
+    },
+    {
+      "name": "Gnocchi",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Grødris",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Jasminris",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "jasmin ris"
+      ],
+      "common": true
+    },
+    {
+      "name": "Lasagneplader",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "lasagne"
+      ],
+      "common": true
+    },
+    {
+      "name": "Macaroni",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "makaroni"
+      ],
+      "common": false
+    },
+    {
+      "name": "Parboiled ris",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Penne",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Perlebyg",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Perlespelt",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Quinoa",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Ramen-nudler",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "ramen"
+      ],
+      "common": false
+    },
+    {
+      "name": "Ravioli",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Risnudler",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Risottoris",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "arborio"
+      ],
+      "common": false
+    },
+    {
+      "name": "Spaghetti",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Tagliatelle",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Tortellini",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Udon-nudler",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "udon"
+      ],
+      "common": false
+    },
+    {
+      "name": "Ægnudler",
+      "category": "GRAIN_PASTA",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Frisk basilikum",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "basilikum"
+      ],
+      "common": true
+    },
+    {
+      "name": "Frisk dild",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "dild"
+      ],
+      "common": false
+    },
+    {
+      "name": "Frisk estragon",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Frisk koriander",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "koriander"
+      ],
+      "common": false
+    },
+    {
+      "name": "Frisk persille",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "persille"
+      ],
+      "common": true
+    },
+    {
+      "name": "Frisk rosmarin",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Frisk salvie",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Frisk timian",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Herbes de Provence",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Laurbærblade",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "laurbær"
+      ],
+      "common": true
+    },
+    {
+      "name": "Mynte",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "frisk mynte"
+      ],
+      "common": false
+    },
+    {
+      "name": "Purløg",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Tørret basilikum",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "basilikum tørret"
+      ],
+      "common": true
+    },
+    {
+      "name": "Tørret dild",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Tørret estragon",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Tørret merian",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "merian"
+      ],
+      "common": false
+    },
+    {
+      "name": "Tørret oregano",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "oregano"
+      ],
+      "common": true
+    },
+    {
+      "name": "Tørret persille",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Tørret rosmarin",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "rosmarin tørret"
+      ],
+      "common": false
+    },
+    {
+      "name": "Tørret salvie",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Tørret timian",
+      "category": "HERB",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "timian tørret"
+      ],
+      "common": true
+    },
+    {
+      "name": "Brune linser",
+      "category": "LEGUME",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Butterbeans",
+      "category": "LEGUME",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "limabønner"
+      ],
+      "common": false
+    },
+    {
+      "name": "Edamame",
+      "category": "LEGUME",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "sojabønner"
+      ],
+      "common": false
+    },
+    {
+      "name": "Grønne linser",
+      "category": "LEGUME",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Hvide bønner",
+      "category": "LEGUME",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Kidneybønner",
+      "category": "LEGUME",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "kidney beans"
+      ],
+      "common": true
+    },
+    {
+      "name": "Kikærter",
+      "category": "LEGUME",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Røde linser",
+      "category": "LEGUME",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Sorte bønner",
+      "category": "LEGUME",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "black beans"
+      ],
+      "common": false
+    },
+    {
+      "name": "Andebryst",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Bacon",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Chorizo",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Entrecôte",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "entrecote"
+      ],
+      "common": false
+    },
+    {
+      "name": "Flanksteak",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "flank steak"
+      ],
+      "common": false
+    },
+    {
+      "name": "Flæskesteg",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Gullaschkød",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "gullasch"
+      ],
+      "common": false
+    },
+    {
+      "name": "Hakket kalkun",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "kalkunfars"
+      ],
+      "common": false
+    },
+    {
+      "name": "Hakket kalv og flæsk",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "kalv og flæsk",
+        "blandet fars"
+      ],
+      "common": true
+    },
+    {
+      "name": "Hakket kylling",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "kyllingefars"
+      ],
+      "common": false
+    },
+    {
+      "name": "Hakket lammekød",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "lammefars"
+      ],
+      "common": false
+    },
+    {
+      "name": "Hakket oksekød",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "oksefars",
+        "hakkekød"
+      ],
+      "common": true
+    },
+    {
+      "name": "Hakket svinekød",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "svinefars"
+      ],
+      "common": true
+    },
+    {
+      "name": "Hamburgerryg",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Hel and",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Hel kylling",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "kylling hel"
+      ],
+      "common": false
+    },
+    {
+      "name": "Kalkunbryst",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Kalkunfilet",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Kyllingebryst",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "kyllingefilet",
+        "kyllingebrystfilet"
+      ],
+      "common": true
+    },
+    {
+      "name": "Kyllingelår",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Kyllingeoverlår",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Kyllingeunderlår",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "drumsticks"
+      ],
+      "common": false
+    },
+    {
+      "name": "Kyllingevinger",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "chicken wings"
+      ],
+      "common": false
+    },
+    {
+      "name": "Lammekotelet",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "lammekoteletter"
+      ],
+      "common": false
+    },
+    {
+      "name": "Lammekølle",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Medister",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "medisterpølse"
+      ],
+      "common": false
+    },
+    {
+      "name": "Nakkefilet",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Nakkekotelet",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "nakkekoteletter"
+      ],
+      "common": false
+    },
+    {
+      "name": "Oksebryst",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Oksebøf",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "bøf"
+      ],
+      "common": false
+    },
+    {
+      "name": "Okseculotte",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "culotte"
+      ],
+      "common": false
+    },
+    {
+      "name": "Oksecuvette",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "cuvette"
+      ],
+      "common": false
+    },
+    {
+      "name": "Oksefilet",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Oksemørbrad",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Pancetta",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Pepperoni",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Ribbensteg",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Ribeye",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "rib eye"
+      ],
+      "common": false
+    },
+    {
+      "name": "Roastbeef",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Salami",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Skinkestrimler",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "skinke i strimler"
+      ],
+      "common": false
+    },
+    {
+      "name": "Svinekam",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Svinekotelet",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "koteletter"
+      ],
+      "common": true
+    },
+    {
+      "name": "Svinemørbrad",
+      "category": "MEAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Cashewnødder",
+      "category": "NUT_SEED",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "cashews"
+      ],
+      "common": false
+    },
+    {
+      "name": "Chiafrø",
+      "category": "NUT_SEED",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "chia"
+      ],
+      "common": false
+    },
+    {
+      "name": "Græskarkerner",
+      "category": "NUT_SEED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Hasselnødder",
+      "category": "NUT_SEED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Hørfrø",
+      "category": "NUT_SEED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Mandler",
+      "category": "NUT_SEED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Peanuts",
+      "category": "NUT_SEED",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "jordnødder"
+      ],
+      "common": false
+    },
+    {
+      "name": "Pinjekerner",
+      "category": "NUT_SEED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Pistacienødder",
+      "category": "NUT_SEED",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "pistacie"
+      ],
+      "common": false
+    },
+    {
+      "name": "Sesamfrø",
+      "category": "NUT_SEED",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "sesam"
+      ],
+      "common": false
+    },
+    {
+      "name": "Solsikkekerner",
+      "category": "NUT_SEED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Valnødder",
+      "category": "NUT_SEED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Kokosolie",
+      "category": "OIL_FAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Neutral olie",
+      "category": "OIL_FAT",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "madolie"
+      ],
+      "common": false
+    },
+    {
+      "name": "Olivenolie",
+      "category": "OIL_FAT",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Rapsolie",
+      "category": "OIL_FAT",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Sesamolie",
+      "category": "OIL_FAT",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Solsikkeolie",
+      "category": "OIL_FAT",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Stegemargarine",
+      "category": "OIL_FAT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "margarine"
+      ],
+      "common": false
+    },
+    {
+      "name": "Svinefedt",
+      "category": "OIL_FAT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Grøn karrypasta",
+      "category": "OTHER",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "grøn curry paste"
+      ],
+      "common": false
+    },
+    {
+      "name": "Gul karrypasta",
+      "category": "OTHER",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "gul curry paste"
+      ],
+      "common": false
+    },
+    {
+      "name": "Hvid chokolade",
+      "category": "OTHER",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Kokosflager",
+      "category": "OTHER",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Kokosmel",
+      "category": "OTHER",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "revet kokos"
+      ],
+      "common": false
+    },
+    {
+      "name": "Lys chokolade",
+      "category": "OTHER",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "mælkechokolade"
+      ],
+      "common": false
+    },
+    {
+      "name": "Madkulør",
+      "category": "OTHER",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "kulør"
+      ],
+      "common": true
+    },
+    {
+      "name": "Miso",
+      "category": "OTHER",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "misopasta"
+      ],
+      "common": false
+    },
+    {
+      "name": "Mørk chokolade",
+      "category": "OTHER",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "chokolade mørk"
+      ],
+      "common": false
+    },
+    {
+      "name": "Rød karrypasta",
+      "category": "OTHER",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "rød curry paste"
+      ],
+      "common": false
+    },
+    {
+      "name": "Baked beans",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Flåede tomater",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Grønne oliven",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "oliven"
+      ],
+      "common": false
+    },
+    {
+      "name": "Hakkede tomater",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "tomater på dåse"
+      ],
+      "common": true
+    },
+    {
+      "name": "Kapers",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Kidneybønner på dåse",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Kikærter på dåse",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Kokosfløde",
+      "category": "PRESERVED",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Kokosmælk",
+      "category": "PRESERVED",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Majs på dåse",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "dåsemajs"
+      ],
+      "common": false
+    },
+    {
+      "name": "Passata",
+      "category": "PRESERVED",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "tomatpassata"
+      ],
+      "common": true
+    },
+    {
+      "name": "Perleløg",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Rødbeder på glas",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "syltede rødbeder"
+      ],
+      "common": false
+    },
+    {
+      "name": "Soltørrede tomater",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Sorte oliven",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "oliven"
+      ],
+      "common": false
+    },
+    {
+      "name": "Syltede agurker",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "drueagurker"
+      ],
+      "common": false
+    },
+    {
+      "name": "Syltede jalapeños",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Tomatpuré",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "tomatpure"
+      ],
+      "common": true
+    },
+    {
+      "name": "Tun i olie",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Tun i vand",
+      "category": "PRESERVED",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Barbecuesauce",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "bbq sauce"
+      ],
+      "common": false
+    },
+    {
+      "name": "Dijonsennep",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "dijon"
+      ],
+      "common": false
+    },
+    {
+      "name": "Fiskesauce",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Hoisinsauce",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "hoisin"
+      ],
+      "common": false
+    },
+    {
+      "name": "Ketchup",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Mayonnaise",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "mayo"
+      ],
+      "common": true
+    },
+    {
+      "name": "Peanutbutter",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "jordnøddesmør"
+      ],
+      "common": false
+    },
+    {
+      "name": "Remoulade",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Sennep",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Sojasauce",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "soya",
+        "soy sauce"
+      ],
+      "common": true
+    },
+    {
+      "name": "Sriracha",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Sweet chili sauce",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "sweet chili"
+      ],
+      "common": false
+    },
+    {
+      "name": "Tabasco",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Tahini",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "sesampasta"
+      ],
+      "common": false
+    },
+    {
+      "name": "Teriyakisauce",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "teriyaki"
+      ],
+      "common": false
+    },
+    {
+      "name": "Worcestershire sauce",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "worcestershiresauce"
+      ],
+      "common": false
+    },
+    {
+      "name": "Østerssauce",
+      "category": "SAUCE_CONDIMENT",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Allehånde",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Bukkehorn",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "fenugreek"
+      ],
+      "common": false
+    },
+    {
+      "name": "Cayennepeber",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "cayenne"
+      ],
+      "common": false
+    },
+    {
+      "name": "Chiliflager",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "chili flakes"
+      ],
+      "common": true
+    },
+    {
+      "name": "Chilipulver",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Fennikelfrø",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Five spice",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "kinesisk femkrydderi"
+      ],
+      "common": false
+    },
+    {
+      "name": "Garam masala",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Gurkemeje",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "turmeric"
+      ],
+      "common": false
+    },
+    {
+      "name": "Hvid peber",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Hvidløgspulver",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Ingefærpulver",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "stødt ingefær"
+      ],
+      "common": false
+    },
+    {
+      "name": "Kanel",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "stødt kanel"
+      ],
+      "common": true
+    },
+    {
+      "name": "Kardemomme",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "stødt kardemomme"
+      ],
+      "common": false
+    },
+    {
+      "name": "Karry",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "karrypulver"
+      ],
+      "common": true
+    },
+    {
+      "name": "Kommen",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "kommenfrø"
+      ],
+      "common": false
+    },
+    {
+      "name": "Korianderfrø",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Løgpulver",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Muskatnød",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "muskat"
+      ],
+      "common": false
+    },
+    {
+      "name": "Nellike",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "stødt nellike"
+      ],
+      "common": false
+    },
+    {
+      "name": "Paprika",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "paprikapulver"
+      ],
+      "common": true
+    },
+    {
+      "name": "Ras el hanout",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Røget paprika",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Salt",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "fint salt",
+        "groft salt"
+      ],
+      "common": true
+    },
+    {
+      "name": "Sennepsfrø",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Sort peber",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "peber",
+        "sort peberkværn"
+      ],
+      "common": true
+    },
+    {
+      "name": "Spidskommen",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "cumin"
+      ],
+      "common": true
+    },
+    {
+      "name": "Stjerneanis",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Stærk paprika",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Stødt koriander",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "korianderpulver"
+      ],
+      "common": false
+    },
+    {
+      "name": "Tandoori-krydderi",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "tandoori"
+      ],
+      "common": false
+    },
+    {
+      "name": "Za'atar",
+      "category": "SPICE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "zaatar"
+      ],
+      "common": false
+    },
+    {
+      "name": "Fiskebouillon",
+      "category": "STOCK",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Grøntsagsbouillon",
+      "category": "STOCK",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "bouillon grøntsag"
+      ],
+      "common": true
+    },
+    {
+      "name": "Grøntsagsfond",
+      "category": "STOCK",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Hønsebouillon",
+      "category": "STOCK",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "kyllingebouillon",
+        "bouillon kylling"
+      ],
+      "common": true
+    },
+    {
+      "name": "Kyllingefond",
+      "category": "STOCK",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Oksebouillon",
+      "category": "STOCK",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "oksebouillonterning",
+        "bouillon okse"
+      ],
+      "common": true
+    },
+    {
+      "name": "Oksefond",
+      "category": "STOCK",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Ahornsirup",
+      "category": "SWEETENER",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "maple syrup"
+      ],
+      "common": false
+    },
+    {
+      "name": "Brun farin",
+      "category": "SWEETENER",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "farin"
+      ],
+      "common": true
+    },
+    {
+      "name": "Flormelis",
+      "category": "SWEETENER",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Honning",
+      "category": "SWEETENER",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Lys sirup",
+      "category": "SWEETENER",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "sirup"
+      ],
+      "common": false
+    },
+    {
+      "name": "Mørk sirup",
+      "category": "SWEETENER",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Rørsukker",
+      "category": "SWEETENER",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Sukker",
+      "category": "SWEETENER",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "hvidt sukker"
+      ],
+      "common": true
+    },
+    {
+      "name": "Vaniljeekstrakt",
+      "category": "SWEETENER",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "vaniljeessens"
+      ],
+      "common": false
+    },
+    {
+      "name": "Agurk",
+      "category": "VEGETABLE",
+      "defaultUnit": "PIECE",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Artiskok",
+      "category": "VEGETABLE",
+      "defaultUnit": "PIECE",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Asparges",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Aubergine",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "eggplant"
+      ],
+      "common": false
+    },
+    {
+      "name": "Bladselleri",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "selleri"
+      ],
+      "common": false
+    },
+    {
+      "name": "Blomkål",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Broccoli",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Butternut squash",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "butternut"
+      ],
+      "common": false
+    },
+    {
+      "name": "Champignon",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "champignoner"
+      ],
+      "common": true
+    },
+    {
+      "name": "Cherrytomat",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "cherrytomater"
+      ],
+      "common": true
+    },
+    {
+      "name": "Chili",
+      "category": "VEGETABLE",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "frisk chili"
+      ],
+      "common": true
+    },
+    {
+      "name": "Fennikel",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Forårsløg",
+      "category": "VEGETABLE",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "springløg"
+      ],
+      "common": true
+    },
+    {
+      "name": "Græskar",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Grøn peberfrugt",
+      "category": "VEGETABLE",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "grøn peber"
+      ],
+      "common": false
+    },
+    {
+      "name": "Grønkål",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Grønne bønner",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "haricots verts"
+      ],
+      "common": false
+    },
+    {
+      "name": "Gul peberfrugt",
+      "category": "VEGETABLE",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "gul peber"
+      ],
+      "common": false
+    },
+    {
+      "name": "Gulerod",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "gulerødder"
+      ],
+      "common": true
+    },
+    {
+      "name": "Hjertesalat",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Hokkaido-græskar",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "hokkaido"
+      ],
+      "common": false
+    },
+    {
+      "name": "Hvidkål",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Hvidløg",
+      "category": "VEGETABLE",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "hvidløgsfed"
+      ],
+      "common": true
+    },
+    {
+      "name": "Icebergsalat",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "iceberg"
+      ],
+      "common": false
+    },
+    {
+      "name": "Jalapeño",
+      "category": "VEGETABLE",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "jalapeno"
+      ],
+      "common": false
+    },
+    {
+      "name": "Kartoffel",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "kartofler"
+      ],
+      "common": true
+    },
+    {
+      "name": "Kinakål",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Knoldselleri",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "sellerirod"
+      ],
+      "common": false
+    },
+    {
+      "name": "Løg",
+      "category": "VEGETABLE",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "gult løg",
+        "zittauerløg"
+      ],
+      "common": true
+    },
+    {
+      "name": "Majs",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "majs-korn"
+      ],
+      "common": true
+    },
+    {
+      "name": "Pak choi",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "bok choy"
+      ],
+      "common": false
+    },
+    {
+      "name": "Pastinak",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Peberfrugt",
+      "category": "VEGETABLE",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "paprika"
+      ],
+      "common": true
+    },
+    {
+      "name": "Persillerod",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Porre",
+      "category": "VEGETABLE",
+      "defaultUnit": "PIECE",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Portobello",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "portobellosvamp"
+      ],
+      "common": false
+    },
+    {
+      "name": "Radise",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "radiser"
+      ],
+      "common": false
+    },
+    {
+      "name": "Romainesalat",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "romaine"
+      ],
+      "common": false
+    },
+    {
+      "name": "Rosenkål",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Rucola",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "ruccola"
+      ],
+      "common": false
+    },
+    {
+      "name": "Rød peberfrugt",
+      "category": "VEGETABLE",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "rød peber"
+      ],
+      "common": false
+    },
+    {
+      "name": "Rødbede",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "rødbeder"
+      ],
+      "common": false
+    },
+    {
+      "name": "Rødkål",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Rødløg",
+      "category": "VEGETABLE",
+      "defaultUnit": "PIECE",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Savoykål",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Skalotteløg",
+      "category": "VEGETABLE",
+      "defaultUnit": "PIECE",
+      "aliases": [
+        "skalotte"
+      ],
+      "common": false
+    },
+    {
+      "name": "Spidskål",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Spinat",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "frisk spinat"
+      ],
+      "common": true
+    },
+    {
+      "name": "Squash",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "courgette",
+        "zucchini"
+      ],
+      "common": true
+    },
+    {
+      "name": "Sukkerærter",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Sød kartoffel",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "søde kartofler",
+        "batat"
+      ],
+      "common": false
+    },
+    {
+      "name": "Tomat",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "tomater"
+      ],
+      "common": true
+    },
+    {
+      "name": "Ærter",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "grønne ærter"
+      ],
+      "common": true
+    },
+    {
+      "name": "Østershat",
+      "category": "VEGETABLE",
+      "defaultUnit": "GRAM",
+      "aliases": [
+        "østershatte"
+      ],
+      "common": false
+    },
+    {
+      "name": "Balsamico",
+      "category": "VINEGAR_ACID",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "balsamicoeddike"
+      ],
+      "common": false
+    },
+    {
+      "name": "Citronsaft",
+      "category": "VINEGAR_ACID",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": true
+    },
+    {
+      "name": "Hvidvinseddike",
+      "category": "VINEGAR_ACID",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Lagereddike",
+      "category": "VINEGAR_ACID",
+      "defaultUnit": "MILLILITER",
+      "aliases": [
+        "eddike"
+      ],
+      "common": true
+    },
+    {
+      "name": "Limesaft",
+      "category": "VINEGAR_ACID",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Riseddike",
+      "category": "VINEGAR_ACID",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Rødvinseddike",
+      "category": "VINEGAR_ACID",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    },
+    {
+      "name": "Æblecidereddike",
+      "category": "VINEGAR_ACID",
+      "defaultUnit": "MILLILITER",
+      "aliases": [],
+      "common": false
+    }
+  ]
+}
