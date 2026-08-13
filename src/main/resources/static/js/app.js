@@ -1,9 +1,13 @@
 const PRODUCT_API = '/v1/products';
 const AUTH_API = '/v1/auth';
+const INVENTORY_API = '/v1/inventory';
 
 const categoryLabels = {
-  MEAT: 'Kød', VEGETABLE: 'Grøntsag', FRUIT: 'Frugt', DAIRY: 'Mejeri',
-  DRY_GOODS: 'Tørvarer', SPICE: 'Krydderi', OTHER: 'Andet'
+  BAKING:'Bagning', BREAD:'Brød', DAIRY:'Mejeri', EGG:'Æg', FISH:'Fisk', FROZEN:'Frostvarer',
+  FRUIT:'Frugt', GRAIN_PASTA:'Korn, ris og pasta', HERB:'Urter', LEGUME:'Bælgfrugter', MEAT:'Kød',
+  NUT_SEED:'Nødder og frø', OIL_FAT:'Olie og fedt', OTHER:'Andet', PRESERVED:'Konserves',
+  SAUCE_CONDIMENT:'Saucer og tilbehør', SPICE:'Krydderier', STOCK:'Fond og bouillon',
+  SWEETENER:'Sødemidler', VEGETABLE:'Grøntsager', VINEGAR_ACID:'Eddike og syre', DRY_GOODS:'Tørvarer'
 };
 const unitLabels = { GRAM: 'Gram', MILLILITER: 'Milliliter', PIECE: 'Styk' };
 const categoryIcons = {
@@ -25,7 +29,19 @@ const list = document.querySelector('#product-list');
 const loading = document.querySelector('#loading-message');
 const emptyState = document.querySelector('#empty-state');
 const errorMessage = document.querySelector('#error-message');
-const successMessage = document.querySelector('#success-message');
+const templateSearch = document.querySelector('#template-search');
+const templateResults = document.querySelector('#template-results');
+const toast = document.querySelector('#toast');
+const editDialog = document.querySelector('#edit-product-dialog');
+const editForm = document.querySelector('#edit-product-form');
+const editError = document.querySelector('#edit-product-error');
+let searchTimer;
+let searchRequestId = 0;
+let toastTimer;
+let currentProducts = [];
+let inventorySearchTimer;
+let inventorySearchRequestId = 0;
+let selectedInventoryCandidate = null;
 
 let csrfToken = '';
 let registrationEnabled = false;
@@ -35,9 +51,20 @@ function showMessage(element, message) {
   element.hidden = !message;
 }
 
+function showToast(message, variant = 'success') {
+  clearTimeout(toastTimer);
+  toast.textContent = `${variant === 'success' ? '✓ ' : ''}${message}`;
+  toast.classList.toggle('error-toast', variant === 'error');
+  toast.setAttribute('role', variant === 'error' ? 'alert' : 'status');
+  toast.hidden = false;
+  toastTimer = setTimeout(() => { toast.hidden = true; }, 2600);
+}
+
 function apiError(response, body) {
   const detail = body?.message || body?.errors?.[0];
-  return new Error(detail || `Serveren svarede med status ${response.status}.`);
+  const error = new Error(detail || `Serveren svarede med status ${response.status}.`);
+  error.status = response.status;
+  return error;
 }
 
 async function jsonRequest(url, options = {}) {
@@ -64,6 +91,7 @@ function showLogin() {
 function showAuthenticatedApp() {
   authScreen.hidden = true;
   application.hidden = false;
+  showView('inventory');
   loadProducts();
 }
 
@@ -71,6 +99,7 @@ function showUnauthenticatedApp() {
   application.hidden = true;
   authScreen.hidden = false;
   list.replaceChildren();
+  document.querySelector('#inventory-list').replaceChildren();
   showLogin();
 }
 
@@ -148,12 +177,53 @@ async function logout() {
 function setFormOpen(open) {
   formPanel.hidden = !open;
   openFormButton.setAttribute('aria-expanded', String(open));
-  if (open) document.querySelector('#name').focus();
+  clearTimeout(searchTimer);
+  searchRequestId++;
+  templateSearch.value = '';
+  templateResults.replaceChildren();
+  productForm.hidden = true;
+  productForm.reset();
+  if (open) { templateSearch.focus(); searchTemplates(''); }
+}
+
+function templateRow(template) {
+  const row = document.createElement('div'); row.className = 'template-row';
+  const text = document.createElement('div');
+  const name = document.createElement('p'); name.textContent = template.name;
+  const meta = document.createElement('small'); meta.textContent = `${categoryLabels[template.category]} · ${unitLabels[template.defaultUnit]}`;
+  const add = document.createElement('button'); add.type = 'button'; add.className = 'template-add'; add.textContent = 'Tilføj';
+  add.addEventListener('click', () => addTemplate(template.id, add));
+  text.append(name, meta); row.append(text, add); return row;
+}
+
+async function searchTemplates(search) {
+  const requestId = ++searchRequestId;
+  try {
+    const templates = await jsonRequest(`/v1/product-templates?search=${encodeURIComponent(search)}`);
+    if (requestId !== searchRequestId || templateSearch.value !== search) return;
+    templateResults.replaceChildren(...templates.slice(0, 12).map(templateRow));
+  } catch (error) { if (requestId === searchRequestId) showToast(`Kataloget kunne ikke hentes. ${error.message}`, 'error'); }
+}
+
+async function addTemplate(id, button) {
+  button.disabled = true;
+  try {
+    const created = await jsonRequest(`/v1/products/from-template/${id}`, { method: 'POST' });
+    await loadProducts(); showToast(`${created.name} er tilføjet`);
+  } catch (error) { showToast(error.message, 'error'); }
+  finally { button.disabled = false; }
 }
 
 function createProductCard(product) {
   const card = document.createElement('article');
   card.className = 'product-card';
+  card.tabIndex = 0;
+  card.setAttribute('role', 'button');
+  card.setAttribute('aria-label', `Rediger ${product.name}`);
+  card.addEventListener('click', () => openProductEditor(product));
+  card.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openProductEditor(product); }
+  });
   const icon = document.createElement('span');
   icon.className = 'product-icon';
   icon.setAttribute('aria-hidden', 'true');
@@ -170,12 +240,50 @@ function createProductCard(product) {
   return card;
 }
 
+function openProductEditor(product) {
+  showMessage(editError, '');
+  document.querySelector('#edit-product-id').value = product.id;
+  document.querySelector('#edit-product-name').value = product.name;
+  document.querySelector('#edit-product-category').value = product.category;
+  document.querySelector('#edit-product-unit').value = product.defaultUnit;
+  document.querySelector('#delete-product-confirmation').hidden = true;
+  document.querySelector('#request-delete-product').hidden = false;
+  editDialog.showModal();
+  document.querySelector('#edit-product-name').focus();
+}
+
+function closeProductEditor() {
+  if (editDialog.open) editDialog.close();
+  editForm.reset();
+  showMessage(editError, '');
+  document.querySelector('#delete-product-confirmation').hidden = true;
+}
+
+async function updateProduct(event) {
+  event.preventDefault();
+  showMessage(editError, '');
+  const data = new FormData(editForm);
+  const button = document.querySelector('#save-edit-product');
+  button.disabled = true;
+  try {
+    const updated = await jsonRequest(`${PRODUCT_API}/${data.get('id')}`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: data.get('name').trim(), category: data.get('category'), defaultUnit: data.get('defaultUnit') })
+    });
+    closeProductEditor();
+    await loadProducts();
+    showToast(`${updated.name} er gemt`);
+  } catch (error) { showMessage(editError, `Produktet kunne ikke gemmes. ${error.message}`); }
+  finally { button.disabled = false; }
+}
+
 async function loadProducts() {
   loading.hidden = false;
   emptyState.hidden = true;
   showMessage(errorMessage, '');
   try {
     const products = await jsonRequest(PRODUCT_API);
+    currentProducts = products;
     list.replaceChildren(...products.map(createProductCard));
     emptyState.hidden = products.length !== 0;
   } catch (error) {
@@ -186,10 +294,162 @@ async function loadProducts() {
   }
 }
 
+function showView(view) {
+  const inventoryActive = view === 'inventory';
+  document.querySelector('#products-view').hidden = inventoryActive;
+  document.querySelector('#inventory-view').hidden = !inventoryActive;
+  document.querySelector('#show-products').classList.toggle('active', !inventoryActive);
+  document.querySelector('#show-inventory').classList.toggle('active', inventoryActive);
+  openFormButton.hidden = inventoryActive;
+  if (inventoryActive) { setFormOpen(false); loadInventory(); }
+}
+
+function displayUnit(unit) {
+  return { GRAM: 'g', MILLILITER: 'ml', PIECE: 'stk' }[unit] || unit;
+}
+
+function inventoryConversion(quantity, unit) {
+  const value = Number(quantity);
+  if (!Number.isInteger(value) || value < 1000 || (unit !== 'GRAM' && unit !== 'MILLILITER')) return '';
+  const converted = new Intl.NumberFormat('da-DK', { maximumFractionDigits: 3 }).format(value / 1000);
+  return `= ${converted} ${unit === 'GRAM' ? 'kg' : 'liter'}`;
+}
+
+function updateConversion(input, unit, output) {
+  output.textContent = inventoryConversion(input.value, unit);
+}
+
+function createInventoryCard(item) {
+  const card = document.createElement('article');
+  card.className = 'product-card inventory-card'; card.tabIndex = 0; card.setAttribute('role', 'button');
+  card.setAttribute('aria-label', `Rediger lagerbeholdning for ${item.product.name}`);
+  const open = () => openInventoryEditor(item);
+  card.addEventListener('click', open);
+  card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); } });
+  const content = document.createElement('div');
+  const name = document.createElement('h3'); name.className = 'product-name'; name.textContent = item.product.name;
+  const amount = document.createElement('p'); amount.className = 'product-meta inventory-amount'; amount.textContent = `${item.quantity} ${displayUnit(item.unit)}`;
+  content.append(name, amount); card.append(content); return card;
+}
+
+async function loadInventory() {
+  const loadingElement = document.querySelector('#inventory-loading');
+  const empty = document.querySelector('#inventory-empty');
+  loadingElement.hidden = false; empty.hidden = true;
+  try {
+    const items = await jsonRequest(INVENTORY_API);
+    document.querySelector('#inventory-list').replaceChildren(...items.map(createInventoryCard));
+    empty.hidden = items.length !== 0;
+  } catch (error) {
+    document.querySelector('#inventory-list').replaceChildren();
+    showToast(`Lageret kunne ikke hentes. ${error.message}`, 'error');
+  } finally { loadingElement.hidden = true; }
+}
+
+function normalizeName(name) { return name.trim().toLocaleLowerCase('da-DK'); }
+
+function inventoryCandidateRow(candidate) {
+  const row = document.createElement('button'); row.type = 'button'; row.className = 'template-row inventory-result';
+  const text = document.createElement('span');
+  const name = document.createElement('strong'); name.textContent = candidate.name;
+  const meta = document.createElement('small'); meta.textContent = `${categoryLabels[candidate.category] || candidate.category} · ${displayUnit(candidate.defaultUnit)}`;
+  text.append(name, meta); row.append(text); row.addEventListener('click', () => selectInventoryCandidate(candidate)); return row;
+}
+
+async function searchInventoryCandidates(search) {
+  const requestId = ++inventorySearchRequestId;
+  try {
+    const [products, templates] = await Promise.all([
+      jsonRequest(PRODUCT_API),
+      jsonRequest(`/v1/product-templates?search=${encodeURIComponent(search)}`)
+    ]);
+    const input = document.querySelector('#inventory-search');
+    if (requestId !== inventorySearchRequestId || input.value !== search) return;
+    currentProducts = products;
+    const query = normalizeName(search);
+    const matchingProducts = products.filter(product => !query || normalizeName(product.name).includes(query))
+      .map(product => ({ ...product, source: 'product' }));
+    const ownedNames = new Set(products.map(product => normalizeName(product.name)));
+    const catalog = templates.filter(template => !ownedNames.has(normalizeName(template.name)))
+      .map(template => ({ ...template, source: 'template' }));
+    document.querySelector('#inventory-search-results').replaceChildren(
+      ...[...matchingProducts, ...catalog].slice(0, 20).map(inventoryCandidateRow)
+    );
+  } catch (error) { if (requestId === inventorySearchRequestId) showToast(`Søgningen mislykkedes. ${error.message}`, 'error'); }
+}
+
+function resetInventoryAdd() {
+  clearTimeout(inventorySearchTimer); inventorySearchRequestId++; selectedInventoryCandidate = null;
+  document.querySelector('#inventory-search').value = '';
+  document.querySelector('#inventory-search-results').replaceChildren();
+  document.querySelector('#inventory-search-step').hidden = false;
+  document.querySelector('#inventory-amount-form').hidden = true;
+  document.querySelector('#inventory-amount-form').reset();
+  document.querySelector('#inventory-add-conversion').textContent = '';
+  showMessage(document.querySelector('#inventory-add-error'), '');
+}
+
+function openInventoryAdd() {
+  resetInventoryAdd(); document.querySelector('#inventory-add-dialog').showModal();
+  document.querySelector('#inventory-search').focus(); searchInventoryCandidates('');
+}
+
+function closeInventoryAdd() { const dialog = document.querySelector('#inventory-add-dialog'); if (dialog.open) dialog.close(); resetInventoryAdd(); }
+
+function selectInventoryCandidate(candidate) {
+  selectedInventoryCandidate = candidate;
+  document.querySelector('#inventory-search-step').hidden = true;
+  document.querySelector('#inventory-amount-form').hidden = false;
+  document.querySelector('#inventory-selected-name').textContent = candidate.name;
+  document.querySelector('#inventory-selected-unit').textContent = displayUnit(candidate.defaultUnit);
+  const quantityInput = document.querySelector('#inventory-add-quantity');
+  quantityInput.dataset.unit = candidate.defaultUnit;
+  updateConversion(quantityInput, candidate.defaultUnit, document.querySelector('#inventory-add-conversion'));
+  quantityInput.focus();
+}
+
+async function addInventory(event) {
+  event.preventDefault(); if (!selectedInventoryCandidate) return;
+  const quantity = Number(document.querySelector('#inventory-add-quantity').value);
+  const url = selectedInventoryCandidate.source === 'product' ? INVENTORY_API : `${INVENTORY_API}/from-template/${selectedInventoryCandidate.id}`;
+  const payload = selectedInventoryCandidate.source === 'product' ? { productId: selectedInventoryCandidate.id, quantity } : { quantity };
+  try {
+    await jsonRequest(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    const name = selectedInventoryCandidate.name; closeInventoryAdd(); await Promise.all([loadInventory(), loadProducts()]);
+    showToast(`${name} er tilføjet til lageret`);
+  } catch (error) { showMessage(document.querySelector('#inventory-add-error'), error.message); }
+}
+
+function openInventoryEditor(item) {
+  document.querySelector('#edit-inventory-id').value = item.id;
+  document.querySelector('#edit-inventory-name').textContent = item.product.name;
+  document.querySelector('#edit-inventory-quantity').value = item.quantity;
+  document.querySelector('#edit-inventory-unit').textContent = displayUnit(item.unit);
+  document.querySelector('#edit-inventory-quantity').dataset.unit = item.unit;
+  updateConversion(document.querySelector('#edit-inventory-quantity'), item.unit,
+    document.querySelector('#edit-inventory-conversion'));
+  document.querySelector('#edit-inventory-dialog').showModal(); document.querySelector('#edit-inventory-quantity').focus();
+}
+
+function closeInventoryEditor() { const dialog = document.querySelector('#edit-inventory-dialog'); if (dialog.open) dialog.close(); showMessage(document.querySelector('#edit-inventory-error'), ''); }
+
+async function saveInventory(event) {
+  event.preventDefault(); const id = document.querySelector('#edit-inventory-id').value;
+  try {
+    await jsonRequest(`${INVENTORY_API}/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ quantity: Number(document.querySelector('#edit-inventory-quantity').value) }) });
+    closeInventoryEditor(); await loadInventory(); showToast('Lagerbeholdningen er gemt');
+  } catch (error) { showMessage(document.querySelector('#edit-inventory-error'), error.message); }
+}
+
+async function deleteInventory() {
+  const id = document.querySelector('#edit-inventory-id').value;
+  try { await jsonRequest(`${INVENTORY_API}/${id}`, { method: 'DELETE' }); closeInventoryEditor(); await loadInventory(); showToast('Varen er fjernet fra lageret'); }
+  catch (error) { showMessage(document.querySelector('#edit-inventory-error'), error.message); }
+}
+
 async function createProduct(event) {
   event.preventDefault();
   showMessage(errorMessage, '');
-  showMessage(successMessage, '');
   saveButton.disabled = true;
   saveButton.textContent = 'Gemmer…';
   const data = new FormData(productForm);
@@ -203,7 +463,7 @@ async function createProduct(event) {
     productForm.reset();
     setFormOpen(false);
     await loadProducts();
-    showMessage(successMessage, `${created.name} blev tilføjet.`);
+    showToast(`${created.name} er tilføjet`);
   } catch (error) {
     showMessage(errorMessage, `Produktet kunne ikke gemmes. ${error.message}`);
   } finally {
@@ -212,14 +472,88 @@ async function createProduct(event) {
   }
 }
 
+function requestProductDeletion() {
+  const name = document.querySelector('#edit-product-name').value.trim();
+  document.querySelector('#delete-product-question').textContent = `Er du sikker på, at du vil fjerne "${name}"?`;
+  document.querySelector('#request-delete-product').hidden = true;
+  document.querySelector('#delete-product-confirmation').hidden = false;
+  document.querySelector('#keep-product').focus();
+}
+
+function cancelProductDeletion() {
+  document.querySelector('#delete-product-confirmation').hidden = true;
+  document.querySelector('#request-delete-product').hidden = false;
+  document.querySelector('#request-delete-product').focus();
+}
+
+async function deleteProduct() {
+  const id = document.querySelector('#edit-product-id').value;
+  const name = document.querySelector('#edit-product-name').value.trim();
+  const button = document.querySelector('#confirm-delete-product');
+  button.disabled = true; showMessage(editError, '');
+  try {
+    await jsonRequest(`${PRODUCT_API}/${id}`, { method: 'DELETE' });
+    closeProductEditor(); await loadProducts(); showToast(`${name} er fjernet`);
+  } catch (error) {
+    const message = error.status === 409
+      ? 'Produktet findes stadig på lager. Fjern det fra lageret først.'
+      : `Produktet kunne ikke fjernes. ${error.message}`;
+    showMessage(editError, message);
+  } finally { button.disabled = false; }
+}
+
 loginForm.addEventListener('submit', authenticate);
 registerForm.addEventListener('submit', register);
 document.querySelector('#logout').addEventListener('click', logout);
 openFormButton.addEventListener('click', () => setFormOpen(formPanel.hidden));
 document.querySelector('#close-form').addEventListener('click', () => setFormOpen(false));
 document.querySelector('#empty-add').addEventListener('click', () => setFormOpen(true));
-document.querySelector('#refresh-products').addEventListener('click', loadProducts);
 productForm.addEventListener('submit', createProduct);
+document.querySelector('#show-custom-product').addEventListener('click', () => { productForm.hidden = !productForm.hidden; if (!productForm.hidden) document.querySelector('#name').focus(); });
+templateSearch.addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  searchRequestId++;
+  const search = templateSearch.value;
+  if (search === '') searchTemplates('');
+  else searchTimer = setTimeout(() => searchTemplates(search), 250);
+});
+editForm.addEventListener('submit', updateProduct);
+document.querySelector('#close-edit-product').addEventListener('click', closeProductEditor);
+document.querySelector('#cancel-edit-product').addEventListener('click', closeProductEditor);
+editDialog.addEventListener('close', () => { editForm.reset(); showMessage(editError, ''); });
+document.querySelector('#edit-product-category').replaceChildren(
+  ...[...document.querySelector('#category').options].map(option => option.cloneNode(true))
+);
+document.querySelector('#request-delete-product').addEventListener('click', requestProductDeletion);
+document.querySelector('#keep-product').addEventListener('click', cancelProductDeletion);
+document.querySelector('#confirm-delete-product').addEventListener('click', deleteProduct);
+document.querySelector('#show-products').addEventListener('click', () => showView('products'));
+document.querySelector('#show-inventory').addEventListener('click', () => showView('inventory'));
+document.querySelector('#open-inventory-add').addEventListener('click', openInventoryAdd);
+document.querySelector('#inventory-empty-add').addEventListener('click', openInventoryAdd);
+document.querySelector('#close-inventory-add').addEventListener('click', closeInventoryAdd);
+document.querySelector('#inventory-add-dialog').addEventListener('close', resetInventoryAdd);
+document.querySelector('#back-inventory-search').addEventListener('click', () => {
+  selectedInventoryCandidate = null;
+  document.querySelector('#inventory-amount-form').hidden = true;
+  document.querySelector('#inventory-search-step').hidden = false;
+  document.querySelector('#inventory-search').focus();
+});
+document.querySelector('#inventory-amount-form').addEventListener('submit', addInventory);
+document.querySelector('#inventory-add-quantity').addEventListener('input', event =>
+  updateConversion(event.target, event.target.dataset.unit, document.querySelector('#inventory-add-conversion')));
+document.querySelector('#inventory-search').addEventListener('input', event => {
+  clearTimeout(inventorySearchTimer); inventorySearchRequestId++;
+  const search = event.target.value;
+  if (!search) searchInventoryCandidates('');
+  else inventorySearchTimer = setTimeout(() => searchInventoryCandidates(search), 250);
+});
+document.querySelector('#edit-inventory-form').addEventListener('submit', saveInventory);
+document.querySelector('#edit-inventory-quantity').addEventListener('input', event =>
+  updateConversion(event.target, event.target.dataset.unit, document.querySelector('#edit-inventory-conversion')));
+document.querySelector('#delete-inventory').addEventListener('click', deleteInventory);
+document.querySelector('#close-edit-inventory').addEventListener('click', closeInventoryEditor);
+document.querySelector('#cancel-edit-inventory').addEventListener('click', closeInventoryEditor);
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('/service-worker.js')

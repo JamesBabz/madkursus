@@ -4,12 +4,59 @@ info:
   version: v1
   description: API for managing products and inventory.
 servers:
-  - url: /
+  - url: http://localhost:8080
+    description: Local development
+  - url: https://madkursus.jamesbabz.duckdns.org
+    description: Production
 tags:
   - name: product
   - name: inventory
   - name: auth
+  - name: product-template
 paths:
+  /v1/product-templates:
+    get:
+      tags: [product-template]
+      operationId: getProductTemplates
+      parameters:
+        - {name: search, in: query, required: false, schema: {type: string}}
+        - {name: common, in: query, required: false, schema: {type: boolean}}
+      responses:
+        '200':
+          description: Matching templates
+          content:
+            application/json:
+              schema: {type: array, items: {$ref: '#/components/schemas/ProductTemplate'}}
+  /v1/product-templates/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      tags: [product-template]
+      operationId: getProductTemplate
+      responses:
+        '200':
+          description: Product template
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ProductTemplate'}
+        '404': {$ref: '#/components/responses/notFound'}
+  /v1/products/from-template/{templateId}:
+    parameters:
+      - name: templateId
+        in: path
+        required: true
+        schema: {type: string, format: uuid}
+    post:
+      tags: [product]
+      operationId: createProductFromTemplate
+      responses:
+        '201':
+          description: Product created from template
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Product'}
+        '404': {$ref: '#/components/responses/notFound'}
+        '409': {$ref: '#/components/responses/conflict'}
   /v1/auth/login:
     post:
       tags: [auth]
@@ -171,7 +218,7 @@ paths:
         required: true
         content:
           application/json:
-            schema: {$ref: '#/components/schemas/CreateInventoryItem'}
+            schema: {$ref: '#/components/schemas/AddInventoryItem'}
       responses:
         '201':
           description: Inventory item created
@@ -202,13 +249,9 @@ paths:
         required: true
         content:
           application/json:
-            schema: {$ref: '#/components/schemas/CreateInventoryItem'}
+            schema: {$ref: '#/components/schemas/UpdateInventoryItem'}
       responses:
-        '200':
-          description: Inventory item updated
-          content:
-            application/json:
-              schema: {$ref: '#/components/schemas/InventoryItem'}
+        '204': {description: 'Inventory amount updated, or row removed when quantity is zero'}
         '400': {$ref: '#/components/responses/badRequest'}
         '404': {$ref: '#/components/responses/notFound'}
         '500': {$ref: '#/components/responses/serverException'}
@@ -219,6 +262,28 @@ paths:
         '204': {description: Inventory item deleted}
         '404': {$ref: '#/components/responses/notFound'}
         '500': {$ref: '#/components/responses/serverException'}
+  /v1/inventory/from-template/{templateId}:
+    parameters:
+      - name: templateId
+        in: path
+        required: true
+        schema: {type: string, format: uuid}
+    post:
+      tags: [inventory]
+      operationId: createInventoryItemFromTemplate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/AddInventoryQuantity'}
+      responses:
+        '201':
+          description: Inventory stock added from template
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/InventoryItem'}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '404': {$ref: '#/components/responses/notFound'}
 components:
   parameters:
     id:
@@ -288,7 +353,7 @@ components:
         token: {type: string}
     ProductCategory:
       type: string
-      enum: [MEAT, VEGETABLE, FRUIT, DAIRY, DRY_GOODS, SPICE, OTHER]
+      enum: [BAKING, BREAD, DAIRY, EGG, FISH, FROZEN, FRUIT, GRAIN_PASTA, HERB, LEGUME, MEAT, NUT_SEED, OIL_FAT, OTHER, PRESERVED, SAUCE_CONDIMENT, SPICE, STOCK, SWEETENER, VEGETABLE, VINEGAR_ACID, DRY_GOODS]
     Unit:
       type: string
       enum: [GRAM, MILLILITER, PIECE]
@@ -306,20 +371,39 @@ components:
           required: [id]
           properties:
             id: {type: string, format: uuid}
-    CreateInventoryItem:
+    ProductTemplate:
       type: object
-      required: [productId, quantity, unit]
+      required: [id, name, category, defaultUnit, aliases, common]
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string}
+        category: {$ref: '#/components/schemas/ProductCategory'}
+        defaultUnit: {$ref: '#/components/schemas/Unit'}
+        aliases: {type: array, items: {type: string}}
+        common: {type: boolean}
+    AddInventoryItem:
+      type: object
+      required: [productId, quantity]
       properties:
         productId: {type: string, format: uuid}
-        quantity: {type: number, minimum: 0, example: 4}
-        unit: {$ref: '#/components/schemas/Unit'}
+        quantity: {type: number, minimum: 0, exclusiveMinimum: true, multipleOf: 1, example: 500}
+    AddInventoryQuantity:
+      type: object
+      required: [quantity]
+      properties:
+        quantity: {type: number, minimum: 0, exclusiveMinimum: true, multipleOf: 1, example: 10}
+    UpdateInventoryItem:
+      type: object
+      required: [quantity]
+      properties:
+        quantity: {type: number, minimum: 0, multipleOf: 1, example: 800}
     InventoryItem:
       type: object
       required: [id, product, quantity, unit]
       properties:
         id: {type: string, format: uuid}
         product: {$ref: '#/components/schemas/Product'}
-        quantity: {type: number, minimum: 0}
+        quantity: {type: number, minimum: 0, multipleOf: 1}
         unit: {$ref: '#/components/schemas/Unit'}
     ErrorMessage:
       type: object

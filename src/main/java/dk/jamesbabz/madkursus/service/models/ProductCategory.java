@@ -1,3 +1,7 @@
 package dk.jamesbabz.madkursus.service.models;
 
-public enum ProductCategory { MEAT, VEGETABLE, FRUIT, DAIRY, DRY_GOODS, SPICE, OTHER }
+public enum ProductCategory {
+    BAKING, BREAD, DAIRY, EGG, FISH, FROZEN, FRUIT, GRAIN_PASTA, HERB, LEGUME, MEAT,
+    NUT_SEED, OIL_FAT, OTHER, PRESERVED, SAUCE_CONDIMENT, SPICE, STOCK, SWEETENER,
+    VEGETABLE, VINEGAR_ACID, DRY_GOODS
+}

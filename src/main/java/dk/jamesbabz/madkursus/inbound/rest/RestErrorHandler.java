@@ -9,6 +9,7 @@ import dk.jamesbabz.madkursus.service.exceptions.ResourceNotFoundException;
 import dk.jamesbabz.madkursus.service.exceptions.DuplicateUsernameException;
 import dk.jamesbabz.madkursus.service.exceptions.RegistrationDisabledException;
 import dk.jamesbabz.madkursus.service.exceptions.InvalidInputException;
+import dk.jamesbabz.madkursus.service.exceptions.DuplicateProductException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -32,8 +33,8 @@ public class RestErrorHandler {
         return response(HttpStatus.CONFLICT, "The resource is still referenced by other data", List.of());
     }
 
-    @ExceptionHandler(DuplicateUsernameException.class)
-    ResponseEntity<ErrorMessageDTO> duplicateUsername(DuplicateUsernameException exception) {
+    @ExceptionHandler({DuplicateUsernameException.class, DuplicateProductException.class})
+    ResponseEntity<ErrorMessageDTO> duplicate(RuntimeException exception) {
         return response(HttpStatus.CONFLICT, exception.getMessage(), List.of());
     }
 

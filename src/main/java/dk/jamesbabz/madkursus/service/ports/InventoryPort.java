@@ -8,7 +8,8 @@ import dk.jamesbabz.madkursus.service.models.InventoryItem;
 
 public interface InventoryPort {
     InventoryItem save(InventoryItem item);
-    Optional<InventoryItem> findById(UUID id);
-    List<InventoryItem> findAll();
-    void deleteById(UUID id);
+    Optional<InventoryItem> findByIdAndUserId(UUID id, UUID userId);
+    Optional<InventoryItem> findByProductIdAndUserId(UUID productId, UUID userId);
+    List<InventoryItem> findAllByUserId(UUID userId);
+    void deleteByIdAndUserId(UUID id, UUID userId);
 }

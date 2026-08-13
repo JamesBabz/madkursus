@@ -46,26 +46,40 @@
       <h1>Madkursus</h1>
     </div>
     <div class="header-actions">
-    <button class="add-button" id="open-form" type="button" aria-controls="product-form-panel" aria-expanded="false">
-      <span aria-hidden="true">+</span> Tilføj
-    </button>
     <button class="logout-button" id="logout" type="button">Log ud</button>
     </div>
   </header>
 
+  <nav class="primary-nav" aria-label="Primær navigation">
+    <button class="nav-button active" id="show-inventory" type="button">Lager</button>
+    <button class="nav-button" id="show-products" type="button">Produkter</button>
+  </nav>
+
   <main>
+    <div id="products-view">
     <section class="form-panel" id="product-form-panel" aria-labelledby="form-title" hidden>
       <div class="section-heading">
-        <h2 id="form-title">Nyt produkt</h2>
+        <h2 id="form-title">Tilføj produkt</h2>
         <button class="icon-button" id="close-form" type="button" aria-label="Luk formular">×</button>
       </div>
-      <form id="product-form">
+      <label for="template-search">Søg produkter</label>
+      <input id="template-search" type="search" placeholder="Fx løg, oksefars eller soya" autocomplete="off">
+      <div class="template-results" id="template-results" aria-live="polite"></div>
+      <button class="secondary-button custom-toggle" id="show-custom-product" type="button">Kan du ikke finde det? Opret selv</button>
+      <form id="product-form" hidden>
         <label for="name">Navn</label>
         <input id="name" name="name" type="text" autocomplete="off" maxlength="100" required>
 
         <label for="category">Kategori</label>
         <select id="category" name="category" required>
-          <option value="MEAT">Kød</option>
+          <option value="BAKING">Bagning</option><option value="BREAD">Brød</option>
+          <option value="EGG">Æg</option><option value="FISH">Fisk</option><option value="FROZEN">Frostvarer</option>
+          <option value="GRAIN_PASTA">Korn, ris og pasta</option><option value="HERB">Urter</option>
+          <option value="LEGUME">Bælgfrugter</option><option value="MEAT">Kød</option>
+          <option value="NUT_SEED">Nødder og frø</option><option value="OIL_FAT">Olie og fedt</option>
+          <option value="PRESERVED">Konserves</option><option value="SAUCE_CONDIMENT">Saucer og tilbehør</option>
+          <option value="STOCK">Fond og bouillon</option><option value="SWEETENER">Sødemidler</option>
+          <option value="VINEGAR_ACID">Eddike og syre</option>
           <option value="VEGETABLE">Grøntsag</option>
           <option value="FRUIT">Frugt</option>
           <option value="DAIRY">Mejeri</option>
@@ -86,25 +100,107 @@
     </section>
 
     <div class="notice error" id="error-message" role="alert" hidden></div>
-    <div class="notice success" id="success-message" role="status" hidden></div>
-
     <section aria-labelledby="products-title">
       <div class="section-heading product-heading">
         <div>
           <p class="eyebrow">Produkter</p>
           <h2 id="products-title">Dit udvalg</h2>
         </div>
-        <button class="text-button" id="refresh-products" type="button">Opdater</button>
+        <button class="add-button section-add-button" id="open-form" type="button" aria-controls="product-form-panel" aria-expanded="false"><span aria-hidden="true">+</span> Tilføj produkt</button>
       </div>
       <p class="loading" id="loading-message" role="status">Henter produkter…</p>
       <div class="product-list" id="product-list" aria-live="polite"></div>
       <div class="empty-state" id="empty-state" hidden>
-        <p>Der er ingen produkter endnu.</p>
-        <button class="secondary-button" id="empty-add" type="button">Tilføj dit første produkt</button>
+        <p>Du har ingen produkter endnu.</p>
+        <button class="secondary-button" id="empty-add" type="button">+ Tilføj produkt</button>
+      </div>
+    </section>
+    </div>
+
+    <section id="inventory-view" aria-labelledby="inventory-title" hidden>
+      <div class="section-heading product-heading">
+        <div><p class="eyebrow">Lager</p><h2 id="inventory-title">Det har du hjemme</h2></div>
+        <button class="add-button section-add-button" id="open-inventory-add" type="button"><span aria-hidden="true">+</span> Tilføj vare</button>
+      </div>
+      <p class="loading" id="inventory-loading" role="status">Henter lager…</p>
+      <div class="product-list" id="inventory-list" aria-live="polite"></div>
+      <div class="empty-state" id="inventory-empty" hidden>
+        <p>Dit lager er tomt endnu.</p>
+        <button class="secondary-button" id="inventory-empty-add" type="button">+ Tilføj vare</button>
       </div>
     </section>
   </main>
   </div>
+
+  <dialog class="edit-dialog" id="edit-product-dialog" aria-labelledby="edit-product-title">
+    <form id="edit-product-form">
+      <div class="section-heading">
+        <h2 id="edit-product-title">Rediger produkt</h2>
+        <button class="icon-button" id="close-edit-product" type="button" aria-label="Luk redigering">×</button>
+      </div>
+      <input id="edit-product-id" name="id" type="hidden">
+      <label for="edit-product-name">Navn</label>
+      <input id="edit-product-name" name="name" type="text" maxlength="100" required>
+      <label for="edit-product-category">Kategori</label>
+      <select id="edit-product-category" name="category" required></select>
+      <label for="edit-product-unit">Standardenhed</label>
+      <select id="edit-product-unit" name="defaultUnit" required>
+        <option value="GRAM">Gram</option><option value="MILLILITER">Milliliter</option><option value="PIECE">Styk</option>
+      </select>
+      <div class="notice error" id="edit-product-error" role="alert" hidden></div>
+      <button class="danger-button" id="request-delete-product" type="button">Fjern produkt</button>
+      <section class="inline-confirmation" id="delete-product-confirmation" aria-live="polite" hidden>
+        <p id="delete-product-question"></p>
+        <div class="dialog-actions">
+          <button class="danger-button" id="confirm-delete-product" type="button">Fjern</button>
+          <button class="secondary-button" id="keep-product" type="button">Behold</button>
+        </div>
+      </section>
+      <div class="dialog-actions">
+        <button class="secondary-button" id="cancel-edit-product" type="button">Annuller</button>
+        <button class="primary-button" id="save-edit-product" type="submit">Gem</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="edit-dialog" id="inventory-add-dialog" aria-labelledby="inventory-add-title">
+    <div class="section-heading">
+      <h2 id="inventory-add-title">Tilføj til lager</h2>
+      <button class="icon-button" id="close-inventory-add" type="button" aria-label="Luk">×</button>
+    </div>
+    <div id="inventory-search-step">
+      <label for="inventory-search">Søg varer</label>
+      <input id="inventory-search" type="search" placeholder="Fx æg, oksefars eller soya" autocomplete="off">
+      <div class="template-results" id="inventory-search-results" aria-live="polite"></div>
+    </div>
+    <form id="inventory-amount-form" hidden>
+      <h3 id="inventory-selected-name"></h3>
+      <label for="inventory-add-quantity">Mængde</label>
+      <div class="quantity-field"><input id="inventory-add-quantity" name="quantity" type="number" inputmode="numeric" min="1" step="1" required><span id="inventory-selected-unit"></span></div>
+      <p class="quantity-conversion" id="inventory-add-conversion" aria-live="polite"></p>
+      <div class="notice error" id="inventory-add-error" role="alert" hidden></div>
+      <div class="dialog-actions">
+        <button class="secondary-button" id="back-inventory-search" type="button">Tilbage</button>
+        <button class="primary-button" type="submit">Tilføj</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="edit-dialog" id="edit-inventory-dialog" aria-labelledby="edit-inventory-title">
+    <form id="edit-inventory-form">
+      <div class="section-heading"><h2 id="edit-inventory-title">Rediger lager</h2><button class="icon-button" id="close-edit-inventory" type="button" aria-label="Luk">×</button></div>
+      <input id="edit-inventory-id" type="hidden">
+      <h3 id="edit-inventory-name"></h3>
+      <label for="edit-inventory-quantity">På lager</label>
+      <div class="quantity-field"><input id="edit-inventory-quantity" type="number" inputmode="numeric" min="0" step="1" required><span id="edit-inventory-unit"></span></div>
+      <p class="quantity-conversion" id="edit-inventory-conversion" aria-live="polite"></p>
+      <div class="notice error" id="edit-inventory-error" role="alert" hidden></div>
+      <button class="danger-button" id="delete-inventory" type="button">Fjern fra lager</button>
+      <div class="dialog-actions"><button class="secondary-button" id="cancel-edit-inventory" type="button">Annuller</button><button class="primary-button" type="submit">Gem</button></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="/js/app.js" defer></script>
 </body>

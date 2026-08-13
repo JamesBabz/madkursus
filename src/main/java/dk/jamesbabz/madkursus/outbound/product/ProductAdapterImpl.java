@@ -27,4 +27,10 @@ public class ProductAdapterImpl implements ProductPort {
     }
     @Transactional
     public void deleteByIdAndUserId(UUID id, UUID userId) { repository.deleteByIdAndUserId(id, userId); }
+    public boolean existsByUserIdAndNormalizedName(UUID userId, String name) {
+        return repository.existsByUserIdAndNameIgnoreCase(userId, name);
+    }
+    public Optional<Product> findByUserIdAndNormalizedName(UUID userId, String name) {
+        return repository.findByUserIdAndNameIgnoreCase(userId, name).map(mapper::toModel);
+    }
 }

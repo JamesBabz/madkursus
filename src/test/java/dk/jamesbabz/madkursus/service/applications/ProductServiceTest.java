@@ -33,6 +33,8 @@ class ProductServiceTest {
         UUID id = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         when(currentUserProvider.currentUserId()).thenReturn(userId);
+        when(port.existsByUserIdAndNormalizedName(org.mockito.ArgumentMatchers.eq(userId),
+                org.mockito.ArgumentMatchers.anyString())).thenReturn(false);
         when(port.save(any())).thenAnswer(call -> {
             Product product = call.getArgument(0);
             return new Product(id, product.userId(), product.name(), product.category(), product.defaultUnit());
@@ -89,5 +91,18 @@ class ProductServiceTest {
         when(port.findByIdAndUserId(id, userId)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> service.delete(id)).isInstanceOf(ResourceNotFoundException.class);
         verify(port, never()).deleteByIdAndUserId(any(), any());
+    }
+
+    @Test
+    void deletesOwnedProductUsingOwnerScopedPort() {
+        UUID id = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+        Product product = new Product(id, userId, "Æg", ProductCategory.EGG, Unit.PIECE);
+        when(currentUserProvider.currentUserId()).thenReturn(userId);
+        when(port.findByIdAndUserId(id, userId)).thenReturn(Optional.of(product));
+
+        service.delete(id);
+
+        verify(port).deleteByIdAndUserId(id, userId);
     }
 }

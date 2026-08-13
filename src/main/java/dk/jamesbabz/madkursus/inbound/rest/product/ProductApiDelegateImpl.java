@@ -8,6 +8,7 @@ import dk.jamesbabz.madkursus.inbound.rest.ProductApiDelegate;
 import dk.jamesbabz.madkursus.inbound.rest.dto.CreateProductDTO;
 import dk.jamesbabz.madkursus.inbound.rest.dto.ProductDTO;
 import dk.jamesbabz.madkursus.service.applications.ProductService;
+import dk.jamesbabz.madkursus.service.applications.ProductTemplateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,12 @@ import org.springframework.stereotype.Component;
 public class ProductApiDelegateImpl implements ProductApiDelegate {
     private final ProductService service;
     private final ProductRestMapper mapper;
+    private final ProductTemplateService templateService;
+
+    public ResponseEntity<ProductDTO> createProductFromTemplate(UUID templateId) {
+        ProductDTO result = mapper.toDto(templateService.addToProducts(templateId));
+        return ResponseEntity.created(URI.create("/v1/products/" + result.getId())).body(result);
+    }
 
     public ResponseEntity<ProductDTO> createProduct(CreateProductDTO request) {
         ProductDTO result = mapper.toDto(service.create(request.getName(), mapper.toCategory(request.getCategory()),

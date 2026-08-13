@@ -4,10 +4,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import dk.jamesbabz.madkursus.outbound.product.details.ProductEntity;
-import dk.jamesbabz.madkursus.service.models.Unit;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,13 +26,9 @@ public class InventoryItemEntity {
     @JoinColumn(name = "product_id", nullable = false)
     private ProductEntity product;
     private BigDecimal quantity;
-    @Enumerated(EnumType.STRING)
-    private Unit unit;
-
-    public InventoryItemEntity(UUID id, ProductEntity product, BigDecimal quantity, Unit unit) {
+    public InventoryItemEntity(UUID id, ProductEntity product, BigDecimal quantity) {
         this.id = id;
         this.product = product;
         this.quantity = quantity;
-        this.unit = unit;
     }
 }

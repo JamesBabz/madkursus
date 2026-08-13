@@ -12,11 +12,10 @@ public class InventoryEntityMapper {
     private final ProductEntityMapper productMapper;
 
     public InventoryItem toModel(InventoryItemEntity entity) {
-        return new InventoryItem(entity.getId(), productMapper.toModel(entity.getProduct()),
-                entity.getQuantity(), entity.getUnit());
+        return new InventoryItem(entity.getId(), productMapper.toModel(entity.getProduct()), entity.getQuantity());
     }
 
     public InventoryItemEntity toEntity(InventoryItem model) {
-        return new InventoryItemEntity(model.id(), productMapper.toEntity(model.product()), model.quantity(), model.unit());
+        return new InventoryItemEntity(model.id(), productMapper.toEntity(model.product()), model.quantity());
     }
 }
