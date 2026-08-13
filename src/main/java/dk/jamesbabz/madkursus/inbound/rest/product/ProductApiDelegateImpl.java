@@ -39,7 +39,8 @@ public class ProductApiDelegateImpl implements ProductApiDelegate {
 
     public ResponseEntity<ProductDTO> updateProduct(UUID id, CreateProductDTO request) {
         return ResponseEntity.ok(mapper.toDto(service.update(id, request.getName(),
-                mapper.toCategory(request.getCategory()), mapper.toUnit(request.getDefaultUnit()))));
+                mapper.toCategory(request.getCategory()), mapper.toUnit(request.getDefaultUnit()),
+                mapper.toTrackingMode(request.getInventoryTrackingMode()))));
     }
 
     public ResponseEntity<Void> deleteProduct(UUID id) {

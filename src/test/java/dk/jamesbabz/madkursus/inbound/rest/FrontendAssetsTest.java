@@ -23,7 +23,7 @@ class FrontendAssetsTest {
         assertThat(html).contains("edit-product-dialog", "edit-product-form", "id=\"toast\"");
         assertThat(javascript).contains("showToast", "setTimeout", "2600", "searchRequestId",
                 "templateSearch.value = ''", "method: 'PATCH'", "openProductEditor");
-        assertThat(worker).contains("madkursus-shell-v9");
+        assertThat(worker).contains("madkursus-shell-v10");
         assertThat(html).contains("inventory-view", "inventory-add-dialog", "edit-inventory-dialog");
         assertThat(javascript).contains("/v1/inventory", "searchInventoryCandidates", "from-template",
                 "loadInventory", "showToast", "inventorySearchRequestId");
@@ -42,6 +42,17 @@ class FrontendAssetsTest {
                 "attachShoppingGestures", "pointerdown", "pointermove", "600", "clear-purchased", "undoShoppingItem",
                 "searchShoppingCandidates", "shoppingSearchRequestId");
         assertThat(worker).contains("request.method !== 'GET'", "url.pathname.startsWith('/v1/')");
+        assertThat(html).contains("edit-product-tracking-mode", "Præcis mængde", "Kun om jeg har varen",
+                "edit-inventory-presence", "edit-shopping-presence");
+        assertThat(javascript).contains("inventoryTrackingMode", "PRESENCE", "På lager", "Køb",
+                "input.step = unit === 'PIECE' ? '0.5' : '1'", "formatQuantity", "da-DK");
+        assertThat(javascript).contains("input.min = allowZero ? '0' : (unit === 'PIECE' ? '0.5' : '1')",
+                "candidate.defaultTrackingMode", "candidate.inventoryTrackingMode",
+                "inventory-add-quantity-controls", "shopping-add-quantity-controls",
+                "quantity == null ? {} : { quantity }");
+        assertThat(html).contains("id=\"inventory-add-quantity\"", "id=\"shopping-add-quantity\"")
+                .doesNotContain("id=\"inventory-add-quantity\" name=\"quantity\" type=\"number\" inputmode=\"numeric\" min=\"0.5\"",
+                        "id=\"shopping-add-quantity\" type=\"number\" inputmode=\"numeric\" min=\"0.5\"");
     }
 
     private String resource(String path) throws Exception {

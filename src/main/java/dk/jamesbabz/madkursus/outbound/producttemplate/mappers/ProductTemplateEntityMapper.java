@@ -9,6 +9,6 @@ import org.springframework.stereotype.Component;
 public class ProductTemplateEntityMapper {
     public ProductTemplate toModel(ProductTemplateEntity entity) {
         return new ProductTemplate(entity.getId(), entity.getName(), entity.getCategory(), entity.getDefaultUnit(),
-                List.copyOf(entity.getAliases()), entity.isCommon());
+                entity.getDefaultTrackingMode(), List.copyOf(entity.getAliases()), entity.isCommon());
     }
 }

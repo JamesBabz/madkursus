@@ -33,4 +33,7 @@ public class ProductAdapterImpl implements ProductPort {
     public Optional<Product> findByUserIdAndNormalizedName(UUID userId, String name) {
         return repository.findByUserIdAndNameIgnoreCase(userId, name).map(mapper::toModel);
     }
+    public Optional<Product> findByUserIdAndSourceTemplateId(UUID userId, UUID sourceTemplateId) {
+        return repository.findByUserIdAndSourceTemplateId(userId, sourceTemplateId).map(mapper::toModel);
+    }
 }

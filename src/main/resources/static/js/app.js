@@ -257,6 +257,7 @@ function openProductEditor(product) {
   document.querySelector('#edit-product-name').value = product.name;
   document.querySelector('#edit-product-category').value = product.category;
   document.querySelector('#edit-product-unit').value = product.defaultUnit;
+  document.querySelector('#edit-product-tracking-mode').value = product.inventoryTrackingMode || 'QUANTITY';
   document.querySelector('#delete-product-confirmation').hidden = true;
   document.querySelector('#request-delete-product').hidden = false;
   editDialog.showModal();
@@ -279,7 +280,8 @@ async function updateProduct(event) {
   try {
     const updated = await jsonRequest(`${PRODUCT_API}/${data.get('id')}`, {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: data.get('name').trim(), category: data.get('category'), defaultUnit: data.get('defaultUnit') })
+      body: JSON.stringify({ name: data.get('name').trim(), category: data.get('category'),
+        defaultUnit: data.get('defaultUnit'), inventoryTrackingMode: data.get('inventoryTrackingMode') })
     });
     closeProductEditor();
     await loadProducts();
@@ -324,6 +326,23 @@ function displayUnit(unit) {
   return { GRAM: 'g', MILLILITER: 'ml', PIECE: 'stk' }[unit] || unit;
 }
 
+function formatQuantity(quantity) {
+  return new Intl.NumberFormat('da-DK', { maximumFractionDigits: 1 }).format(Number(quantity));
+}
+
+function numericValue(input) { return Number(String(input.value).replace(',', '.')); }
+
+function configureQuantityInput(input, unit, allowZero = false) {
+  input.step = unit === 'PIECE' ? '0.5' : '1';
+  input.min = allowZero ? '0' : (unit === 'PIECE' ? '0.5' : '1');
+  input.inputMode = unit === 'PIECE' ? 'decimal' : 'numeric';
+  input.dataset.unit = unit;
+}
+
+function candidateTrackingMode(candidate) {
+  return candidate.source === 'template' ? candidate.defaultTrackingMode : candidate.inventoryTrackingMode;
+}
+
 function inventoryConversion(quantity, unit) {
   const value = Number(quantity);
   if (!Number.isInteger(value) || value < 1000 || (unit !== 'GRAM' && unit !== 'MILLILITER')) return '';
@@ -344,7 +363,9 @@ function createInventoryCard(item) {
   card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); } });
   const content = document.createElement('div');
   const name = document.createElement('h3'); name.className = 'product-name'; name.textContent = item.product.name;
-  const amount = document.createElement('p'); amount.className = 'product-meta inventory-amount'; amount.textContent = `${item.quantity} ${displayUnit(item.unit)}`;
+  const amount = document.createElement('p'); amount.className = 'product-meta inventory-amount';
+  amount.textContent = item.product.inventoryTrackingMode === 'PRESENCE' ? 'På lager'
+    : `${formatQuantity(item.quantity)} ${displayUnit(item.unit)}`;
   content.append(name, amount); card.append(content); return card;
 }
 
@@ -401,6 +422,8 @@ function resetInventoryAdd() {
   document.querySelector('#inventory-search-step').hidden = false;
   document.querySelector('#inventory-amount-form').hidden = true;
   document.querySelector('#inventory-amount-form').reset();
+  document.querySelector('#inventory-add-quantity-controls').hidden = false;
+  document.querySelector('#inventory-add-quantity').required = true;
   document.querySelector('#inventory-add-conversion').textContent = '';
   showMessage(document.querySelector('#inventory-add-error'), '');
 }
@@ -414,21 +437,32 @@ function closeInventoryAdd() { const dialog = document.querySelector('#inventory
 
 function selectInventoryCandidate(candidate) {
   selectedInventoryCandidate = candidate;
+  const presence = candidateTrackingMode(candidate) === 'PRESENCE';
   document.querySelector('#inventory-search-step').hidden = true;
   document.querySelector('#inventory-amount-form').hidden = false;
   document.querySelector('#inventory-selected-name').textContent = candidate.name;
   document.querySelector('#inventory-selected-unit').textContent = displayUnit(candidate.defaultUnit);
+  document.querySelector('#inventory-add-quantity-controls').hidden = presence;
   const quantityInput = document.querySelector('#inventory-add-quantity');
-  quantityInput.dataset.unit = candidate.defaultUnit;
+  quantityInput.required = !presence;
+  if (presence) { document.querySelector('#inventory-selected-unit').textContent = ''; return; }
+  configureQuantityInput(quantityInput, candidate.defaultUnit);
   updateConversion(quantityInput, candidate.defaultUnit, document.querySelector('#inventory-add-conversion'));
   quantityInput.focus();
 }
 
 async function addInventory(event) {
   event.preventDefault(); if (!selectedInventoryCandidate) return;
-  const quantity = Number(document.querySelector('#inventory-add-quantity').value);
+  const quantity = candidateTrackingMode(selectedInventoryCandidate) === 'PRESENCE'
+    ? null : numericValue(document.querySelector('#inventory-add-quantity'));
+  await submitInventoryCandidate(quantity);
+}
+
+async function submitInventoryCandidate(quantity) {
   const url = selectedInventoryCandidate.source === 'product' ? INVENTORY_API : `${INVENTORY_API}/from-template/${selectedInventoryCandidate.id}`;
-  const payload = selectedInventoryCandidate.source === 'product' ? { productId: selectedInventoryCandidate.id, quantity } : { quantity };
+  const payload = selectedInventoryCandidate.source === 'product'
+    ? { productId: selectedInventoryCandidate.id, ...(quantity == null ? {} : { quantity }) }
+    : (quantity == null ? {} : { quantity });
   try {
     await jsonRequest(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     const name = selectedInventoryCandidate.name; closeInventoryAdd(); await Promise.all([loadInventory(), loadProducts()]);
@@ -439,9 +473,14 @@ async function addInventory(event) {
 function openInventoryEditor(item) {
   document.querySelector('#edit-inventory-id').value = item.id;
   document.querySelector('#edit-inventory-name').textContent = item.product.name;
-  document.querySelector('#edit-inventory-quantity').value = item.quantity;
+  const presence = item.product.inventoryTrackingMode === 'PRESENCE';
+  document.querySelector('#edit-inventory-quantity-controls').hidden = presence;
+  document.querySelector('#edit-inventory-presence').hidden = !presence;
+  document.querySelector('#edit-inventory-form').querySelector('button[type="submit"]').hidden = presence;
+  document.querySelector('#edit-inventory-quantity').required = !presence;
+  document.querySelector('#edit-inventory-quantity').value = item.quantity ?? '';
   document.querySelector('#edit-inventory-unit').textContent = displayUnit(item.unit);
-  document.querySelector('#edit-inventory-quantity').dataset.unit = item.unit;
+  configureQuantityInput(document.querySelector('#edit-inventory-quantity'), item.unit, true);
   updateConversion(document.querySelector('#edit-inventory-quantity'), item.unit,
     document.querySelector('#edit-inventory-conversion'));
   document.querySelector('#edit-inventory-dialog').showModal(); document.querySelector('#edit-inventory-quantity').focus();
@@ -452,7 +491,7 @@ function closeInventoryEditor() { const dialog = document.querySelector('#edit-i
 async function saveInventory(event) {
   event.preventDefault(); const id = document.querySelector('#edit-inventory-id').value;
   try {
-    await jsonRequest(`${INVENTORY_API}/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ quantity: Number(document.querySelector('#edit-inventory-quantity').value) }) });
+    await jsonRequest(`${INVENTORY_API}/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ quantity: numericValue(document.querySelector('#edit-inventory-quantity')) }) });
     closeInventoryEditor(); await loadInventory(); showToast('Lagerbeholdningen er gemt');
   } catch (error) { showMessage(document.querySelector('#edit-inventory-error'), error.message); }
 }
@@ -525,7 +564,9 @@ function shoppingRow(item) {
   row.setAttribute('aria-label', item.purchased ? `${item.product.name}, købt` : `Markér ${item.product.name} som købt`);
   const check = document.createElement('span'); check.className = 'shopping-check'; check.textContent = item.purchased ? '✓' : '';
   const name = document.createElement('span'); name.className = 'shopping-row-name'; name.textContent = item.product.name;
-  const quantity = document.createElement('span'); quantity.className = 'shopping-row-quantity'; quantity.textContent = `${item.quantity} ${displayUnit(item.unit)}`;
+  const quantity = document.createElement('span'); quantity.className = 'shopping-row-quantity';
+  quantity.textContent = item.product.inventoryTrackingMode === 'PRESENCE' ? 'Køb'
+    : `${formatQuantity(item.quantity)} ${displayUnit(item.unit)}`;
   const edit = document.createElement('button'); edit.type = 'button'; edit.className = 'shopping-edit-button'; edit.textContent = '⋯';
   edit.setAttribute('aria-label', `Rediger ${item.product.name}`); edit.hidden = item.purchased;
   edit.addEventListener('click', event => { event.stopPropagation(); openShoppingEditor(item); });
@@ -611,6 +652,8 @@ function resetShoppingAdd() {
   document.querySelector('#shopping-search').value = ''; document.querySelector('#shopping-search-results').replaceChildren();
   document.querySelector('#shopping-search-step').hidden = false; document.querySelector('#shopping-amount-form').hidden = true;
   document.querySelector('#shopping-amount-form').reset(); document.querySelector('#shopping-add-conversion').textContent = '';
+  document.querySelector('#shopping-add-quantity-controls').hidden = false;
+  document.querySelector('#shopping-add-quantity').required = true;
   showMessage(document.querySelector('#shopping-add-error'), '');
 }
 
@@ -618,23 +661,40 @@ function openShoppingAdd() { resetShoppingAdd(); document.querySelector('#shoppi
 function closeShoppingAdd() { const dialog = document.querySelector('#shopping-add-dialog'); if (dialog.open) dialog.close(); resetShoppingAdd(); }
 
 function selectShoppingCandidate(candidate) {
-  selectedShoppingCandidate = candidate; document.querySelector('#shopping-search-step').hidden = true; document.querySelector('#shopping-amount-form').hidden = false;
+  selectedShoppingCandidate = candidate;
+  const presence = candidateTrackingMode(candidate) === 'PRESENCE';
+  document.querySelector('#shopping-search-step').hidden = true; document.querySelector('#shopping-amount-form').hidden = false;
   document.querySelector('#shopping-selected-name').textContent = candidate.name; document.querySelector('#shopping-selected-unit').textContent = displayUnit(candidate.defaultUnit);
-  const input = document.querySelector('#shopping-add-quantity'); input.dataset.unit = candidate.defaultUnit; input.focus();
+  document.querySelector('#shopping-add-quantity-controls').hidden = presence;
+  const input = document.querySelector('#shopping-add-quantity'); input.required = !presence;
+  if (presence) { document.querySelector('#shopping-selected-unit').textContent = ''; return; }
+  configureQuantityInput(input, candidate.defaultUnit); input.focus();
 }
 
 async function addShoppingItem(event) {
   event.preventDefault(); if (!selectedShoppingCandidate) return;
-  const quantity = Number(document.querySelector('#shopping-add-quantity').value);
+  const quantity = candidateTrackingMode(selectedShoppingCandidate) === 'PRESENCE'
+    ? null : numericValue(document.querySelector('#shopping-add-quantity'));
+  await submitShoppingCandidate(quantity);
+}
+
+async function submitShoppingCandidate(quantity) {
   const url = selectedShoppingCandidate.source === 'product' ? `${SHOPPING_API}/items` : `${SHOPPING_API}/items/from-template/${selectedShoppingCandidate.id}`;
-  const payload = selectedShoppingCandidate.source === 'product' ? { productId: selectedShoppingCandidate.id, quantity } : { quantity };
+  const payload = selectedShoppingCandidate.source === 'product'
+    ? { productId: selectedShoppingCandidate.id, ...(quantity == null ? {} : { quantity }) }
+    : (quantity == null ? {} : { quantity });
   try { await jsonRequest(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const name = selectedShoppingCandidate.name; closeShoppingAdd(); await Promise.all([loadShoppingList(), loadProducts()]); showToast(`${name} er tilføjet til indkøb`); }
   catch (error) { showMessage(document.querySelector('#shopping-add-error'), error.message); }
 }
 
 function openShoppingEditor(item) {
   document.querySelector('#edit-shopping-id').value = item.id; document.querySelector('#edit-shopping-name').textContent = item.product.name;
-  const input = document.querySelector('#edit-shopping-quantity'); input.value = item.quantity; input.dataset.unit = item.unit;
+  const presence = item.product.inventoryTrackingMode === 'PRESENCE';
+  document.querySelector('#edit-shopping-quantity-controls').hidden = presence;
+  document.querySelector('#edit-shopping-presence').hidden = !presence;
+  document.querySelector('#edit-shopping-form').querySelector('button[type="submit"]').hidden = presence;
+  const input = document.querySelector('#edit-shopping-quantity'); input.required = !presence;
+  input.value = item.quantity ?? ''; configureQuantityInput(input, item.unit);
   document.querySelector('#edit-shopping-unit').textContent = displayUnit(item.unit); updateConversion(input, item.unit, document.querySelector('#edit-shopping-conversion'));
   document.querySelector('#edit-shopping-dialog').showModal(); input.focus();
 }
@@ -642,7 +702,7 @@ function closeShoppingEditor() { const dialog = document.querySelector('#edit-sh
 
 async function saveShoppingItem(event) {
   event.preventDefault(); const id = document.querySelector('#edit-shopping-id').value;
-  try { await jsonRequest(`${SHOPPING_API}/items/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ quantity: Number(document.querySelector('#edit-shopping-quantity').value) }) }); closeShoppingEditor(); await loadShoppingList(); showToast('Varen er gemt'); }
+  try { await jsonRequest(`${SHOPPING_API}/items/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ quantity: numericValue(document.querySelector('#edit-shopping-quantity')) }) }); closeShoppingEditor(); await loadShoppingList(); showToast('Varen er gemt'); }
   catch (error) { showMessage(document.querySelector('#edit-shopping-error'), error.message); }
 }
 

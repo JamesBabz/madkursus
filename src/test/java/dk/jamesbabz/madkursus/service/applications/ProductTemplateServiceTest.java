@@ -16,7 +16,7 @@ class ProductTemplateServiceTest {
         ProductTemplatePort port=mock(ProductTemplatePort.class); ProductService products=mock(ProductService.class);
         when(port.findById(id)).thenReturn(Optional.of(template));
         Product created=new Product(UUID.randomUUID(),UUID.randomUUID(),"Æg",ProductCategory.EGG,Unit.PIECE);
-        when(products.create("Æg",ProductCategory.EGG,Unit.PIECE)).thenReturn(created);
+        when(products.createFromTemplate(id,"Æg",ProductCategory.EGG,Unit.PIECE,InventoryTrackingMode.QUANTITY)).thenReturn(created);
         assertThat(new ProductTemplateService(port,products).addToProducts(id)).isEqualTo(created);
         assertThat(template.aliases()).containsExactly("hønseæg");
     }

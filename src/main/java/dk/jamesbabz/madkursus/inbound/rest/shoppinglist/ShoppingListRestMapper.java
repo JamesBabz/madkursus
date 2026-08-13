@@ -15,7 +15,7 @@ public class ShoppingListRestMapper {
     private final ProductRestMapper productMapper;
     public ShoppingListItemDTO toDto(ShoppingListItem item) {
         ShoppingListItemDTO dto = new ShoppingListItemDTO(item.id(), productMapper.toDto(item.product()),
-                item.quantity(), UnitDTO.valueOf(item.unit().name()), item.purchased());
+                UnitDTO.valueOf(item.unit().name()), item.purchased()).quantity(item.quantity());
         if (item.purchasedAt() != null) dto.setPurchasedAt(OffsetDateTime.ofInstant(item.purchasedAt(), ZoneOffset.UTC));
         return dto;
     }

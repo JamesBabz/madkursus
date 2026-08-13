@@ -28,4 +28,16 @@ class ProductTemplateSeedTest {
             assertThat(json).contains("oksefars","soya","maizena","løg");
         }
     }
+    @Test void recipeRelevantTemplateUnitsRemainUnchanged() throws Exception {
+        try(var in=getClass().getResourceAsStream("/db/seed/madkursus-product-templates-seed.json")) {
+            JsonNode products=new ObjectMapper().readTree(in).get("products");
+            assertThat(find(products,"Salt").get("defaultUnit").asText()).isEqualTo("GRAM");
+            assertThat(find(products,"Hakket oksekød").get("defaultUnit").asText()).isEqualTo("GRAM");
+            assertThat(find(products,"Æg").get("defaultUnit").asText()).isEqualTo("PIECE");
+        }
+    }
+    private JsonNode find(JsonNode products,String name) {
+        for(JsonNode product:products) if(product.get("name").asText().equals(name)) return product;
+        throw new AssertionError("Missing template " + name);
+    }
 }

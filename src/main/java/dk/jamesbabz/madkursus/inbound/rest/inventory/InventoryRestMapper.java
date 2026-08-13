@@ -13,7 +13,7 @@ public class InventoryRestMapper {
     private final ProductRestMapper productMapper;
 
     public InventoryItemDTO toDto(InventoryItem item) {
-        return new InventoryItemDTO(item.id(), productMapper.toDto(item.product()), item.quantity(),
-                UnitDTO.valueOf(item.unit().name()));
+        return new InventoryItemDTO(item.id(), productMapper.toDto(item.product()),
+                UnitDTO.valueOf(item.unit().name()), true).quantity(item.quantity());
     }
 }

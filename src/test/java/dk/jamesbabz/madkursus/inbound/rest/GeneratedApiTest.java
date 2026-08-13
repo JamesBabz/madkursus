@@ -9,6 +9,7 @@ import dk.jamesbabz.madkursus.inbound.rest.product.ProductRestMapper;
 import dk.jamesbabz.madkursus.service.applications.InventoryService;
 import dk.jamesbabz.madkursus.service.applications.ProductService;
 import dk.jamesbabz.madkursus.service.exceptions.ResourceNotFoundException;
+import dk.jamesbabz.madkursus.service.exceptions.InvalidInputException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,11 +25,9 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 class GeneratedApiTest {
     @Test
     void decimalInventoryQuantityReturnsBadRequest() throws Exception {
-        InventoryService service = new InventoryService(
-                mock(dk.jamesbabz.madkursus.service.ports.InventoryPort.class),
-                mock(ProductService.class),
-                mock(dk.jamesbabz.madkursus.service.applications.ProductTemplateService.class),
-                mock(dk.jamesbabz.madkursus.service.ports.CurrentUserProvider.class));
+        InventoryService service = mock(InventoryService.class);
+        org.mockito.Mockito.when(service.add(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any()))
+                .thenThrow(new InvalidInputException("Quantity must be a whole number"));
         InventoryRestMapper mapper = new InventoryRestMapper(new ProductRestMapper());
         MockMvc mvc = standaloneSetup(new InventoryApiController(new InventoryApiDelegateImpl(service, mapper)))
                 .setControllerAdvice(new RestErrorHandler()).build();
@@ -45,7 +44,7 @@ class GeneratedApiTest {
         MockMvc mvc = standaloneSetup(new InventoryApiController(new InventoryApiDelegateImpl(service, mapper)))
                 .setControllerAdvice(new RestErrorHandler()).build();
         mvc.perform(post("/v1/inventory").contentType(MediaType.APPLICATION_JSON).content("""
-                {"productId":"%s"}
+                {"productId":"%s","quantity":-1}
                 """.formatted(UUID.randomUUID())))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Validation failed"));

@@ -17,6 +17,7 @@ public class ProductTemplateService {
     public ProductTemplate get(UUID id) { return port.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product template", id)); }
     public Product addToProducts(UUID id) {
         ProductTemplate template = get(id);
-        return productService.create(template.name(), template.category(), template.defaultUnit());
+        return productService.createFromTemplate(template.id(), template.name(), template.category(),
+                template.defaultUnit(), template.defaultTrackingMode());
     }
 }

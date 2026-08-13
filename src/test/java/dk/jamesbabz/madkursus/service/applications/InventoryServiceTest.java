@@ -74,8 +74,7 @@ class InventoryServiceTest {
                 Unit.GRAM, java.util.List.of("oksefars"), false);
         Product created = product(productId, userId, template.name(), template.defaultUnit());
         when(templateService.get(templateId)).thenReturn(template);
-        when(productService.findEquivalent(template.name())).thenReturn(Optional.empty());
-        when(productService.create(template.name(), template.category(), template.defaultUnit())).thenReturn(created);
+        when(productService.createFromTemplate(template.id(), template.name(), template.category(), template.defaultUnit(), template.defaultTrackingMode())).thenReturn(created);
         when(currentUserProvider.currentUserId()).thenReturn(userId);
         when(productService.get(productId)).thenReturn(created);
         when(port.findByProductIdAndUserId(productId, userId)).thenReturn(Optional.empty());
@@ -93,7 +92,7 @@ class InventoryServiceTest {
         ProductTemplate template = new ProductTemplate(templateId, existing.name(), ProductCategory.SAUCE_CONDIMENT,
                 Unit.MILLILITER, java.util.List.of("soya"), false);
         when(templateService.get(templateId)).thenReturn(template);
-        when(productService.findEquivalent(template.name())).thenReturn(Optional.of(existing));
+        when(productService.createFromTemplate(template.id(), template.name(), template.category(), template.defaultUnit(), template.defaultTrackingMode())).thenReturn(existing);
         when(currentUserProvider.currentUserId()).thenReturn(userId);
         when(productService.get(existing.id())).thenReturn(existing);
         when(port.findByProductIdAndUserId(existing.id(), userId)).thenReturn(Optional.empty());
@@ -127,14 +126,19 @@ class InventoryServiceTest {
 
     @Test
     void rejectsDecimalQuantityWhenAddingStock() {
-        assertThatThrownBy(() -> service.add(UUID.randomUUID(), new BigDecimal("1.5")))
+        UUID id = UUID.randomUUID(); Product gram = product(id, UUID.randomUUID(), "Mel", Unit.GRAM);
+        when(productService.get(id)).thenReturn(gram);
+        assertThatThrownBy(() -> service.add(id, new BigDecimal("1.5")))
                 .isInstanceOf(InvalidInputException.class)
                 .hasMessage("Quantity must be a whole number");
     }
 
     @Test
     void rejectsDecimalQuantityWhenEditingStock() {
-        assertThatThrownBy(() -> service.setQuantity(UUID.randomUUID(), new BigDecimal("2.01")))
+        UUID user = UUID.randomUUID(), id = UUID.randomUUID(); Product gram = product(UUID.randomUUID(), user, "Mel", Unit.GRAM);
+        when(currentUserProvider.currentUserId()).thenReturn(user);
+        when(port.findByIdAndUserId(id, user)).thenReturn(Optional.of(new InventoryItem(id, gram, BigDecimal.TEN)));
+        assertThatThrownBy(() -> service.setQuantity(id, new BigDecimal("2.01")))
                 .isInstanceOf(InvalidInputException.class)
                 .hasMessage("Quantity must be a whole number");
     }
@@ -180,6 +184,62 @@ class InventoryServiceTest {
         assertThatThrownBy(() -> service.removePurchasedQuantity(product.id(), BigDecimal.TEN))
                 .isInstanceOf(ConflictException.class);
         verify(port, never()).save(any()); verify(port, never()).deleteByIdAndUserId(any(), any());
+    }
+
+    @Test
+    void presenceProductIsMarkedAvailableWithoutQuantityOrDuplicates() {
+        UUID user = UUID.randomUUID(), productId = UUID.randomUUID();
+        Product presence = new Product(productId, user, null, "Salt", ProductCategory.SPICE, Unit.GRAM,
+                dk.jamesbabz.madkursus.service.models.InventoryTrackingMode.PRESENCE);
+        when(productService.get(productId)).thenReturn(presence);
+        when(currentUserProvider.currentUserId()).thenReturn(user);
+        when(port.findByProductIdAndUserId(productId, user)).thenReturn(Optional.empty());
+        when(port.save(any())).thenAnswer(call -> call.getArgument(0));
+        InventoryItem created = service.add(productId, null);
+        assertThat(created.quantity()).isNull();
+
+        when(port.findByProductIdAndUserId(productId, user)).thenReturn(Optional.of(created));
+        assertThat(service.add(productId, null)).isSameAs(created);
+        verify(port, org.mockito.Mockito.times(1)).save(any());
+    }
+
+    @Test
+    void unitDependentQuantityValidationAllowsOnlyHalfPieces() {
+        UUID user = UUID.randomUUID(), pieceId = UUID.randomUUID(), gramId = UUID.randomUUID();
+        Product piece = product(pieceId, user, "Æg", Unit.PIECE);
+        Product gram = product(gramId, user, "Mel", Unit.GRAM);
+        when(currentUserProvider.currentUserId()).thenReturn(user);
+        when(productService.get(pieceId)).thenReturn(piece);
+        when(productService.get(gramId)).thenReturn(gram);
+        when(port.findByProductIdAndUserId(any(), any())).thenReturn(Optional.empty());
+        when(port.save(any())).thenAnswer(call -> call.getArgument(0));
+
+        assertThat(service.add(pieceId, new BigDecimal("0.5")).quantity()).isEqualByComparingTo("0.5");
+        assertThat(service.add(pieceId, new BigDecimal("1.5")).quantity()).isEqualByComparingTo("1.5");
+        assertThatThrownBy(() -> service.add(pieceId, new BigDecimal("1.25"))).isInstanceOf(InvalidInputException.class);
+        assertThat(service.add(gramId, new BigDecimal("10")).quantity()).isEqualByComparingTo("10");
+        assertThatThrownBy(() -> service.add(gramId, new BigDecimal("10.5"))).isInstanceOf(InvalidInputException.class);
+    }
+
+    @Test
+    void presenceTemplateAddsAvailabilityWithoutQuantity() {
+        UUID user = UUID.randomUUID(), templateId = UUID.randomUUID(), productId = UUID.randomUUID();
+        ProductTemplate salt = new ProductTemplate(templateId, "Salt", ProductCategory.SPICE, Unit.GRAM,
+                dk.jamesbabz.madkursus.service.models.InventoryTrackingMode.PRESENCE, java.util.List.of(), true);
+        Product product = new Product(productId, user, templateId, "Salt", ProductCategory.SPICE, Unit.GRAM,
+                dk.jamesbabz.madkursus.service.models.InventoryTrackingMode.PRESENCE);
+        when(templateService.get(templateId)).thenReturn(salt);
+        when(productService.createFromTemplate(templateId, "Salt", ProductCategory.SPICE, Unit.GRAM,
+                dk.jamesbabz.madkursus.service.models.InventoryTrackingMode.PRESENCE)).thenReturn(product);
+        when(productService.get(productId)).thenReturn(product);
+        when(currentUserProvider.currentUserId()).thenReturn(user);
+        when(port.findByProductIdAndUserId(productId, user)).thenReturn(Optional.empty());
+        when(port.save(any())).thenAnswer(call -> call.getArgument(0));
+
+        InventoryItem result = service.addFromTemplate(templateId, null);
+
+        assertThat(result.quantity()).isNull();
+        assertThat(result.unit()).isEqualTo(Unit.GRAM);
     }
 
     private Product product(UUID id, UUID userId, String name, Unit unit) {

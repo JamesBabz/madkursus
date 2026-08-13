@@ -143,6 +143,8 @@ button:disabled { cursor: wait; opacity: .65; }
 .quantity-field { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .75rem; }
 .quantity-field span { min-width: 2.5rem; color: #55715f; font-weight: 700; }
 .quantity-conversion { min-height: 1.2rem; margin: -.2rem 0 .15rem; color: #66736a; font-size: .86rem; }
+.field-help { margin: 0; color: #66736a; font-size: .84rem; }
+.presence-label { margin: .75rem 0; color: #2f6846; font-weight: 750; }
 .danger-button { min-height: 3rem; margin-top: .75rem; color: #7b2525; background: #fff; border: 1px solid #d9a9a9; }
 .section-add-button { align-self: center; white-space: nowrap; }
 .inline-confirmation { margin-top: .75rem; padding: .8rem; background: #fdeaea; border: 1px solid #efc4c4; border-radius: .8rem; }

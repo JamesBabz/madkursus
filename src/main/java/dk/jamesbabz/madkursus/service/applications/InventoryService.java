@@ -10,6 +10,7 @@ import dk.jamesbabz.madkursus.service.exceptions.ConflictException;
 import dk.jamesbabz.madkursus.service.models.InventoryItem;
 import dk.jamesbabz.madkursus.service.models.Product;
 import dk.jamesbabz.madkursus.service.models.ProductTemplate;
+import dk.jamesbabz.madkursus.service.models.InventoryTrackingMode;
 import dk.jamesbabz.madkursus.service.ports.InventoryPort;
 import dk.jamesbabz.madkursus.service.ports.CurrentUserProvider;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +27,13 @@ public class InventoryService {
 
     @Transactional
     public InventoryItem add(UUID productId, BigDecimal quantity) {
-        requirePositive(quantity);
         Product product = productService.get(productId);
         UUID userId = currentUserProvider.currentUserId();
+        if (product.inventoryTrackingMode() == InventoryTrackingMode.PRESENCE) {
+            return inventoryPort.findByProductIdAndUserId(productId, userId)
+                    .orElseGet(() -> inventoryPort.save(new InventoryItem(null, product, null)));
+        }
+        requireValidQuantity(quantity, product.defaultUnit());
         return inventoryPort.findByProductIdAndUserId(productId, userId)
                 .map(existing -> inventoryPort.save(new InventoryItem(existing.id(), product,
                         existing.quantity().add(quantity))))
@@ -37,10 +42,9 @@ public class InventoryService {
 
     @Transactional
     public InventoryItem addFromTemplate(UUID templateId, BigDecimal quantity) {
-        requirePositive(quantity);
         ProductTemplate template = productTemplateService.get(templateId);
-        Product product = productService.findEquivalent(template.name())
-                .orElseGet(() -> productService.create(template.name(), template.category(), template.defaultUnit()));
+        Product product = productService.createFromTemplate(template.id(), template.name(), template.category(),
+                template.defaultUnit(), template.defaultTrackingMode());
         return add(product.id(), quantity);
     }
 
@@ -58,11 +62,14 @@ public class InventoryService {
         if (quantity == null || quantity.signum() < 0) {
             throw new InvalidInputException("Quantity must be zero or greater");
         }
-        requireWholeNumber(quantity);
         InventoryItem existing = get(id);
+        if (existing.product().inventoryTrackingMode() == InventoryTrackingMode.PRESENCE) {
+            throw new InvalidInputException("Presence-tracked inventory has no quantity");
+        }
         if (quantity.signum() == 0) {
             inventoryPort.deleteByIdAndUserId(id, currentUserProvider.currentUserId());
         } else {
+            requireValidQuantity(quantity, existing.unit());
             inventoryPort.save(new InventoryItem(id, existing.product(), quantity));
         }
     }
@@ -75,8 +82,8 @@ public class InventoryService {
 
     @Transactional
     public void removePurchasedQuantity(UUID productId, BigDecimal quantity) {
-        requirePositive(quantity);
         Product product = productService.get(productId);
+        requireValidQuantity(quantity, product.defaultUnit());
         UUID userId = currentUserProvider.currentUserId();
         InventoryItem existing = inventoryPort.findByProductIdAndUserId(productId, userId)
                 .orElseThrow(() -> new ConflictException("Inventory no longer contains the purchased quantity"));
@@ -88,16 +95,29 @@ public class InventoryService {
         else inventoryPort.save(new InventoryItem(existing.id(), product, remaining));
     }
 
-    private void requirePositive(BigDecimal quantity) {
+    public boolean markAvailable(UUID productId) {
+        Product product = productService.get(productId);
+        UUID userId = currentUserProvider.currentUserId();
+        if (inventoryPort.findByProductIdAndUserId(productId, userId).isPresent()) return false;
+        inventoryPort.save(new InventoryItem(null, product, null));
+        return true;
+    }
+
+    public void removeAvailability(UUID productId) {
+        UUID userId = currentUserProvider.currentUserId();
+        inventoryPort.findByProductIdAndUserId(productId, userId)
+                .ifPresent(item -> inventoryPort.deleteByIdAndUserId(item.id(), userId));
+    }
+
+    private void requireValidQuantity(BigDecimal quantity, dk.jamesbabz.madkursus.service.models.Unit unit) {
         if (quantity == null || quantity.signum() <= 0) {
             throw new InvalidInputException("Quantity must be greater than zero");
         }
-        requireWholeNumber(quantity);
-    }
-
-    private void requireWholeNumber(BigDecimal quantity) {
-        if (quantity.stripTrailingZeros().scale() > 0) {
-            throw new InvalidInputException("Quantity must be a whole number");
+        BigDecimal increments = unit == dk.jamesbabz.madkursus.service.models.Unit.PIECE
+                ? quantity.multiply(BigDecimal.valueOf(2)) : quantity;
+        if (increments.stripTrailingZeros().scale() > 0) {
+            throw new InvalidInputException(unit == dk.jamesbabz.madkursus.service.models.Unit.PIECE
+                    ? "Piece quantity must use increments of 0.5" : "Quantity must be a whole number");
         }
     }
 }

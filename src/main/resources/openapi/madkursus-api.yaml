@@ -467,6 +467,9 @@ components:
     Unit:
       type: string
       enum: [GRAM, MILLILITER, PIECE]
+    InventoryTrackingMode:
+      type: string
+      enum: [QUANTITY, PRESENCE]
     CreateProduct:
       type: object
       required: [name, category, defaultUnit]
@@ -474,65 +477,67 @@ components:
         name: {type: string, minLength: 1, example: Løg}
         category: {$ref: '#/components/schemas/ProductCategory'}
         defaultUnit: {$ref: '#/components/schemas/Unit'}
+        inventoryTrackingMode: {$ref: '#/components/schemas/InventoryTrackingMode'}
     Product:
       allOf:
         - $ref: '#/components/schemas/CreateProduct'
         - type: object
-          required: [id]
+          required: [id, inventoryTrackingMode]
           properties:
             id: {type: string, format: uuid}
+            sourceTemplateId: {type: string, format: uuid, nullable: true, readOnly: true}
     ProductTemplate:
       type: object
-      required: [id, name, category, defaultUnit, aliases, common]
+      required: [id, name, category, defaultUnit, defaultTrackingMode, aliases, common]
       properties:
         id: {type: string, format: uuid}
         name: {type: string}
         category: {$ref: '#/components/schemas/ProductCategory'}
         defaultUnit: {$ref: '#/components/schemas/Unit'}
+        defaultTrackingMode: {$ref: '#/components/schemas/InventoryTrackingMode'}
         aliases: {type: array, items: {type: string}}
         common: {type: boolean}
     AddInventoryItem:
       type: object
-      required: [productId, quantity]
+      required: [productId]
       properties:
         productId: {type: string, format: uuid}
-        quantity: {type: number, minimum: 0, exclusiveMinimum: true, multipleOf: 1, example: 500}
+        quantity: {type: number, minimum: 0, exclusiveMinimum: true, multipleOf: 0.5, nullable: true, example: 500}
     AddInventoryQuantity:
       type: object
-      required: [quantity]
       properties:
-        quantity: {type: number, minimum: 0, exclusiveMinimum: true, multipleOf: 1, example: 10}
+        quantity: {type: number, minimum: 0, exclusiveMinimum: true, multipleOf: 0.5, nullable: true, example: 10}
     UpdateInventoryItem:
       type: object
       required: [quantity]
       properties:
-        quantity: {type: number, minimum: 0, multipleOf: 1, example: 800}
+        quantity: {type: number, minimum: 0, multipleOf: 0.5, example: 800}
     InventoryItem:
       type: object
-      required: [id, product, quantity, unit]
+      required: [id, product, unit, available]
       properties:
         id: {type: string, format: uuid}
         product: {$ref: '#/components/schemas/Product'}
-        quantity: {type: number, minimum: 0, multipleOf: 1}
+        quantity: {type: number, minimum: 0, multipleOf: 0.5, nullable: true}
         unit: {$ref: '#/components/schemas/Unit'}
+        available: {type: boolean}
     AddShoppingListItem:
       type: object
-      required: [productId, quantity]
+      required: [productId]
       properties:
         productId: {type: string, format: uuid}
-        quantity: {type: number, minimum: 0, exclusiveMinimum: true, multipleOf: 1, example: 500}
+        quantity: {type: number, minimum: 0, exclusiveMinimum: true, multipleOf: 0.5, nullable: true, example: 500}
     ShoppingListQuantity:
       type: object
-      required: [quantity]
       properties:
-        quantity: {type: number, minimum: 0, exclusiveMinimum: true, multipleOf: 1, example: 10}
+        quantity: {type: number, minimum: 0, exclusiveMinimum: true, multipleOf: 0.5, nullable: true, example: 10}
     ShoppingListItem:
       type: object
-      required: [id, product, quantity, unit, purchased]
+      required: [id, product, unit, purchased]
       properties:
         id: {type: string, format: uuid}
         product: {$ref: '#/components/schemas/Product'}
-        quantity: {type: number, minimum: 0, exclusiveMinimum: true, multipleOf: 1}
+        quantity: {type: number, minimum: 0, exclusiveMinimum: true, multipleOf: 0.5, nullable: true}
         unit: {$ref: '#/components/schemas/Unit'}
         purchased: {type: boolean}
         purchasedAt: {type: string, format: date-time, nullable: true}

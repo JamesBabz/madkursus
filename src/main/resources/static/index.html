@@ -164,6 +164,12 @@
       <select id="edit-product-unit" name="defaultUnit" required>
         <option value="GRAM">Gram</option><option value="MILLILITER">Milliliter</option><option value="PIECE">Styk</option>
       </select>
+      <label for="edit-product-tracking-mode">Lagerstyring</label>
+      <select id="edit-product-tracking-mode" name="inventoryTrackingMode" required>
+        <option value="QUANTITY">Præcis mængde</option>
+        <option value="PRESENCE">Kun om jeg har varen</option>
+      </select>
+      <p class="field-help">“Kun om jeg har varen” er god til fx salt, krydderier og ketchup.</p>
       <div class="notice error" id="edit-product-error" role="alert" hidden></div>
       <button class="danger-button" id="request-delete-product" type="button">Fjern produkt</button>
       <section class="inline-confirmation" id="delete-product-confirmation" aria-live="polite" hidden>
@@ -192,9 +198,9 @@
     </div>
     <form id="inventory-amount-form" hidden>
       <h3 id="inventory-selected-name"></h3>
-      <label for="inventory-add-quantity">Mængde</label>
+      <div id="inventory-add-quantity-controls"><label for="inventory-add-quantity">Mængde</label>
       <div class="quantity-field"><input id="inventory-add-quantity" name="quantity" type="number" inputmode="numeric" min="1" step="1" required><span id="inventory-selected-unit"></span></div>
-      <p class="quantity-conversion" id="inventory-add-conversion" aria-live="polite"></p>
+      <p class="quantity-conversion" id="inventory-add-conversion" aria-live="polite"></p></div>
       <div class="notice error" id="inventory-add-error" role="alert" hidden></div>
       <div class="dialog-actions">
         <button class="secondary-button" id="back-inventory-search" type="button">Tilbage</button>
@@ -208,9 +214,10 @@
       <div class="section-heading"><h2 id="edit-inventory-title">Rediger lager</h2><button class="icon-button" id="close-edit-inventory" type="button" aria-label="Luk">×</button></div>
       <input id="edit-inventory-id" type="hidden">
       <h3 id="edit-inventory-name"></h3>
-      <label for="edit-inventory-quantity">På lager</label>
+      <div id="edit-inventory-quantity-controls"><label for="edit-inventory-quantity">På lager</label>
       <div class="quantity-field"><input id="edit-inventory-quantity" type="number" inputmode="numeric" min="0" step="1" required><span id="edit-inventory-unit"></span></div>
-      <p class="quantity-conversion" id="edit-inventory-conversion" aria-live="polite"></p>
+      <p class="quantity-conversion" id="edit-inventory-conversion" aria-live="polite"></p></div>
+      <p id="edit-inventory-presence" class="presence-label" hidden>På lager</p>
       <div class="notice error" id="edit-inventory-error" role="alert" hidden></div>
       <button class="danger-button" id="delete-inventory" type="button">Fjern fra lager</button>
       <div class="dialog-actions"><button class="secondary-button" id="cancel-edit-inventory" type="button">Annuller</button><button class="primary-button" type="submit">Gem</button></div>
@@ -226,9 +233,9 @@
     </div>
     <form id="shopping-amount-form" hidden>
       <h3 id="shopping-selected-name"></h3>
-      <label for="shopping-add-quantity">Mængde</label>
+      <div id="shopping-add-quantity-controls"><label for="shopping-add-quantity">Mængde</label>
       <div class="quantity-field"><input id="shopping-add-quantity" type="number" inputmode="numeric" min="1" step="1" required><span id="shopping-selected-unit"></span></div>
-      <p class="quantity-conversion" id="shopping-add-conversion" aria-live="polite"></p>
+      <p class="quantity-conversion" id="shopping-add-conversion" aria-live="polite"></p></div>
       <div class="notice error" id="shopping-add-error" role="alert" hidden></div>
       <div class="dialog-actions"><button class="secondary-button" id="back-shopping-search" type="button">Tilbage</button><button class="primary-button" type="submit">Tilføj</button></div>
     </form>
@@ -239,9 +246,10 @@
       <div class="section-heading"><h2 id="edit-shopping-title">Rediger vare</h2><button class="icon-button" id="close-edit-shopping" type="button" aria-label="Luk">×</button></div>
       <input id="edit-shopping-id" type="hidden">
       <h3 id="edit-shopping-name"></h3>
-      <label for="edit-shopping-quantity">Mængde</label>
+      <div id="edit-shopping-quantity-controls"><label for="edit-shopping-quantity">Mængde</label>
       <div class="quantity-field"><input id="edit-shopping-quantity" type="number" inputmode="numeric" min="1" step="1" required><span id="edit-shopping-unit"></span></div>
-      <p class="quantity-conversion" id="edit-shopping-conversion" aria-live="polite"></p>
+      <p class="quantity-conversion" id="edit-shopping-conversion" aria-live="polite"></p></div>
+      <p id="edit-shopping-presence" class="presence-label" hidden>Køb varen</p>
       <div class="notice error" id="edit-shopping-error" role="alert" hidden></div>
       <button class="danger-button" id="delete-shopping-item" type="button">Fjern fra listen</button>
       <div class="dialog-actions"><button class="secondary-button" id="cancel-edit-shopping" type="button">Annuller</button><button class="primary-button" type="submit">Gem</button></div>

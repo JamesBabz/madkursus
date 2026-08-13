@@ -20,15 +20,16 @@ public class ShoppingListItemEntity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "product_id", nullable = false)
     private ProductEntity product;
-    @Column(nullable = false)
     private BigDecimal quantity;
     @Column(nullable = false)
     private boolean purchased;
     private Instant purchasedAt;
+    private Boolean inventoryWasPresent;
 
     public ShoppingListItemEntity(UUID id, UUID userId, ProductEntity product, BigDecimal quantity,
-                                  boolean purchased, Instant purchasedAt) {
+                                  boolean purchased, Instant purchasedAt, Boolean inventoryWasPresent) {
         this.id = id; this.userId = userId; this.product = product; this.quantity = quantity;
         this.purchased = purchased; this.purchasedAt = purchasedAt;
+        this.inventoryWasPresent = inventoryWasPresent;
     }
 }

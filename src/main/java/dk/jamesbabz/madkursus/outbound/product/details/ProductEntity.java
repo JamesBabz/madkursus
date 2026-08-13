@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import dk.jamesbabz.madkursus.service.models.ProductCategory;
 import dk.jamesbabz.madkursus.service.models.Unit;
+import dk.jamesbabz.madkursus.service.models.InventoryTrackingMode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -30,12 +31,18 @@ public class ProductEntity {
     private ProductCategory category;
     @Enumerated(EnumType.STRING)
     private Unit defaultUnit;
+    private UUID sourceTemplateId;
+    @Enumerated(EnumType.STRING)
+    private InventoryTrackingMode inventoryTrackingMode;
 
-    public ProductEntity(UUID id, UUID userId, String name, ProductCategory category, Unit defaultUnit) {
+    public ProductEntity(UUID id, UUID userId, UUID sourceTemplateId, String name, ProductCategory category,
+                         Unit defaultUnit, InventoryTrackingMode inventoryTrackingMode) {
         this.id = id;
         this.userId = userId;
         this.name = name;
         this.category = category;
         this.defaultUnit = defaultUnit;
+        this.sourceTemplateId = sourceTemplateId;
+        this.inventoryTrackingMode = inventoryTrackingMode;
     }
 }

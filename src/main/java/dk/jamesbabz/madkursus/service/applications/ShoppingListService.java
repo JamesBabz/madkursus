@@ -10,6 +10,7 @@ import dk.jamesbabz.madkursus.service.exceptions.ResourceNotFoundException;
 import dk.jamesbabz.madkursus.service.models.Product;
 import dk.jamesbabz.madkursus.service.models.ProductTemplate;
 import dk.jamesbabz.madkursus.service.models.ShoppingListItem;
+import dk.jamesbabz.madkursus.service.models.InventoryTrackingMode;
 import dk.jamesbabz.madkursus.service.ports.CurrentUserProvider;
 import dk.jamesbabz.madkursus.service.ports.ShoppingListPort;
 import lombok.RequiredArgsConstructor;
@@ -29,29 +30,29 @@ public class ShoppingListService {
 
     @Transactional
     public ShoppingListItem add(UUID productId, BigDecimal quantity) {
-        requirePositiveWhole(quantity);
         Product product = productService.get(productId);
+        requireValidQuantity(product, quantity);
         UUID userId = currentUserProvider.currentUserId();
         return port.findActiveByProductIdAndUserId(productId, userId)
                 .map(item -> port.save(new ShoppingListItem(item.id(), userId, product,
-                        item.quantity().add(quantity), false, null)))
+                        product.inventoryTrackingMode() == InventoryTrackingMode.PRESENCE ? null
+                                : item.quantity().add(quantity), false, null)))
                 .orElseGet(() -> port.save(new ShoppingListItem(null, userId, product, quantity, false, null)));
     }
 
     @Transactional
     public ShoppingListItem addFromTemplate(UUID templateId, BigDecimal quantity) {
-        requirePositiveWhole(quantity);
         ProductTemplate template = templateService.get(templateId);
-        Product product = productService.findEquivalent(template.name())
-                .orElseGet(() -> productService.create(template.name(), template.category(), template.defaultUnit()));
+        Product product = productService.createFromTemplate(template.id(), template.name(), template.category(),
+                template.defaultUnit(), template.defaultTrackingMode());
         return add(product.id(), quantity);
     }
 
     @Transactional
     public ShoppingListItem update(UUID id, BigDecimal quantity) {
-        requirePositiveWhole(quantity);
         ShoppingListItem item = ownedForUpdate(id);
         if (item.purchased()) throw new ConflictException("Undo purchase before editing this item");
+        requireValidQuantity(item.product(), quantity);
         return port.save(new ShoppingListItem(item.id(), item.userId(), item.product(), quantity, false, null));
     }
 
@@ -59,20 +60,31 @@ public class ShoppingListService {
     public ShoppingListItem purchase(UUID id) {
         ShoppingListItem item = ownedForUpdate(id);
         if (item.purchased()) return item;
-        inventoryService.add(item.product().id(), item.quantity());
-        return port.save(new ShoppingListItem(item.id(), item.userId(), item.product(), item.quantity(), true, Instant.now()));
+        Boolean wasPresent = null;
+        if (item.product().inventoryTrackingMode() == InventoryTrackingMode.PRESENCE) {
+            wasPresent = !inventoryService.markAvailable(item.product().id());
+        } else {
+            inventoryService.add(item.product().id(), item.quantity());
+        }
+        return port.save(new ShoppingListItem(item.id(), item.userId(), item.product(), item.quantity(), true,
+                Instant.now(), wasPresent));
     }
 
     @Transactional
     public ShoppingListItem undoPurchase(UUID id) {
         ShoppingListItem item = ownedForUpdate(id);
         if (!item.purchased()) throw new ConflictException("Item has not been purchased");
-        inventoryService.removePurchasedQuantity(item.product().id(), item.quantity());
+        if (item.product().inventoryTrackingMode() == InventoryTrackingMode.PRESENCE) {
+            if (Boolean.FALSE.equals(item.inventoryWasPresent())) inventoryService.removeAvailability(item.product().id());
+        } else {
+            inventoryService.removePurchasedQuantity(item.product().id(), item.quantity());
+        }
         var active = port.findActiveByProductIdAndUserId(item.product().id(), item.userId());
         if (active.isPresent()) {
             ShoppingListItem existing = active.get();
             ShoppingListItem merged = port.save(new ShoppingListItem(existing.id(), existing.userId(),
-                    existing.product(), existing.quantity().add(item.quantity()), false, null));
+                    existing.product(), item.product().inventoryTrackingMode() == InventoryTrackingMode.PRESENCE
+                            ? null : existing.quantity().add(item.quantity()), false, null));
             port.deleteByIdAndUserId(item.id(), item.userId());
             return merged;
         }
@@ -94,8 +106,16 @@ public class ShoppingListService {
                 .orElseThrow(() -> new ResourceNotFoundException("Shopping list item", id));
     }
 
-    private void requirePositiveWhole(BigDecimal quantity) {
+    private void requireValidQuantity(Product product, BigDecimal quantity) {
+        if (product.inventoryTrackingMode() == InventoryTrackingMode.PRESENCE) {
+            if (quantity != null) throw new InvalidInputException("Presence-tracked shopping items have no quantity");
+            return;
+        }
         if (quantity == null || quantity.signum() <= 0) throw new InvalidInputException("Quantity must be greater than zero");
-        if (quantity.stripTrailingZeros().scale() > 0) throw new InvalidInputException("Quantity must be a whole number");
+        BigDecimal increments = product.defaultUnit() == dk.jamesbabz.madkursus.service.models.Unit.PIECE
+                ? quantity.multiply(BigDecimal.valueOf(2)) : quantity;
+        if (increments.stripTrailingZeros().scale() > 0) throw new InvalidInputException(
+                product.defaultUnit() == dk.jamesbabz.madkursus.service.models.Unit.PIECE
+                        ? "Piece quantity must use increments of 0.5" : "Quantity must be a whole number");
     }
 }

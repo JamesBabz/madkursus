@@ -12,4 +12,5 @@ public interface ProductJpaRepository extends JpaRepository<ProductEntity, UUID>
     long deleteByIdAndUserId(UUID id, UUID userId);
     boolean existsByUserIdAndNameIgnoreCase(UUID userId, String name);
     Optional<ProductEntity> findByUserIdAndNameIgnoreCase(UUID userId, String name);
+    Optional<ProductEntity> findByUserIdAndSourceTemplateId(UUID userId, UUID sourceTemplateId);
 }

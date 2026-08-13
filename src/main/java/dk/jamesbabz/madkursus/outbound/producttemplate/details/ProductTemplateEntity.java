@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.UUID;
 import dk.jamesbabz.madkursus.service.models.ProductCategory;
 import dk.jamesbabz.madkursus.service.models.Unit;
+import dk.jamesbabz.madkursus.service.models.InventoryTrackingMode;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ public class ProductTemplateEntity {
     private String normalizedName;
     @Enumerated(EnumType.STRING) private ProductCategory category;
     @Enumerated(EnumType.STRING) private Unit defaultUnit;
+    @Enumerated(EnumType.STRING) private InventoryTrackingMode defaultTrackingMode;
     private boolean common;
     @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="product_template_aliases", joinColumns=@JoinColumn(name="template_id"))

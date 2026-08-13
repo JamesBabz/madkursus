@@ -13,4 +13,5 @@ public interface ProductPort {
     void deleteByIdAndUserId(UUID id, UUID userId);
     boolean existsByUserIdAndNormalizedName(UUID userId, String normalizedName);
     Optional<Product> findByUserIdAndNormalizedName(UUID userId, String normalizedName);
+    Optional<Product> findByUserIdAndSourceTemplateId(UUID userId, UUID sourceTemplateId);
 }
