@@ -25,11 +25,27 @@ public class RecipeRestMapper {
                 RecipeUnitDTO.valueOf(ingredient.unit().name()), ingredient.sortOrder())
                 .preparation(ingredient.preparation())).toList();
         var steps = recipe.steps().stream()
-                .map(step -> new RecipeStepDTO(step.id(), step.instruction(), step.sortOrder()))
+                .map(step -> new RecipeStepDTO(step.id(), RecipeStepTypeDTO.valueOf(step.type().name()),
+                        step.sortOrder(), step.parameterBindings().stream().map(this::binding).toList())
+                        .instruction(step.instruction()).cookingProcessId(step.cookingProcessId())
+                        .renderedProcess(step.renderedProcess() == null ? null : new RenderedCookingProcessDTO(
+                                step.renderedProcess().instructions(), step.renderedProcess().completionCriterion(),
+                                step.renderedProcess().warnings())))
                 .toList();
         return new RecipeDTO(recipe.id(), recipe.name(), ingredients, steps,
                 recipe.createdAt().atOffset(ZoneOffset.UTC), recipe.updatedAt().atOffset(ZoneOffset.UTC))
                 .description(recipe.description()).sourceTemplateId(recipe.sourceTemplateId());
+    }
+
+    private CookingProcessBindingDTO binding(dk.jamesbabz.madkursus.service.models.CookingProcessBinding binding) {
+        var value = binding.value();
+        return new CookingProcessBindingDTO(binding.parameterKey()).id(binding.id()).recipeIngredientId(binding.recipeIngredientId())
+                .productTemplateId(binding.productTemplate() == null ? null : binding.productTemplate().id())
+                .productTemplate(binding.productTemplate() == null ? null : productTemplateMapper.toDto(binding.productTemplate()))
+                .quantity(value.quantity()).unit(value.unit() == null ? null : RecipeUnitDTO.valueOf(value.unit().name()))
+                .durationSeconds(value.durationSeconds()).temperatureCelsius(value.temperatureCelsius())
+                .heatLevel(value.heatLevel() == null ? null : HeatLevelDTO.valueOf(value.heatLevel().name()))
+                .number(value.number()).text(value.text());
     }
 
     public RecipeRequirementDTO toDto(RecipeRequirement requirement) {

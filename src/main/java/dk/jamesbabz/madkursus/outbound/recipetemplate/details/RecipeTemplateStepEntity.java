@@ -1,3 +1,3 @@
 package dk.jamesbabz.madkursus.outbound.recipetemplate.details;
-import java.util.UUID;import jakarta.persistence.*;import lombok.*;
-@Entity @Table(name="recipe_template_steps") @Getter @NoArgsConstructor(access=AccessLevel.PROTECTED) public class RecipeTemplateStepEntity{@Id private UUID id;@ManyToOne(optional=false)@JoinColumn(name="recipe_template_id")private RecipeTemplateEntity recipeTemplate;private String instruction;private int sortOrder;}
+import java.util.*;import jakarta.persistence.*;import lombok.*;import dk.jamesbabz.madkursus.service.models.RecipeStepType;
+@Entity @Table(name="recipe_template_steps") @Getter @NoArgsConstructor(access=AccessLevel.PROTECTED) public class RecipeTemplateStepEntity{@Id private UUID id;@ManyToOne(optional=false)@JoinColumn(name="recipe_template_id")private RecipeTemplateEntity recipeTemplate;@Enumerated(EnumType.STRING)private RecipeStepType stepType;private String instruction;private int sortOrder;private UUID cookingProcessId;@OneToMany(mappedBy="recipeTemplateStep")private List<RecipeTemplateProcessBindingEntity> bindings=new ArrayList<>();}

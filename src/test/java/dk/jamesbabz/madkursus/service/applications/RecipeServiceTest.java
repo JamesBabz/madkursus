@@ -15,6 +15,7 @@ import dk.jamesbabz.madkursus.service.models.Recipe;
 import dk.jamesbabz.madkursus.service.models.RecipeTemplate;
 import dk.jamesbabz.madkursus.service.models.RecipeUnit;
 import dk.jamesbabz.madkursus.service.models.Unit;
+import dk.jamesbabz.madkursus.service.models.*;
 import dk.jamesbabz.madkursus.service.ports.CurrentUserProvider;
 import dk.jamesbabz.madkursus.service.ports.RecipePort;
 import dk.jamesbabz.madkursus.service.ports.MealPlanPort;
@@ -31,6 +32,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.ArgumentMatchers.eq;
 
 @ExtendWith(MockitoExtension.class)
 class RecipeServiceTest {
@@ -38,6 +41,7 @@ class RecipeServiceTest {
     @Mock ProductTemplateService templates;
     @Mock CurrentUserProvider currentUser;
     @Mock MealPlanPort mealPlans;
+    @Mock CookingProcessService processes;
     @InjectMocks RecipeService service;
 
     @Test
@@ -129,7 +133,7 @@ class RecipeServiceTest {
         assertThat(copied.id()).isNull();
         assertThat(copied.userId()).isEqualTo(userId);
         assertThat(copied.sourceTemplateId()).isEqualTo(sourceId);
-        assertThat(copied.ingredients()).extracting(i->i.id()).containsOnlyNulls();
+        assertThat(copied.ingredients()).extracting(i->i.id()).doesNotContainNull();
         assertThat(copied.steps()).extracting(s->s.id()).containsOnlyNulls();
         assertThat(copied.ingredients().getFirst().quantity()).isEqualByComparingTo("1.5");
     }
@@ -156,6 +160,74 @@ class RecipeServiceTest {
                 .hasMessage("Opskriften er stadig med i en aktiv madplan. Fjern den fra madplanen først.");
         verify(mealPlans,never()).detachHistoricalRecipeReferences(any(),any()); verify(port,never()).deleteByIdAndUserId(any(),any());
         assertThat(service.get(recipeId)).isSameAs(recipe);
+    }
+
+    @Test
+    void processStepPersistsOnlyReferenceAndLocalBindingsWithoutChangingGlobalDefinition() {
+        UUID userId=UUID.randomUUID(), processId=UUID.randomUUID(), productId=UUID.randomUUID(), ingredientId=UUID.randomUUID(); Instant now=Instant.now();
+        ProductTemplate potato=new ProductTemplate(productId,"Kartofler",ProductCategory.VEGETABLE,Unit.GRAM,List.of(),true);
+        CookingProcess process=new CookingProcess(processId,"BOIL_POTATOES","Kog kartofler",null,true,now,now,
+                List.of(new CookingProcessParameter(UUID.randomUUID(),"POTATOES","Kartofler",CookingProcessParameterType.INGREDIENT_QUANTITY,true,null,null,1)),
+                List.of(new CookingProcessStep(UUID.randomUUID(),"Kom {POTATOES} i gryden.",1)),List.of(),"Kartoflerne er møre.");
+        when(currentUser.currentUserId()).thenReturn(userId); when(processes.get(processId)).thenReturn(process);
+        when(templates.get(productId)).thenReturn(potato); when(port.save(any())).thenAnswer(call->call.getArgument(0));
+        when(processes.render(eq(processId),any())).thenReturn(new RenderedCookingProcess(List.of("Kom Kartofler (500 g) i gryden."),"Kartoflerne er møre.",List.of()));
+
+        Recipe result=service.create("Kartofler",null,List.of(new RecipeService.IngredientInput(ingredientId,productId,new BigDecimal("500"),RecipeUnit.GRAM,null,1)),List.of(new RecipeService.StepInput(RecipeStepType.PROCESS,null,1,processId,
+                List.of(new RecipeService.BindingInput("POTATOES",ingredientId,productId,new BigDecimal("500"),RecipeUnit.GRAM,null,null,null,null,null)))));
+
+        RecipeStep step=result.steps().getFirst(); assertThat(step.type()).isEqualTo(RecipeStepType.PROCESS);
+        assertThat(step.cookingProcessId()).isEqualTo(processId); assertThat(step.instruction()).isNull();
+        assertThat(step.parameterBindings()).singleElement().satisfies(binding->assertThat(binding.value().quantity()).isEqualByComparingTo("500"));
+        assertThat(process.parameters().getFirst().defaultValue()).isNull();
+        verify(processes).validateBindings(eq(process),any());
+    }
+
+    @Test
+    void allowsTwoOnionsToBeSplitOneAndOneAcrossProcesses() {
+        assertThat(allocationRecipe("Løg",Unit.PIECE,RecipeUnit.PIECE,"2","1","1").steps()).hasSize(2);
+    }
+
+    @Test
+    void allowsFortyGramsButterToBeSplitTwentyAndTwentyAcrossProcesses() {
+        assertThat(allocationRecipe("Smør",Unit.GRAM,RecipeUnit.GRAM,"40","20","20").steps()).hasSize(2);
+    }
+
+    @Test
+    void partialProcessAllocationIsAllowed() {
+        assertThat(allocationRecipe("Løg",Unit.PIECE,RecipeUnit.PIECE,"2","1").steps()).hasSize(1);
+    }
+
+    @Test
+    void processOverallocationIsRejected() {
+        assertThatThrownBy(()->allocationRecipe("Løg",Unit.PIECE,RecipeUnit.PIECE,"2","1","2"))
+                .isInstanceOf(InvalidInputException.class).hasMessageContaining("exceed recipe ingredient quantity");
+    }
+
+    private Recipe allocationRecipe(String name,Unit productUnit,RecipeUnit recipeUnit,String total,String... allocations) {
+        UUID userId=UUID.randomUUID(),processId=UUID.randomUUID(),productId=UUID.randomUUID(),ingredientId=UUID.randomUUID();Instant now=Instant.now();
+        ProductTemplate product=new ProductTemplate(productId,name,ProductCategory.OTHER,productUnit,List.of(),false);
+        CookingProcess process=new CookingProcess(processId,"ALLOCATE","Fordel",null,true,now,now,List.of(),List.of(new CookingProcessStep(UUID.randomUUID(),"Brug ingrediensen.",1)),List.of(),"Færdig.");
+        lenient().when(currentUser.currentUserId()).thenReturn(userId);lenient().when(templates.get(productId)).thenReturn(product);lenient().when(processes.get(processId)).thenReturn(process);lenient().when(port.save(any())).thenAnswer(call->call.getArgument(0));
+        List<RecipeService.StepInput> steps=new java.util.ArrayList<>();int order=1;for(String allocation:allocations)steps.add(new RecipeService.StepInput(RecipeStepType.PROCESS,null,order++,processId,List.of(new RecipeService.BindingInput("ITEM",ingredientId,productId,new BigDecimal(allocation),recipeUnit,null,null,null,null,null))));
+        return service.create("Fordeling",null,List.of(new RecipeService.IngredientInput(ingredientId,productId,new BigDecimal(total),recipeUnit,null,1)),steps);
+    }
+
+    @Test
+    void recipeTemplateProcessStepCopiesReferenceAndBindingsWithoutSnapshottingDefinition() {
+        UUID userId=UUID.randomUUID(), templateId=UUID.randomUUID(), processId=UUID.randomUUID(); Instant now=Instant.now();
+        CookingProcessBinding override=new CookingProcessBinding(UUID.randomUUID(),"TIME",null,
+                new CookingProcessValue(null,null,600,null,null,null,null));
+        RecipeTemplate template=new RecipeTemplate(templateId,"Proces-template",null,true,now,now,List.of(),
+                List.of(new RecipeTemplateStep(UUID.randomUUID(),RecipeStepType.PROCESS,null,1,processId,List.of(override))));
+        when(currentUser.currentUserId()).thenReturn(userId); when(port.save(any())).thenAnswer(call->call.getArgument(0));
+        when(processes.render(eq(processId),any())).thenReturn(new RenderedCookingProcess(List.of("Kog i 10 minutter."),"Kontrollér.",List.of()));
+
+        Recipe copied=service.createFromTemplate(template);
+
+        assertThat(copied.sourceTemplateId()).isEqualTo(templateId);
+        assertThat(copied.steps()).singleElement().satisfies(step->{assertThat(step.type()).isEqualTo(RecipeStepType.PROCESS);assertThat(step.cookingProcessId()).isEqualTo(processId);assertThat(step.instruction()).isNull();assertThat(step.parameterBindings()).singleElement().satisfies(binding->assertThat(binding.value().durationSeconds()).isEqualTo(600));});
+        assertThat(template.steps().getFirst().parameterBindings().getFirst().id()).isNotNull();
     }
 
     private Recipe recipe(UUID id,UUID userId,String name){Instant now=Instant.now();return new Recipe(id,userId,name,null,now,now,List.of(),List.of());}

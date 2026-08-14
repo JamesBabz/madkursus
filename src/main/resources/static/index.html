@@ -362,7 +362,15 @@
         </div>
       </section>
       <div class="section-heading recipe-editor-heading"><h3>Fremgangsmåde</h3><button class="text-button" id="add-recipe-step" type="button">+ Tilføj trin</button></div>
+      <div class="step-add-actions"><button class="primary-button compact-button" id="add-process-step" type="button">+ Proces</button></div>
       <div id="recipe-editor-steps" class="editor-items"></div>
+      <section id="process-picker" class="sub-panel" hidden>
+        <label for="cooking-process-select">Vælg madlavningsproces</label>
+        <select id="cooking-process-select"><option value="">Vælg proces</option></select>
+        <p id="cooking-process-description" class="help-text"></p>
+        <div id="cooking-process-parameters" class="process-parameter-fields"></div>
+        <div class="dialog-actions"><button class="secondary-button" id="cancel-process-step" type="button">Annuller</button><button class="primary-button" id="save-process-step" type="button">Tilføj proces</button></div>
+      </section>
       <div class="notice error" id="recipe-error" role="alert" hidden></div>
       <div class="dialog-actions"><button class="secondary-button" id="cancel-recipe" type="button">Annuller</button><button class="primary-button" type="submit">Gem opskrift</button></div>
     </form>

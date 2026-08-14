@@ -61,12 +61,20 @@ public class RecipeApiDelegateImpl implements RecipeApiDelegate {
 
     private List<RecipeService.IngredientInput> ingredients(RecipeInputDTO request) {
         return request.getIngredients().stream().map(i -> new RecipeService.IngredientInput(
-                i.getProductTemplateId(), i.getQuantity(), RecipeUnit.valueOf(i.getUnit().name()),
+                i.getId(), i.getProductTemplateId(), i.getQuantity(), RecipeUnit.valueOf(i.getUnit().name()),
                 i.getPreparation(), i.getSortOrder())).toList();
     }
 
     private List<RecipeService.StepInput> steps(RecipeInputDTO request) {
         return request.getSteps().stream()
-                .map(s -> new RecipeService.StepInput(s.getInstruction(), s.getSortOrder())).toList();
+                .map(s -> new RecipeService.StepInput(
+                        s.getType() == null ? dk.jamesbabz.madkursus.service.models.RecipeStepType.TEXT : dk.jamesbabz.madkursus.service.models.RecipeStepType.valueOf(s.getType().name()),
+                        s.getInstruction(), s.getSortOrder(), s.getCookingProcessId(),
+                        s.getParameterBindings().stream().map(b -> new RecipeService.BindingInput(
+                                b.getParameterKey(), b.getRecipeIngredientId(), b.getProductTemplateId(), b.getQuantity(),
+                                b.getUnit() == null ? null : RecipeUnit.valueOf(b.getUnit().name()),
+                                b.getDurationSeconds(), b.getTemperatureCelsius(),
+                                b.getHeatLevel() == null ? null : dk.jamesbabz.madkursus.service.models.HeatLevel.valueOf(b.getHeatLevel().name()),
+                                b.getNumber(), b.getText())).toList())).toList();
     }
 }

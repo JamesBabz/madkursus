@@ -23,7 +23,7 @@ class FrontendAssetsTest {
         assertThat(html).contains("edit-product-dialog", "edit-product-form", "id=\"toast\"");
         assertThat(javascript).contains("showToast", "setTimeout", "2600", "searchRequestId",
                 "templateSearch.value = ''", "method: 'PATCH'", "openProductEditor");
-        assertThat(worker).contains("madkursus-shell-v21");
+        assertThat(worker).contains("madkursus-shell-v26");
         assertThat(html).contains("inventory-view", "inventory-add-dialog", "edit-inventory-dialog");
         assertThat(javascript).contains("/v1/inventory", "searchInventoryCandidates", "from-template",
                 "loadInventory", "showToast", "inventorySearchRequestId");
@@ -59,6 +59,10 @@ class FrontendAssetsTest {
         assertThat(javascript).contains("/v1/recipes", "searchRecipeTemplates", "scaledDecimal", "recipePortions = 2",
                 "productTemplateId", "method:editingRecipeId?'PATCH':'POST'");
         assertThat(javascript).contains("danishDecimal(scaledDecimal(ingredient.quantity, recipePortions))");
+        assertThat(html).contains("add-process-step", "cooking-process-select", "cooking-process-parameters");
+        assertThat(javascript).contains("/v1/cooking-processes", "openProcessPicker", "type:'PROCESS'", "renderedProcess");
+        assertThat(javascript).contains("durationMinutes", "durationSeconds", "minutter", "sekunder",
+                "recipeIngredientId", "allocatedForIngredient", "Ingen ingredienser er tilføjet til opskriften endnu.");
         assertThat(html).contains("plan-recipes", "recipe-plan-dialog", "calculate-recipe-plan", "add-recipe-missing", "cook-recipe");
         assertThat(javascript).contains("calculate-requirements", "add-missing-to-shopping-list", "/cook", "recipePlanSelections",
                 "button.disabled=true", "trackingMode==='PRESENCE'", "r.warning");

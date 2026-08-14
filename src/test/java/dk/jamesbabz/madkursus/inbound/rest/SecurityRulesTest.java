@@ -16,18 +16,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = {ProductApiController.class, AuthApiController.class})
+@WebMvcTest(controllers = {ProductApiController.class, AuthApiController.class, CookingProcessApiController.class})
 @Import(SecurityConfig.class)
 class SecurityRulesTest {
     @Autowired MockMvc mvc;
     @MockitoBean ProductApiDelegate productDelegate;
     @MockitoBean AuthApiDelegate authDelegate;
+    @MockitoBean CookingProcessApiDelegate cookingProcessDelegate;
     @MockitoBean UserDetailsService userDetailsService;
 
     @Test
     void productApiRequiresAuthentication() throws Exception {
         mvc.perform(get("/v1/products")).andExpect(status().isUnauthorized());
         mvc.perform(get("/v1/auth/me")).andExpect(status().isUnauthorized());
+        mvc.perform(get("/v1/cooking-processes")).andExpect(status().isUnauthorized());
     }
 
     @Test

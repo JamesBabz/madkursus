@@ -14,7 +14,25 @@ tags:
   - name: auth
   - name: product-template
   - name: kitchen-equipment
+  - name: cooking-process
 paths:
+  /v1/cooking-processes:
+    get:
+      tags: [cooking-process]
+      operationId: getCookingProcesses
+      parameters:
+        - {name: search, in: query, required: false, schema: {type: string}}
+      responses:
+        '200': {description: Shared cooking processes, content: {application/json: {schema: {type: array, items: {$ref: '#/components/schemas/CookingProcess'}}}}}
+  /v1/cooking-processes/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      tags: [cooking-process]
+      operationId: getCookingProcess
+      responses:
+        '200': {description: Cooking process detail, content: {application/json: {schema: {$ref: '#/components/schemas/CookingProcess'}}}}
+        '404': {$ref: '#/components/responses/notFound'}
   /v1/product-templates:
     get:
       tags: [product-template]
@@ -661,6 +679,9 @@ components:
     HeatSource:
       type: string
       enum: [INDUCTION, CERAMIC, ELECTRIC, GAS, OTHER]
+    HeatLevel:
+      type: string
+      enum: [LOW, MEDIUM_LOW, MEDIUM, MEDIUM_HIGH, HIGH, MAX]
     OvenMode:
       type: string
       enum: [CONVENTIONAL, FAN, GRILL]
@@ -831,10 +852,99 @@ components:
     RecipeUnit:
       type: string
       enum: [GRAM, MILLILITER, PIECE, TEASPOON, TABLESPOON, DECILITER]
+    RecipeStepType:
+      type: string
+      enum: [TEXT, PROCESS]
+    CookingProcessParameterType:
+      type: string
+      enum: [INGREDIENT_QUANTITY, QUANTITY, DURATION, TEMPERATURE, HEAT_LEVEL, NUMBER, TEXT]
+    EquipmentRequirementLevel:
+      type: string
+      enum: [REQUIRED, RECOMMENDED]
+    CookingProcessValue:
+      type: object
+      properties:
+        quantity: {type: number, nullable: true}
+        unit: {allOf: [{$ref: '#/components/schemas/RecipeUnit'}], nullable: true}
+        durationSeconds: {type: integer, minimum: 1, nullable: true}
+        temperatureCelsius: {type: integer, nullable: true}
+        heatLevel: {allOf: [{$ref: '#/components/schemas/HeatLevel'}], nullable: true}
+        number: {type: number, nullable: true}
+        text: {type: string, nullable: true}
+    CookingProcessParameter:
+      type: object
+      required: [id, key, label, type, required, sortOrder]
+      properties:
+        id: {type: string, format: uuid}
+        key: {type: string}
+        label: {type: string}
+        type: {$ref: '#/components/schemas/CookingProcessParameterType'}
+        required: {type: boolean}
+        defaultValue: {$ref: '#/components/schemas/CookingProcessValue'}
+        unit: {allOf: [{$ref: '#/components/schemas/RecipeUnit'}], nullable: true}
+        sortOrder: {type: integer, minimum: 1}
+    CookingProcessStep:
+      type: object
+      required: [id, instructionTemplate, sortOrder]
+      properties:
+        id: {type: string, format: uuid}
+        instructionTemplate: {type: string}
+        sortOrder: {type: integer, minimum: 1}
+    CookingProcessEquipmentRequirement:
+      type: object
+      required: [id, equipmentType, level]
+      properties:
+        id: {type: string, format: uuid}
+        equipmentType: {$ref: '#/components/schemas/EquipmentType'}
+        level: {$ref: '#/components/schemas/EquipmentRequirementLevel'}
+    CookingProcess:
+      type: object
+      required: [id, key, name, active, createdAt, updatedAt, parameters, steps, equipmentRequirements, completionCriteriaTemplate]
+      properties:
+        id: {type: string, format: uuid}
+        key: {type: string}
+        name: {type: string}
+        description: {type: string, nullable: true}
+        active: {type: boolean}
+        createdAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+        parameters: {type: array, items: {$ref: '#/components/schemas/CookingProcessParameter'}}
+        steps: {type: array, items: {$ref: '#/components/schemas/CookingProcessStep'}}
+        equipmentRequirements: {type: array, items: {$ref: '#/components/schemas/CookingProcessEquipmentRequirement'}}
+        completionCriteriaTemplate: {type: string}
+    CookingProcessBindingInput:
+      type: object
+      required: [parameterKey]
+      properties:
+        parameterKey: {type: string}
+        recipeIngredientId: {type: string, format: uuid, nullable: true}
+        productTemplateId: {type: string, format: uuid, nullable: true}
+        quantity: {type: number, nullable: true}
+        unit: {allOf: [{$ref: '#/components/schemas/RecipeUnit'}], nullable: true}
+        durationSeconds: {type: integer, minimum: 1, nullable: true}
+        temperatureCelsius: {type: integer, nullable: true}
+        heatLevel: {allOf: [{$ref: '#/components/schemas/HeatLevel'}], nullable: true}
+        number: {type: number, nullable: true}
+        text: {type: string, nullable: true}
+    CookingProcessBinding:
+      allOf:
+        - $ref: '#/components/schemas/CookingProcessBindingInput'
+        - type: object
+          properties:
+            id: {type: string, format: uuid}
+            productTemplate: {allOf: [{$ref: '#/components/schemas/ProductTemplate'}], nullable: true}
+    RenderedCookingProcess:
+      type: object
+      required: [instructions, completionCriterion, warnings]
+      properties:
+        instructions: {type: array, items: {type: string}}
+        completionCriterion: {type: string}
+        warnings: {type: array, items: {type: string}}
     RecipeIngredientInput:
       type: object
       required: [productTemplateId, quantity, unit, sortOrder]
       properties:
+        id: {type: string, format: uuid, nullable: true, description: Stable client or server ID used by process bindings}
         productTemplateId: {type: string, format: uuid}
         quantity: {type: number, exclusiveMinimum: 0}
         unit: {$ref: '#/components/schemas/RecipeUnit'}
@@ -842,10 +952,15 @@ components:
         sortOrder: {type: integer, minimum: 1}
     RecipeStepInput:
       type: object
-      required: [instruction, sortOrder]
+      required: [sortOrder]
       properties:
-        instruction: {type: string, minLength: 1}
+        type:
+          allOf: [{$ref: '#/components/schemas/RecipeStepType'}]
+          default: TEXT
+        instruction: {type: string, minLength: 1, nullable: true}
         sortOrder: {type: integer, minimum: 1}
+        cookingProcessId: {type: string, format: uuid, nullable: true}
+        parameterBindings: {type: array, items: {$ref: '#/components/schemas/CookingProcessBindingInput'}}
     RecipeInput:
       type: object
       required: [name, ingredients, steps]
@@ -867,11 +982,15 @@ components:
         sortOrder: {type: integer, minimum: 1}
     RecipeStep:
       type: object
-      required: [id, instruction, sortOrder]
+      required: [id, type, sortOrder, parameterBindings]
       properties:
         id: {type: string, format: uuid}
-        instruction: {type: string, minLength: 1}
+        type: {$ref: '#/components/schemas/RecipeStepType'}
+        instruction: {type: string, minLength: 1, nullable: true}
         sortOrder: {type: integer, minimum: 1}
+        cookingProcessId: {type: string, format: uuid, nullable: true}
+        parameterBindings: {type: array, items: {$ref: '#/components/schemas/CookingProcessBinding'} }
+        renderedProcess: {allOf: [{$ref: '#/components/schemas/RenderedCookingProcess'}], nullable: true}
     Recipe:
       type: object
       required: [id, name, ingredients, steps, createdAt, updatedAt]
@@ -896,11 +1015,14 @@ components:
         sortOrder: {type: integer, minimum: 1}
     RecipeTemplateStep:
       type: object
-      required: [id, instruction, sortOrder]
+      required: [id, type, sortOrder, parameterBindings]
       properties:
         id: {type: string, format: uuid}
-        instruction: {type: string}
+        type: {$ref: '#/components/schemas/RecipeStepType'}
+        instruction: {type: string, nullable: true}
         sortOrder: {type: integer, minimum: 1}
+        cookingProcessId: {type: string, format: uuid, nullable: true}
+        parameterBindings: {type: array, items: {$ref: '#/components/schemas/CookingProcessBinding'} }
     RecipeTemplateSummary:
       type: object
       required: [id, name, active, added]
