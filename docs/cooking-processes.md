@@ -4,7 +4,7 @@ CookingProcesses are shared, application-managed instruction definitions. Recipe
 
 ## Source and schema
 
-The reviewable source library is [`src/main/resources/db/seed/madkursus-cooking-processes-seed.json`](../src/main/resources/db/seed/madkursus-cooking-processes-seed.json). It contains the process key, equipment requirements, typed parameters and defaults, ordered instruction templates, and completion criterion.
+The canonical reviewable source library is [`src/main/resources/seed/cooking-processes.json`](../src/main/resources/seed/cooking-processes.json). It contains the process key, equipment requirements, typed parameters and defaults, ordered instruction templates, and completion criterion. The identical legacy copy under `db/seed/` remains untouched because the already-applied V19 migration reads it; tests ensure the two representations have not drifted.
 
 Flyway migration `V18` creates these definition tables:
 

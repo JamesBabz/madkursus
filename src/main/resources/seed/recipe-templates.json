@@ -1,0 +1,243 @@
+{
+  "metadata": {
+    "version": 2,
+    "language": "da",
+    "portionSemantics": "Alle ingrediensmængder er for én portion. Kun ingrediensbindinger skaleres med portioner.",
+    "description": "Kanoniske globale RecipeTemplates med TEXT- og PROCESS-trin."
+  },
+  "recipes": [
+    {
+      "key": "MEAT_SAUCE_WITH_PASTA", "name": "Kødsovs med pasta", "description": "Klassisk kødsovs til en nem hverdagsaften.",
+      "ingredients": [
+        {"key":"MEAT","productTemplate":"Hakket oksekød","quantity":125,"unit":"GRAM"},
+        {"key":"PASTA","productTemplate":"Spaghetti","quantity":100,"unit":"GRAM"},
+        {"key":"TOMATOES","productTemplate":"Hakkede tomater","quantity":200,"unit":"GRAM"},
+        {"key":"CARROT","productTemplate":"Gulerod","quantity":50,"unit":"GRAM","preparation":"revet"},
+        {"key":"OIL","productTemplate":"Olivenolie","quantity":10,"unit":"MILLILITER"}
+      ],
+      "steps": [
+        {"type":"PROCESS","process":"BOIL_PASTA","bindings":{"PASTA":{"ingredient":"PASTA","quantity":100,"unit":"GRAM"},"WATER":{"quantity":1000,"unit":"MILLILITER"}}},
+        {"type":"PROCESS","process":"BROWN_MINCED_MEAT","bindings":{"MEAT":{"ingredient":"MEAT","quantity":125,"unit":"GRAM"},"FAT":{"ingredient":"OIL","quantity":10,"unit":"MILLILITER"}}},
+        {"type":"TEXT","instruction":"Tilsæt gulerod og tomater, og lad sovsen simre i 15 minutter."},
+        {"type":"TEXT","instruction":"Server kødsovsen med pastaen."}
+      ]
+    },
+    {
+      "key":"MEATBALLS_IN_CURRY","name":"Boller i karry","description":"Dansk familiefavorit med ris og mild karrysovs.",
+      "ingredients":[
+        {"key":"MEAT","productTemplate":"Hakket svinekød","quantity":125,"unit":"GRAM"},
+        {"key":"RICE","productTemplate":"Basmatiris","quantity":75,"unit":"GRAM"},
+        {"key":"MILK","productTemplate":"Sødmælk","quantity":125,"unit":"MILLILITER"},
+        {"key":"CURRY","productTemplate":"Karry","quantity":2,"unit":"GRAM"},
+        {"key":"FLOUR","productTemplate":"Hvedemel","quantity":8,"unit":"GRAM"},
+        {"key":"BUTTER","productTemplate":"Smør","quantity":8,"unit":"GRAM"}
+      ],
+      "steps":[
+        {"type":"TEXT","instruction":"Form farsen til små boller og kog dem forsigtigt i vand."},
+        {"type":"PROCESS","process":"BOIL_RICE","bindings":{"RICE":{"ingredient":"RICE","quantity":75,"unit":"GRAM"},"WATER":{"quantity":150,"unit":"MILLILITER"}}},
+        {"type":"TEXT","instruction":"Rist karryen kort i smørret uden at branke den."},
+        {"type":"PROCESS","process":"MAKE_ROUX_SAUCE","bindings":{"FAT":{"ingredient":"BUTTER","quantity":8,"unit":"GRAM"},"FLOUR":{"ingredient":"FLOUR","quantity":8,"unit":"GRAM"},"LIQUID":{"ingredient":"MILK","quantity":125,"unit":"MILLILITER"}}},
+        {"type":"TEXT","instruction":"Vend kødbollerne i sovsen og server med ris."}
+      ]
+    },
+    {
+      "key":"DANISH_MEATBALLS","name":"Frikadeller","description":"Saftige frikadeller med kartofler.",
+      "ingredients":[
+        {"key":"MEAT","productTemplate":"Hakket svinekød","quantity":150,"unit":"GRAM"},
+        {"key":"EGG","productTemplate":"Æg","quantity":0.25,"unit":"PIECE"},
+        {"key":"MILK","productTemplate":"Sødmælk","quantity":30,"unit":"MILLILITER"},
+        {"key":"FLOUR","productTemplate":"Hvedemel","quantity":10,"unit":"GRAM"},
+        {"key":"POTATOES","productTemplate":"Kartoffel","quantity":250,"unit":"GRAM"}
+      ],
+      "steps":[
+        {"type":"PROCESS","process":"MIX_MEATBALL_MIXTURE","bindings":{"MEAT":{"ingredient":"MEAT","quantity":150,"unit":"GRAM"},"EGG":{"ingredient":"EGG","quantity":0.25,"unit":"PIECE"},"BINDER":{"ingredient":"FLOUR","quantity":10,"unit":"GRAM"},"LIQUID":{"ingredient":"MILK","quantity":30,"unit":"MILLILITER"}}},
+        {"type":"TEXT","instruction":"Form frikadeller og steg dem gyldne og gennemstegte på panden."},
+        {"type":"PROCESS","process":"BOIL_POTATOES","bindings":{"POTATOES":{"ingredient":"POTATOES","quantity":250,"unit":"GRAM"},"WATER":{"quantity":750,"unit":"MILLILITER"}}},
+        {"type":"TEXT","instruction":"Server frikadellerne med kartoflerne."}
+      ]
+    },
+    {
+      "key":"CHICKEN_CURRY","name":"Kylling i karry","description":"Mild karryret med kylling og ris.",
+      "ingredients":[
+        {"key":"CHICKEN","productTemplate":"Kyllingebryst","quantity":150,"unit":"GRAM","preparation":"i tern"},
+        {"key":"RICE","productTemplate":"Basmatiris","quantity":75,"unit":"GRAM"},
+        {"key":"MILK","productTemplate":"Sødmælk","quantity":125,"unit":"MILLILITER"},
+        {"key":"CURRY","productTemplate":"Karry","quantity":3,"unit":"GRAM"},
+        {"key":"CARROT","productTemplate":"Gulerod","quantity":75,"unit":"GRAM"},
+        {"key":"OIL","productTemplate":"Olivenolie","quantity":10,"unit":"MILLILITER"}
+      ],
+      "steps":[
+        {"type":"PROCESS","process":"BOIL_RICE","bindings":{"RICE":{"ingredient":"RICE","quantity":75,"unit":"GRAM"},"WATER":{"quantity":150,"unit":"MILLILITER"}}},
+        {"type":"PROCESS","process":"PAN_FRY_CHICKEN_BREAST","bindings":{"CHICKEN":{"ingredient":"CHICKEN","quantity":150,"unit":"GRAM"},"FAT":{"ingredient":"OIL","quantity":10,"unit":"MILLILITER"}}},
+        {"type":"TEXT","instruction":"Tilsæt karry, gulerod og mælk, og lad retten simre, til guleroden er mør med let bid."}
+      ]
+    },
+    {
+      "key":"CHILI_CON_CARNE","name":"Chili con carne","description":"Varmende chili med oksekød og bønner.",
+      "ingredients":[
+        {"key":"MEAT","productTemplate":"Hakket oksekød","quantity":125,"unit":"GRAM"},
+        {"key":"BEANS","productTemplate":"Kidneybønner","quantity":100,"unit":"GRAM"},
+        {"key":"TOMATOES","productTemplate":"Hakkede tomater","quantity":200,"unit":"GRAM"},
+        {"key":"PAPRIKA","productTemplate":"Paprika","quantity":2,"unit":"GRAM"},
+        {"key":"CORN","productTemplate":"Majs","quantity":50,"unit":"GRAM"}
+      ],
+      "steps":[
+        {"type":"PROCESS","process":"BROWN_MINCED_MEAT","bindings":{"MEAT":{"ingredient":"MEAT","quantity":125,"unit":"GRAM"}}},
+        {"type":"TEXT","instruction":"Tilsæt paprika og tomater, og lad retten simre i cirka 15 minutter."},
+        {"type":"TEXT","instruction":"Vend bønner og majs i, og varm retten grundigt igennem."}
+      ]
+    },
+    {
+      "key":"CHICKEN_TOMATO_PASTA","name":"Pasta med kylling og tomat","description":"Hurtig pastaret med kylling.",
+      "ingredients":[
+        {"key":"PASTA","productTemplate":"Penne","quantity":100,"unit":"GRAM"},
+        {"key":"CHICKEN","productTemplate":"Kyllingebryst","quantity":150,"unit":"GRAM"},
+        {"key":"TOMATOES","productTemplate":"Hakkede tomater","quantity":175,"unit":"GRAM"},
+        {"key":"OIL","productTemplate":"Olivenolie","quantity":10,"unit":"MILLILITER"}
+      ],
+      "steps":[
+        {"type":"PROCESS","process":"BOIL_PASTA","bindings":{"PASTA":{"ingredient":"PASTA","quantity":100,"unit":"GRAM"},"WATER":{"quantity":1000,"unit":"MILLILITER"}}},
+        {"type":"PROCESS","process":"PAN_FRY_CHICKEN_BREAST","bindings":{"CHICKEN":{"ingredient":"CHICKEN","quantity":150,"unit":"GRAM"},"FAT":{"ingredient":"OIL","quantity":10,"unit":"MILLILITER"}}},
+        {"type":"TEXT","instruction":"Tilsæt tomaterne, lad dem koge kort ind, og vend den kogte pasta i."}
+      ]
+    },
+    {
+      "key":"CHICKEN_RICE_VEGETABLES","name":"Kylling med ris og grøntsager","description":"En enkel ret med kylling, ris og grønt.",
+      "ingredients":[
+        {"key":"CHICKEN","productTemplate":"Kyllingebryst","quantity":150,"unit":"GRAM"},
+        {"key":"RICE","productTemplate":"Basmatiris","quantity":75,"unit":"GRAM"},
+        {"key":"CARROT","productTemplate":"Gulerod","quantity":75,"unit":"GRAM","preparation":"i skiver"},
+        {"key":"PEPPER","productTemplate":"Peberfrugt","quantity":0.5,"unit":"PIECE","preparation":"i strimler"},
+        {"key":"OIL","productTemplate":"Olivenolie","quantity":10,"unit":"MILLILITER"}
+      ],
+      "steps":[
+        {"type":"PROCESS","process":"BOIL_RICE","bindings":{"RICE":{"ingredient":"RICE","quantity":75,"unit":"GRAM"},"WATER":{"quantity":150,"unit":"MILLILITER"}}},
+        {"type":"PROCESS","process":"PAN_FRY_CHICKEN_BREAST","bindings":{"CHICKEN":{"ingredient":"CHICKEN","quantity":150,"unit":"GRAM"},"FAT":{"ingredient":"OIL","quantity":5,"unit":"MILLILITER"}}},
+        {"type":"PROCESS","process":"SAUTE_VEGETABLES","bindings":{"VEGETABLES":{"ingredient":"CARROT","quantity":75,"unit":"GRAM"},"FAT":{"ingredient":"OIL","quantity":5,"unit":"MILLILITER"}}},
+        {"type":"TEXT","instruction":"Tilsæt peberfrugten de sidste minutter, så den bliver mør med bid."},
+        {"type":"TEXT","instruction":"Server kylling og grøntsager med ris."}
+      ]
+    },
+    {
+      "key":"DANISH_OMELETTE","name":"Æggekage","description":"Klassisk æggekage med bacon.",
+      "ingredients":[
+        {"key":"EGG","productTemplate":"Æg","quantity":3,"unit":"PIECE"},
+        {"key":"MILK","productTemplate":"Sødmælk","quantity":50,"unit":"MILLILITER"},
+        {"key":"BACON","productTemplate":"Bacon","quantity":50,"unit":"GRAM"}
+      ],
+      "steps":[
+        {"type":"TEXT","instruction":"Steg bacon sprødt, og lad det dryppe af."},
+        {"type":"TEXT","instruction":"Pisk æg og mælk sammen."},
+        {"type":"TEXT","instruction":"Hæld æggemassen på panden, fordel baconen, og steg ved lav varme, til æggekagen har sat sig."}
+      ]
+    },
+    {
+      "key":"MILLION_BEEF","name":"Millionbøf","description":"Hakket oksekød i brun sovs med kartofler.",
+      "ingredients":[
+        {"key":"MEAT","productTemplate":"Hakket oksekød","quantity":150,"unit":"GRAM"},
+        {"key":"POTATOES","productTemplate":"Kartoffel","quantity":250,"unit":"GRAM"},
+        {"key":"FLOUR","productTemplate":"Hvedemel","quantity":8,"unit":"GRAM"},
+        {"key":"BUTTER","productTemplate":"Smør","quantity":8,"unit":"GRAM"},
+        {"key":"STOCK","productTemplate":"Oksebouillon","quantity":2,"unit":"GRAM"}
+      ],
+      "steps":[
+        {"type":"PROCESS","process":"BOIL_POTATOES","bindings":{"POTATOES":{"ingredient":"POTATOES","quantity":250,"unit":"GRAM"},"WATER":{"quantity":750,"unit":"MILLILITER"}}},
+        {"type":"PROCESS","process":"BROWN_MINCED_MEAT","bindings":{"MEAT":{"ingredient":"MEAT","quantity":150,"unit":"GRAM"}}},
+        {"type":"TEXT","instruction":"Tilsæt smør og mel, og spæd gradvist med vand og bouillon under omrøring."},
+        {"type":"TEXT","instruction":"Lad sovsen simre, til den er jævn og uden melsmag, og server med kartofler."}
+      ]
+    },
+    {
+      "key":"PAPRIKA_STEW","name":"Paprikagryde","description":"Cremet paprikagryde med kylling.",
+      "ingredients":[
+        {"key":"CHICKEN","productTemplate":"Kyllingebryst","quantity":150,"unit":"GRAM"},
+        {"key":"PAPRIKA","productTemplate":"Paprika","quantity":3,"unit":"GRAM"},
+        {"key":"PEPPER","productTemplate":"Peberfrugt","quantity":0.5,"unit":"PIECE"},
+        {"key":"CREAM","productTemplate":"Piskefløde","quantity":100,"unit":"MILLILITER"},
+        {"key":"RICE","productTemplate":"Basmatiris","quantity":75,"unit":"GRAM"},
+        {"key":"OIL","productTemplate":"Olivenolie","quantity":10,"unit":"MILLILITER"}
+      ],
+      "steps":[
+        {"type":"PROCESS","process":"BOIL_RICE","bindings":{"RICE":{"ingredient":"RICE","quantity":75,"unit":"GRAM"},"WATER":{"quantity":150,"unit":"MILLILITER"}}},
+        {"type":"PROCESS","process":"PAN_FRY_CHICKEN_BREAST","bindings":{"CHICKEN":{"ingredient":"CHICKEN","quantity":150,"unit":"GRAM"},"FAT":{"ingredient":"OIL","quantity":10,"unit":"MILLILITER"}}},
+        {"type":"TEXT","instruction":"Tilsæt peberfrugt, paprika og fløde, og lad gryden simre, til peberfrugten er mør med bid."}
+      ]
+    },
+    {
+      "key":"SWEDISH_SAUSAGE_DISH","name":"Svensk pølseret","description":"Nem pølseret med kartofler og tomat.",
+      "ingredients":[
+        {"key":"SAUSAGES","productTemplate":"Pølser","quantity":125,"unit":"GRAM"},
+        {"key":"POTATOES","productTemplate":"Kartoffel","quantity":250,"unit":"GRAM"},
+        {"key":"TOMATO_PASTE","productTemplate":"Tomatpuré","quantity":20,"unit":"GRAM"},
+        {"key":"MILK","productTemplate":"Sødmælk","quantity":75,"unit":"MILLILITER"},
+        {"key":"PAPRIKA","productTemplate":"Paprika","quantity":2,"unit":"GRAM"}
+      ],
+      "steps":[
+        {"type":"PROCESS","process":"BOIL_POTATOES","bindings":{"POTATOES":{"ingredient":"POTATOES","quantity":250,"unit":"GRAM"},"WATER":{"quantity":750,"unit":"MILLILITER"},"SIMMER_TIME":{"durationSeconds":720}}},
+        {"type":"TEXT","instruction":"Skær de næsten møre kartofler i mundrette stykker."},
+        {"type":"TEXT","instruction":"Steg pølserne, til de har fået farve."},
+        {"type":"TEXT","instruction":"Tilsæt tomatpuré, paprika, mælk og kartofler, og varm retten grundigt igennem."}
+      ]
+    },
+    {
+      "key":"BEEF_PATTY_ONIONS","name":"Hakkebøf med bløde løg","description":"Hakkebøf med kartofler og stegte løg.",
+      "ingredients":[
+        {"key":"MEAT","productTemplate":"Hakket oksekød","quantity":175,"unit":"GRAM"},
+        {"key":"ONION","productTemplate":"Løg","quantity":1,"unit":"PIECE","preparation":"i skiver"},
+        {"key":"POTATOES","productTemplate":"Kartoffel","quantity":250,"unit":"GRAM"},
+        {"key":"BUTTER","productTemplate":"Smør","quantity":10,"unit":"GRAM"}
+      ],
+      "steps":[
+        {"type":"PROCESS","process":"BOIL_POTATOES","bindings":{"POTATOES":{"ingredient":"POTATOES","quantity":250,"unit":"GRAM"},"WATER":{"quantity":750,"unit":"MILLILITER"}}},
+        {"type":"TEXT","instruction":"Form kødet til en hakkebøf, krydr den, og steg den gylden og gennemstegt på panden."},
+        {"type":"PROCESS","process":"SAUTE_ONIONS","bindings":{"ONION":{"ingredient":"ONION","quantity":1,"unit":"PIECE"},"FAT":{"ingredient":"BUTTER","quantity":10,"unit":"GRAM"}}},
+        {"type":"TEXT","instruction":"Server de bløde løg over bøffen sammen med kartoflerne."}
+      ]
+    },
+    {
+      "key":"TOMATO_SOUP","name":"Tomatsuppe","description":"Enkel cremet tomatsuppe.",
+      "ingredients":[
+        {"key":"TOMATOES","productTemplate":"Hakkede tomater","quantity":300,"unit":"GRAM"},
+        {"key":"STOCK","productTemplate":"Grøntsagsbouillon","quantity":3,"unit":"GRAM"},
+        {"key":"CREAM","productTemplate":"Piskefløde","quantity":50,"unit":"MILLILITER"},
+        {"key":"OIL","productTemplate":"Olivenolie","quantity":10,"unit":"MILLILITER"}
+      ],
+      "steps":[
+        {"type":"TEXT","instruction":"Varm olien i en gryde, og tilsæt tomater og bouillon."},
+        {"type":"TEXT","instruction":"Lad suppen simre i 15 minutter."},
+        {"type":"TEXT","instruction":"Blend suppen glat på en sikker måde, rør fløden i, og varm den igennem igen."}
+      ]
+    },
+    {
+      "key":"POTATO_SOUP","name":"Kartoffelsuppe","description":"Blød og varmende kartoffelsuppe.",
+      "ingredients":[
+        {"key":"POTATOES","productTemplate":"Kartoffel","quantity":300,"unit":"GRAM","preparation":"i tern"},
+        {"key":"STOCK","productTemplate":"Grøntsagsbouillon","quantity":3,"unit":"GRAM"},
+        {"key":"CREAM","productTemplate":"Piskefløde","quantity":50,"unit":"MILLILITER"},
+        {"key":"BUTTER","productTemplate":"Smør","quantity":8,"unit":"GRAM"}
+      ],
+      "steps":[
+        {"type":"TEXT","instruction":"Skær kartoflerne i ensartede tern."},
+        {"type":"TEXT","instruction":"Kog kartoflerne møre i vand tilsat bouillon."},
+        {"type":"TEXT","instruction":"Blend suppen glat på en sikker måde, og rør smør og fløde i."}
+      ]
+    },
+    {
+      "key":"CHICKEN_RICE_DISH","name":"Risret med kylling","description":"Alt-i-en risret med kylling og grøntsager.",
+      "ingredients":[
+        {"key":"CHICKEN","productTemplate":"Kyllingebryst","quantity":150,"unit":"GRAM","preparation":"i tern"},
+        {"key":"RICE","productTemplate":"Basmatiris","quantity":75,"unit":"GRAM"},
+        {"key":"PEPPER","productTemplate":"Peberfrugt","quantity":0.5,"unit":"PIECE"},
+        {"key":"CORN","productTemplate":"Majs","quantity":50,"unit":"GRAM"},
+        {"key":"PAPRIKA","productTemplate":"Paprika","quantity":2,"unit":"GRAM"},
+        {"key":"OIL","productTemplate":"Olivenolie","quantity":10,"unit":"MILLILITER"}
+      ],
+      "steps":[
+        {"type":"PROCESS","process":"BOIL_RICE","bindings":{"RICE":{"ingredient":"RICE","quantity":75,"unit":"GRAM"},"WATER":{"quantity":150,"unit":"MILLILITER"}}},
+        {"type":"PROCESS","process":"PAN_FRY_CHICKEN_BREAST","bindings":{"CHICKEN":{"ingredient":"CHICKEN","quantity":150,"unit":"GRAM"},"FAT":{"ingredient":"OIL","quantity":10,"unit":"MILLILITER"}}},
+        {"type":"TEXT","instruction":"Tilsæt peberfrugt og paprika, og steg videre, til peberfrugten er mør med bid."},
+        {"type":"TEXT","instruction":"Vend de kogte ris og majs i, og varm retten grundigt igennem."}
+      ]
+    }
+  ]
+}
