@@ -21,22 +21,24 @@ public class InventoryApiDelegateImpl implements InventoryApiDelegate {
     private final InventoryRestMapper mapper;
 
     public ResponseEntity<InventoryItemDTO> createInventoryItem(AddInventoryItemDTO request) {
-        InventoryItemDTO result = mapper.toDto(service.add(request.getProductId(), request.getQuantity()));
+        var item=service.add(request.getProductId(),request.getQuantity());
+        InventoryItemDTO result=mapper.toDto(service.getAvailability(item.id()));
         return ResponseEntity.created(URI.create("/v1/inventory/" + result.getId())).body(result);
     }
 
     public ResponseEntity<InventoryItemDTO> createInventoryItemFromTemplate(
             UUID templateId, AddInventoryQuantityDTO request) {
-        InventoryItemDTO result = mapper.toDto(service.addFromTemplate(templateId, request.getQuantity()));
+        var item=service.addFromTemplate(templateId,request.getQuantity());
+        InventoryItemDTO result=mapper.toDto(service.getAvailability(item.id()));
         return ResponseEntity.created(URI.create("/v1/inventory/" + result.getId())).body(result);
     }
 
     public ResponseEntity<List<InventoryItemDTO>> getInventory() {
-        return ResponseEntity.ok(service.getAll().stream().map(mapper::toDto).toList());
+        return ResponseEntity.ok(service.getAllAvailability().stream().map(mapper::toDto).toList());
     }
 
     public ResponseEntity<InventoryItemDTO> getInventoryItem(UUID id) {
-        return ResponseEntity.ok(mapper.toDto(service.get(id)));
+        return ResponseEntity.ok(mapper.toDto(service.getAvailability(id)));
     }
 
     public ResponseEntity<Void> updateInventoryItem(UUID id, UpdateInventoryItemDTO request) {

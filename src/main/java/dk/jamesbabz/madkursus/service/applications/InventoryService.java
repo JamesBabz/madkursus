@@ -25,6 +25,7 @@ public class InventoryService {
     private final ProductService productService;
     private final ProductTemplateService productTemplateService;
     private final CurrentUserProvider currentUserProvider;
+    private final InventoryAvailabilityService availabilityService;
 
     @Transactional
     public InventoryItem add(UUID productId, BigDecimal quantity) {
@@ -56,6 +57,16 @@ public class InventoryService {
 
     public List<InventoryItem> getAll() {
         return inventoryPort.findAllByUserId(currentUserProvider.currentUserId());
+    }
+
+    public List<dk.jamesbabz.madkursus.service.models.InventoryAvailability> getAllAvailability() {
+        return availabilityService.inventoryAvailability();
+    }
+
+    public dk.jamesbabz.madkursus.service.models.InventoryAvailability getAvailability(UUID id) {
+        get(id);
+        return getAllAvailability().stream().filter(value->value.inventoryItem().id().equals(id)).findFirst()
+                .orElseThrow(()->new ResourceNotFoundException("Inventory item",id));
     }
 
     @Transactional

@@ -13,6 +13,7 @@ tags:
   - name: inventory
   - name: auth
   - name: product-template
+  - name: kitchen-equipment
 paths:
   /v1/product-templates:
     get:
@@ -577,6 +578,44 @@ paths:
       operationId: addMealPlanMissingToShoppingList
       responses:
         '200': {description: Missing items ensured on Shopping List, content: {application/json: {schema: {$ref: '#/components/schemas/RecipeRequirementCalculation'}}}}
+  /v1/kitchen-equipment:
+    get:
+      tags: [kitchen-equipment]
+      operationId: getKitchenEquipmentList
+      responses:
+        '200': {description: Current user's kitchen equipment, content: {application/json: {schema: {type: array, items: {$ref: '#/components/schemas/KitchenEquipment'}}}}}
+        '401': {$ref: '#/components/responses/unauthorized'}
+    post:
+      tags: [kitchen-equipment]
+      operationId: createKitchenEquipment
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/KitchenEquipmentInput'}}}}
+      responses:
+        '201': {description: Equipment created, content: {application/json: {schema: {$ref: '#/components/schemas/KitchenEquipment'}}}}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '409': {$ref: '#/components/responses/conflict'}
+  /v1/kitchen-equipment/{id}:
+    parameters: [{$ref: '#/components/parameters/id'}]
+    get:
+      tags: [kitchen-equipment]
+      operationId: getKitchenEquipment
+      responses:
+        '200': {description: Equipment, content: {application/json: {schema: {$ref: '#/components/schemas/KitchenEquipment'}}}}
+        '404': {$ref: '#/components/responses/notFound'}
+    patch:
+      tags: [kitchen-equipment]
+      operationId: updateKitchenEquipment
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/KitchenEquipmentInput'}}}}
+      responses:
+        '200': {description: Equipment updated, content: {application/json: {schema: {$ref: '#/components/schemas/KitchenEquipment'}}}}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '404': {$ref: '#/components/responses/notFound'}
+        '409': {$ref: '#/components/responses/conflict'}
+    delete:
+      tags: [kitchen-equipment]
+      operationId: deleteKitchenEquipment
+      responses:
+        '204': {description: Equipment deleted}
+        '404': {$ref: '#/components/responses/notFound'}
 components:
   parameters:
     id:
@@ -616,6 +655,53 @@ components:
         application/json:
           schema: {$ref: '#/components/schemas/ErrorMessage'}
   schemas:
+    EquipmentType:
+      type: string
+      enum: [STOVE, OVEN, POT, PAN, AIR_FRYER, THERMOMETER, MICROWAVE]
+    HeatSource:
+      type: string
+      enum: [INDUCTION, CERAMIC, ELECTRIC, GAS, OTHER]
+    OvenMode:
+      type: string
+      enum: [CONVENTIONAL, FAN, GRILL]
+    ThermometerType:
+      type: string
+      enum: [INSTANT_READ, PROBE, OTHER]
+    KitchenEquipmentInput:
+      type: object
+      required: [equipmentType, name]
+      properties:
+        equipmentType: {$ref: '#/components/schemas/EquipmentType'}
+        name: {type: string, minLength: 1, maxLength: 255}
+        active: {type: boolean, default: true}
+        preferred: {type: boolean, default: false}
+        heatSource: {$ref: '#/components/schemas/HeatSource'}
+        minimumLevel: {type: integer, minimum: 0, nullable: true}
+        maximumLevel: {type: integer, minimum: 0, nullable: true}
+        heatMappings:
+          type: object
+          nullable: true
+          additionalProperties: {type: string}
+        ovenModes:
+          type: array
+          uniqueItems: true
+          items: {$ref: '#/components/schemas/OvenMode'}
+        minimumTemperatureCelsius: {type: integer, minimum: 1, nullable: true}
+        maximumTemperatureCelsius: {type: integer, minimum: 1, nullable: true}
+        capacityMl: {type: integer, minimum: 1, nullable: true}
+        diameterMm: {type: integer, minimum: 1, nullable: true}
+        nonStick: {type: boolean, nullable: true}
+        thermometerType: {$ref: '#/components/schemas/ThermometerType'}
+        maxPowerWatts: {type: integer, minimum: 1, nullable: true}
+    KitchenEquipment:
+      allOf:
+        - $ref: '#/components/schemas/KitchenEquipmentInput'
+        - type: object
+          required: [id, active, preferred, createdAt, updatedAt]
+          properties:
+            id: {type: string, format: uuid, readOnly: true}
+            createdAt: {type: string, format: date-time, readOnly: true}
+            updatedAt: {type: string, format: date-time, readOnly: true}
     LoginRequest:
       type: object
       required: [username, password]
@@ -697,13 +783,31 @@ components:
         quantity: {type: number, minimum: 0, multipleOf: 0.5, example: 800}
     InventoryItem:
       type: object
-      required: [id, product, unit, available]
+      required: [id, product, unit, available, plannedUsageCount, reservations]
       properties:
         id: {type: string, format: uuid}
         product: {$ref: '#/components/schemas/Product'}
         quantity: {type: number, minimum: 0, multipleOf: 0.5, nullable: true}
+        physicalQuantity: {type: number, minimum: 0, nullable: true, readOnly: true}
+        reservedQuantity: {type: number, minimum: 0, nullable: true, readOnly: true}
+        availableQuantity: {type: number, minimum: 0, nullable: true, readOnly: true}
+        plannedShortfall: {type: number, minimum: 0, nullable: true, readOnly: true}
+        plannedUsageCount: {type: integer, minimum: 0, readOnly: true}
+        reservations: {type: array, readOnly: true, items: {$ref: '#/components/schemas/InventoryReservationDetail'}}
         unit: {$ref: '#/components/schemas/Unit'}
         available: {type: boolean}
+    InventoryReservationDetail:
+      type: object
+      required: [mealPlanId, mealPlanName, plannedRecipeId, recipeId, recipeName, portions, unit]
+      properties:
+        mealPlanId: {type: string, format: uuid}
+        mealPlanName: {type: string}
+        plannedRecipeId: {type: string, format: uuid}
+        recipeId: {type: string, format: uuid}
+        recipeName: {type: string}
+        portions: {type: integer, minimum: 1}
+        reservedQuantity: {type: number, minimum: 0, nullable: true}
+        unit: {$ref: '#/components/schemas/Unit'}
     AddShoppingListItem:
       type: object
       required: [productId]
@@ -837,8 +941,13 @@ components:
         trackingMode: {$ref: '#/components/schemas/InventoryTrackingMode'}
         requiredQuantity: {type: number, nullable: true}
         unit: {$ref: '#/components/schemas/Unit'}
+        physicalQuantity: {type: number, nullable: true}
+        reservedQuantity: {type: number, nullable: true}
         availableQuantity: {type: number, nullable: true}
+        plannedShortfall: {type: number, nullable: true}
         missingQuantity: {type: number, nullable: true}
+        plannedUsageCount: {type: integer, minimum: 0}
+        reservations: {type: array, items: {$ref: '#/components/schemas/InventoryReservationDetail'}}
         satisfied: {type: boolean}
         warning: {type: string, nullable: true}
     RecipeRequirementCalculation:

@@ -37,8 +37,13 @@ public class RecipeRestMapper {
                 InventoryTrackingModeDTO.valueOf(requirement.trackingMode().name()),
                 UnitDTO.valueOf(requirement.unit().name()), requirement.satisfied())
                 .productId(requirement.product() == null ? null : requirement.product().id())
-                .requiredQuantity(requirement.requiredQuantity()).availableQuantity(requirement.availableQuantity())
-                .missingQuantity(requirement.missingQuantity()).warning(requirement.warning());
+                .requiredQuantity(requirement.requiredQuantity()).physicalQuantity(requirement.physicalQuantity())
+                .reservedQuantity(requirement.reservedQuantity()).availableQuantity(requirement.availableQuantity())
+                .plannedShortfall(requirement.plannedShortfall()).missingQuantity(requirement.missingQuantity())
+                .plannedUsageCount(requirement.plannedUsageCount()).reservations(requirement.reservations().stream()
+                        .map(value->new InventoryReservationDetailDTO(value.mealPlanId(),value.mealPlanName(),value.plannedRecipeId(),
+                                value.recipeId(),value.recipeName(),value.portions(),UnitDTO.valueOf(value.unit().name()))
+                                .reservedQuantity(value.reservedQuantity())).toList()).warning(requirement.warning());
     }
     public RecipeRequirementCalculationDTO toDto(dk.jamesbabz.madkursus.service.models.RecipeRequirementCalculation calculation) { return new RecipeRequirementCalculationDTO(calculation.requirements().stream().map(this::toDto).toList()); }
     public CookRecipeResultDTO toDto(dk.jamesbabz.madkursus.service.models.RecipeCookResult result) { return new CookRecipeResultDTO(toDto(result.recipe()),result.portions(),result.history().cookedAt().atOffset(ZoneOffset.UTC),result.deductions().stream().map(this::toDto).toList(),result.warnings()); }

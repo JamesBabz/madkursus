@@ -5,6 +5,7 @@ const SHOPPING_API = '/v1/shopping-list';
 const RECIPE_API = '/v1/recipes';
 const RECIPE_TEMPLATE_API = '/v1/recipe-templates';
 const MEAL_PLAN_API = '/v1/meal-plans';
+const KITCHEN_EQUIPMENT_API = '/v1/kitchen-equipment';
 
 const categoryLabels = {
   BAKING:'Bagning', BREAD:'Brød', DAIRY:'Mejeri', EGG:'Æg', FISH:'Fisk', FROZEN:'Frostvarer',
@@ -66,6 +67,8 @@ let currentRecipeTemplate = null;
 let recipeTemplatePortions = 2;
 let recipeTemplateCatalogTimer;
 let recipeTemplateCatalogRequestId = 0;
+let currentKitchenEquipment = [];
+let editingKitchenEquipment = null;
 
 let csrfToken = '';
 let registrationEnabled = false;
@@ -332,10 +335,12 @@ function showView(view) {
   const shoppingActive = view === 'shopping';
   const productsActive = view === 'products';
   const recipesActive = view === 'recipes';
+  const kitchenActive = view === 'kitchen';
   document.querySelector('#products-view').hidden = !productsActive;
   document.querySelector('#inventory-view').hidden = !inventoryActive;
   document.querySelector('#shopping-view').hidden = !shoppingActive;
   document.querySelector('#recipes-view').hidden = !recipesActive;
+  document.querySelector('#kitchen-view').hidden = !kitchenActive;
   document.querySelector('#show-products').classList.toggle('active', productsActive);
   document.querySelector('#show-inventory').classList.toggle('active', inventoryActive);
   document.querySelector('#show-shopping').classList.toggle('active', shoppingActive);
@@ -344,6 +349,7 @@ function showView(view) {
   if (inventoryActive) { setFormOpen(false); loadInventory(); }
   if (shoppingActive) { setFormOpen(false); loadShoppingList(); }
   if (recipesActive) { setFormOpen(false); showRecipeSection('recipes'); loadRecipes(); }
+  if (kitchenActive) { setFormOpen(false); loadKitchenEquipment(); }
 }
 
 function displayUnit(unit) {
@@ -390,8 +396,13 @@ function createInventoryCard(item) {
   const amount = document.createElement('p'); amount.className = 'product-meta inventory-amount';
   amount.textContent = item.product.inventoryTrackingMode === 'PRESENCE' ? 'På lager'
     : `${formatQuantity(item.quantity)} ${displayUnit(item.unit)}`;
-  content.append(name, amount); card.append(content); return card;
+  content.append(name, amount);
+  if(item.product.inventoryTrackingMode==='PRESENCE'&&item.plannedUsageCount>0){const usage=document.createElement('button');usage.type='button';usage.className='reservation-link';usage.textContent=`Bruges i ${item.plannedUsageCount} planlagte ${item.plannedUsageCount===1?'ret':'retter'}`;usage.onclick=event=>{event.stopPropagation();openInventoryReservations(item);};content.append(usage);}
+  if(item.product.inventoryTrackingMode==='QUANTITY'&&Number(item.reservedQuantity)>0){amount.textContent=`${formatQuantity(item.physicalQuantity)} ${displayUnit(item.unit)} på lager`;const planned=document.createElement('button');planned.type='button';planned.className='reservation-link';planned.textContent=`${formatQuantity(item.reservedQuantity)} ${displayUnit(item.unit)} planlagt`;planned.onclick=event=>{event.stopPropagation();openInventoryReservations(item);};const state=document.createElement('p');state.className=`inventory-availability${Number(item.plannedShortfall)>0?' shortfall':''}`;state.textContent=Number(item.plannedShortfall)>0?`Mangler ${formatQuantity(item.plannedShortfall)} ${displayUnit(item.unit)} til planlagte retter`:Number(item.availableQuantity)===0?'Intet ledigt':`${formatQuantity(item.availableQuantity)} ${displayUnit(item.unit)} ledig`;content.append(planned,state);}
+  card.append(content); return card;
 }
+
+function openInventoryReservations(item){document.querySelector('#inventory-reservation-title').textContent=item.product.name;const rows=(item.reservations||[]).map(detail=>{const row=document.createElement('article');row.className='reservation-detail-row';const name=document.createElement('strong');name.textContent=detail.recipeName;const amount=document.createElement('span');amount.textContent=detail.reservedQuantity==null?`${detail.portions} ${detail.portions===1?'portion':'portioner'}`:`${formatQuantity(detail.reservedQuantity)} ${displayUnit(detail.unit)}`;const plan=document.createElement('small');plan.textContent=detail.mealPlanName;row.append(name,amount,plan);return row;});document.querySelector('#inventory-reservation-list').replaceChildren(...rows);document.querySelector('#inventory-reservation-dialog').showModal();}
 
 async function loadInventory() {
   const loadingElement = document.querySelector('#inventory-loading');
@@ -874,8 +885,8 @@ function requirementAmount(value,unit){return `${danishDecimal(value)} ${display
 function requirementValue(label,value){const line=document.createElement('div');line.className='requirement-value';const key=document.createElement('span');key.textContent=label;const amount=document.createElement('b');amount.textContent=value;line.append(key,amount);return line;}
 function requirementResultRow(r){const row=document.createElement('div');row.className='requirement-row';const name=document.createElement('strong');name.textContent=r.productTemplate.name;row.append(name);
   if(r.warning){row.classList.add('warning');const warning=document.createElement('span');warning.textContent=`⚠ ${r.warning}`;row.append(warning);return row;}
-  if(r.trackingMode==='PRESENCE'){row.classList.add(r.satisfied?'satisfied':'missing');const status=document.createElement('span');status.className=`requirement-status${r.satisfied?'':' missing'}`;status.textContent=r.satisfied?'✓ På lager':'Mangler';row.append(status);return row;}
-  const available=r.availableQuantity??0;const missing=r.missingQuantity??0;row.append(requirementValue('Behov',requirementAmount(r.requiredQuantity,r.unit)),requirementValue('På lager',requirementAmount(available,r.unit)));
+  if(r.trackingMode==='PRESENCE'){row.classList.add(r.satisfied?'satisfied':'missing');const status=document.createElement('span');status.className=`requirement-status${r.satisfied?'':' missing'}`;status.textContent=r.satisfied?'✓ På lager':'Mangler';row.append(status);if(r.plannedUsageCount>0){const usage=document.createElement('small');usage.textContent=`Bruges i ${r.plannedUsageCount} andre planlagte ${r.plannedUsageCount===1?'ret':'retter'}`;row.append(usage);}return row;}
+  const available=r.availableQuantity??0;const missing=r.missingQuantity??0;row.append(requirementValue('Behov',requirementAmount(r.requiredQuantity,r.unit)),requirementValue('På lager',requirementAmount(r.physicalQuantity??0,r.unit)));if(Number(r.reservedQuantity)>0)row.append(requirementValue('Planlagt til andre retter',requirementAmount(r.reservedQuantity,r.unit)));row.append(requirementValue('Tilgængelig',requirementAmount(available,r.unit)));
   const status=document.createElement('span');if(r.satisfied){row.classList.add('satisfied');status.className='requirement-status';status.textContent='✓ Du har nok';}else{row.classList.add(Number(available)>0?'partial':'missing');status.className='requirement-status missing';status.textContent=`Mangler: ${requirementAmount(missing,r.unit)}`;}row.append(status);return row;}
 function renderRequirementResults(calculation){const rows=calculation.requirements.map(requirementResultRow);const hasMissing=calculation.requirements.some(r=>!r.satisfied&&!r.warning);document.querySelector('#recipe-plan-requirements').replaceChildren(...rows);document.querySelector('#recipe-plan-results').hidden=false;document.querySelector('#add-recipe-missing').hidden=!hasMissing;}
 async function calculateRecipePlan(){const payload=selectedRecipePayload();if(!payload.recipes.length){showMessage(document.querySelector('#recipe-plan-error'),'Vælg mindst én opskrift.');return;}const button=document.querySelector('#calculate-recipe-plan');button.disabled=true;try{renderRequirementResults(await jsonRequest(`${RECIPE_API}/calculate-requirements`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}));showMessage(document.querySelector('#recipe-plan-error'),'');}catch(error){showMessage(document.querySelector('#recipe-plan-error'),error.message);}finally{button.disabled=false;}}
@@ -908,6 +919,24 @@ async function calculateMealPlan(){const button=document.querySelector('#meal-pl
 async function addMealPlanMissing(){const button=document.querySelector('#meal-plan-add-missing');button.disabled=true;try{await jsonRequest(`${MEAL_PLAN_API}/${currentMealPlan.id}/add-missing-to-shopping-list`,{method:'POST'});showToast('Manglerne er sikret på indkøbslisten');}catch(error){showMessage(document.querySelector('#meal-plan-error'),error.message);}finally{button.disabled=false;}}
 async function deleteMealPlan(){try{const name=currentMealPlan.name;await jsonRequest(`${MEAL_PLAN_API}/${currentMealPlan.id}`,{method:'DELETE'});closeMealPlan();await loadMealPlans();showToast(`${name} er slettet`);}catch(error){showMessage(document.querySelector('#meal-plan-error'),error.message);}}
 
+const equipmentTypeLabels={STOVE:'Komfur',OVEN:'Ovn',POT:'Gryde',PAN:'Stegepande',AIR_FRYER:'Airfryer',THERMOMETER:'Stegetermometer',MICROWAVE:'Mikroovn'};
+const heatSourceLabels={INDUCTION:'Induktion',CERAMIC:'Keramisk',ELECTRIC:'Elektrisk',GAS:'Gas',OTHER:'Andet'};
+const ovenModeLabels={CONVENTIONAL:'Almindelig ovn',FAN:'Varmluft',GRILL:'Grill'};
+function liters(ml){return `${formatQuantity(ml/1000)} liter`;}
+function centimeters(mm){return `${formatQuantity(mm/10)} cm`;}
+function equipmentSummary(e){switch(e.equipmentType){case'STOVE':return `${heatSourceLabels[e.heatSource]||''}${e.minimumLevel!=null?` · trin ${e.minimumLevel}–${e.maximumLevel}`:''}`;case'OVEN':return (e.ovenModes||[]).map(x=>ovenModeLabels[x]).join(' / ')||'Ovn';case'POT':return e.capacityMl?liters(e.capacityMl):'Gryde';case'PAN':return [e.diameterMm?centimeters(e.diameterMm):'',e.nonStick?'non-stick':''].filter(Boolean).join(' · ')||'Stegepande';case'AIR_FRYER':return e.capacityMl?liters(e.capacityMl):'Airfryer';case'THERMOMETER':return {INSTANT_READ:'Hurtig aflæsning',PROBE:'Stegesonde',OTHER:'Anden type'}[e.thermometerType]||'Termometer';case'MICROWAVE':return e.maxPowerWatts?`${e.maxPowerWatts} watt`:'Mikroovn';}}
+function equipmentCard(e){const button=document.createElement('button');button.type='button';button.className='equipment-card';const text=document.createElement('span');const name=document.createElement('strong');name.textContent=e.name;const meta=document.createElement('span');meta.className='product-meta';meta.textContent=equipmentSummary(e);text.append(name,meta);const badge=document.createElement('span');badge.className='preferred-badge';badge.textContent=e.preferred?'Foretrukket':'›';button.append(text,badge);button.onclick=()=>openKitchenEquipment(e);return button;}
+async function loadKitchenEquipment(){const loading=document.querySelector('#kitchen-loading');loading.hidden=false;try{currentKitchenEquipment=await jsonRequest(KITCHEN_EQUIPMENT_API);document.querySelector('#kitchen-equipment-list').replaceChildren(...currentKitchenEquipment.map(equipmentCard));document.querySelector('#kitchen-empty').hidden=currentKitchenEquipment.length>0;}catch(error){showToast(`Dit køkken kunne ikke hentes. ${error.message}`,'error');}finally{loading.hidden=true;}}
+function defaultEquipmentName(type){return equipmentTypeLabels[type];}
+function setEquipmentFields(type){document.querySelectorAll('[data-equipment-fields]').forEach(section=>section.hidden=section.dataset.equipmentFields!==type);document.querySelector('#kitchen-preferred-row').hidden=!['STOVE','OVEN'].includes(type);}
+function suggestedHeatMappings(){const source=document.querySelector('#stove-heat-source').value,minText=document.querySelector('#stove-minimum-level').value,maxText=document.querySelector('#stove-maximum-level').value,min=Number(minText),max=Number(maxText);const gas=source==='GAS'&&(!minText||!maxText);const values=gas?['Lavt blus','Middel-lavt blus','Middel blus','Middel-højt blus','Højt blus','Fuldt blus']:[.15,.30,.50,.70,.85,1].map(p=>String(Math.max(min,Math.min(max,Math.round(min+(max-min)*p)))));document.querySelectorAll('[data-heat]').forEach((input,index)=>input.value=values[index]);}
+function resetKitchenEquipmentForm(){const form=document.querySelector('#kitchen-equipment-form');form.reset();editingKitchenEquipment=null;document.querySelector('#kitchen-equipment-id').value='';document.querySelector('#kitchen-equipment-type').disabled=false;document.querySelector('#kitchen-equipment-type').value='STOVE';document.querySelector('#kitchen-equipment-name').value='Komfur';document.querySelector('#stove-minimum-level').value='1';document.querySelector('#stove-maximum-level').value='9';document.querySelector('#delete-kitchen-equipment').hidden=true;document.querySelector('#delete-kitchen-equipment-confirmation').hidden=true;showMessage(document.querySelector('#kitchen-equipment-error'),'');setEquipmentFields('STOVE');suggestedHeatMappings();}
+function openKitchenEquipment(e=null){resetKitchenEquipmentForm();editingKitchenEquipment=e;if(e){document.querySelector('#kitchen-equipment-title').textContent='Rediger udstyr';document.querySelector('#kitchen-equipment-id').value=e.id;document.querySelector('#kitchen-equipment-type').value=e.equipmentType;document.querySelector('#kitchen-equipment-type').disabled=true;document.querySelector('#kitchen-equipment-name').value=e.name;document.querySelector('#kitchen-equipment-preferred').checked=e.preferred;setEquipmentFields(e.equipmentType);document.querySelector('#delete-kitchen-equipment').hidden=false;if(e.equipmentType==='STOVE'){document.querySelector('#stove-heat-source').value=e.heatSource;document.querySelector('#stove-minimum-level').value=e.minimumLevel??'';document.querySelector('#stove-maximum-level').value=e.maximumLevel??'';document.querySelectorAll('[data-heat]').forEach(input=>input.value=e.heatMappings?.[input.dataset.heat]||'');}if(e.equipmentType==='OVEN'){document.querySelectorAll('[data-oven-mode]').forEach(input=>input.checked=(e.ovenModes||[]).includes(input.dataset.ovenMode));document.querySelector('#oven-min-temperature').value=e.minimumTemperatureCelsius??'';document.querySelector('#oven-max-temperature').value=e.maximumTemperatureCelsius??'';}if(e.equipmentType==='POT')document.querySelector('#pot-capacity').value=e.capacityMl??'';if(e.equipmentType==='PAN'){document.querySelector('#pan-diameter').value=e.diameterMm??'';document.querySelector('#pan-non-stick').checked=Boolean(e.nonStick);}if(e.equipmentType==='AIR_FRYER'){document.querySelector('#air-fryer-capacity').value=e.capacityMl??'';document.querySelector('#air-fryer-min-temperature').value=e.minimumTemperatureCelsius??'';document.querySelector('#air-fryer-max-temperature').value=e.maximumTemperatureCelsius??'';}if(e.equipmentType==='THERMOMETER')document.querySelector('#thermometer-type').value=e.thermometerType||'OTHER';if(e.equipmentType==='MICROWAVE')document.querySelector('#microwave-power').value=e.maxPowerWatts??'';}else document.querySelector('#kitchen-equipment-title').textContent='Tilføj udstyr';document.querySelector('#kitchen-equipment-dialog').showModal();}
+function optionalNumber(selector){const value=document.querySelector(selector).value;return value===''?null:Number(value);}
+function kitchenEquipmentPayload(){const type=document.querySelector('#kitchen-equipment-type').value,payload={equipmentType:type,name:document.querySelector('#kitchen-equipment-name').value.trim(),active:true,preferred:document.querySelector('#kitchen-equipment-preferred').checked};if(type==='STOVE'){payload.heatSource=document.querySelector('#stove-heat-source').value;payload.minimumLevel=optionalNumber('#stove-minimum-level');payload.maximumLevel=optionalNumber('#stove-maximum-level');payload.heatMappings=Object.fromEntries([...document.querySelectorAll('[data-heat]')].map(i=>[i.dataset.heat,i.value.trim()]));}if(type==='OVEN'){payload.ovenModes=[...document.querySelectorAll('[data-oven-mode]:checked')].map(i=>i.dataset.ovenMode);payload.minimumTemperatureCelsius=optionalNumber('#oven-min-temperature');payload.maximumTemperatureCelsius=optionalNumber('#oven-max-temperature');}if(type==='POT')payload.capacityMl=optionalNumber('#pot-capacity');if(type==='PAN'){payload.diameterMm=optionalNumber('#pan-diameter');payload.nonStick=document.querySelector('#pan-non-stick').checked;}if(type==='AIR_FRYER'){payload.capacityMl=optionalNumber('#air-fryer-capacity');payload.minimumTemperatureCelsius=optionalNumber('#air-fryer-min-temperature');payload.maximumTemperatureCelsius=optionalNumber('#air-fryer-max-temperature');}if(type==='THERMOMETER')payload.thermometerType=document.querySelector('#thermometer-type').value;if(type==='MICROWAVE')payload.maxPowerWatts=optionalNumber('#microwave-power');return payload;}
+async function saveKitchenEquipment(event){event.preventDefault();const button=event.currentTarget.querySelector('button[type="submit"]');button.disabled=true;try{const id=document.querySelector('#kitchen-equipment-id').value;await jsonRequest(id?`${KITCHEN_EQUIPMENT_API}/${id}`:KITCHEN_EQUIPMENT_API,{method:id?'PATCH':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(kitchenEquipmentPayload())});document.querySelector('#kitchen-equipment-dialog').close();await loadKitchenEquipment();showToast(id?'Udstyret er opdateret':'Udstyret er tilføjet');}catch(error){showMessage(document.querySelector('#kitchen-equipment-error'),error.message);}finally{button.disabled=false;}}
+async function deleteKitchenEquipment(){if(!editingKitchenEquipment)return;try{await jsonRequest(`${KITCHEN_EQUIPMENT_API}/${editingKitchenEquipment.id}`,{method:'DELETE'});document.querySelector('#kitchen-equipment-dialog').close();await loadKitchenEquipment();showToast('Udstyret er slettet');}catch(error){showMessage(document.querySelector('#kitchen-equipment-error'),error.message);}}
+
 loginForm.addEventListener('submit', authenticate);
 registerForm.addEventListener('submit', register);
 document.querySelector('#logout').addEventListener('click', logout);
@@ -937,6 +966,18 @@ document.querySelector('#show-products').addEventListener('click', () => showVie
 document.querySelector('#show-inventory').addEventListener('click', () => showView('inventory'));
 document.querySelector('#show-shopping').addEventListener('click', () => showView('shopping'));
 document.querySelector('#show-recipes').addEventListener('click', () => showView('recipes'));
+document.querySelector('#close-inventory-reservations').addEventListener('click',()=>document.querySelector('#inventory-reservation-dialog').close());
+document.querySelector('#show-kitchen').addEventListener('click', () => showView('kitchen'));
+document.querySelector('#close-kitchen').addEventListener('click', () => showView('inventory'));
+document.querySelector('#add-kitchen-equipment').addEventListener('click',()=>openKitchenEquipment());
+document.querySelector('#kitchen-empty-add').addEventListener('click',()=>openKitchenEquipment());
+document.querySelector('#close-kitchen-equipment').addEventListener('click',()=>document.querySelector('#kitchen-equipment-dialog').close());
+document.querySelector('#kitchen-equipment-type').addEventListener('change',event=>{setEquipmentFields(event.target.value);document.querySelector('#kitchen-equipment-name').value=defaultEquipmentName(event.target.value);if(event.target.value==='STOVE')suggestedHeatMappings();});
+document.querySelector('#generate-heat-mappings').addEventListener('click',suggestedHeatMappings);
+document.querySelector('#kitchen-equipment-form').addEventListener('submit',saveKitchenEquipment);
+document.querySelector('#delete-kitchen-equipment').addEventListener('click',()=>document.querySelector('#delete-kitchen-equipment-confirmation').hidden=false);
+document.querySelector('#keep-kitchen-equipment').addEventListener('click',()=>document.querySelector('#delete-kitchen-equipment-confirmation').hidden=true);
+document.querySelector('#confirm-delete-kitchen-equipment').addEventListener('click',deleteKitchenEquipment);
 document.querySelector('#open-inventory-add').addEventListener('click', openInventoryAdd);
 document.querySelector('#inventory-empty-add').addEventListener('click', openInventoryAdd);
 document.querySelector('#close-inventory-add').addEventListener('click', closeInventoryAdd);

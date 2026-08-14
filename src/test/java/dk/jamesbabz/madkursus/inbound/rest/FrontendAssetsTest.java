@@ -23,7 +23,7 @@ class FrontendAssetsTest {
         assertThat(html).contains("edit-product-dialog", "edit-product-form", "id=\"toast\"");
         assertThat(javascript).contains("showToast", "setTimeout", "2600", "searchRequestId",
                 "templateSearch.value = ''", "method: 'PATCH'", "openProductEditor");
-        assertThat(worker).contains("madkursus-shell-v15");
+        assertThat(worker).contains("madkursus-shell-v17");
         assertThat(html).contains("inventory-view", "inventory-add-dialog", "edit-inventory-dialog");
         assertThat(javascript).contains("/v1/inventory", "searchInventoryCandidates", "from-template",
                 "loadInventory", "showToast", "inventorySearchRequestId");
@@ -73,6 +73,15 @@ class FrontendAssetsTest {
                 "Føj til mine opskrifter");
         assertThat(javascript).contains("/v1/recipe-templates", "loadRecipeTemplates", "recipeTemplatePortions=2",
                 "add-to-my-recipes", "userRecipeId");
+        assertThat(html).contains("show-kitchen", "kitchen-view", "kitchen-equipment-dialog", "Mit køkken",
+                "data-equipment-fields=\"STOVE\"", "data-equipment-fields=\"OVEN\"");
+        assertThat(javascript).contains("/v1/kitchen-equipment", "loadKitchenEquipment", "openKitchenEquipment",
+                "saveKitchenEquipment", "deleteKitchenEquipment", "liters", "centimeters", "userRecipeId");
+        assertThat(html).contains("data-heat=\"LOW\"", "data-heat=\"MEDIUM_LOW\"", "data-heat=\"MEDIUM_HIGH\"");
+        assertThat(javascript).contains("suggestedHeatMappings");
+        assertThat(html).contains("inventory-reservation-dialog", "Planlagt til");
+        assertThat(javascript).contains("reservedQuantity", "physicalQuantity", "availableQuantity",
+                "plannedShortfall", "openInventoryReservations", "Planlagt til andre retter");
     }
 
     private String resource(String path) throws Exception {

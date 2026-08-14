@@ -42,10 +42,11 @@
   <div id="application" hidden>
   <header class="app-header">
     <div>
-      <p class="eyebrow">Mit køkken</p>
+      <p class="eyebrow">Din madhverdag</p>
       <h1>Madkursus</h1>
     </div>
     <div class="header-actions">
+    <button class="secondary-button kitchen-link" id="show-kitchen" type="button">Mit køkken</button>
     <button class="logout-button" id="logout" type="button">Log ud</button>
     </div>
   </header>
@@ -168,6 +169,16 @@
       </div>
       <div id="meal-plans-panel" hidden><p class="loading" id="meal-plans-loading" hidden>Henter madplaner…</p><div class="recipe-list" id="meal-plan-list"></div><div class="empty-state" id="meal-plans-empty" hidden><p>Du har ingen gemte madplaner endnu.</p><button class="secondary-button" id="meal-plans-empty-create" type="button">Planlæg mad</button></div></div>
     </section>
+    <section id="kitchen-view" aria-labelledby="kitchen-title" hidden>
+      <div class="section-heading product-heading">
+        <div><p class="eyebrow">Indstillinger</p><h2 id="kitchen-title">Mit køkken</h2></div>
+        <button class="add-button section-add-button" id="add-kitchen-equipment" type="button"><span aria-hidden="true">+</span> Tilføj udstyr</button>
+      </div>
+      <p class="loading" id="kitchen-loading" hidden>Henter dit køkken…</p>
+      <div class="equipment-list" id="kitchen-equipment-list" aria-live="polite"></div>
+      <div class="empty-state" id="kitchen-empty" hidden><p>Du har ikke tilføjet udstyr endnu.</p><button class="secondary-button" id="kitchen-empty-add" type="button">+ Tilføj udstyr</button></div>
+      <button class="secondary-button full-button kitchen-back" id="close-kitchen" type="button">Tilbage</button>
+    </section>
   </main>
   </div>
 
@@ -239,6 +250,11 @@
         <button class="primary-button" type="submit">Tilføj</button>
       </div>
     </form>
+  </dialog>
+
+  <dialog class="edit-dialog reservation-dialog" id="inventory-reservation-dialog" aria-labelledby="inventory-reservation-title">
+    <div class="section-heading"><div><p class="eyebrow">Planlagt til</p><h2 id="inventory-reservation-title"></h2></div><button class="icon-button" id="close-inventory-reservations" type="button" aria-label="Luk">×</button></div>
+    <div id="inventory-reservation-list" class="reservation-detail-list"></div>
   </dialog>
 
   <dialog class="edit-dialog" id="edit-inventory-dialog" aria-labelledby="edit-inventory-title">
@@ -339,6 +355,35 @@
       <div id="recipe-editor-steps" class="editor-items"></div>
       <div class="notice error" id="recipe-error" role="alert" hidden></div>
       <div class="dialog-actions"><button class="secondary-button" id="cancel-recipe" type="button">Annuller</button><button class="primary-button" type="submit">Gem opskrift</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="edit-dialog equipment-dialog" id="kitchen-equipment-dialog" aria-labelledby="kitchen-equipment-title">
+    <form id="kitchen-equipment-form">
+      <div class="section-heading"><h2 id="kitchen-equipment-title">Tilføj udstyr</h2><button class="icon-button" id="close-kitchen-equipment" type="button" aria-label="Luk">×</button></div>
+      <input id="kitchen-equipment-id" type="hidden">
+      <label for="kitchen-equipment-type">Hvad vil du tilføje?</label>
+      <select id="kitchen-equipment-type" required><option value="STOVE">Komfur</option><option value="OVEN">Ovn</option><option value="POT">Gryde</option><option value="PAN">Stegepande</option><option value="AIR_FRYER">Airfryer</option><option value="THERMOMETER">Stegetermometer</option><option value="MICROWAVE">Mikroovn</option></select>
+      <label for="kitchen-equipment-name">Navn</label><input id="kitchen-equipment-name" maxlength="255" required>
+      <label class="check-row" id="kitchen-preferred-row"><input id="kitchen-equipment-preferred" type="checkbox"> Foretrukket udstyr</label>
+      <section class="equipment-fields" data-equipment-fields="STOVE">
+        <label for="stove-heat-source">Type</label><select id="stove-heat-source"><option value="INDUCTION">Induktion</option><option value="CERAMIC">Keramisk</option><option value="ELECTRIC">Elektrisk</option><option value="GAS">Gas</option><option value="OTHER">Andet</option></select>
+        <div class="field-pair"><label>Laveste trin<input id="stove-minimum-level" type="number" min="0" value="1"></label><label>Højeste trin<input id="stove-maximum-level" type="number" min="0" value="9"></label></div>
+        <div class="section-heading heat-heading"><h3>Varmetrin</h3><button class="text-button" id="generate-heat-mappings" type="button">Foreslå trin</button></div>
+        <div class="heat-mapping-grid"><label>Lav<input data-heat="LOW" inputmode="numeric"></label><label>Middel-lav<input data-heat="MEDIUM_LOW" inputmode="numeric"></label><label>Middel<input data-heat="MEDIUM" inputmode="numeric"></label><label>Middel-høj<input data-heat="MEDIUM_HIGH" inputmode="numeric"></label><label>Høj<input data-heat="HIGH" inputmode="numeric"></label><label>Maks<input data-heat="MAX" inputmode="numeric"></label></div>
+      </section>
+      <section class="equipment-fields" data-equipment-fields="OVEN" hidden>
+        <fieldset><legend>Ovnfunktioner</legend><label class="check-row"><input type="checkbox" data-oven-mode="CONVENTIONAL"> Almindelig ovn</label><label class="check-row"><input type="checkbox" data-oven-mode="FAN"> Varmluft</label><label class="check-row"><input type="checkbox" data-oven-mode="GRILL"> Grill</label></fieldset>
+        <div class="field-pair"><label>Min. temperatur °C<input id="oven-min-temperature" type="number" min="1"></label><label>Maks. temperatur °C<input id="oven-max-temperature" type="number" min="1"></label></div>
+      </section>
+      <section class="equipment-fields" data-equipment-fields="POT" hidden><label for="pot-capacity">Kapacitet (ml) <span class="optional">(valgfri)</span></label><input id="pot-capacity" type="number" min="1" step="1" placeholder="5000"></section>
+      <section class="equipment-fields" data-equipment-fields="PAN" hidden><label for="pan-diameter">Diameter (mm) <span class="optional">(valgfri)</span></label><input id="pan-diameter" type="number" min="1" step="1" placeholder="280"><label class="check-row"><input id="pan-non-stick" type="checkbox"> Non-stick belægning</label></section>
+      <section class="equipment-fields" data-equipment-fields="AIR_FRYER" hidden><label for="air-fryer-capacity">Kapacitet (ml) <span class="optional">(valgfri)</span></label><input id="air-fryer-capacity" type="number" min="1" placeholder="5000"><div class="field-pair"><label>Min. temperatur °C<input id="air-fryer-min-temperature" type="number" min="1"></label><label>Maks. temperatur °C<input id="air-fryer-max-temperature" type="number" min="1"></label></div></section>
+      <section class="equipment-fields" data-equipment-fields="THERMOMETER" hidden><label for="thermometer-type">Type</label><select id="thermometer-type"><option value="INSTANT_READ">Hurtig aflæsning</option><option value="PROBE">Stegesonde</option><option value="OTHER">Andet</option></select></section>
+      <section class="equipment-fields" data-equipment-fields="MICROWAVE" hidden><label for="microwave-power">Maks. effekt (watt) <span class="optional">(valgfri)</span></label><input id="microwave-power" type="number" min="1" placeholder="900"></section>
+      <div class="notice error" id="kitchen-equipment-error" hidden></div>
+      <section class="inline-confirmation" id="delete-kitchen-equipment-confirmation" hidden><p>Vil du slette udstyret?</p><div class="dialog-actions"><button class="danger-button" id="confirm-delete-kitchen-equipment" type="button">Slet</button><button class="secondary-button" id="keep-kitchen-equipment" type="button">Behold</button></div></section>
+      <div class="dialog-actions"><button class="danger-button" id="delete-kitchen-equipment" type="button" hidden>Slet</button><button class="primary-button" type="submit">Gem</button></div>
     </form>
   </dialog>
 

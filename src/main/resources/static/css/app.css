@@ -204,10 +204,40 @@ button:disabled { cursor: wait; opacity: .65; }
 .requirement-status { margin-top: .15rem; color: #2f6846; font-size: .86rem; font-weight: 750; }
 .requirement-status.missing { color: #8a392f; }
 .requirement-row.warning { color: #6c4c12; background: #fff5d9; }
+.reservation-link { display: block; margin-top: .25rem; padding: 0; min-height: auto; color: #2f6846; background: transparent; border: 0; font-size: .88rem; font-weight: 750; text-align: left; text-decoration: underline; text-underline-offset: .16rem; }
+.inventory-availability { margin: .2rem 0 0; color: #55715f; font-size: .86rem; font-weight: 700; }
+.inventory-availability.shortfall { color: #9a3f35; }
+.reservation-detail-list { display: grid; gap: .65rem; }
+.reservation-detail-row { display: grid; grid-template-columns: 1fr auto; gap: .15rem .75rem; padding: .8rem; background: #f5f8f3; border-radius: .7rem; }
+.reservation-detail-row small { grid-column: 1 / -1; color: #617064; }
 .recipe-subnav { display: grid; grid-template-columns: repeat(3, 1fr); gap: .35rem; margin-bottom: 1rem; padding: .25rem; background: #e5ebe3; border-radius: .8rem; }
 .recipe-subnav button { min-height: 2.7rem; color: #55715f; background: transparent; border: 0; border-radius: .65rem; font-weight: 700; }
 .recipe-subnav button.active { color: #2f6846; background: #fff; box-shadow: 0 1px 4px rgb(20 45 29 / 10%); }
 .meal-plan-recipes { display: grid; gap: .65rem; margin: 1rem 0; }
+
+.kitchen-link { min-height: 2.45rem; padding: .55rem .75rem; white-space: nowrap; }
+.equipment-list { display: grid; gap: .65rem; }
+.equipment-card { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem; color: inherit; text-align: left; background: #fff; border: 1px solid #dfe7dc; border-radius: .9rem; box-shadow: 0 2px 8px rgb(30 60 40 / 6%); }
+.equipment-card > span:first-child { min-width: 0; display: grid; gap: .2rem; }
+.preferred-badge { flex: 0 0 auto; color: #55715f; font-size: .82rem; font-weight: 750; }
+.kitchen-back { margin-top: 1rem; }
+.equipment-fields { margin-top: 1rem; padding-top: .8rem; border-top: 1px solid #e2e8df; }
+.equipment-fields fieldset { display: grid; gap: .55rem; margin: .5rem 0 1rem; padding: .85rem; border: 1px solid #dce5da; border-radius: .75rem; }
+.equipment-fields legend { padding: 0 .3rem; font-weight: 750; }
+.check-row { display: flex; align-items: center; gap: .55rem; margin: .7rem 0; }
+.check-row input { width: 1.2rem; min-height: 1.2rem; margin: 0; }
+.field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+.field-pair label { min-width: 0; }
+.heat-heading { margin-top: 1rem; }
+.heat-mapping-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem .75rem; }
+.heat-mapping-grid label { min-width: 0; }
+.heat-mapping-grid input { width: 100%; }
+@media (max-width: 420px) {
+  .app-header { align-items: flex-start; }
+  .app-header .header-actions { flex-direction: column; align-items: stretch; gap: .35rem; }
+  .kitchen-link, .logout-button { min-height: 2.2rem; padding: .4rem .6rem; }
+  .equipment-dialog { width: calc(100% - 1rem); max-height: calc(100dvh - 1rem); padding: 1rem; }
+}
 .planned-recipe-row { padding: .8rem; background: #f4f6f1; border-radius: .85rem; }
 .planned-recipe-main { display: flex; justify-content: space-between; gap: .7rem; cursor: pointer; }
 .planned-recipe-status { color: #55715f; font-size: .82rem; font-weight: 700; }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'madkursus-shell-v15';
+const CACHE_NAME = 'madkursus-shell-v17';
 const APP_SHELL = [
   '/',
   '/index.html',
