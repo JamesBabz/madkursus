@@ -394,9 +394,13 @@ input:focus, select:focus, textarea:focus { border-color: var(--color-primary); 
 .auth-card > .eyebrow { margin-bottom: var(--space-2); color: var(--color-primary); opacity: 1; }
 .auth-card > h1 { margin: 0 0 var(--space-8); color: var(--color-text); font-size: clamp(1.5rem, 7vw, 1.85rem); letter-spacing: -.025em; }
 .auth-card > h2, .auth-card form h2 { margin: 0 0 var(--space-3); font-size: 1.2rem; }
+.auth-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-1); margin-bottom: var(--space-6); padding: var(--space-1); background: #ecefec; border-radius: var(--radius-control); }
+.auth-tabs:has(button[hidden]) { grid-template-columns: 1fr; }
+.auth-tabs button { min-width: 0; min-height: 2.75rem; padding: .55rem .75rem; color: var(--color-muted); background: transparent; border: 0; border-radius: calc(var(--radius-control) - .2rem); font-weight: 700; }
+.auth-tabs button.active { color: #fff; background: var(--color-primary); }
 .auth-card form { gap: var(--space-2); margin-top: 0; }
 .auth-card form .primary-button { width: 100%; margin-top: var(--space-3); }
-.auth-card #register-form { margin-top: var(--space-8); padding-top: var(--space-6); border-top: 1px solid var(--color-border); }
+.auth-card #register-form { margin-top: 0; padding-top: 0; border-top: 0; }
 .auth-card .notice { margin-bottom: 0; }
 
 @media (max-width: 39.99rem) {

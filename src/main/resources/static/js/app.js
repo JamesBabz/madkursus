@@ -24,6 +24,8 @@ const authScreen = document.querySelector('#auth-screen');
 const application = document.querySelector('#application');
 const loginForm = document.querySelector('#login-form');
 const registerForm = document.querySelector('#register-form');
+const loginTab = document.querySelector('#auth-tab-login');
+const registerTab = document.querySelector('#auth-tab-register');
 const authError = document.querySelector('#auth-error');
 const authSuccess = document.querySelector('#auth-success');
 const formPanel = document.querySelector('#product-form-panel');
@@ -115,11 +117,21 @@ async function refreshCsrfToken() {
   csrfToken = body.token;
 }
 
-function showLogin() {
-  loginForm.hidden = false;
-  registerForm.hidden = !registrationEnabled;
+function showAuthMode(mode = 'login') {
+  const showRegister = mode === 'register' && registrationEnabled;
+  loginForm.hidden = showRegister;
+  registerForm.hidden = !showRegister;
+  loginTab.classList.toggle('active', !showRegister);
+  registerTab.classList.toggle('active', showRegister);
+  loginTab.setAttribute('aria-selected', String(!showRegister));
+  registerTab.setAttribute('aria-selected', String(showRegister));
   showMessage(authError, '');
   showMessage(authSuccess, '');
+}
+
+function showLogin() {
+  registerTab.hidden = !registrationEnabled;
+  showAuthMode('login');
 }
 
 function showAuthenticatedApp() {
@@ -190,6 +202,7 @@ async function register(event) {
       body: JSON.stringify({ username: data.get('username').trim(), password: data.get('password') })
     });
     registerForm.reset();
+    showAuthMode('login');
     showMessage(authSuccess, 'Kontoen er oprettet. Du kan nu logge ind.');
     document.querySelector('#login-username').value = data.get('username').trim();
     document.querySelector('#login-password').focus();
@@ -977,6 +990,8 @@ async function deleteKitchenEquipment(){if(!editingKitchenEquipment)return;try{a
 
 loginForm.addEventListener('submit', authenticate);
 registerForm.addEventListener('submit', register);
+loginTab.addEventListener('click', () => { showAuthMode('login'); document.querySelector('#login-username').focus(); });
+registerTab.addEventListener('click', () => { showAuthMode('register'); document.querySelector('#register-username').focus(); });
 document.querySelector('#logout').addEventListener('click', logout);
 openFormButton.addEventListener('click', () => setFormOpen(formPanel.hidden));
 document.querySelector('#close-form').addEventListener('click', () => setFormOpen(false));

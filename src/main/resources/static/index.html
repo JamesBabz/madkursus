@@ -16,16 +16,20 @@
     <div class="auth-card">
       <p class="eyebrow">Velkommen til</p>
       <h1>Madkursus</h1>
-      <h2>Log ind</h2>
-      <form id="login-form">
+      <div class="auth-tabs" id="auth-tabs" role="tablist" aria-label="Vælg adgangstype">
+        <button class="active" id="auth-tab-login" type="button" role="tab" aria-selected="true" aria-controls="login-form">Log ind</button>
+        <button id="auth-tab-register" type="button" role="tab" aria-selected="false" aria-controls="register-form" hidden>Opret bruger</button>
+      </div>
+      <form id="login-form" role="tabpanel" aria-labelledby="auth-tab-login">
+        <h2>Log ind</h2>
         <label for="login-username">Brugernavn</label>
         <input id="login-username" name="username" type="text" autocomplete="username" maxlength="100" required>
         <label for="login-password">Adgangskode</label>
         <input id="login-password" name="password" type="password" autocomplete="current-password" required>
         <button class="primary-button" type="submit">Log ind</button>
       </form>
-      <form id="register-form" hidden>
-        <h2>Opret konto</h2>
+      <form id="register-form" role="tabpanel" aria-labelledby="auth-tab-register" hidden>
+        <h2>Opret bruger</h2>
         <label for="register-username">Brugernavn</label>
         <input id="register-username" name="username" type="text" autocomplete="username" maxlength="100" required>
         <label for="register-password">Adgangskode</label>

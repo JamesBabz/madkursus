@@ -12,9 +12,9 @@ class FrontendAssetsTest {
         String html = resource("static/index.html");
         String javascript = resource("static/js/app.js");
         String worker = resource("static/service-worker.js");
-        assertThat(html).contains("login-form", "register-form", "logout");
+        assertThat(html).contains("login-form", "register-form", "auth-tab-login", "auth-tab-register", "logout");
         assertThat(html).contains("auth-success").doesNotContain("show-register", "show-login");
-        assertThat(javascript).contains("${AUTH_API}/me", "/registration-status", "X-XSRF-TOKEN");
+        assertThat(javascript).contains("${AUTH_API}/me", "/registration-status", "X-XSRF-TOKEN", "showAuthMode");
         assertThat(worker).contains("url.pathname.startsWith('/v1/')");
         assertThat(html).contains("template-search", "show-custom-product")
                 .doesNotContain("onboarding-templates", "Kom hurtigt i gang");
@@ -23,7 +23,7 @@ class FrontendAssetsTest {
         assertThat(html).contains("edit-product-dialog", "edit-product-form", "id=\"toast\"");
         assertThat(javascript).contains("showToast", "setTimeout", "2600", "searchRequestId",
                 "templateSearch.value = ''", "method: 'PATCH'", "openProductEditor");
-        assertThat(worker).contains("madkursus-shell-v20");
+        assertThat(worker).contains("madkursus-shell-v21");
         assertThat(html).contains("inventory-view", "inventory-add-dialog", "edit-inventory-dialog");
         assertThat(javascript).contains("/v1/inventory", "searchInventoryCandidates", "from-template",
                 "loadInventory", "showToast", "inventorySearchRequestId");
