@@ -30,8 +30,8 @@ public class RecipeApiDelegateImpl implements RecipeApiDelegate {
     }
 
     @Override
-    public ResponseEntity<RecipeDTO> getRecipe(UUID id) {
-        return ResponseEntity.ok(mapper.toDto(service.get(id)));
+    public ResponseEntity<RecipeDTO> getRecipe(UUID id, java.math.BigDecimal portions) {
+        return ResponseEntity.ok(mapper.toDto(service.get(id, portions == null ? java.math.BigDecimal.ONE : portions)));
     }
 
     @Override

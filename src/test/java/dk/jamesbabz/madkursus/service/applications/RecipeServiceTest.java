@@ -230,5 +230,27 @@ class RecipeServiceTest {
         assertThat(template.steps().getFirst().parameterBindings().getFirst().id()).isNotNull();
     }
 
+    @Test
+    void recipeProcessPreviewScalesIngredientButNotDuration() {
+        UUID userId=UUID.randomUUID(),recipeId=UUID.randomUUID(),ingredientId=UUID.randomUUID(),processId=UUID.randomUUID();
+        ProductTemplate potato=new ProductTemplate(UUID.randomUUID(),"Kartoffel",ProductCategory.VEGETABLE,Unit.GRAM,List.of(),true);
+        CookingProcessBinding ingredient=new CookingProcessBinding(UUID.randomUUID(),"POTATOES",ingredientId,potato,
+                new CookingProcessValue(new BigDecimal("250"),RecipeUnit.GRAM,null,null,null,null,null));
+        CookingProcessBinding duration=new CookingProcessBinding(UUID.randomUUID(),"SIMMER_TIME",null,null,
+                new CookingProcessValue(null,null,900,null,null,null,null));
+        Recipe source=new Recipe(recipeId,userId,"Kartofler",null,Instant.now(),Instant.now(),
+                List.of(new RecipeIngredient(ingredientId,potato,new BigDecimal("250"),RecipeUnit.GRAM,null,1)),
+                List.of(new RecipeStep(UUID.randomUUID(),RecipeStepType.PROCESS,null,1,processId,List.of(ingredient,duration),null)));
+        when(currentUser.currentUserId()).thenReturn(userId); when(port.findByIdAndUserId(recipeId,userId)).thenReturn(Optional.of(source));
+        when(processes.render(eq(processId),any())).thenReturn(new RenderedCookingProcess(List.of("500 g"),"Mør",List.of()));
+
+        service.get(recipeId,new BigDecimal("2"));
+
+        @SuppressWarnings("unchecked") org.mockito.ArgumentCaptor<List<CookingProcessBinding>> captor=org.mockito.ArgumentCaptor.forClass(List.class);
+        verify(processes).render(eq(processId),captor.capture());
+        assertThat(captor.getValue().get(0).value().quantity()).isEqualByComparingTo("500");
+        assertThat(captor.getValue().get(1).value().durationSeconds()).isEqualTo(900);
+    }
+
     private Recipe recipe(UUID id,UUID userId,String name){Instant now=Instant.now();return new Recipe(id,userId,name,null,now,now,List.of(),List.of());}
 }

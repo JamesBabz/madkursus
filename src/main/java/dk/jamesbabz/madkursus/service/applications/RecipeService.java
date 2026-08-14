@@ -42,7 +42,8 @@ public class RecipeService {
     }
 
     public List<Recipe> getAll(){return port.findAllByUserId(currentUser.currentUserId()).stream().map(this::render).toList();}
-    public Recipe get(UUID id){return render(port.findByIdAndUserId(id,currentUser.currentUserId()).orElseThrow(()->new ResourceNotFoundException("Recipe",id)));}
+    public Recipe get(UUID id){return get(id,BigDecimal.ONE);}
+    public Recipe get(UUID id,BigDecimal portions){if(portions==null||portions.signum()<=0)throw new InvalidInputException("Portions must be positive");return render(port.findByIdAndUserId(id,currentUser.currentUserId()).orElseThrow(()->new ResourceNotFoundException("Recipe",id)),portions);}
 
     @Transactional
     public Recipe create(String name,String description,List<IngredientInput> ingredients,List<StepInput> steps){return persist(null,null,name,description,ingredients,steps,null);}
@@ -119,7 +120,9 @@ public class RecipeService {
 
     private String dimension(RecipeUnit unit){if(unit==null)throw new InvalidInputException("Process ingredient unit is required");return switch(unit){case GRAM->"MASS";case PIECE->"COUNT";case MILLILITER,TEASPOON,TABLESPOON,DECILITER->"VOLUME";};}
     private BigDecimal toBase(BigDecimal value,RecipeUnit unit){if(value==null||value.signum()<=0)throw new InvalidInputException("Process ingredient quantity must be positive");BigDecimal factor=switch(unit){case GRAM,MILLILITER,PIECE->BigDecimal.ONE;case TEASPOON->new BigDecimal("5");case TABLESPOON->new BigDecimal("15");case DECILITER->new BigDecimal("100");};return value.multiply(factor);}
-    private Recipe render(Recipe recipe){if(recipe.steps().stream().noneMatch(s->s.type()==RecipeStepType.PROCESS))return recipe;return new Recipe(recipe.id(),recipe.userId(),recipe.sourceTemplateId(),recipe.name(),recipe.description(),recipe.createdAt(),recipe.updatedAt(),recipe.ingredients(),recipe.steps().stream().map(s->s.type()==RecipeStepType.PROCESS?new RecipeStep(s.id(),s.type(),null,s.sortOrder(),s.cookingProcessId(),s.parameterBindings(),processes.render(s.cookingProcessId(),s.parameterBindings())):s).toList());}
+    private Recipe render(Recipe recipe){return render(recipe,BigDecimal.ONE);}
+    private Recipe render(Recipe recipe,BigDecimal portions){if(recipe.steps().stream().noneMatch(s->s.type()==RecipeStepType.PROCESS))return recipe;return new Recipe(recipe.id(),recipe.userId(),recipe.sourceTemplateId(),recipe.name(),recipe.description(),recipe.createdAt(),recipe.updatedAt(),recipe.ingredients(),recipe.steps().stream().map(s->s.type()==RecipeStepType.PROCESS?new RecipeStep(s.id(),s.type(),null,s.sortOrder(),s.cookingProcessId(),s.parameterBindings(),processes.render(s.cookingProcessId(),scaledBindings(s.parameterBindings(),portions))):s).toList());}
+    private List<CookingProcessBinding> scaledBindings(List<CookingProcessBinding> bindings,BigDecimal portions){return bindings.stream().map(binding->{CookingProcessValue value=binding.value();if(binding.recipeIngredientId()==null||value==null||value.quantity()==null)return binding;return new CookingProcessBinding(binding.id(),binding.parameterKey(),binding.recipeIngredientId(),binding.productTemplate(),new CookingProcessValue(value.quantity().multiply(portions),value.unit(),value.durationSeconds(),value.temperatureCelsius(),value.heatLevel(),value.number(),value.text()));}).toList();}
     private void validateOrders(List<Integer> values){if(values.stream().anyMatch(v->v==null||v<=0)||new HashSet<>(values).size()!=values.size())throw new InvalidInputException("Sort order must be positive and unique");}
     private String blankToNull(String value){return value==null||value.isBlank()?null:value.trim();}
 }

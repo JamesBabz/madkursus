@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class RecipeTemplateServiceTest {
     @Mock RecipeTemplatePort templates; @Mock RecipePort recipes;
-    @Mock RecipeService recipeService; @Mock CurrentUserProvider currentUser;
+    @Mock RecipeService recipeService; @Mock CurrentUserProvider currentUser; @Mock CookingProcessService cookingProcesses;
 
     @Test void copiesAuthoritativeTemplateAndPreventsDuplicateForSameUser() {
         UUID userId=UUID.randomUUID(), templateId=UUID.randomUUID();
@@ -31,7 +31,7 @@ class RecipeTemplateServiceTest {
         when(currentUser.currentUserId()).thenReturn(userId);
         when(recipes.findByUserIdAndSourceTemplateId(userId,templateId)).thenReturn(Optional.empty(),Optional.of(copied));
         when(recipeService.createFromTemplate(template)).thenReturn(copied);
-        RecipeTemplateService service=new RecipeTemplateService(templates,recipes,recipeService,currentUser);
+        RecipeTemplateService service=new RecipeTemplateService(templates,recipes,recipeService,currentUser,cookingProcesses);
         assertThat(service.copy(templateId)).isSameAs(copied);
         verify(recipeService).createFromTemplate(template);
         assertThatThrownBy(()->service.copy(templateId)).isInstanceOf(ConflictException.class);
@@ -43,7 +43,7 @@ class RecipeTemplateServiceTest {
         Recipe copy=new Recipe(UUID.randomUUID(),userB,templateId,"Frikadeller",null,Instant.now(),Instant.now(),List.of(),List.of());
         when(currentUser.currentUserId()).thenReturn(userB); when(templates.findById(templateId)).thenReturn(Optional.of(template));
         when(recipes.findByUserIdAndSourceTemplateId(userB,templateId)).thenReturn(Optional.empty()); when(recipeService.createFromTemplate(template)).thenReturn(copy);
-        assertThat(new RecipeTemplateService(templates,recipes,recipeService,currentUser).copy(templateId).userId()).isEqualTo(userB);
+        assertThat(new RecipeTemplateService(templates,recipes,recipeService,currentUser,cookingProcesses).copy(templateId).userId()).isEqualTo(userB);
     }
 
     @Test void searchAndDetailOnlyUseTheSharedTemplateCatalog() {
@@ -51,10 +51,31 @@ class RecipeTemplateServiceTest {
         RecipeTemplate template=new RecipeTemplate(templateId,"Tomatsuppe",null,true,Instant.now(),Instant.now(),List.of(),List.of());
         when(templates.search("tomat")).thenReturn(List.of(template));
         when(templates.findById(templateId)).thenReturn(Optional.of(template));
-        RecipeTemplateService service=new RecipeTemplateService(templates,recipes,recipeService,currentUser);
+        RecipeTemplateService service=new RecipeTemplateService(templates,recipes,recipeService,currentUser,cookingProcesses);
 
         assertThat(service.search("tomat")).containsExactly(template);
         assertThat(service.get(templateId)).isSameAs(template);
-        verifyNoInteractions(recipes,recipeService,currentUser);
+        verifyNoInteractions(recipes,recipeService,currentUser,cookingProcesses);
+    }
+
+    @Test void renderedPreviewScalesOnlyIngredientBindings() {
+        UUID templateId=UUID.randomUUID(),stepId=UUID.randomUUID(),processId=UUID.randomUUID(),ingredientId=UUID.randomUUID();
+        ProductTemplate potato=new ProductTemplate(UUID.randomUUID(),"Kartoffel",ProductCategory.VEGETABLE,Unit.GRAM,List.of(),true);
+        CookingProcessBinding ingredient=new CookingProcessBinding(UUID.randomUUID(),"POTATOES",ingredientId,potato,
+                new CookingProcessValue(new BigDecimal("250"),RecipeUnit.GRAM,null,null,null,null,null));
+        CookingProcessBinding duration=new CookingProcessBinding(UUID.randomUUID(),"SIMMER_TIME",null,null,
+                new CookingProcessValue(null,null,900,null,null,null,null));
+        RecipeTemplate template=new RecipeTemplate(templateId,"Frikadeller",null,true,Instant.now(),Instant.now(),
+                List.of(new RecipeTemplateIngredient(ingredientId,potato,new BigDecimal("250"),RecipeUnit.GRAM,null,1)),
+                List.of(new RecipeTemplateStep(stepId,RecipeStepType.PROCESS,null,1,processId,List.of(ingredient,duration))));
+        when(templates.findById(templateId)).thenReturn(Optional.of(template));
+        when(cookingProcesses.render(eq(processId),anyList())).thenReturn(new RenderedCookingProcess(List.of("500 g"),"Mør",List.of()));
+
+        RecipeTemplate result=new RecipeTemplateService(templates,recipes,recipeService,currentUser,cookingProcesses).getRendered(templateId,2);
+
+        @SuppressWarnings("unchecked") var bindings=(List<CookingProcessBinding>)mockingDetails(cookingProcesses).getInvocations().iterator().next().getArgument(1);
+        assertThat(bindings.get(0).value().quantity()).isEqualByComparingTo("500");
+        assertThat(bindings.get(1).value().durationSeconds()).isEqualTo(900);
+        assertThat(result.steps().getFirst().renderedProcess().instructions()).containsExactly("500 g");
     }
 }

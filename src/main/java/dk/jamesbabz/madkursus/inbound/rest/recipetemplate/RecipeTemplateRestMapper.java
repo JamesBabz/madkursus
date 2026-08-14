@@ -30,7 +30,10 @@ public class RecipeTemplateRestMapper {
         var steps = template.steps().stream().map(step -> new RecipeTemplateStepDTO(step.id(),
                 RecipeStepTypeDTO.valueOf(step.type().name()), step.sortOrder(),
                 step.parameterBindings().stream().map(this::binding).toList())
-                .instruction(step.instruction()).cookingProcessId(step.cookingProcessId())).toList();
+                .instruction(step.instruction()).cookingProcessId(step.cookingProcessId())
+                .renderedProcess(step.renderedProcess() == null ? null : new RenderedCookingProcessDTO(
+                        step.renderedProcess().instructions(), step.renderedProcess().completionCriterion(),
+                        step.renderedProcess().warnings()))).toList();
         return new RecipeTemplateDTO(template.id(), template.name(), template.active(), copied.isPresent(),
                 template.createdAt().atOffset(ZoneOffset.UTC), template.updatedAt().atOffset(ZoneOffset.UTC),
                 ingredients, steps).description(template.description())

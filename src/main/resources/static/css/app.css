@@ -190,6 +190,10 @@ button:disabled { cursor: wait; opacity: .65; }
 .recipe-plan-row input[type="checkbox"] { width: 1.4rem; min-height: 1.4rem; }
 .mini-portions { display: flex; align-items: center; justify-content: flex-end; gap: .6rem; margin-top: .5rem; }
 .mini-portions button { min-width: 2.5rem; min-height: 2.5rem; color: #2f6846; background: #fff; border: 1px solid #bdcbbf; border-radius: .65rem; }
+.rendered-process-instructions { display: grid; gap: .45rem; }
+.rendered-process-instructions p { margin: 0; }
+.process-completion { color: var(--color-primary-dark); font-weight: 650; }
+.process-warning { display: block; color: var(--color-text-secondary); }
 .recipe-plan-preview { margin: .6rem 0 0 2.1rem; padding-top: .5rem; border-top: 1px solid #dce4da; }
 .recipe-plan-preview-label { margin: 0 0 .3rem; color: #55715f; font-size: .78rem; font-weight: 750; }
 .recipe-plan-preview ul { margin: 0; padding-left: 1.1rem; color: #506057; font-size: .84rem; }

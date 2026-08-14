@@ -431,6 +431,8 @@ paths:
     get:
       tags: [recipe]
       operationId: getRecipe
+      parameters:
+        - {name: portions, in: query, required: false, schema: {type: number, exclusiveMinimum: 0, default: 1}}
       responses:
         '200': {description: Recipe, content: {application/json: {schema: {$ref: '#/components/schemas/Recipe'}}}}
         '404': {$ref: '#/components/responses/notFound'}
@@ -502,6 +504,8 @@ paths:
     get:
       tags: [recipe-template]
       operationId: getRecipeTemplate
+      parameters:
+        - {name: portions, in: query, required: false, schema: {type: integer, minimum: 1, default: 1}}
       responses:
         '200': {description: Recipe template detail, content: {application/json: {schema: {$ref: '#/components/schemas/RecipeTemplate'}}}}
         '404': {$ref: '#/components/responses/notFound'}
@@ -1023,6 +1027,7 @@ components:
         sortOrder: {type: integer, minimum: 1}
         cookingProcessId: {type: string, format: uuid, nullable: true}
         parameterBindings: {type: array, items: {$ref: '#/components/schemas/CookingProcessBinding'} }
+        renderedProcess: {allOf: [{$ref: '#/components/schemas/RenderedCookingProcess'}], nullable: true}
     RecipeTemplateSummary:
       type: object
       required: [id, name, active, added]
