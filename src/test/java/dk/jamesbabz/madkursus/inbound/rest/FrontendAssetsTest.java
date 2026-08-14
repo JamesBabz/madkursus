@@ -23,7 +23,7 @@ class FrontendAssetsTest {
         assertThat(html).contains("edit-product-dialog", "edit-product-form", "id=\"toast\"");
         assertThat(javascript).contains("showToast", "setTimeout", "2600", "searchRequestId",
                 "templateSearch.value = ''", "method: 'PATCH'", "openProductEditor");
-        assertThat(worker).contains("madkursus-shell-v19");
+        assertThat(worker).contains("madkursus-shell-v20");
         assertThat(html).contains("inventory-view", "inventory-add-dialog", "edit-inventory-dialog");
         assertThat(javascript).contains("/v1/inventory", "searchInventoryCandidates", "from-template",
                 "loadInventory", "showToast", "inventorySearchRequestId");

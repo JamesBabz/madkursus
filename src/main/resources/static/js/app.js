@@ -1008,7 +1008,6 @@ document.querySelector('#show-meal-plans-primary').addEventListener('click', () 
 document.querySelector('#show-more').addEventListener('click', () => showView('more'));
 document.querySelector('#more-products').addEventListener('click', () => showView('products'));
 document.querySelector('#more-kitchen').addEventListener('click', () => showView('kitchen'));
-document.querySelector('#more-templates').addEventListener('click', () => { showView('recipes'); showRecipeSection('templates'); });
 document.querySelector('#more-logout').addEventListener('click', logout);
 document.querySelector('#close-inventory-reservations').addEventListener('click',()=>document.querySelector('#inventory-reservation-dialog').close());
 document.querySelector('#show-kitchen').addEventListener('click', () => showView('kitchen'));
