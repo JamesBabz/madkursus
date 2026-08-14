@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#2f6846">
+  <meta name="theme-color" content="#f7f8f5">
   <meta name="description" content="Madkursus – et enkelt overblik over dine produkter.">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
@@ -39,26 +39,22 @@
     </div>
   </section>
 
-  <div id="application" hidden>
-  <header class="app-header">
-    <div>
-      <p class="eyebrow">Din madhverdag</p>
-      <h1>Madkursus</h1>
-    </div>
-    <div class="header-actions">
-    <button class="secondary-button kitchen-link" id="show-kitchen" type="button">Mit køkken</button>
-    <button class="logout-button" id="logout" type="button">Log ud</button>
-    </div>
-  </header>
-
-  <nav class="primary-nav" aria-label="Primær navigation">
-    <button class="nav-button active" id="show-inventory" type="button">Lager</button>
-    <button class="nav-button" id="show-shopping" type="button">Indkøb</button>
-    <button class="nav-button" id="show-recipes" type="button">Opskrifter</button>
-    <button class="nav-button" id="show-products" type="button">Produkter</button>
-  </nav>
-
-  <main>
+  <div id="application" class="app-shell" hidden>
+  <aside class="app-sidebar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">M</span><span>Madkursus</span></div>
+    <nav class="primary-nav" aria-label="Primær navigation">
+      <button class="nav-button" id="show-meal-plans-primary" type="button"><span class="nav-icon" data-icon="calendar"></span><span>Madplan</span></button>
+      <button class="nav-button active" id="show-inventory" type="button"><span class="nav-icon" data-icon="inventory"></span><span>Lager</span></button>
+      <button class="nav-button" id="show-shopping" type="button"><span class="nav-icon" data-icon="cart"></span><span>Indkøb</span></button>
+      <button class="nav-button" id="show-recipes" type="button"><span class="nav-icon" data-icon="recipe"></span><span>Opskrifter</span></button>
+      <span class="nav-divider" aria-hidden="true"></span>
+      <button class="nav-button secondary-nav" id="show-products" type="button"><span class="nav-icon" data-icon="products"></span><span>Produkter</span></button>
+      <button class="nav-button secondary-nav" id="show-kitchen" type="button"><span class="nav-icon" data-icon="kitchen"></span><span>Mit køkken</span></button>
+      <button class="nav-button mobile-more" id="show-more" type="button"><span class="nav-icon" data-icon="more"></span><span>Mere</span></button>
+    </nav>
+    <button class="logout-button sidebar-logout" id="logout" type="button"><span class="nav-icon" data-icon="logout"></span>Log ud</button>
+  </aside>
+  <main class="app-content">
     <div id="products-view">
     <section class="form-panel" id="product-form-panel" aria-labelledby="form-title" hidden>
       <div class="section-heading">
@@ -114,8 +110,8 @@
       <p class="loading" id="loading-message" role="status">Henter produkter…</p>
       <div class="product-list" id="product-list" aria-live="polite"></div>
       <div class="empty-state" id="empty-state" hidden>
-        <p>Du har ingen produkter endnu.</p>
-        <button class="secondary-button" id="empty-add" type="button">+ Tilføj produkt</button>
+        <span class="empty-icon" data-icon="products"></span><h3>Ingen produkter endnu</h3><p>Tilføj produkter, så de kan bruges i lager, indkøb og opskrifter.</p>
+        <button class="primary-button" id="empty-add" type="button">+ Tilføj produkt</button>
       </div>
     </section>
     </div>
@@ -128,8 +124,8 @@
       <p class="loading" id="inventory-loading" role="status">Henter lager…</p>
       <div class="product-list" id="inventory-list" aria-live="polite"></div>
       <div class="empty-state" id="inventory-empty" hidden>
-        <p>Dit lager er tomt endnu.</p>
-        <button class="secondary-button" id="inventory-empty-add" type="button">+ Tilføj vare</button>
+        <span class="empty-icon" data-icon="inventory"></span><h3>Dit lager er tomt</h3><p>Tilføj de varer, du har hjemme, så du kan holde styr på beholdningen.</p>
+        <button class="primary-button" id="inventory-empty-add" type="button">Tilføj første vare</button>
       </div>
     </section>
 
@@ -146,7 +142,7 @@
         <div class="section-heading"><h3>Købt</h3><button class="text-button" id="clear-purchased" type="button">Ryd købte</button></div>
         <div class="shopping-list" id="shopping-purchased-list" aria-live="polite"></div>
       </section>
-      <div class="empty-state" id="shopping-empty" hidden><p>Din indkøbsliste er tom.</p><button class="secondary-button" id="shopping-empty-add" type="button">+ Tilføj vare</button></div>
+      <div class="empty-state" id="shopping-empty" hidden><span class="empty-icon" data-icon="cart"></span><h3>Din indkøbsliste er tom</h3><p>Tilføj en vare, når du opdager noget, du mangler.</p><button class="primary-button" id="shopping-empty-add" type="button">Tilføj første vare</button></div>
     </section>
 
     <section id="recipes-view" aria-labelledby="recipes-title" hidden>
@@ -154,11 +150,11 @@
         <div><p class="eyebrow">Opskrifter</p><h2 id="recipes-title">Dine opskrifter</h2></div>
         <div class="header-actions"><button class="add-button section-add-button" id="plan-recipes" type="button">Planlæg</button><button class="add-button section-add-button" id="new-recipe" type="button"><span aria-hidden="true">+</span> Ny</button></div>
       </div>
-      <div class="recipe-subnav"><button class="active" id="show-recipe-library" type="button">Mine opskrifter</button><button id="show-recipe-templates" type="button">Find opskrifter</button><button id="show-meal-plans" type="button">Madplaner</button></div>
+      <div class="recipe-subnav"><button class="active" id="show-recipe-library" type="button">Mine opskrifter</button><button id="show-recipe-templates" type="button">Find opskrifter</button><button id="show-meal-plans" type="button" hidden>Madplaner</button></div>
       <div id="recipe-library-panel">
       <p class="loading" id="recipes-loading" role="status">Henter opskrifter…</p>
       <div class="recipe-list" id="recipe-list" aria-live="polite"></div>
-      <div class="empty-state" id="recipes-empty" hidden><p>Du har ingen opskrifter endnu.</p><button class="secondary-button" id="recipes-empty-add" type="button">+ Ny opskrift</button></div>
+      <div class="empty-state" id="recipes-empty" hidden><span class="empty-icon" data-icon="recipe"></span><h3>Ingen opskrifter endnu</h3><p>Opret din første opskrift, eller find inspiration i opskriftskataloget.</p><button class="primary-button" id="recipes-empty-add" type="button">Opret første opskrift</button></div>
       </div>
       <div id="recipe-templates-panel" hidden>
         <label for="recipe-template-catalog-search">Søg i opskrifter</label>
@@ -176,8 +172,17 @@
       </div>
       <p class="loading" id="kitchen-loading" hidden>Henter dit køkken…</p>
       <div class="equipment-list" id="kitchen-equipment-list" aria-live="polite"></div>
-      <div class="empty-state" id="kitchen-empty" hidden><p>Du har ikke tilføjet udstyr endnu.</p><button class="secondary-button" id="kitchen-empty-add" type="button">+ Tilføj udstyr</button></div>
+      <div class="empty-state" id="kitchen-empty" hidden><span class="empty-icon" data-icon="kitchen"></span><h3>Dit køkken mangler udstyr</h3><p>Tilføj det udstyr, du bruger, så opskrifter kan passe bedre til dit køkken.</p><button class="primary-button" id="kitchen-empty-add" type="button">Tilføj første udstyr</button></div>
       <button class="secondary-button full-button kitchen-back" id="close-kitchen" type="button">Tilbage</button>
+    </section>
+    <section id="more-view" aria-labelledby="more-title" hidden>
+      <div class="page-heading"><p class="eyebrow">Indstillinger</p><h2 id="more-title">Mere</h2><p class="page-subtitle">Administration, køkken og konto</p></div>
+      <div class="settings-list">
+        <button id="more-products" type="button"><span class="nav-icon" data-icon="products"></span><span><strong>Produkter</strong><small>Administrer produkter og standardenheder</small></span><span aria-hidden="true">›</span></button>
+        <button id="more-kitchen" type="button"><span class="nav-icon" data-icon="kitchen"></span><span><strong>Mit køkken</strong><small>Udstyr, kapacitet og varmeindstillinger</small></span><span aria-hidden="true">›</span></button>
+        <button id="more-templates" type="button"><span class="nav-icon" data-icon="recipe"></span><span><strong>Find opskrifter</strong><small>Gennemse eksisterende opskriftsskabeloner</small></span><span aria-hidden="true">›</span></button>
+        <button id="more-logout" class="danger-row" type="button"><span class="nav-icon" data-icon="logout"></span><span><strong>Log ud</strong><small>Afslut din session på denne enhed</small></span><span aria-hidden="true">›</span></button>
+      </div>
     </section>
   </main>
   </div>
@@ -209,7 +214,7 @@
         <p id="delete-product-question"></p>
         <div class="dialog-actions">
           <button class="danger-button" id="confirm-delete-product" type="button">Fjern</button>
-          <button class="secondary-button" id="keep-product" type="button">Behold</button>
+          <button class="secondary-button" id="keep-product" type="button">Annuller</button>
         </div>
       </section>
       <div class="dialog-actions">
@@ -267,7 +272,8 @@
       <p class="quantity-conversion" id="edit-inventory-conversion" aria-live="polite"></p></div>
       <p id="edit-inventory-presence" class="presence-label" hidden>På lager</p>
       <div class="notice error" id="edit-inventory-error" role="alert" hidden></div>
-      <button class="danger-button" id="delete-inventory" type="button">Fjern fra lager</button>
+      <button class="danger-button" id="request-delete-inventory" type="button">Fjern fra lager</button>
+      <section class="inline-confirmation" id="delete-inventory-confirmation" hidden><h3>Fjern vare fra lager?</h3><p>Beholdningen fjernes fra lageret. Selve produktet bevares.</p><div class="dialog-actions"><button class="secondary-button" id="cancel-delete-inventory" type="button">Annuller</button><button class="danger-button" id="delete-inventory" type="button">Fjern vare</button></div></section>
       <div class="dialog-actions"><button class="secondary-button" id="cancel-edit-inventory" type="button">Annuller</button><button class="primary-button" type="submit">Gem</button></div>
     </form>
   </dialog>
@@ -299,7 +305,8 @@
       <p class="quantity-conversion" id="edit-shopping-conversion" aria-live="polite"></p></div>
       <p id="edit-shopping-presence" class="presence-label" hidden>Køb varen</p>
       <div class="notice error" id="edit-shopping-error" role="alert" hidden></div>
-      <button class="danger-button" id="delete-shopping-item" type="button">Fjern fra listen</button>
+      <button class="danger-button" id="request-delete-shopping-item" type="button">Fjern fra listen</button>
+      <section class="inline-confirmation" id="delete-shopping-confirmation" hidden><h3>Fjern vare fra indkøbslisten?</h3><p>Varen fjernes fra listen uden at ændre dit lager.</p><div class="dialog-actions"><button class="secondary-button" id="cancel-delete-shopping-item" type="button">Annuller</button><button class="danger-button" id="delete-shopping-item" type="button">Fjern vare</button></div></section>
       <div class="dialog-actions"><button class="secondary-button" id="cancel-edit-shopping" type="button">Annuller</button><button class="primary-button" type="submit">Gem</button></div>
     </form>
   </dialog>
@@ -310,7 +317,7 @@
     <div class="portion-control" aria-label="Antal portioner"><button id="recipe-portions-down" type="button" aria-label="Færre portioner">−</button><strong id="recipe-portions">2 portioner</strong><button id="recipe-portions-up" type="button" aria-label="Flere portioner">+</button></div>
     <h3>Ingredienser</h3><div id="recipe-detail-ingredients" class="recipe-ingredients"></div>
     <h3>Fremgangsmåde</h3><ol id="recipe-detail-steps" class="recipe-steps"></ol>
-    <section class="inline-confirmation" id="delete-recipe-confirmation" hidden><p>Vil du slette opskriften?</p><div class="dialog-actions"><button class="danger-button" id="confirm-delete-recipe" type="button">Slet</button><button class="secondary-button" id="keep-recipe" type="button">Behold</button></div></section>
+    <section class="inline-confirmation" id="delete-recipe-confirmation" hidden><h3>Slet opskrift?</h3><p>Opskriften og dens trin bliver slettet permanent.</p><div class="dialog-actions"><button class="secondary-button" id="keep-recipe" type="button">Annuller</button><button class="danger-button" id="confirm-delete-recipe" type="button">Slet opskrift</button></div></section>
     <button class="primary-button full-button" id="cook-recipe" type="button">Marker som lavet</button>
     <div class="notice" id="cook-recipe-summary" hidden></div>
     <div class="dialog-actions"><button class="danger-button" id="delete-recipe" type="button">Slet</button><button class="secondary-button" id="edit-recipe" type="button">Rediger</button></div>
@@ -331,7 +338,7 @@
     <div id="meal-plan-recipes" class="meal-plan-recipes"></div>
     <button class="secondary-button full-button" id="meal-plan-requirements" type="button">Se hvad jeg mangler</button>
     <section id="meal-plan-results" hidden><h3>Samlet behov</h3><div id="meal-plan-requirement-list" class="requirement-list"></div><button class="primary-button full-button" id="meal-plan-add-missing" type="button">Tilføj mangler til indkøb</button></section>
-    <section class="inline-confirmation" id="delete-meal-plan-confirmation" hidden><p>Vil du slette madplanen?</p><div class="dialog-actions"><button class="danger-button" id="confirm-delete-meal-plan" type="button">Slet</button><button class="secondary-button" id="keep-meal-plan" type="button">Behold</button></div></section>
+    <section class="inline-confirmation" id="delete-meal-plan-confirmation" hidden><h3>Slet madplan?</h3><p>Madplanen fjernes, men dine opskrifter bevares.</p><div class="dialog-actions"><button class="secondary-button" id="keep-meal-plan" type="button">Annuller</button><button class="danger-button" id="confirm-delete-meal-plan" type="button">Slet madplan</button></div></section>
     <button class="danger-button full-button" id="delete-meal-plan" type="button">Slet madplan</button><div class="notice error" id="meal-plan-error" hidden></div>
   </dialog>
 
@@ -362,27 +369,30 @@
     <form id="kitchen-equipment-form">
       <div class="section-heading"><h2 id="kitchen-equipment-title">Tilføj udstyr</h2><button class="icon-button" id="close-kitchen-equipment" type="button" aria-label="Luk">×</button></div>
       <input id="kitchen-equipment-id" type="hidden">
+      <h3 class="form-section-title">Grundoplysninger</h3>
       <label for="kitchen-equipment-type">Hvad vil du tilføje?</label>
       <select id="kitchen-equipment-type" required><option value="STOVE">Komfur</option><option value="OVEN">Ovn</option><option value="POT">Gryde</option><option value="PAN">Stegepande</option><option value="AIR_FRYER">Airfryer</option><option value="THERMOMETER">Stegetermometer</option><option value="MICROWAVE">Mikroovn</option></select>
       <label for="kitchen-equipment-name">Navn</label><input id="kitchen-equipment-name" maxlength="255" required>
       <label class="check-row" id="kitchen-preferred-row"><input id="kitchen-equipment-preferred" type="checkbox"> Foretrukket udstyr</label>
       <section class="equipment-fields" data-equipment-fields="STOVE">
+        <h3>Varme og trin</h3>
         <label for="stove-heat-source">Type</label><select id="stove-heat-source"><option value="INDUCTION">Induktion</option><option value="CERAMIC">Keramisk</option><option value="ELECTRIC">Elektrisk</option><option value="GAS">Gas</option><option value="OTHER">Andet</option></select>
         <div class="field-pair"><label>Laveste trin<input id="stove-minimum-level" type="number" min="0" value="1"></label><label>Højeste trin<input id="stove-maximum-level" type="number" min="0" value="9"></label></div>
         <div class="section-heading heat-heading"><h3>Varmetrin</h3><button class="text-button" id="generate-heat-mappings" type="button">Foreslå trin</button></div>
         <div class="heat-mapping-grid"><label>Lav<input data-heat="LOW" inputmode="numeric"></label><label>Middel-lav<input data-heat="MEDIUM_LOW" inputmode="numeric"></label><label>Middel<input data-heat="MEDIUM" inputmode="numeric"></label><label>Middel-høj<input data-heat="MEDIUM_HIGH" inputmode="numeric"></label><label>Høj<input data-heat="HIGH" inputmode="numeric"></label><label>Maks<input data-heat="MAX" inputmode="numeric"></label></div>
       </section>
       <section class="equipment-fields" data-equipment-fields="OVEN" hidden>
+        <h3>Varme og funktioner</h3>
         <fieldset><legend>Ovnfunktioner</legend><label class="check-row"><input type="checkbox" data-oven-mode="CONVENTIONAL"> Almindelig ovn</label><label class="check-row"><input type="checkbox" data-oven-mode="FAN"> Varmluft</label><label class="check-row"><input type="checkbox" data-oven-mode="GRILL"> Grill</label></fieldset>
         <div class="field-pair"><label>Min. temperatur °C<input id="oven-min-temperature" type="number" min="1"></label><label>Maks. temperatur °C<input id="oven-max-temperature" type="number" min="1"></label></div>
       </section>
-      <section class="equipment-fields" data-equipment-fields="POT" hidden><label for="pot-capacity">Kapacitet (ml) <span class="optional">(valgfri)</span></label><input id="pot-capacity" type="number" min="1" step="1" placeholder="5000"></section>
-      <section class="equipment-fields" data-equipment-fields="PAN" hidden><label for="pan-diameter">Diameter (mm) <span class="optional">(valgfri)</span></label><input id="pan-diameter" type="number" min="1" step="1" placeholder="280"><label class="check-row"><input id="pan-non-stick" type="checkbox"> Non-stick belægning</label></section>
-      <section class="equipment-fields" data-equipment-fields="AIR_FRYER" hidden><label for="air-fryer-capacity">Kapacitet (ml) <span class="optional">(valgfri)</span></label><input id="air-fryer-capacity" type="number" min="1" placeholder="5000"><div class="field-pair"><label>Min. temperatur °C<input id="air-fryer-min-temperature" type="number" min="1"></label><label>Maks. temperatur °C<input id="air-fryer-max-temperature" type="number" min="1"></label></div></section>
-      <section class="equipment-fields" data-equipment-fields="THERMOMETER" hidden><label for="thermometer-type">Type</label><select id="thermometer-type"><option value="INSTANT_READ">Hurtig aflæsning</option><option value="PROBE">Stegesonde</option><option value="OTHER">Andet</option></select></section>
-      <section class="equipment-fields" data-equipment-fields="MICROWAVE" hidden><label for="microwave-power">Maks. effekt (watt) <span class="optional">(valgfri)</span></label><input id="microwave-power" type="number" min="1" placeholder="900"></section>
+      <section class="equipment-fields" data-equipment-fields="POT" hidden><h3>Kapacitet</h3><label for="pot-capacity">Kapacitet (ml) <span class="optional">(valgfri)</span></label><input id="pot-capacity" type="number" min="1" step="1" placeholder="5000"></section>
+      <section class="equipment-fields" data-equipment-fields="PAN" hidden><h3>Størrelse og egenskaber</h3><label for="pan-diameter">Diameter (mm) <span class="optional">(valgfri)</span></label><input id="pan-diameter" type="number" min="1" step="1" placeholder="280"><label class="check-row"><input id="pan-non-stick" type="checkbox"> Non-stick belægning</label></section>
+      <section class="equipment-fields" data-equipment-fields="AIR_FRYER" hidden><h3>Kapacitet og temperatur</h3><label for="air-fryer-capacity">Kapacitet (ml) <span class="optional">(valgfri)</span></label><input id="air-fryer-capacity" type="number" min="1" placeholder="5000"><div class="field-pair"><label>Min. temperatur °C<input id="air-fryer-min-temperature" type="number" min="1"></label><label>Maks. temperatur °C<input id="air-fryer-max-temperature" type="number" min="1"></label></div></section>
+      <section class="equipment-fields" data-equipment-fields="THERMOMETER" hidden><h3>Egenskaber</h3><label for="thermometer-type">Type</label><select id="thermometer-type"><option value="INSTANT_READ">Hurtig aflæsning</option><option value="PROBE">Stegesonde</option><option value="OTHER">Andet</option></select></section>
+      <section class="equipment-fields" data-equipment-fields="MICROWAVE" hidden><h3>Effekt</h3><label for="microwave-power">Maks. effekt (watt) <span class="optional">(valgfri)</span></label><input id="microwave-power" type="number" min="1" placeholder="900"></section>
       <div class="notice error" id="kitchen-equipment-error" hidden></div>
-      <section class="inline-confirmation" id="delete-kitchen-equipment-confirmation" hidden><p>Vil du slette udstyret?</p><div class="dialog-actions"><button class="danger-button" id="confirm-delete-kitchen-equipment" type="button">Slet</button><button class="secondary-button" id="keep-kitchen-equipment" type="button">Behold</button></div></section>
+      <section class="inline-confirmation" id="delete-kitchen-equipment-confirmation" hidden><h3>Slet udstyr?</h3><p>Udstyret og dets indstillinger bliver slettet permanent.</p><div class="dialog-actions"><button class="secondary-button" id="keep-kitchen-equipment" type="button">Annuller</button><button class="danger-button" id="confirm-delete-kitchen-equipment" type="button">Slet udstyr</button></div></section>
       <div class="dialog-actions"><button class="danger-button" id="delete-kitchen-equipment" type="button" hidden>Slet</button><button class="primary-button" type="submit">Gem</button></div>
     </form>
   </dialog>

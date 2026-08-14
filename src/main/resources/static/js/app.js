@@ -261,7 +261,8 @@ function createProductCard(product) {
   const icon = document.createElement('span');
   icon.className = 'product-icon';
   icon.setAttribute('aria-hidden', 'true');
-  icon.textContent = categoryIcons[product.category] || categoryIcons.OTHER;
+  icon.textContent = '';
+  icon.dataset.category = product.category;
   const content = document.createElement('div');
   const name = document.createElement('h3');
   name.className = 'product-name';
@@ -272,6 +273,24 @@ function createProductCard(product) {
   content.append(name, meta);
   card.append(icon, content);
   return card;
+}
+
+function groupedProductRows(items, renderRow) {
+  const groups = new Map();
+  items.forEach(item => {
+    const product = item.product || item;
+    const key = product.category || 'OTHER';
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(item);
+  });
+  return [...groups.entries()].sort(([a], [b]) =>
+    (categoryLabels[a] || a).localeCompare(categoryLabels[b] || b, 'da-DK'))
+    .map(([category, groupItems]) => {
+      const section = document.createElement('section'); section.className = 'category-group';
+      const heading = document.createElement('h3'); heading.textContent = categoryLabels[category] || category;
+      const rows = document.createElement('div'); rows.className = 'grouped-rows';
+      rows.append(...groupItems.map(renderRow)); section.append(heading, rows); return section;
+    });
 }
 
 function openProductEditor(product) {
@@ -320,7 +339,7 @@ async function loadProducts() {
   try {
     const products = await jsonRequest(PRODUCT_API);
     currentProducts = products;
-    list.replaceChildren(...products.map(createProductCard));
+    list.replaceChildren(...groupedProductRows(products, createProductCard));
     emptyState.hidden = products.length !== 0;
   } catch (error) {
     list.replaceChildren();
@@ -336,20 +355,35 @@ function showView(view) {
   const productsActive = view === 'products';
   const recipesActive = view === 'recipes';
   const kitchenActive = view === 'kitchen';
+  const mealPlansActive = view === 'meal-plans';
+  const moreActive = view === 'more';
+  const moreNavActive = moreActive || productsActive || kitchenActive;
   document.querySelector('#products-view').hidden = !productsActive;
   document.querySelector('#inventory-view').hidden = !inventoryActive;
   document.querySelector('#shopping-view').hidden = !shoppingActive;
   document.querySelector('#recipes-view').hidden = !recipesActive;
   document.querySelector('#kitchen-view').hidden = !kitchenActive;
+  document.querySelector('#more-view').hidden = !moreActive;
   document.querySelector('#show-products').classList.toggle('active', productsActive);
   document.querySelector('#show-inventory').classList.toggle('active', inventoryActive);
   document.querySelector('#show-shopping').classList.toggle('active', shoppingActive);
   document.querySelector('#show-recipes').classList.toggle('active', recipesActive);
+  document.querySelector('#show-meal-plans-primary').classList.toggle('active', mealPlansActive);
+  document.querySelector('#show-more').classList.toggle('active', moreNavActive);
+  document.querySelectorAll('.primary-nav .nav-button').forEach(button => {
+    if (button.classList.contains('active')) button.setAttribute('aria-current', 'page');
+    else button.removeAttribute('aria-current');
+  });
+  document.querySelector('#recipes-view').classList.toggle('meal-plan-mode', mealPlansActive);
+  document.querySelector('#recipes-title').textContent = mealPlansActive ? 'Madplan' : 'Dine opskrifter';
+  document.querySelector('#recipes-title').previousElementSibling.textContent = mealPlansActive ? 'Din planlægning' : 'Opskrifter';
   openFormButton.hidden = !productsActive;
   if (inventoryActive) { setFormOpen(false); loadInventory(); }
   if (shoppingActive) { setFormOpen(false); loadShoppingList(); }
   if (recipesActive) { setFormOpen(false); showRecipeSection('recipes'); loadRecipes(); }
+  if (mealPlansActive) { setFormOpen(false); document.querySelector('#recipes-view').hidden = false; showRecipeSection('plans'); loadRecipes(); }
   if (kitchenActive) { setFormOpen(false); loadKitchenEquipment(); }
+  if (moreActive) setFormOpen(false);
 }
 
 function displayUnit(unit) {
@@ -410,7 +444,7 @@ async function loadInventory() {
   loadingElement.hidden = false; empty.hidden = true;
   try {
     const items = await jsonRequest(INVENTORY_API);
-    document.querySelector('#inventory-list').replaceChildren(...items.map(createInventoryCard));
+    document.querySelector('#inventory-list').replaceChildren(...groupedProductRows(items, createInventoryCard));
     empty.hidden = items.length !== 0;
   } catch (error) {
     document.querySelector('#inventory-list').replaceChildren();
@@ -507,6 +541,8 @@ async function submitInventoryCandidate(quantity) {
 
 function openInventoryEditor(item) {
   document.querySelector('#edit-inventory-id').value = item.id;
+  document.querySelector('#delete-inventory-confirmation').hidden = true;
+  document.querySelector('#request-delete-inventory').hidden = false;
   document.querySelector('#edit-inventory-name').textContent = item.product.name;
   const presence = item.product.inventoryTrackingMode === 'PRESENCE';
   document.querySelector('#edit-inventory-quantity-controls').hidden = presence;
@@ -636,7 +672,7 @@ async function loadShoppingList() {
   try {
     const items = await jsonRequest(SHOPPING_API);
     const active = items.filter(item => !item.purchased); const purchased = items.filter(item => item.purchased);
-    document.querySelector('#shopping-active-list').replaceChildren(...active.map(shoppingRow));
+    document.querySelector('#shopping-active-list').replaceChildren(...groupedProductRows(active, shoppingRow));
     document.querySelector('#shopping-purchased-list').replaceChildren(...purchased.map(shoppingRow));
     document.querySelector('#shopping-purchased-section').hidden = purchased.length === 0;
     document.querySelector('#shopping-empty').hidden = items.length !== 0;
@@ -724,6 +760,8 @@ async function submitShoppingCandidate(quantity) {
 
 function openShoppingEditor(item) {
   document.querySelector('#edit-shopping-id').value = item.id; document.querySelector('#edit-shopping-name').textContent = item.product.name;
+  document.querySelector('#delete-shopping-confirmation').hidden = true;
+  document.querySelector('#request-delete-shopping-item').hidden = false;
   const presence = item.product.inventoryTrackingMode === 'PRESENCE';
   document.querySelector('#edit-shopping-quantity-controls').hidden = presence;
   document.querySelector('#edit-shopping-presence').hidden = !presence;
@@ -966,6 +1004,12 @@ document.querySelector('#show-products').addEventListener('click', () => showVie
 document.querySelector('#show-inventory').addEventListener('click', () => showView('inventory'));
 document.querySelector('#show-shopping').addEventListener('click', () => showView('shopping'));
 document.querySelector('#show-recipes').addEventListener('click', () => showView('recipes'));
+document.querySelector('#show-meal-plans-primary').addEventListener('click', () => showView('meal-plans'));
+document.querySelector('#show-more').addEventListener('click', () => showView('more'));
+document.querySelector('#more-products').addEventListener('click', () => showView('products'));
+document.querySelector('#more-kitchen').addEventListener('click', () => showView('kitchen'));
+document.querySelector('#more-templates').addEventListener('click', () => { showView('recipes'); showRecipeSection('templates'); });
+document.querySelector('#more-logout').addEventListener('click', logout);
 document.querySelector('#close-inventory-reservations').addEventListener('click',()=>document.querySelector('#inventory-reservation-dialog').close());
 document.querySelector('#show-kitchen').addEventListener('click', () => showView('kitchen'));
 document.querySelector('#close-kitchen').addEventListener('click', () => showView('inventory'));
@@ -1000,6 +1044,8 @@ document.querySelector('#inventory-search').addEventListener('input', event => {
 document.querySelector('#edit-inventory-form').addEventListener('submit', saveInventory);
 document.querySelector('#edit-inventory-quantity').addEventListener('input', event =>
   updateConversion(event.target, event.target.dataset.unit, document.querySelector('#edit-inventory-conversion')));
+document.querySelector('#request-delete-inventory').addEventListener('click', () => { document.querySelector('#request-delete-inventory').hidden = true; document.querySelector('#delete-inventory-confirmation').hidden = false; });
+document.querySelector('#cancel-delete-inventory').addEventListener('click', () => { document.querySelector('#request-delete-inventory').hidden = false; document.querySelector('#delete-inventory-confirmation').hidden = true; });
 document.querySelector('#delete-inventory').addEventListener('click', deleteInventory);
 document.querySelector('#close-edit-inventory').addEventListener('click', closeInventoryEditor);
 document.querySelector('#cancel-edit-inventory').addEventListener('click', closeInventoryEditor);
@@ -1021,6 +1067,8 @@ document.querySelector('#shopping-add-quantity').addEventListener('input', event
 document.querySelector('#edit-shopping-form').addEventListener('submit', saveShoppingItem);
 document.querySelector('#edit-shopping-quantity').addEventListener('input', event =>
   updateConversion(event.target, event.target.dataset.unit, document.querySelector('#edit-shopping-conversion')));
+document.querySelector('#request-delete-shopping-item').addEventListener('click', () => { document.querySelector('#request-delete-shopping-item').hidden = true; document.querySelector('#delete-shopping-confirmation').hidden = false; });
+document.querySelector('#cancel-delete-shopping-item').addEventListener('click', () => { document.querySelector('#request-delete-shopping-item').hidden = false; document.querySelector('#delete-shopping-confirmation').hidden = true; });
 document.querySelector('#delete-shopping-item').addEventListener('click', deleteShoppingItem);
 document.querySelector('#close-edit-shopping').addEventListener('click', closeShoppingEditor);
 document.querySelector('#cancel-edit-shopping').addEventListener('click', closeShoppingEditor);
@@ -1068,6 +1116,20 @@ document.querySelector('#meal-plan-add-missing').addEventListener('click',addMea
 document.querySelector('#delete-meal-plan').addEventListener('click',()=>{document.querySelector('#delete-meal-plan-confirmation').hidden=false;});
 document.querySelector('#keep-meal-plan').addEventListener('click',()=>{document.querySelector('#delete-meal-plan-confirmation').hidden=true;});
 document.querySelector('#confirm-delete-meal-plan').addEventListener('click',deleteMealPlan);
+
+const iconPaths = {
+  calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>',
+  inventory: '<path d="M4 7h16l-1 14H5L4 7Z"/><path d="M8 7V5a4 4 0 0 1 8 0v2M9 11h6"/>',
+  cart: '<circle cx="9" cy="20" r="1"/><circle cx="19" cy="20" r="1"/><path d="M3 4h2l2.4 11.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 8H6"/>',
+  recipe: '<path d="M8 3v5M5.5 3v3a2.5 2.5 0 0 0 5 0V3M8 8v13M16 3c-2 3-2 7 0 9h3V3h-3Zm3 0v18"/>',
+  products: '<path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4.5 7.8 7.5 4.3 7.5-4.3M12 12v9"/>',
+  kitchen: '<path d="M4 10h16M6 10v10h12V10M8 10V6a4 4 0 0 1 8 0v4M9 14h6"/>',
+  more: '<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
+  logout: '<path d="M10 17l5-5-5-5M15 12H3M14 3h5a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5"/>'
+};
+document.querySelectorAll('[data-icon]').forEach(element => {
+  element.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${iconPaths[element.dataset.icon] || iconPaths.more}</svg>`;
+});
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('/service-worker.js')
