@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.time.Instant;
 
 import dk.jamesbabz.madkursus.service.exceptions.InvalidInputException;
+import dk.jamesbabz.madkursus.service.exceptions.ConflictException;
 import dk.jamesbabz.madkursus.service.exceptions.ResourceNotFoundException;
 import dk.jamesbabz.madkursus.service.models.ProductCategory;
 import dk.jamesbabz.madkursus.service.models.ProductTemplate;
@@ -16,6 +17,7 @@ import dk.jamesbabz.madkursus.service.models.RecipeUnit;
 import dk.jamesbabz.madkursus.service.models.Unit;
 import dk.jamesbabz.madkursus.service.ports.CurrentUserProvider;
 import dk.jamesbabz.madkursus.service.ports.RecipePort;
+import dk.jamesbabz.madkursus.service.ports.MealPlanPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,12 +30,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
 
 @ExtendWith(MockitoExtension.class)
 class RecipeServiceTest {
     @Mock RecipePort port;
     @Mock ProductTemplateService templates;
     @Mock CurrentUserProvider currentUser;
+    @Mock MealPlanPort mealPlans;
     @InjectMocks RecipeService service;
 
     @Test
@@ -129,4 +133,30 @@ class RecipeServiceTest {
         assertThat(copied.steps()).extracting(s->s.id()).containsOnlyNulls();
         assertThat(copied.ingredients().getFirst().quantity()).isEqualByComparingTo("1.5");
     }
+
+    @Test
+    void deletesOwnedRecipeAfterDetachingCookedAndSkippedHistory() {
+        UUID userId=UUID.randomUUID(), recipeId=UUID.randomUUID(); Recipe recipe=recipe(recipeId,userId,"Historisk opskrift");
+        when(currentUser.currentUserId()).thenReturn(userId); when(port.findByIdAndUserId(recipeId,userId)).thenReturn(Optional.of(recipe));
+
+        service.delete(recipeId);
+
+        verify(mealPlans).existsPlannedByRecipeIdAndUserId(recipeId,userId);
+        verify(mealPlans).detachHistoricalRecipeReferences(recipeId,userId);
+        verify(port).deleteByIdAndUserId(recipeId,userId);
+    }
+
+    @Test
+    void activePlannedRecipeBlocksDeleteWithUsefulConflictAndLeavesRecipeIntact() {
+        UUID userId=UUID.randomUUID(), recipeId=UUID.randomUUID(); Recipe recipe=recipe(recipeId,userId,"Aktiv opskrift");
+        when(currentUser.currentUserId()).thenReturn(userId); when(port.findByIdAndUserId(recipeId,userId)).thenReturn(Optional.of(recipe));
+        when(mealPlans.existsPlannedByRecipeIdAndUserId(recipeId,userId)).thenReturn(true);
+
+        assertThatThrownBy(()->service.delete(recipeId)).isInstanceOf(ConflictException.class)
+                .hasMessage("Opskriften er stadig med i en aktiv madplan. Fjern den fra madplanen først.");
+        verify(mealPlans,never()).detachHistoricalRecipeReferences(any(),any()); verify(port,never()).deleteByIdAndUserId(any(),any());
+        assertThat(service.get(recipeId)).isSameAs(recipe);
+    }
+
+    private Recipe recipe(UUID id,UUID userId,String name){Instant now=Instant.now();return new Recipe(id,userId,name,null,now,now,List.of(),List.of());}
 }

@@ -996,10 +996,13 @@ components:
         sortOrder: {type: integer, minimum: 1, nullable: true}
     PlannedRecipe:
       type: object
-      required: [id, recipe, portions, sortOrder, status]
+      required: [id, recipeName, portions, sortOrder, status]
       properties:
         id: {type: string, format: uuid}
-        recipe: {$ref: '#/components/schemas/Recipe'}
+        recipe:
+          allOf: [{$ref: '#/components/schemas/Recipe'}]
+          nullable: true
+        recipeName: {type: string}
         portions: {type: integer}
         sortOrder: {type: integer}
         status: {$ref: '#/components/schemas/PlannedRecipeStatus'}

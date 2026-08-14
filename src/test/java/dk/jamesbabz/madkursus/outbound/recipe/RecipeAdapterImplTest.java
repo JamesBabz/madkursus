@@ -70,4 +70,11 @@ class RecipeAdapterImplTest {
         assertThat(result.sourceTemplateId()).isEqualTo(sourceId);
         verify(repository).save(argThat(entity->sourceId.equals(entity.getSourceTemplateId())));
     }
+
+    @Test
+    void deleteFlushesOwnedRecipeRemovalSoReferenceConflictsAreReportedInTheServiceTransaction() {
+        UUID recipeId=UUID.randomUUID(),userId=UUID.randomUUID();
+        new RecipeAdapterImpl(repository,templateMapper,entityManager).deleteByIdAndUserId(recipeId,userId);
+        verify(repository).deleteByIdAndUserId(recipeId,userId); verify(repository).flush();
+    }
 }
