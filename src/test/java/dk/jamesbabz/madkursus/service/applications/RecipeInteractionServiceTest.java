@@ -37,6 +37,14 @@ class RecipeInteractionServiceTest {
   assertThat(result.requirements().getFirst().missingQuantity()).isNull();verify(shopping).ensureAtLeastFromTemplate(salt.id(),null);
  }
 
+ @Test void grinderTurnsUsePresenceWithoutConversionOrNumericDeduction(){
+  ProductTemplate pepper=new ProductTemplate(UUID.randomUUID(),"Sort peber",ProductCategory.SPICE,Unit.GRAM,InventoryTrackingMode.PRESENCE,List.of(),false);Recipe recipe=recipe("Peber",ingredient(pepper,"10",RecipeUnit.GRINDER_TURN));Product pp=product(pepper,InventoryTrackingMode.PRESENCE);
+  when(recipes.get(recipe.id())).thenReturn(recipe);when(products.findEquivalent(pepper.id(),pepper.name())).thenReturn(Optional.of(pp));
+  var absent=service.addMissingToShoppingList(List.of(new RecipeSelection(recipe.id(),BigDecimal.ONE)));assertThat(absent.requirements().getFirst().warning()).isNull();assertThat(absent.requirements().getFirst().satisfied()).isFalse();verify(shopping).ensureAtLeastFromTemplate(pepper.id(),null);
+  when(inventoryPort.findAllByUserId(user)).thenReturn(List.of(new InventoryItem(UUID.randomUUID(),pp,null)));when(history.save(any())).thenAnswer(c->c.getArgument(0));
+  var cooked=service.cook(recipe.id(),BigDecimal.ONE);assertThat(cooked.deductions().getFirst().satisfied()).isTrue();verify(inventory,never()).consumeUpToAvailable(eq(pp.id()),any());
+ }
+
  @Test void materializingRecipeMissingPiecesRoundsUpToWholeShoppingItemsWithoutChangingCalculation(){
   Recipe recipe=recipe("Æg",ingredient(onion,"0.5",RecipeUnit.PIECE));when(recipes.get(recipe.id())).thenReturn(recipe);when(products.findEquivalent(onion.id(),onion.name())).thenReturn(Optional.empty());
   var calculation=service.addMissingToShoppingList(List.of(new RecipeSelection(recipe.id(),BigDecimal.ONE)));

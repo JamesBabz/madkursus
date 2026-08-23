@@ -8,7 +8,7 @@
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/icons/icon.svg">
-  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/app.css?v=33">
   <title>Madkursus</title>
 </head>
 <body>
@@ -232,6 +232,8 @@
     <p id="recipe-template-detail-description" class="product-meta"></p>
     <div class="portion-control" aria-label="Antal portioner"><button id="recipe-template-portions-down" type="button" aria-label="Færre portioner">−</button><strong id="recipe-template-portions">2 portioner</strong><button id="recipe-template-portions-up" type="button" aria-label="Flere portioner">+</button></div>
     <h3>Ingredienser</h3><div id="recipe-template-detail-ingredients" class="recipe-ingredients"></div>
+    <section id="recipe-template-preparation-section"><h3>Forberedelse</h3><small>Mise en place</small><ol id="recipe-template-detail-preparation" class="recipe-steps compact-steps"></ol></section>
+    <section id="recipe-template-equipment-section"><h3>Udstyr</h3><ul id="recipe-template-detail-equipment" class="equipment-list"></ul></section>
     <h3>Fremgangsmåde</h3><ol id="recipe-template-detail-steps" class="recipe-steps"></ol>
     <button class="primary-button full-button" id="add-recipe-template" type="button">Føj til mine opskrifter</button>
     <div class="notice error" id="recipe-template-error" hidden></div>
@@ -319,6 +321,8 @@
     <p id="recipe-detail-description" class="product-meta"></p>
     <div class="portion-control" aria-label="Antal portioner"><button id="recipe-portions-down" type="button" aria-label="Færre portioner">−</button><strong id="recipe-portions">2 portioner</strong><button id="recipe-portions-up" type="button" aria-label="Flere portioner">+</button></div>
     <h3>Ingredienser</h3><div id="recipe-detail-ingredients" class="recipe-ingredients"></div>
+    <section id="recipe-preparation-section"><h3>Forberedelse</h3><small>Mise en place</small><ol id="recipe-detail-preparation" class="recipe-steps compact-steps"></ol></section>
+    <section id="recipe-equipment-section"><h3>Udstyr</h3><ul id="recipe-detail-equipment" class="equipment-list"></ul></section>
     <h3>Fremgangsmåde</h3><ol id="recipe-detail-steps" class="recipe-steps"></ol>
     <section class="inline-confirmation" id="delete-recipe-confirmation" hidden><h3>Slet opskrift?</h3><p>Opskriften og dens trin bliver slettet permanent.</p><div class="dialog-actions"><button class="secondary-button" id="keep-recipe" type="button">Annuller</button><button class="danger-button" id="confirm-delete-recipe" type="button">Slet opskrift</button></div></section>
     <button class="primary-button full-button" id="cook-recipe" type="button">Marker som lavet</button>
@@ -356,11 +360,14 @@
         <label for="recipe-template-search">Søg ingrediens</label><input id="recipe-template-search" type="search" autocomplete="off" placeholder="Fx løg eller oksefars">
         <div id="recipe-template-results" class="template-results"></div>
         <div id="recipe-ingredient-fields" hidden><h4 id="recipe-selected-template"></h4><label for="recipe-ingredient-quantity">Mængde pr. portion</label><input id="recipe-ingredient-quantity" type="text" inputmode="decimal" placeholder="Fx 0,5">
-          <label for="recipe-ingredient-unit">Enhed</label><select id="recipe-ingredient-unit"><option value="GRAM">g</option><option value="MILLILITER">ml</option><option value="PIECE">stk</option><option value="TEASPOON">tsk</option><option value="TABLESPOON">spsk</option><option value="DECILITER">dl</option></select>
+          <label for="recipe-ingredient-unit">Enhed</label><select id="recipe-ingredient-unit"><option value="GRAM">g</option><option value="MILLILITER">ml</option><option value="PIECE">stk</option><option value="TEASPOON">tsk</option><option value="TABLESPOON">spsk</option><option value="DECILITER">dl</option><option value="GRINDER_TURN">omgange</option></select>
           <label for="recipe-ingredient-preparation">Forberedelse <span class="optional">(valgfri)</span></label><input id="recipe-ingredient-preparation" maxlength="200" placeholder="Fx finthakket">
           <div class="dialog-actions"><button class="secondary-button" id="cancel-recipe-ingredient" type="button">Annuller</button><button class="primary-button" id="save-recipe-ingredient" type="button">Tilføj</button></div>
         </div>
       </section>
+      <div class="section-heading recipe-editor-heading"><h3>Forberedelse</h3><button class="text-button" id="add-prepared-component" type="button">+ Klargjort komponent</button></div>
+      <div id="recipe-editor-components" class="editor-items"></div>
+      <section id="prepared-component-picker" class="sub-panel" hidden><label for="prepared-component-name">Navn</label><input id="prepared-component-name" maxlength="150" placeholder="Fx Sur-sød sauce"><fieldset><legend>Ingredienser</legend><div id="prepared-component-ingredients"></div></fieldset><label for="prepared-component-preparation">Forberedelse</label><textarea id="prepared-component-preparation" rows="2" placeholder="Fx Bland ingredienserne sammen."></textarea><div class="dialog-actions"><button class="secondary-button" id="cancel-prepared-component" type="button">Annuller</button><button class="primary-button" id="save-prepared-component" type="button">Tilføj komponent</button></div></section>
       <div class="section-heading recipe-editor-heading"><h3>Fremgangsmåde</h3><button class="text-button" id="add-recipe-step" type="button">+ Tilføj trin</button></div>
       <div class="step-add-actions"><button class="primary-button compact-button" id="add-process-step" type="button">+ Proces</button></div>
       <div id="recipe-editor-steps" class="editor-items"></div>
@@ -410,6 +417,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden><span id="toast-message"></span><button id="toast-action" type="button" hidden></button></div>
 
-  <script src="/js/app.js" defer></script>
+  <script src="/js/app.js?v=33" defer></script>
 </body>
 </html>

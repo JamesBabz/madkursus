@@ -37,14 +37,14 @@ public class RecipeApiDelegateImpl implements RecipeApiDelegate {
     @Override
     public ResponseEntity<RecipeDTO> createRecipe(RecipeInputDTO request) {
         RecipeDTO result = mapper.toDto(service.create(request.getName(), request.getDescription(),
-                ingredients(request), steps(request)));
+                ingredients(request), steps(request),preparation(request),equipment(request),components(request)));
         return ResponseEntity.created(URI.create("/v1/recipes/" + result.getId())).body(result);
     }
 
     @Override
     public ResponseEntity<RecipeDTO> updateRecipe(UUID id, RecipeInputDTO request) {
         return ResponseEntity.ok(mapper.toDto(service.update(id, request.getName(), request.getDescription(),
-                ingredients(request), steps(request))));
+                ingredients(request), steps(request),preparation(request),equipment(request),components(request))));
     }
 
     @Override
@@ -75,6 +75,9 @@ public class RecipeApiDelegateImpl implements RecipeApiDelegate {
                                 b.getUnit() == null ? null : RecipeUnit.valueOf(b.getUnit().name()),
                                 b.getDurationSeconds(), b.getTemperatureCelsius(),
                                 b.getHeatLevel() == null ? null : dk.jamesbabz.madkursus.service.models.HeatLevel.valueOf(b.getHeatLevel().name()),
-                                b.getNumber(), b.getText())).toList())).toList();
+                                b.getNumber(), b.getText(),b.getPreparedComponentId())).toList())).toList();
     }
+    private List<RecipeService.PreparationInput> preparation(RecipeInputDTO request){return request.getPreparationSteps()==null?List.of():request.getPreparationSteps().stream().map(value->new RecipeService.PreparationInput(value.getId(),value.getInstruction(),value.getSortOrder())).toList();}
+    private List<RecipeService.EquipmentInput> equipment(RecipeInputDTO request){return request.getEquipmentRequirements()==null?List.of():request.getEquipmentRequirements().stream().map(value->new RecipeService.EquipmentInput(value.getId(),value.getEquipmentType()==null?null:dk.jamesbabz.madkursus.service.models.EquipmentType.valueOf(value.getEquipmentType().name()),value.getLabel(),value.getSortOrder())).toList();}
+    private List<RecipeService.ComponentInput> components(RecipeInputDTO request){return request.getPreparedComponents()==null?List.of():request.getPreparedComponents().stream().map(value->new RecipeService.ComponentInput(value.getId(),value.getKey(),value.getName(),value.getSortOrder(),value.getIngredients().stream().map(a->new RecipeService.ComponentIngredientInput(a.getId(),a.getRecipeIngredientId(),a.getQuantity(),RecipeUnit.valueOf(a.getUnit().name()),a.getSortOrder())).toList(),value.getPreparationSteps().stream().map(p->new RecipeService.PreparationInput(p.getId(),p.getInstruction(),p.getSortOrder())).toList())).toList();}
 }

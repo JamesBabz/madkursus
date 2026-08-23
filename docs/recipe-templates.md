@@ -2,7 +2,7 @@
 
 ## Kilder og versionering
 
-De 15 globale opskriftsskabeloner vedligeholdes i den læsbare, kanoniske kilde
+De oprindelige 15 globale opskriftsskabeloner vedligeholdes i den læsbare, kanoniske kilde
 `src/main/resources/seed/recipe-templates.json`. Alle mængder er for én portion.
 
 Den ældre fil `src/main/resources/db/seed/madkursus-recipe-templates-seed.json`
@@ -10,6 +10,11 @@ bevares uændret, fordi den allerede anvendte Flyway-migration V15 læser dens
 oprindelige tekstformat på en ny database. V21 læser derefter den kanoniske kilde
 og opgraderer de globale templates til TEXT- og PROCESS-trin. Der findes ingen
 startup-synkronisering, og ændringer i JSON-filen slår derfor ikke lydløst igennem.
+
+Den første manuelt afprøvede, additive skabelon ligger i
+`src/main/resources/seed/recipe-template-meatballs-in-tomato-sauce.json` og importeres af V23.
+Den separate fil er bevidst: V21 læser 15-skabeloners snapshot direkte, og en ændring af den
+allerede anvendte migrationsinput ville gøre nye og eksisterende databaser inkonsistente.
 
 En ændring kræver altid en ny additiv Flyway-migration. Ret aldrig en allerede
 anvendt migration eller dens input på en måde, der ændrer dens checksum/adfærd.
@@ -23,6 +28,21 @@ anvendt migration eller dens input på en måde, der ændrer dens checksum/adfæ
   kun den globale `cooking_processes`-række.
 - `recipe_template_process_bindings`: konkrete parameterværdier og eventuelle
   referencer til `recipe_template_ingredients`.
+- `recipe_template_prepared_components`: opskriftsejede, menneskeligt navngivne
+  mellemresultater. Deres allokeringer peger på eksisterende template-ingredienser;
+  de er aldrig ProductTemplates eller lagerkrav.
+
+En læsbar template bruger lokale component keys:
+
+```json
+{"preparedComponents":[{"key":"SAUCE","name":"Sur-sød sauce","ingredients":[
+  {"ingredient":"PINEAPPLE_JUICE","quantity":1,"unit":"DECILITER"}
+],"preparation":["Bland saucen i et målebæger."]}]}
+```
+
+En procesbinding kan referere komponentens key i stedet for at gentage dens rå
+ingredienser. Ved kopiering oprettes nye komponent- og allokerings-id'er, og både
+ingrediens- og komponentreferencer remappes til den brugerejede Recipe.
 
 ProductTemplates opløses i migrationen via normaliseret navn. CookingProcesses
 opløses via den stabile `process_key`, eksempelvis `BOIL_POTATOES`. Ukendte
@@ -38,6 +58,12 @@ volumenenheder, må højst være template-ingrediensens total. En restmængde er
 gyldig. Eksempelvis bruger “Kylling med ris og grøntsager” 5 ml af den samme olie
 i kyllingeprocessen og 5 ml i grøntsagsprocessen, mens ingredienslisten fortsat
 kun har én række på 10 ml.
+
+Komponentallokeringer indgår i samme eksklusive allokeringssum som direkte
+procesbindinger. Når en proces senere modtager komponenten, tælles dens indhold
+ikke igen: komponentbindingen er en reference til mellemresultatet, ikke endnu
+en ingrediensallokering. Krav, lager, indkøb og reservationer læser fortsat kun
+RecipeIngredients.
 
 Ved preview skalerer backend kun ingrediensbindinger med antallet af portioner.
 Varighed, varme, temperatur, tal og tekst skaleres ikke. Rendering genbruger

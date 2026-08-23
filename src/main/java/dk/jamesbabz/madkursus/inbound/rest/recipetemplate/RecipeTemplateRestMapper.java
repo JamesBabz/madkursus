@@ -33,16 +33,19 @@ public class RecipeTemplateRestMapper {
                 .instruction(step.instruction()).cookingProcessId(step.cookingProcessId())
                 .renderedProcess(step.renderedProcess() == null ? null : new RenderedCookingProcessDTO(
                         step.renderedProcess().instructions(), step.renderedProcess().completionCriterion(),
-                        step.renderedProcess().warnings()))).toList();
+                        step.renderedProcess().warnings()).processName(step.renderedProcess().processName())
+                        .activeDurationSeconds(step.renderedProcess().activeDurationSeconds()).passiveDurationSeconds(step.renderedProcess().passiveDurationSeconds())
+                        .durationSummary(step.renderedProcess().durationSummary()).preparationInstructions(step.renderedProcess().preparationInstructions()).inputSummary(step.renderedProcess().inputSummary()))).toList();
+        var preparation=template.preparationSteps().stream().map(value->new RecipePreparationStepDTO(value.instruction(),value.sortOrder()).id(value.id())).toList();
         return new RecipeTemplateDTO(template.id(), template.name(), template.active(), copied.isPresent(),
                 template.createdAt().atOffset(ZoneOffset.UTC), template.updatedAt().atOffset(ZoneOffset.UTC),
-                ingredients, steps).description(template.description())
-                .userRecipeId(copied.map(Recipe::id).orElse(null));
+                ingredients, steps,preparation,template.equipmentOverview()).description(template.description())
+                .userRecipeId(copied.map(Recipe::id).orElse(null)).preparedComponents(template.preparedComponents().stream().map(this::component).toList());
     }
 
     private CookingProcessBindingDTO binding(CookingProcessBinding binding) {
-        var value = binding.value();
-        return new CookingProcessBindingDTO(binding.parameterKey()).id(binding.id()).recipeIngredientId(binding.recipeIngredientId())
+        var value = binding.value()==null?new CookingProcessValue(null,null,null,null,null,null,null):binding.value();
+        return new CookingProcessBindingDTO(binding.parameterKey()).id(binding.id()).recipeIngredientId(binding.recipeIngredientId()).preparedComponentId(binding.preparedComponentId())
                 .productTemplateId(binding.productTemplate() == null ? null : binding.productTemplate().id())
                 .productTemplate(binding.productTemplate() == null ? null : products.toDto(binding.productTemplate()))
                 .quantity(value.quantity()).unit(value.unit() == null ? null : RecipeUnitDTO.valueOf(value.unit().name()))
@@ -50,4 +53,5 @@ public class RecipeTemplateRestMapper {
                 .heatLevel(value.heatLevel() == null ? null : HeatLevelDTO.valueOf(value.heatLevel().name()))
                 .number(value.number()).text(value.text());
     }
+    private PreparedComponentDTO component(PreparedComponent value){return new PreparedComponentDTO(value.key(),value.name(),value.sortOrder(),value.ingredients().stream().map(a->new PreparedComponentIngredientDTO(a.recipeIngredientId(),a.quantity(),RecipeUnitDTO.valueOf(a.unit().name()),a.sortOrder()).id(a.id()).productTemplate(products.toDto(a.productTemplate()))).toList(),value.preparationSteps().stream().map(p->new RecipePreparationStepDTO(p.instruction(),p.sortOrder()).id(p.id())).toList()).id(value.id());}
 }

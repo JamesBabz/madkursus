@@ -45,6 +45,7 @@ public class InventoryAvailabilityService {
                 Map<UUID,MutableReservation> occurrence=new LinkedHashMap<>();
                 for(RecipeIngredient ingredient:planned.recipe().ingredients()) {
                     ProductTemplate template=ingredient.productTemplate(); MutableReservation value=occurrence.computeIfAbsent(template.id(),ignored->new MutableReservation()); value.template=template;
+                    if(template.defaultTrackingMode()==InventoryTrackingMode.PRESENCE) continue;
                     BigDecimal scaled=ingredient.quantity().multiply(BigDecimal.valueOf(planned.portions()));
                     NormalizedRecipeQuantity normalized=normalizer.normalize(scaled,ingredient.unit(),template.defaultUnit());
                     if(!normalized.resolved()) { value.warning=normalized.warning(); continue; }

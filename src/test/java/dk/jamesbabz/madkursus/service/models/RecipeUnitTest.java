@@ -14,5 +14,6 @@ class RecipeUnitTest {
     @Test void neverInventsWeightOrPieceConversions() {
         assertThat(RecipeUnit.GRAM.toMilliliters(BigDecimal.ONE)).isEmpty();
         assertThat(RecipeUnit.PIECE.toMilliliters(BigDecimal.ONE)).isEmpty();
+        assertThat(RecipeUnit.GRINDER_TURN.toMilliliters(BigDecimal.TEN)).isEmpty();
     }
 }

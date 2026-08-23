@@ -38,8 +38,8 @@ public class RecipeInteractionService {
             Optional<Product> product=productService.findEquivalent(aggregate.template().id(),aggregate.template().name());
             InventoryTrackingMode mode=product.map(Product::inventoryTrackingMode).orElse(aggregate.template().defaultTrackingMode());
             var availability=availabilityService.forTemplate(snapshot,aggregate.template(),product.orElse(null),mode);
-            if(aggregate.warning()!=null){results.add(new RecipeRequirement(aggregate.template(),product.orElse(null),mode,null,aggregate.unit(),null,null,null,null,null,availability.plannedUsageCount(),availability.reservations(),false,aggregate.warning()));continue;}
             if(mode==InventoryTrackingMode.PRESENCE){boolean present=product.map(p->snapshot.inventoryByProductId().containsKey(p.id())).orElse(false);results.add(new RecipeRequirement(aggregate.template(),product.orElse(null),mode,aggregate.quantity(),aggregate.unit(),null,null,null,null,null,availability.plannedUsageCount(),availability.reservations(),present,null));continue;}
+            if(aggregate.warning()!=null){results.add(new RecipeRequirement(aggregate.template(),product.orElse(null),mode,null,aggregate.unit(),null,null,null,null,null,availability.plannedUsageCount(),availability.reservations(),false,aggregate.warning()));continue;}
             BigDecimal rawMissing=aggregate.quantity().subtract(availability.availableQuantity()).max(BigDecimal.ZERO);
             BigDecimal missing=roundUp(rawMissing,aggregate.unit());
             results.add(new RecipeRequirement(aggregate.template(),product.orElse(null),mode,aggregate.quantity(),aggregate.unit(),

@@ -1,0 +1,4 @@
+package dk.jamesbabz.madkursus.outbound.recipe.details;
+import java.util.UUID;import jakarta.persistence.*;import lombok.*;
+@Entity @Table(name="recipe_preparation_steps") @Getter @NoArgsConstructor(access=AccessLevel.PROTECTED)
+public class RecipePreparationStepEntity{@Id private UUID id;@ManyToOne(optional=false)@JoinColumn(name="recipe_id")private RecipeEntity recipe;private String instruction;private int sortOrder;public RecipePreparationStepEntity(UUID id,String instruction,int sortOrder){this.id=id;this.instruction=instruction;this.sortOrder=sortOrder;}void setRecipe(RecipeEntity value){recipe=value;}}

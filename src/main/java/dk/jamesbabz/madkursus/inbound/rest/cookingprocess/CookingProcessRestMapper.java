@@ -15,14 +15,20 @@ public class CookingProcessRestMapper {
                 process.parameters().stream().map(parameter -> new CookingProcessParameterDTO(parameter.id(),
                         parameter.key(), parameter.label(), CookingProcessParameterTypeDTO.valueOf(parameter.type().name()),
                         parameter.required(), parameter.sortOrder()).defaultValue(value(parameter.defaultValue()))
-                        .unit(parameter.unit() == null ? null : RecipeUnitDTO.valueOf(parameter.unit().name()))).toList(),
+                        .unit(parameter.unit() == null ? null : RecipeUnitDTO.valueOf(parameter.unit().name()))
+                        .source(CookingProcessParameterSourceDTO.valueOf(parameter.source().name()))
+                        .derivedRule(parameter.derivedRule()==null?null:parameter.derivedRule().name())
+                        .derivedFrom(parameter.derivedFrom())).toList(),
                 process.steps().stream().map(step -> new CookingProcessStepDTO(step.id(),
                         step.instructionTemplate(), step.sortOrder())).toList(),
                 process.equipmentRequirements().stream().map(requirement ->
                         new CookingProcessEquipmentRequirementDTO(requirement.id(),
                                 EquipmentTypeDTO.valueOf(requirement.equipmentType().name()),
                                 EquipmentRequirementLevelDTO.valueOf(requirement.level().name()))).toList(),
-                process.completionCriteriaTemplate()).description(process.description());
+                process.completionCriteriaTemplate()).description(process.description())
+                .activeDurationSeconds(process.activeDurationSeconds()).passiveDurationSeconds(process.passiveDurationSeconds())
+                .activeDurationParameterKey(process.activeDurationParameterKey()).passiveDurationParameterKey(process.passiveDurationParameterKey())
+                .preparationRequirements(process.preparationRequirements().stream().map(value->new CookingProcessPreparationRequirementDTO(value.id(),value.parameterKey(),value.instructionTemplate(),value.sortOrder())).toList());
     }
 
     private CookingProcessValueDTO value(CookingProcessValue value) {

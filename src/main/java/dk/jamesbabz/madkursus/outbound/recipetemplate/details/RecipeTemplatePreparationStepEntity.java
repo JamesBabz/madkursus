@@ -1,0 +1,4 @@
+package dk.jamesbabz.madkursus.outbound.recipetemplate.details;
+import java.util.UUID;import jakarta.persistence.*;import lombok.*;
+@Entity @Table(name="recipe_template_preparation_steps") @Getter @NoArgsConstructor(access=AccessLevel.PROTECTED)
+public class RecipeTemplatePreparationStepEntity{@Id private UUID id;@ManyToOne(optional=false)@JoinColumn(name="recipe_template_id")private RecipeTemplateEntity recipeTemplate;@ManyToOne@JoinColumn(name="prepared_component_id")private RecipeTemplatePreparedComponentEntity preparedComponent;private String instruction;private int sortOrder;}

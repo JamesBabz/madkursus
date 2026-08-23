@@ -15,6 +15,21 @@ class CookingProcessMigrationTest {
             assertThat(sql).doesNotContain("DROP TABLE", "DELETE FROM recipe_steps", "DELETE FROM recipe_template_steps");
         }
     }
+    @Test void processKnowledgeMigrationIsAdditiveAndPreservesRecipeIngredients() throws Exception {
+        try(var stream=getClass().getClassLoader().getResourceAsStream("db/migration/V27__process_owned_values.sql")) {
+            assertThat(stream).isNotNull();String sql=new String(stream.readAllBytes(),StandardCharsets.UTF_8);
+            assertThat(sql).contains("value_source","derived_rule","POTATO_WATER_PER_GRAM","PASTA_SALT_PER_GRAM","ADDITIONS:");
+            assertThat(sql).doesNotContain("DELETE FROM recipe_ingredients","DELETE FROM recipes","DROP TABLE");
+        }
+    }
+    @Test void timingAndPreparationMigrationIsAdditive() throws Exception {
+        try(var stream=getClass().getClassLoader().getResourceAsStream("db/migration/V28__process_timing_and_preparation.sql")) {
+            assertThat(stream).isNotNull();String sql=new String(stream.readAllBytes(),StandardCharsets.UTF_8);
+            assertThat(sql).contains("active_duration_seconds","passive_duration_seconds","cooking_process_preparation_requirements","passive_duration_parameter_key","Tilsæt {SALT} salt.");
+            assertThat(sql).doesNotContain("DELETE FROM recipes","DELETE FROM recipe_ingredients","DROP TABLE");
+        }
+    }
+    @Test void preparedComponentsMigrationOwnsAllocationsWithoutChangingRequirements() throws Exception {try(var stream=getClass().getClassLoader().getResourceAsStream("db/migration/V29__prepared_components.sql")){assertThat(stream).isNotNull();String sql=new String(stream.readAllBytes(),StandardCharsets.UTF_8);assertThat(sql).contains("recipe_prepared_components","recipe_prepared_component_ingredients","recipe_template_prepared_components","prepared_component_id");assertThat(sql).doesNotContain("DELETE FROM recipe_ingredients","CREATE TABLE products","CREATE TABLE inventory");}}
     @Test void allocationMigrationAddsConcreteIngredientReferencesWithoutDestructiveChanges() throws Exception {
         try(var stream=getClass().getClassLoader().getResourceAsStream("db/migration/V20__bind_processes_to_recipe_ingredients.sql")) {
             assertThat(stream).isNotNull();String sql=new String(stream.readAllBytes(),StandardCharsets.UTF_8);

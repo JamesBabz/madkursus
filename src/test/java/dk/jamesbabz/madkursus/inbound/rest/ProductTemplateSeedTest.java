@@ -39,10 +39,10 @@ class ProductTemplateSeedTest {
     }
 
     @Test void allGlobalSeedCrossReferencesResolveAgainstCanonicalProducts() throws Exception {
-        Set<String> productNames=index(read("seed/product-templates.json").get("products")).keySet();read("seed/recipe-templates.json").get("recipes").forEach(recipe->recipe.path("ingredients").forEach(ingredient->assertThat(productNames).contains(ingredient.path("productTemplate").asText())));List<String> futureReferences=new ArrayList<>();collectNamedFields(read("seed/cooking-processes.json"),"productTemplate",futureReferences);assertThat(productNames).containsAll(futureReferences);
+        Set<String> productNames=index(read("seed/product-templates.json").get("products")).keySet();read("seed/recipe-templates.json").get("recipes").forEach(recipe->recipe.path("ingredients").forEach(ingredient->assertThat(productNames).contains(ingredient.path("productTemplate").asText())));read("seed/recipe-template-meatballs-in-tomato-sauce.json").path("recipe").path("ingredients").forEach(ingredient->assertThat(productNames).contains(ingredient.path("productTemplate").asText()));List<String> futureReferences=new ArrayList<>();collectNamedFields(read("seed/cooking-processes.json"),"productTemplate",futureReferences);assertThat(productNames).containsAll(futureReferences);
     }
 
-    @Test void canonicalCookingProcessSourceMatchesAlreadyAppliedV19Input() throws Exception {assertThat(read("seed/cooking-processes.json")).isEqualTo(read("db/seed/madkursus-cooking-processes-seed.json"));}
+    @Test void alreadyAppliedV19InputRemainsAnImmutableSubsetOfTheEvolvingCanonicalSource() throws Exception {Set<String> canonical=new HashSet<>(),legacy=new HashSet<>();read("seed/cooking-processes.json").path("processes").forEach(value->canonical.add(value.path("key").asText()));read("db/seed/madkursus-cooking-processes-seed.json").path("processes").forEach(value->legacy.add(value.path("key").asText()));assertThat(canonical).containsAll(legacy).contains("PAN_FRY_MEATBALLS");}
 
     private Set<String> v10PresenceNames() throws Exception {String sql=resourceText("db/migration/V10__product_template_default_tracking_mode.sql"),names=sql.substring(sql.indexOf("WHERE name IN"));Matcher matcher=Pattern.compile("'([^']+)'").matcher(names);Set<String> result=new HashSet<>();while(matcher.find())result.add(matcher.group(1));return result;}
     private Map<String,JsonNode> index(JsonNode products){Map<String,JsonNode> result=new HashMap<>();products.forEach(product->result.put(product.path("name").asText(),product));return result;}

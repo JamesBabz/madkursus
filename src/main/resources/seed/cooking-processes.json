@@ -1,30 +1,38 @@
 {
-  "metadata": {"version": 1, "language": "da", "description": "Kuraterede, globale og parameteriserede madlavningsprocesser."},
+  "metadata": {"version": 2, "language": "da", "description": "Kuraterede processer. source skelner INPUT, DERIVED, DEFAULT og OVERRIDEABLE_DEFAULT; rule er en typed Java-regel."},
   "processes": [
     {
       "key": "BOIL_POTATOES", "name": "Kog kartofler", "description": "Kog kartofler møre i saltet vand.",
+      "timing":{"activeDurationSeconds":300,"passiveDurationParameter":"SIMMER_TIME"},
+      "preparation":[],
       "equipment": [["STOVE","REQUIRED"],["POT","REQUIRED"]],
       "parameters": [
-        {"key":"POTATOES","label":"Kartofler","type":"INGREDIENT_QUANTITY","required":true},
-        {"key":"WATER","label":"Vand","type":"QUANTITY","required":true,"unit":"MILLILITER"},
-        {"key":"SALT","label":"Salt","type":"INGREDIENT_QUANTITY","required":false},
-        {"key":"BOIL_HEAT","label":"Opkogningsvarme","type":"HEAT_LEVEL","required":true,"default":{"heatLevel":"MAX"}},
-        {"key":"SIMMER_HEAT","label":"Kogevarme","type":"HEAT_LEVEL","required":true,"default":{"heatLevel":"LOW"}},
-        {"key":"SIMMER_TIME","label":"Kogetid","type":"DURATION","required":true,"default":{"durationSeconds":900}}
+        {"key":"POTATOES","label":"Kartofler","type":"INGREDIENT_QUANTITY","source":"INPUT","required":true},
+        {"key":"WATER","label":"Vand","type":"QUANTITY","source":"DERIVED","derivedFrom":"POTATOES","rule":"POTATO_WATER_PER_GRAM","unit":"MILLILITER","overrideable":true},
+        {"key":"SALT","label":"Salt","type":"QUANTITY","source":"DERIVED","derivedFrom":"POTATOES","rule":"POTATO_SALT_PER_GRAM","unit":"TEASPOON","overrideable":true,"inventory":"PRESENCE"},
+        {"key":"BOIL_HEAT","label":"Opkogningsvarme","type":"HEAT_LEVEL","source":"DEFAULT","default":{"heatLevel":"MAX"}},
+        {"key":"SIMMER_HEAT","label":"Kogevarme","type":"HEAT_LEVEL","source":"DEFAULT","default":{"heatLevel":"LOW"}},
+        {"key":"SIMMER_TIME","label":"Kogetid","type":"DURATION","source":"OVERRIDEABLE_DEFAULT","default":{"durationSeconds":900}}
       ],
-      "steps": ["Kom {POTATOES} i gryden.","Hæld {WATER} vand i gryden.","Tilsæt salt efter smag.","Sæt gryden på komfuret og skru op på {BOIL_HEAT}.","Vent til vandet koger.","Skru ned på {SIMMER_HEAT}.","Kog i cirka {SIMMER_TIME}.","Kontrollér kartoflerne med en lille kniv.","Hæld vandet fra."],
+      "steps": ["Kom {POTATOES} i gryden.","Hæld {WATER} vand i gryden.","Tilsæt {SALT} salt.","Sæt gryden på komfuret og skru op på {BOIL_HEAT}.","Vent til vandet koger.","Skru ned på {SIMMER_HEAT}.","Kog i cirka {SIMMER_TIME}.","Kontrollér kartoflerne med en lille kniv.","Hæld vandet fra."],
       "completionCriteria": "Kartoflerne er færdige, når en kniv glider let igennem."
     },
     {
       "key":"MIX_MEATBALL_MIXTURE","name":"Rør fars","description":"Rør en ensartet fars uden at overarbejde den.","equipment":[],
+      "timing":{"activeDurationParameter":"MIX_TIME","passiveDurationSeconds":0},
+      "preparation":[{"parameter":"BASE","instruction":"Mål {BASE} op.","sortOrder":1},{"parameter":"ADDITIONS","instruction":"Mål {ADDITIONS} op.","sortOrder":2}],
       "parameters":[
-        {"key":"MEAT","label":"Kød","type":"INGREDIENT_QUANTITY","required":true},{"key":"EGG","label":"Æg","type":"INGREDIENT_QUANTITY","required":false},{"key":"ONION","label":"Løg","type":"INGREDIENT_QUANTITY","required":false},{"key":"BINDER","label":"Bindemiddel","type":"INGREDIENT_QUANTITY","required":false},{"key":"LIQUID","label":"Væske","type":"INGREDIENT_QUANTITY","required":false},{"key":"SALT","label":"Salt","type":"INGREDIENT_QUANTITY","required":false},{"key":"PEPPER","label":"Peber","type":"INGREDIENT_QUANTITY","required":false},{"key":"MIX_TIME","label":"Røretid","type":"DURATION","required":true,"default":{"durationSeconds":60}}
+        {"key":"BASE","label":"Fars","type":"INGREDIENT_QUANTITY","source":"INPUT","required":true},{"key":"ADDITIONS","label":"Ingredienser i farsen","type":"INGREDIENT_LIST","source":"INPUT","required":false},
+        {"key":"MEAT","label":"V19/V23 migrationsalias for BASE","type":"INGREDIENT_QUANTITY","required":false},{"key":"EGG","label":"V19/V23 migrationsalias","type":"INGREDIENT_QUANTITY","required":false},{"key":"ONION","label":"V19/V23 migrationsalias","type":"INGREDIENT_QUANTITY","required":false},{"key":"BINDER","label":"V19/V23 migrationsalias","type":"INGREDIENT_QUANTITY","required":false},{"key":"LIQUID","label":"V19/V23 migrationsalias","type":"INGREDIENT_QUANTITY","required":false},{"key":"SALT","label":"V19/V23 migrationsalias","type":"INGREDIENT_QUANTITY","required":false},{"key":"PEPPER","label":"V19/V23 migrationsalias","type":"INGREDIENT_QUANTITY","required":false},{"key":"OTHER_SEASONING","label":"V19/V23 migrationsalias","type":"INGREDIENT_QUANTITY","required":false},
+        {"key":"MIX_TIME","label":"Røretid","type":"DURATION","source":"OVERRIDEABLE_DEFAULT","default":{"durationSeconds":60}}
       ],
-      "steps":["Kom de afmålte ingredienser i en skål.","Rør farsen grundigt sammen i cirka {MIX_TIME}.","Kontrollér konsistensen."],
+      "steps":["Kom {BASE} og {ADDITIONS} i en skål.","Rør farsen grundigt sammen i cirka {MIX_TIME}.","Kontrollér konsistensen."],
       "completionCriteria":"Farsen er ensartet, ingredienserne er jævnt fordelt, og der er ingen tørre melklumper."
     },
     {
       "key":"PAN_FRY_CHICKEN_BREAST","name":"Steg kyllingebryst","description":"Steg kyllingebryst på pande og kontrollér kernetemperaturen.",
+      "timing":{"activeDurationSeconds":600,"passiveDurationSeconds":0},
+      "preparation":[{"parameter":"CHICKEN","instruction":"Dup {CHICKEN} tør.","sortOrder":1}],
       "equipment":[["STOVE","REQUIRED"],["PAN","REQUIRED"],["THERMOMETER","RECOMMENDED"]],
       "parameters":[
         {"key":"CHICKEN","label":"Kyllingebryst","type":"INGREDIENT_QUANTITY","required":true},{"key":"FAT","label":"Fedtstof","type":"INGREDIENT_QUANTITY","required":true},{"key":"SALT","label":"Salt","type":"INGREDIENT_QUANTITY","required":false},{"key":"PEPPER","label":"Peber","type":"INGREDIENT_QUANTITY","required":false},{"key":"PREHEAT_LEVEL","label":"Forvarmningsniveau","type":"HEAT_LEVEL","required":true,"default":{"heatLevel":"MEDIUM_HIGH"}},{"key":"COOK_LEVEL","label":"Stegeniveau","type":"HEAT_LEVEL","required":true,"default":{"heatLevel":"MEDIUM"}},{"key":"FIRST_SIDE_TIME","label":"Tid på første side","type":"DURATION","required":true,"default":{"durationSeconds":300}},{"key":"SECOND_SIDE_TIME","label":"Tid på anden side","type":"DURATION","required":true,"default":{"durationSeconds":300}},{"key":"TARGET_CORE_TEMP","label":"Kernetemperatur","type":"TEMPERATURE","required":true,"default":{"temperatureCelsius":75}}
@@ -34,15 +42,17 @@
     },
     {
       "key":"BOIL_RICE","name":"Kog ris","description":"Kog ris under låg og lad dem hvile.","equipment":[["STOVE","REQUIRED"],["POT","REQUIRED"]],
-      "parameters":[{"key":"RICE","label":"Ris","type":"INGREDIENT_QUANTITY","required":true},{"key":"WATER","label":"Vand","type":"QUANTITY","required":true,"unit":"MILLILITER"},{"key":"BOIL_HEAT","label":"Opkogningsvarme","type":"HEAT_LEVEL","required":true,"default":{"heatLevel":"MAX"}},{"key":"SIMMER_HEAT","label":"Kogevarme","type":"HEAT_LEVEL","required":true,"default":{"heatLevel":"LOW"}},{"key":"COOK_TIME","label":"Kogetid","type":"DURATION","required":true,"default":{"durationSeconds":720}},{"key":"REST_TIME","label":"Hviletid","type":"DURATION","required":true,"default":{"durationSeconds":600}}],
+      "timing":{"activeDurationSeconds":120,"passiveDurationParameter":"COOK_TIME"},"preparation":[],
+      "parameters":[{"key":"RICE","label":"Ris","type":"INGREDIENT_QUANTITY","source":"INPUT","required":true},{"key":"WATER","label":"Vand","type":"QUANTITY","source":"DERIVED","derivedFrom":"RICE","rule":"RICE_WATER_PER_GRAM","unit":"MILLILITER","overrideable":true},{"key":"BOIL_HEAT","label":"Opkogningsvarme","type":"HEAT_LEVEL","source":"DEFAULT","default":{"heatLevel":"MAX"}},{"key":"SIMMER_HEAT","label":"Kogevarme","type":"HEAT_LEVEL","source":"DEFAULT","default":{"heatLevel":"LOW"}},{"key":"COOK_TIME","label":"Kogetid","type":"DURATION","source":"OVERRIDEABLE_DEFAULT","default":{"durationSeconds":720}},{"key":"REST_TIME","label":"Hviletid","type":"DURATION","source":"OVERRIDEABLE_DEFAULT","default":{"durationSeconds":600}}],
       "steps":["Skyl {RICE} i koldt vand.","Kom ris og {WATER} vand i gryden.","Bring vandet i kog på {BOIL_HEAT}.","Læg låg på og skru ned på {SIMMER_HEAT}.","Kog i cirka {COOK_TIME} uden at løfte låget.","Tag gryden af varmen og lad risene hvile under låg i {REST_TIME}.","Løsn risene med en gaffel."],
       "completionCriteria":"Risene er færdige, når væsken er absorberet, og kornene er møre med let bid."
     },
     {
       "key":"BOIL_PASTA","name":"Kog pasta","description":"Kog pasta al dente i rigeligt saltet vand.","equipment":[["STOVE","REQUIRED"],["POT","REQUIRED"]],
-      "parameters":[{"key":"PASTA","label":"Pasta","type":"INGREDIENT_QUANTITY","required":true},{"key":"WATER","label":"Vand","type":"QUANTITY","required":true,"unit":"MILLILITER"},{"key":"BOIL_HEAT","label":"Varme","type":"HEAT_LEVEL","required":true,"default":{"heatLevel":"MAX"}},{"key":"COOK_TIME","label":"Vejledende kogetid","type":"DURATION","required":true,"default":{"durationSeconds":600}}],
-      "steps":["Bring {WATER} vand i kog på {BOIL_HEAT}.","Salt vandet.","Tilsæt {PASTA} og rør rundt.","Kog uden låg i cirka {COOK_TIME}; rør et par gange.","Smag på et stykke pasta et minut før tiden.","Gem eventuelt lidt kogevand og hæld resten fra."],
-      "completionCriteria":"Pastaen er færdig, når den er mør uden at være blød og stadig har et let bid i midten."
+      "timing":{"activeDurationSeconds":120,"passiveDurationParameter":"COOK_TIME"},"preparation":[],
+      "parameters":[{"key":"PASTA","label":"Pasta","type":"INGREDIENT_QUANTITY","source":"INPUT","required":true},{"key":"WATER","label":"Vand","type":"QUANTITY","source":"DERIVED","derivedFrom":"PASTA","rule":"PASTA_WATER_PER_GRAM","unit":"MILLILITER","overrideable":true},{"key":"SALT","label":"Salt","type":"QUANTITY","source":"DERIVED","derivedFrom":"PASTA","rule":"PASTA_SALT_PER_GRAM","unit":"TEASPOON","overrideable":true,"inventory":"PRESENCE"},{"key":"BOIL_HEAT","label":"Varme","type":"HEAT_LEVEL","source":"DEFAULT","default":{"heatLevel":"MAX"}},{"key":"COOK_TIME","label":"Vejledende kogetid","type":"DURATION","source":"OVERRIDEABLE_DEFAULT","default":{"durationSeconds":600}}],
+      "steps":["Bring {WATER} vand i kog på {BOIL_HEAT}.","Tilsæt salt til vandet: {SALT}.","Tilsæt {PASTA}, rør straks rundt, og fjern låget.","Brug pakkens kogetid som udgangspunkt; kog uden låg i cirka {COOK_TIME}, og rør et par gange.","Smag på én penne før vandet hældes fra.","Gem eventuelt lidt kogevand og hæld resten fra."],
+      "completionCriteria":"Pastaen er færdig, når den er gennemkogt, men stadig har lidt bid."
     },
     {
       "key":"BROWN_MINCED_MEAT","name":"Brun hakket kød","description":"Brun hakket kød i små portioner, så det steger frem for at koge.","equipment":[["STOVE","REQUIRED"],["PAN","REQUIRED"]],
@@ -73,6 +83,13 @@
       "parameters":[{"key":"POTATOES","label":"Kogte kartofler","type":"INGREDIENT_QUANTITY","required":true},{"key":"BUTTER","label":"Smør","type":"INGREDIENT_QUANTITY","required":true},{"key":"LIQUID","label":"Mælk eller anden væske","type":"INGREDIENT_QUANTITY","required":true},{"key":"HEAT","label":"Varme","type":"HEAT_LEVEL","required":true,"default":{"heatLevel":"LOW"}}],
       "steps":["Hæld vandet grundigt fra de møre kartofler.","Lad kartoflerne dampe tørre i gryden et minut.","Mos {POTATOES}, mens de er varme.","Rør {BUTTER} i.","Varm forsigtigt på {HEAT}, og tilsæt {LIQUID} lidt ad gangen.","Smag til uden at røre mosen mere end nødvendigt."],
       "completionCriteria":"Mosen er færdig, når den er varm, ensartet og luftig uden store kartoffelstykker eller fri væske."
+    },
+    {
+      "key":"PAN_FRY_MEATBALLS","name":"Steg kødboller","description":"Steg formede kødboller med tydelig stegeskorpe, før de eventuelt færdiggøres i en sovs.",
+      "equipment":[["PAN","REQUIRED"],["STOVE","REQUIRED"]],
+      "parameters":[{"key":"MEATBALLS","label":"Kødboller","type":"TEXT","required":true},{"key":"FAT","label":"Fedtstof","type":"INGREDIENT_QUANTITY","required":false},{"key":"PAN_HEAT","label":"Pandevarme","type":"HEAT_LEVEL","required":true,"default":{"heatLevel":"MEDIUM_HIGH"}},{"key":"FIRST_SIDE_TIME","label":"Tid på første side","type":"DURATION","required":true,"default":{"durationSeconds":180}},{"key":"SECOND_SIDE_TIME","label":"Tid på anden side","type":"DURATION","required":true,"default":{"durationSeconds":180}},{"key":"EDGE_TIME","label":"Tid på de lyse sider","type":"DURATION","required":true,"default":{"durationSeconds":120}}],
+      "steps":["Varm panden op på {PAN_HEAT}. Tilsæt fedtstof: {FAT}.","Læg {MEATBALLS} på panden.","Steg dem i {FIRST_SIDE_TIME} uden at flytte dem.","Vend dem.","Steg dem i {SECOND_SIDE_TIME} på den anden side.","Vend dem over på de lyse sider.","Steg yderligere {EDGE_TIME}, og vend dem én gang undervejs.","Tag kødbollerne af panden."],
+      "completionCriteria":"Kødbollerne skal have tydelig stegeskorpe på flere sider."
     },
     {
       "key":"BLEND_SOUP","name":"Blend suppe","description":"Blend varm suppe sikkert til ønsket konsistens.","equipment":[],

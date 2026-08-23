@@ -3,7 +3,8 @@
     "version": 2,
     "language": "da",
     "portionSemantics": "Alle ingrediensmængder er for én portion. Kun ingrediensbindinger skaleres med portioner.",
-    "description": "Kanoniske globale RecipeTemplates med TEXT- og PROCESS-trin."
+    "description": "Kanoniske globale RecipeTemplates med TEXT-, PROCESS- og PreparedComponent-struktur.",
+    "preparedComponentFormat": "preparedComponents bruger lokale component keys og eksisterende ingredient keys; mængder er én portion."
   },
   "recipes": [
     {
@@ -49,6 +50,7 @@
         {"key":"FLOUR","productTemplate":"Hvedemel","quantity":10,"unit":"GRAM"},
         {"key":"POTATOES","productTemplate":"Kartoffel","quantity":250,"unit":"GRAM"}
       ],
+      "preparedComponents":[{"key":"MEATBALL_MIX","name":"Ingredienser til fars","sortOrder":1,"ingredients":[{"ingredient":"MEAT","quantity":150,"unit":"GRAM"},{"ingredient":"EGG","quantity":0.25,"unit":"PIECE"},{"ingredient":"FLOUR","quantity":10,"unit":"GRAM"},{"ingredient":"MILK","quantity":30,"unit":"MILLILITER"}],"preparation":["Mål ingredienserne konkret op og kom dem i en skål."]}],
       "steps":[
         {"type":"PROCESS","process":"MIX_MEATBALL_MIXTURE","bindings":{"MEAT":{"ingredient":"MEAT","quantity":150,"unit":"GRAM"},"EGG":{"ingredient":"EGG","quantity":0.25,"unit":"PIECE"},"BINDER":{"ingredient":"FLOUR","quantity":10,"unit":"GRAM"},"LIQUID":{"ingredient":"MILK","quantity":30,"unit":"MILLILITER"}}},
         {"type":"TEXT","instruction":"Form frikadeller og steg dem gyldne og gennemstegte på panden."},

@@ -1,3 +1,6 @@
 package dk.jamesbabz.madkursus.service.models;
 import java.time.Instant; import java.util.*;
-public record RecipeTemplate(UUID id,String name,String description,boolean active,Instant createdAt,Instant updatedAt,List<RecipeTemplateIngredient> ingredients,List<RecipeTemplateStep> steps) {}
+public record RecipeTemplate(UUID id,String name,String description,boolean active,Instant createdAt,Instant updatedAt,List<RecipeTemplateIngredient> ingredients,List<RecipeTemplateStep> steps,List<RecipePreparationStep> preparationSteps,List<RecipeEquipmentRequirement> equipmentRequirements,List<String> equipmentOverview,List<PreparedComponent> preparedComponents) {
+ public RecipeTemplate(UUID id,String name,String description,boolean active,Instant createdAt,Instant updatedAt,List<RecipeTemplateIngredient> ingredients,List<RecipeTemplateStep> steps,List<RecipePreparationStep> preparationSteps,List<RecipeEquipmentRequirement> equipmentRequirements,List<String> equipmentOverview){this(id,name,description,active,createdAt,updatedAt,ingredients,steps,preparationSteps,equipmentRequirements,equipmentOverview,List.of());}
+ public RecipeTemplate(UUID id,String name,String description,boolean active,Instant createdAt,Instant updatedAt,List<RecipeTemplateIngredient> ingredients,List<RecipeTemplateStep> steps){this(id,name,description,active,createdAt,updatedAt,ingredients,steps,List.of(),List.of(),List.of(),List.of());}
+}

@@ -139,6 +139,30 @@ class RecipeServiceTest {
     }
 
     @Test
+    void templateComponentsAndTheirProcessReferencesAreDeepCopied() {
+        UUID userId=UUID.randomUUID(),templateId=UUID.randomUUID(),ingredientId=UUID.randomUUID(),componentId=UUID.randomUUID(),processId=UUID.randomUUID();
+        ProductTemplate onion=new ProductTemplate(UUID.randomUUID(),"Løg",ProductCategory.VEGETABLE,Unit.PIECE,List.of(),false);
+        PreparedComponent component=new PreparedComponent(componentId,"ONIONS","Hakkede løg",1,
+                List.of(new PreparedComponentIngredient(UUID.randomUUID(),ingredientId,onion,new BigDecimal("0.5"),RecipeUnit.PIECE,1)),
+                List.of(new RecipePreparationStep(UUID.randomUUID(),"Hak løget fint.",1)));
+        CookingProcessBinding componentBinding=new CookingProcessBinding(UUID.randomUUID(),"INPUT",null,null,null,componentId,component);
+        RecipeTemplate source=new RecipeTemplate(templateId,"Løgblanding",null,true,Instant.now(),Instant.now(),
+                List.of(new RecipeTemplateIngredient(ingredientId,onion,BigDecimal.ONE,RecipeUnit.PIECE,null,1)),
+                List.of(new RecipeTemplateStep(UUID.randomUUID(),RecipeStepType.PROCESS,null,1,processId,List.of(componentBinding))),
+                List.of(),List.of(),List.of(),List.of(component));
+        when(currentUser.currentUserId()).thenReturn(userId);when(port.save(any())).thenAnswer(call->call.getArgument(0));
+        when(processes.render(eq(processId),any())).thenReturn(new RenderedCookingProcess(List.of("Rør løgene."),"Blandet",List.of()));
+
+        Recipe copied=service.createFromTemplate(source);
+
+        PreparedComponent copiedComponent=copied.preparedComponents().getFirst();
+        assertThat(copiedComponent.id()).isNotEqualTo(componentId);
+        assertThat(copiedComponent.ingredients().getFirst().recipeIngredientId()).isEqualTo(copied.ingredients().getFirst().id());
+        assertThat(copied.steps().getFirst().parameterBindings().getFirst().preparedComponentId()).isEqualTo(copiedComponent.id());
+        assertThat(copiedComponent.preparationSteps().getFirst().id()).isNotEqualTo(component.preparationSteps().getFirst().id());
+    }
+
+    @Test
     void deletesOwnedRecipeAfterDetachingCookedAndSkippedHistory() {
         UUID userId=UUID.randomUUID(), recipeId=UUID.randomUUID(); Recipe recipe=recipe(recipeId,userId,"Historisk opskrift");
         when(currentUser.currentUserId()).thenReturn(userId); when(port.findByIdAndUserId(recipeId,userId)).thenReturn(Optional.of(recipe));
@@ -159,7 +183,7 @@ class RecipeServiceTest {
         assertThatThrownBy(()->service.delete(recipeId)).isInstanceOf(ConflictException.class)
                 .hasMessage("Opskriften er stadig med i en aktiv madplan. Fjern den fra madplanen først.");
         verify(mealPlans,never()).detachHistoricalRecipeReferences(any(),any()); verify(port,never()).deleteByIdAndUserId(any(),any());
-        assertThat(service.get(recipeId)).isSameAs(recipe);
+        assertThat(service.get(recipeId)).isEqualTo(recipe);
     }
 
     @Test
@@ -250,6 +274,12 @@ class RecipeServiceTest {
         verify(processes).render(eq(processId),captor.capture());
         assertThat(captor.getValue().get(0).value().quantity()).isEqualByComparingTo("500");
         assertThat(captor.getValue().get(1).value().durationSeconds()).isEqualTo(900);
+    }
+    @Test void preparedComponentAllocationsAreExclusiveButComponentProcessReferenceIsNotCountedTwice() {
+        UUID user=UUID.randomUUID(),templateId=UUID.randomUUID(),ingredientId=UUID.randomUUID(),componentId=UUID.randomUUID();ProductTemplate onion=new ProductTemplate(templateId,"Løg",ProductCategory.VEGETABLE,Unit.PIECE,List.of(),false);when(currentUser.currentUserId()).thenReturn(user);when(templates.get(templateId)).thenReturn(onion);when(port.save(any())).thenAnswer(c->c.getArgument(0));
+        var ingredient=new RecipeService.IngredientInput(ingredientId,templateId,BigDecimal.ONE,RecipeUnit.PIECE,null,1);var component=new RecipeService.ComponentInput(componentId,"ONIONS","Hakkede løg",1,List.of(new RecipeService.ComponentIngredientInput(UUID.randomUUID(),ingredientId,new BigDecimal("0.5"),RecipeUnit.PIECE,1)),List.of());
+        Recipe result=service.create("Komponent",null,List.of(ingredient),List.of(),List.of(),List.of(),List.of(component));assertThat(result.ingredients()).singleElement();assertThat(result.preparedComponents()).singleElement().satisfies(c->assertThat(c.ingredients()).singleElement().satisfies(a->assertThat(a.quantity()).isEqualByComparingTo("0.5")));
+        var tooMuch=new RecipeService.ComponentInput(UUID.randomUUID(),"MORE","Flere løg",2,List.of(new RecipeService.ComponentIngredientInput(UUID.randomUUID(),ingredientId,new BigDecimal("0.75"),RecipeUnit.PIECE,1)),List.of());assertThatThrownBy(()->service.create("For meget",null,List.of(ingredient),List.of(),List.of(),List.of(),List.of(component,tooMuch))).isInstanceOf(InvalidInputException.class);
     }
 
     private Recipe recipe(UUID id,UUID userId,String name){Instant now=Instant.now();return new Recipe(id,userId,name,null,now,now,List.of(),List.of());}

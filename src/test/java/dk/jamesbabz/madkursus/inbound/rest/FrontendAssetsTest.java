@@ -23,7 +23,8 @@ class FrontendAssetsTest {
         assertThat(html).contains("edit-product-dialog", "edit-product-form", "id=\"toast\"");
         assertThat(javascript).contains("showToast", "setTimeout", "2600", "searchRequestId",
                 "templateSearch.value = ''", "method: 'PATCH'", "openProductEditor");
-        assertThat(worker).contains("madkursus-shell-v28");
+        assertThat(worker).contains("madkursus-shell-v33", "/css/app.css?v=33", "/js/app.js?v=33");
+        assertThat(html).contains("/css/app.css?v=33", "/js/app.js?v=33");
         assertThat(html).contains("inventory-view", "inventory-add-dialog", "edit-inventory-dialog");
         assertThat(javascript).contains("/v1/inventory", "searchInventoryCandidates", "from-template",
                 "loadInventory", "showToast", "inventorySearchRequestId");
@@ -57,8 +58,9 @@ class FrontendAssetsTest {
                 "recipe-template-search", "recipe-portions");
         assertThat(html.indexOf("id=\"show-recipes\"")).isLessThan(html.indexOf("id=\"show-products\""));
         assertThat(javascript).contains("/v1/recipes", "searchRecipeTemplates", "scaledDecimal", "recipePortions = 2",
+                "Avancerede indstillinger", "INGREDIENT_LIST", "p.source||'INPUT'", "renderProcessDetails", "process-details", "durationSummary", "recipePreparedComponents", "preparedComponentId", "inputSummary",
                 "productTemplateId", "method:editingRecipeId?'PATCH':'POST'");
-        assertThat(javascript).contains("danishDecimal(scaledDecimal(ingredient.quantity, recipePortions))");
+        assertThat(javascript).contains("const scaled=scaledDecimal(ingredient.quantity, recipePortions)", "recipeUnitLabel(ingredient.unit,scaled)");
         assertThat(html).contains("add-process-step", "cooking-process-select", "cooking-process-parameters");
         assertThat(javascript).contains("/v1/cooking-processes", "openProcessPicker", "type:'PROCESS'", "renderedProcess");
         assertThat(javascript).contains("durationMinutes", "durationSeconds", "minutter", "sekunder",
@@ -68,7 +70,7 @@ class FrontendAssetsTest {
                 "button.disabled=true", "trackingMode==='PRESENCE'", "r.warning");
         assertThat(html).contains("recipe-plan-requirements", "Samlet behov").doesNotContain("id=\"recipe-plan-available\"", "id=\"recipe-plan-missing\"");
         assertThat(javascript).contains("renderRecipePlanPreview", "scaledDecimal(ingredient.quantity,portions)",
-                "Behov", "På lager", "Mangler:", "Du har nok", "✓ På lager");
+                "Du skal bruge", "Du har", "På lager", "Reserveret", "Tilgængelig", "Mangler:", "Du har nok");
         assertThat(html).contains("show-meal-plans", "meal-plans-panel", "request-save-meal-plan", "meal-plan-detail-dialog",
                 "meal-plan-requirements", "meal-plan-add-missing");
         assertThat(javascript).contains("/v1/meal-plans", "saveCurrentMealPlan", "loadMealPlans", "openMealPlan",
@@ -85,7 +87,7 @@ class FrontendAssetsTest {
         assertThat(javascript).contains("suggestedHeatMappings");
         assertThat(html).contains("inventory-reservation-dialog", "Planlagt til");
         assertThat(javascript).contains("reservedQuantity", "physicalQuantity", "availableQuantity",
-                "plannedShortfall", "openInventoryReservations", "Planlagt til andre retter");
+                "plannedShortfall", "openInventoryReservations");
     }
 
     private String resource(String path) throws Exception {

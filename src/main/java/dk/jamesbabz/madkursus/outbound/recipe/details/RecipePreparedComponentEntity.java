@@ -1,0 +1,4 @@
+package dk.jamesbabz.madkursus.outbound.recipe.details;
+import java.util.*;import jakarta.persistence.*;import lombok.*;
+@Entity @Table(name="recipe_prepared_components") @Getter @NoArgsConstructor(access=AccessLevel.PROTECTED)
+public class RecipePreparedComponentEntity{@Id private UUID id;@ManyToOne(optional=false)@JoinColumn(name="recipe_id")private RecipeEntity recipe;@Column(name="component_key")private String key;private String name;private int sortOrder;@OneToMany(mappedBy="component",cascade=CascadeType.ALL,orphanRemoval=true)@OrderBy("sortOrder")private List<RecipePreparedComponentIngredientEntity> ingredients=new ArrayList<>();public RecipePreparedComponentEntity(UUID id,String key,String name,int order){this.id=id;this.key=key;this.name=name;this.sortOrder=order;}void setRecipe(RecipeEntity v){recipe=v;}public void addIngredient(RecipePreparedComponentIngredientEntity v){ingredients.add(v);v.setComponent(this);}}
