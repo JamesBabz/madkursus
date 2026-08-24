@@ -23,4 +23,7 @@ public class ProductTemplateEntity {
     @CollectionTable(name="product_template_aliases", joinColumns=@JoinColumn(name="template_id"))
     @Column(name="alias")
     private Set<String> aliases = new LinkedHashSet<>();
+    @ElementCollection(fetch=FetchType.EAGER)
+    @CollectionTable(name="product_template_unit_conversions",joinColumns=@JoinColumn(name="template_id"))
+    private Set<ProductTemplateUnitConversionValue> conversions=new LinkedHashSet<>();
 }

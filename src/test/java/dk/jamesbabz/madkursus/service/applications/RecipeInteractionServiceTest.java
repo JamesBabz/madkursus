@@ -31,6 +31,12 @@ class RecipeInteractionServiceTest {
   assertThat(m.requiredQuantity()).isEqualByComparingTo("185");assertThat(result.requirements().stream().filter(r->r.productTemplate().id().equals(flour.id())).findFirst().orElseThrow().warning()).contains("Kan ikke beregnes");
  }
 
+ @Test void flourConversionUsesInventoryGramsForAvailabilityAndShoppingButKeepsPracticalDisplay(){
+  ProductTemplate flour=new ProductTemplate(UUID.randomUUID(),"Hvedemel",ProductCategory.BAKING,Unit.GRAM,InventoryTrackingMode.QUANTITY,List.of(),true,List.of(new ProductTemplateUnitConversion(RecipeUnit.TABLESPOON,RecipeUnit.GRAM,new BigDecimal("9"))));Product flourProduct=product(flour,InventoryTrackingMode.QUANTITY);Recipe recipe=recipe("Mel",ingredient(flour,"2",RecipeUnit.TABLESPOON));when(recipes.get(recipe.id())).thenReturn(recipe);when(products.findEquivalent(flour.id(),flour.name())).thenReturn(Optional.of(flourProduct));when(inventoryPort.findAllByUserId(user)).thenReturn(List.of(new InventoryItem(UUID.randomUUID(),flourProduct,new BigDecimal("5"))));
+  RecipeRequirement requirement=service.addMissingToShoppingList(List.of(new RecipeSelection(recipe.id(),BigDecimal.ONE))).requirements().getFirst();assertThat(requirement.warning()).isNull();assertThat(requirement.requiredQuantity()).isEqualByComparingTo("18");assertThat(requirement.availableQuantity()).isEqualByComparingTo("5");assertThat(requirement.missingQuantity()).isEqualByComparingTo("13");assertThat(requirement.displayRequiredQuantity()).isEqualByComparingTo("2");assertThat(requirement.displayRequiredUnit()).isEqualTo(RecipeUnit.TABLESPOON);verify(shopping).ensureAtLeastFromTemplate(eq(flour.id()),argThat(value->value.compareTo(new BigDecimal("13"))==0));
+  when(inventoryPort.findAllByUserId(user)).thenReturn(List.of(new InventoryItem(UUID.randomUUID(),flourProduct,new BigDecimal("20"))));assertThat(service.calculate(List.of(new RecipeSelection(recipe.id(),BigDecimal.ONE))).requirements().getFirst().satisfied()).isTrue();
+ }
+
  @Test void presenceUsesAvailabilityWithoutQuantityAndAddsMissingRestockWithoutFakeAmount(){
   ProductTemplate salt=new ProductTemplate(UUID.randomUUID(),"Salt",ProductCategory.SPICE,Unit.GRAM,InventoryTrackingMode.PRESENCE,List.of(),false);Recipe recipe=recipe("Test",ingredient(salt,"5",RecipeUnit.GRAM));when(recipes.get(recipe.id())).thenReturn(recipe);when(products.findEquivalent(salt.id(),salt.name())).thenReturn(Optional.empty());
   var result=service.addMissingToShoppingList(List.of(new RecipeSelection(recipe.id(),BigDecimal.ONE)));

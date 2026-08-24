@@ -16,7 +16,7 @@ public class RecipeInteractionService {
     private final InventoryService inventoryService; private final ShoppingListService shoppingListService;
     private final RecipeCookHistoryPort historyPort; private final CurrentUserProvider currentUser;
     private final InventoryAvailabilityService availabilityService; private final RecipeQuantityNormalizer normalizer;
-    private record Aggregate(ProductTemplate template,BigDecimal quantity,Unit unit,String warning){}
+    private record Aggregate(ProductTemplate template,BigDecimal quantity,Unit unit,String warning,BigDecimal displayQuantity,RecipeUnit displayUnit){}
 
     public RecipeRequirementCalculation calculate(List<RecipeSelection> selections){return calculate(selections,null);}
     public RecipeRequirementCalculation calculate(List<RecipeSelection> selections,UUID excludedMealPlanId){
@@ -28,10 +28,10 @@ public class RecipeInteractionService {
             for(RecipeIngredient ingredient:recipe.ingredients()){
                 ProductTemplate template=ingredient.productTemplate(); BigDecimal scaled=ingredient.quantity().multiply(selection.portions());
                 if(template.defaultTrackingMode()==InventoryTrackingMode.UNTRACKED)continue;
-                NormalizedRecipeQuantity normalized=normalizer.normalize(scaled,ingredient.unit(),template.defaultUnit()); Aggregate old=totals.get(template.id());
-                if(old==null)totals.put(template.id(),new Aggregate(template,normalized.quantity(),normalized.unit(),normalized.warning()));
-                else if(old.warning()!=null||normalized.warning()!=null)totals.put(template.id(),new Aggregate(template,null,template.defaultUnit(),old.warning()!=null?old.warning():normalized.warning()));
-                else totals.put(template.id(),new Aggregate(template,old.quantity().add(normalized.quantity()),old.unit(),null));
+                NormalizedRecipeQuantity normalized=normalizer.normalize(scaled,ingredient.unit(),template); Aggregate old=totals.get(template.id());
+                if(old==null)totals.put(template.id(),new Aggregate(template,normalized.quantity(),normalized.unit(),normalized.warning(),scaled,ingredient.unit()));
+                else if(old.warning()!=null||normalized.warning()!=null)totals.put(template.id(),new Aggregate(template,null,template.defaultUnit(),old.warning()!=null?old.warning():normalized.warning(),sameDisplayUnit(old,ingredient.unit())?old.displayQuantity().add(scaled):null,sameDisplayUnit(old,ingredient.unit())?ingredient.unit():null));
+                else totals.put(template.id(),new Aggregate(template,old.quantity().add(normalized.quantity()),old.unit(),null,sameDisplayUnit(old,ingredient.unit())?old.displayQuantity().add(scaled):null,sameDisplayUnit(old,ingredient.unit())?ingredient.unit():null));
             }
         }
         InventoryAvailabilityService.Snapshot snapshot=availabilityService.snapshot(excludedMealPlanId); List<RecipeRequirement> results=new ArrayList<>();
@@ -39,13 +39,13 @@ public class RecipeInteractionService {
             Optional<Product> product=productService.findEquivalent(aggregate.template().id(),aggregate.template().name());
             InventoryTrackingMode mode=product.map(Product::inventoryTrackingMode).orElse(aggregate.template().defaultTrackingMode());
             var availability=availabilityService.forTemplate(snapshot,aggregate.template(),product.orElse(null),mode);
-            if(mode==InventoryTrackingMode.PRESENCE){boolean present=product.map(p->snapshot.inventoryByProductId().containsKey(p.id())).orElse(false);results.add(new RecipeRequirement(aggregate.template(),product.orElse(null),mode,aggregate.quantity(),aggregate.unit(),null,null,null,null,null,availability.plannedUsageCount(),availability.reservations(),present,null));continue;}
-            if(aggregate.warning()!=null){results.add(new RecipeRequirement(aggregate.template(),product.orElse(null),mode,null,aggregate.unit(),null,null,null,null,null,availability.plannedUsageCount(),availability.reservations(),false,aggregate.warning()));continue;}
+            if(mode==InventoryTrackingMode.PRESENCE){boolean present=product.map(p->snapshot.inventoryByProductId().containsKey(p.id())).orElse(false);results.add(new RecipeRequirement(aggregate.template(),product.orElse(null),mode,aggregate.quantity(),aggregate.unit(),null,null,null,null,null,availability.plannedUsageCount(),availability.reservations(),present,null,aggregate.displayQuantity(),aggregate.displayUnit()));continue;}
+            if(aggregate.warning()!=null){results.add(new RecipeRequirement(aggregate.template(),product.orElse(null),mode,null,aggregate.unit(),null,null,null,null,null,availability.plannedUsageCount(),availability.reservations(),false,aggregate.warning(),aggregate.displayQuantity(),aggregate.displayUnit()));continue;}
             BigDecimal rawMissing=aggregate.quantity().subtract(availability.availableQuantity()).max(BigDecimal.ZERO);
             BigDecimal missing=roundUp(rawMissing,aggregate.unit());
             results.add(new RecipeRequirement(aggregate.template(),product.orElse(null),mode,aggregate.quantity(),aggregate.unit(),
                     availability.physicalQuantity(),availability.reservedQuantity(),availability.availableQuantity(),availability.plannedShortfall(),missing,
-                    availability.plannedUsageCount(),availability.reservations(),missing.signum()==0,null));
+                    availability.plannedUsageCount(),availability.reservations(),missing.signum()==0,null,aggregate.displayQuantity(),aggregate.displayUnit()));
         }
         return new RecipeRequirementCalculation(List.copyOf(results));
     }
@@ -78,5 +78,6 @@ public class RecipeInteractionService {
         return new RecipeCookResult(recipe,portions,history,calculation.requirements(),List.copyOf(warnings));
     }
     public BigDecimal roundUp(BigDecimal value,Unit unit){return QuantityRoundingPolicy.forInventory(value,unit);}
+    private boolean sameDisplayUnit(Aggregate aggregate,RecipeUnit unit){return aggregate.displayUnit()==unit&&aggregate.displayQuantity()!=null;}
     private String format(BigDecimal amount,Unit unit){return amount.toPlainString()+" "+(unit==Unit.GRAM?"g":unit==Unit.MILLILITER?"ml":"stk");}
 }

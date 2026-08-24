@@ -1138,6 +1138,8 @@ components:
         trackingMode: {$ref: '#/components/schemas/InventoryTrackingMode'}
         requiredQuantity: {type: number, nullable: true}
         unit: {$ref: '#/components/schemas/Unit'}
+        displayRequiredQuantity: {type: number, nullable: true, readOnly: true}
+        displayRequiredUnit: {allOf: [{$ref: '#/components/schemas/RecipeUnit'}], nullable: true, readOnly: true}
         physicalQuantity: {type: number, nullable: true}
         reservedQuantity: {type: number, nullable: true}
         availableQuantity: {type: number, nullable: true}

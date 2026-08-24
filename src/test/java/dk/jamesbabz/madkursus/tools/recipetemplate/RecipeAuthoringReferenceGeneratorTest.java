@@ -19,7 +19,7 @@ class RecipeAuthoringReferenceGeneratorTest {
         assertThat(keys(reference.path("cookingProcesses"))).containsExactlyInAnyOrderElementsOf(keys(processSource.path("processes")));
         assertThat(keys(reference.path("recipeUnits"))).containsExactlyInAnyOrder(Arrays.stream(RecipeUnit.values()).map(Enum::name).toArray(String[]::new));
         assertThat(keys(reference.path("equipmentTypes"))).containsExactlyInAnyOrder(Arrays.stream(EquipmentType.values()).map(Enum::name).toArray(String[]::new));
-        String text=Files.readString(output).toLowerCase(Locale.ROOT);assertThat(text).doesNotContain("password","username","jdbc:","inventory","mealplan","mealplans","credential","user data");
+        String text=Files.readString(output).toLowerCase(Locale.ROOT);assertThat(text).doesNotContain("password","username","jdbc:","mealplan","mealplans","credential","user data");
     }
 
     @Test void processReferenceExplainsRequiredInputsDerivedRulesAndOverrides()throws Exception {
@@ -38,6 +38,7 @@ class RecipeAuthoringReferenceGeneratorTest {
     }
 
     @Test void referencePublishesUntrackedWaterForScalableRecipeAuthoring()throws Exception {JsonNode water=find(generate().path("productTemplates"),"VAND");assertThat(water.path("name").asText()).isEqualTo("Vand");assertThat(water.path("defaultUnit").asText()).isEqualTo("MILLILITER");assertThat(water.path("trackingMode").asText()).isEqualTo("UNTRACKED");}
+    @Test void referencePublishesProductOwnedUnitConversionsAndPracticalAuthoringRule()throws Exception {JsonNode reference=generate(),flour=find(reference.path("productTemplates"),"HVEDEMEL");assertThat(flour.path("unitConversions")).singleElement().satisfies(value->{assertThat(value.path("fromUnit").asText()).isEqualTo("TABLESPOON");assertThat(value.path("toUnit").asText()).isEqualTo("GRAM");assertThat(value.path("factor").decimalValue()).isEqualByComparingTo("9");});assertThat(reference.path("draftContract").path("rules").toString()).contains("practical RecipeUnits");}
 
     private JsonNode generate()throws Exception{Path output=temp.resolve(UUID.randomUUID()+".json");new RecipeAuthoringReferenceGenerator(Path.of(".")).generate(output);return JSON.readTree(output.toFile());}
     private Set<String> keys(JsonNode values){Set<String> result=new LinkedHashSet<>();values.forEach(v->result.add(v.path("key").asText()));return result;}

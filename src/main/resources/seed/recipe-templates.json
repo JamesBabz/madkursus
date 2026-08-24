@@ -286,8 +286,8 @@
         "quantity" : 0.25,
         "unit" : "TEASPOON"
       }, {
-        "key" : "NEUTRAL_OLIE",
-        "productTemplate" : "NEUTRAL_OLIE",
+        "key" : "RAPSOLIE",
+        "productTemplate" : "RAPSOLIE",
         "quantity" : 0.5,
         "unit" : "TABLESPOON"
       }, {
@@ -515,7 +515,7 @@
             "text" : "Formede kødboller"
           },
           "FAT" : {
-            "ingredient" : "NEUTRAL_OLIE",
+            "ingredient" : "RAPSOLIE",
             "quantity" : 0.5,
             "unit" : "TABLESPOON"
           }

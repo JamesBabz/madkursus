@@ -49,7 +49,7 @@ public class InventoryAvailabilityService {
                     MutableReservation value=occurrence.computeIfAbsent(template.id(),ignored->new MutableReservation()); value.template=template;
                     if(template.defaultTrackingMode()==InventoryTrackingMode.PRESENCE) continue;
                     BigDecimal scaled=ingredient.quantity().multiply(BigDecimal.valueOf(planned.portions()));
-                    NormalizedRecipeQuantity normalized=normalizer.normalize(scaled,ingredient.unit(),template.defaultUnit());
+                    NormalizedRecipeQuantity normalized=normalizer.normalize(scaled,ingredient.unit(),template);
                     if(!normalized.resolved()) { value.warning=normalized.warning(); continue; }
                     value.quantity=value.quantity.add(normalized.quantity());
                 }

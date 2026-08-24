@@ -25,6 +25,16 @@ resultat. Den kanoniske kilde samler sluttilstanden fra V6, V10 og V14.1.
 Der er ingen runtime-synkronisering. Denne oprydning kræver derfor ingen ny
 datamigration og skriver ikke til brugerdata.
 
+## Enhedskonverteringer
+
+Praktiske RecipeUnits bevares i opskriften. Lagerberegning bruger først identiske enheder og generiske
+volumenforhold (`1 spsk = 15 ml`, `1 tsk = 5 ml`, `1 dl = 100 ml`). Krydsdimensionelle forhold ejes
+af den enkelte ProductTemplate som simple multiplikative `conversions`; de må ikke antages globalt.
+
+Den første kuraterede regel er `HVEDEMEL: 1 TABLESPOON = 9 GRAM`, en praktisk værdi for en strøgen
+spiseskefuld hvedemel. `TEASPOON -> GRAM` følger deterministisk via volumenforholdet og giver 3 g.
+Omvendt konvertering understøttes internt uden at ændre opskriftens viste enhed.
+
 ## Datamodel og semantik
 
 - `product_templates`: navn, kategori, `default_unit`,

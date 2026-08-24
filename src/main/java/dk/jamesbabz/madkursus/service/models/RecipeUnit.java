@@ -11,4 +11,10 @@ public enum RecipeUnit {
     public Optional<BigDecimal> toMilliliters(BigDecimal quantity) {
         return milliliters == null ? Optional.empty() : Optional.of(quantity.multiply(milliliters));
     }
+    public Optional<BigDecimal> convert(BigDecimal quantity,RecipeUnit target) {
+        if(this==target)return Optional.of(quantity);
+        if(milliliters==null||target.milliliters==null)return Optional.empty();
+        return Optional.of(quantity.multiply(milliliters).divide(target.milliliters,java.math.MathContext.DECIMAL128));
+    }
+    public static RecipeUnit storage(Unit unit){return switch(unit){case GRAM->GRAM;case MILLILITER->MILLILITER;case PIECE->PIECE;};}
 }

@@ -62,6 +62,7 @@ public class RecipeRestMapper {
                 UnitDTO.valueOf(requirement.unit().name()), requirement.satisfied())
                 .productId(requirement.product() == null ? null : requirement.product().id())
                 .requiredQuantity(requirement.requiredQuantity()).physicalQuantity(requirement.physicalQuantity())
+                .displayRequiredQuantity(requirement.displayRequiredQuantity()).displayRequiredUnit(requirement.displayRequiredUnit()==null?null:RecipeUnitDTO.valueOf(requirement.displayRequiredUnit().name()))
                 .reservedQuantity(requirement.reservedQuantity()).availableQuantity(requirement.availableQuantity())
                 .plannedShortfall(requirement.plannedShortfall()).missingQuantity(requirement.missingQuantity())
                 .plannedUsageCount(requirement.plannedUsageCount()).reservations(requirement.reservations().stream()

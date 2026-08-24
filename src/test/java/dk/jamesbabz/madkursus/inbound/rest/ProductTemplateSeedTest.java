@@ -21,6 +21,7 @@ class ProductTemplateSeedTest {
             assertThat(UUID.fromString(id)).isEqualTo(stableId(name));assertThat(ProductCategory.valueOf(product.path("category").asText())).isNotNull();
             assertThat(Unit.valueOf(product.path("defaultUnit").asText())).isIn(Unit.GRAM,Unit.MILLILITER,Unit.PIECE);
             InventoryTrackingMode mode=InventoryTrackingMode.valueOf(product.path("defaultTrackingMode").asText());assertThat(EnumSet.allOf(InventoryTrackingMode.class)).contains(mode);if(mode==InventoryTrackingMode.PRESENCE)presence++;
+            for(JsonNode conversion:product.path("conversions")){assertThat(RecipeUnit.valueOf(conversion.path("fromUnit").asText())).isNotNull();assertThat(RecipeUnit.valueOf(conversion.path("toUnit").asText())).isNotNull();assertThat(conversion.path("factor").decimalValue()).isPositive();}
             if(product.path("common").asBoolean())common++;Set<String> localAliases=new HashSet<>();
             for(JsonNode alias:product.path("aliases")){String value=alias.asText();assertThat(value).isEqualTo(value.trim()).isNotBlank();assertThat(localAliases.add(normalize(value))).as("unique alias on %s",name).isTrue();aliases++;}}
         assertThat(aliases).isEqualTo(212);assertThat(common).isEqualTo(95);assertThat(presence).isEqualTo(81);
@@ -32,6 +33,7 @@ class ProductTemplateSeedTest {
         for(JsonNode old:legacy){JsonNode current=byName.get(old.path("name").asText());assertThat(current).isNotNull();assertThat(current.path("category")).isEqualTo(old.path("category"));assertThat(current.path("defaultUnit")).isEqualTo(old.path("defaultUnit"));assertThat(current.path("aliases")).isEqualTo(old.path("aliases"));assertThat(current.path("common")).isEqualTo(old.path("common"));String expected="SPICE".equals(old.path("category").asText())||explicitPresence.contains(old.path("name").asText())?"PRESENCE":"QUANTITY";assertThat(current.path("defaultTrackingMode").asText()).isEqualTo(expected);}
         JsonNode sausages=byName.get("Pølser");assertThat(sausages.path("id").asText()).isEqualTo(stableId("Pølser").toString());assertThat(sausages.path("category").asText()).isEqualTo("MEAT");assertThat(sausages.path("defaultUnit").asText()).isEqualTo("GRAM");assertThat(sausages.path("defaultTrackingMode").asText()).isEqualTo("QUANTITY");
         JsonNode water=byName.get("Vand");assertThat(water.path("id").asText()).isEqualTo(stableId("Vand").toString());assertThat(water.path("defaultUnit").asText()).isEqualTo("MILLILITER");assertThat(water.path("defaultTrackingMode").asText()).isEqualTo("UNTRACKED");
+        JsonNode flour=byName.get("Hvedemel");assertThat(flour.path("conversions")).singleElement().satisfies(value->{assertThat(value.path("fromUnit").asText()).isEqualTo("TABLESPOON");assertThat(value.path("toUnit").asText()).isEqualTo("GRAM");assertThat(value.path("factor").decimalValue()).isEqualByComparingTo("9");});
     }
 
     @Test void aliasesAndTrackingSemanticsRemainSearchFriendlyAndSeparateFromUnits() throws Exception {
