@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -184,6 +185,16 @@ class RecipeServiceTest {
                 .hasMessage("Opskriften er stadig med i en aktiv madplan. Fjern den fra madplanen først.");
         verify(mealPlans,never()).detachHistoricalRecipeReferences(any(),any()); verify(port,never()).deleteByIdAndUserId(any(),any());
         assertThat(service.get(recipeId)).isEqualTo(recipe);
+    }
+
+    @Test
+    void unrelatedIntegrityFailureIsNotMisreportedAsAnActiveMealPlan() {
+        UUID userId=UUID.randomUUID(),recipeId=UUID.randomUUID();Recipe recipe=recipe(recipeId,userId,"Opskrift");
+        when(currentUser.currentUserId()).thenReturn(userId);when(port.findByIdAndUserId(recipeId,userId)).thenReturn(Optional.of(recipe));
+        DataIntegrityViolationException failure=new DataIntegrityViolationException("unrelated constraint");
+        org.mockito.Mockito.doThrow(failure).when(port).deleteByIdAndUserId(recipeId,userId);
+
+        assertThatThrownBy(()->service.delete(recipeId)).isSameAs(failure);
     }
 
     @Test

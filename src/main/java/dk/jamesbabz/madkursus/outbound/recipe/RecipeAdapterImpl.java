@@ -29,7 +29,7 @@ public class RecipeAdapterImpl implements RecipePort {
     @Transactional(readOnly=true) public Optional<Recipe> findByIdAndUserId(UUID id,UUID userId){return repository.findByIdAndUserId(id,userId).map(this::map);}
     @Transactional(readOnly=true) public List<Recipe> findAllByUserId(UUID userId){return repository.findAllByUserIdOrderByUpdatedAtDesc(userId).stream().map(this::map).toList();}
     @Transactional(readOnly=true) public Optional<Recipe> findByUserIdAndSourceTemplateId(UUID userId,UUID sourceTemplateId){return repository.findByUserIdAndSourceTemplateId(userId,sourceTemplateId).map(this::map);}
-    @Transactional public void deleteByIdAndUserId(UUID id,UUID userId){repository.deleteByIdAndUserId(id,userId);repository.flush();}
+    @Transactional public void deleteByIdAndUserId(UUID id,UUID userId){RecipeEntity entity=repository.findByIdAndUserId(id,userId).orElseThrow(()->new dk.jamesbabz.madkursus.service.exceptions.ResourceNotFoundException("Recipe",id));entity.clearDependentChildren();repository.flush();entity.clearIngredients();repository.flush();repository.delete(entity);repository.flush();}
 
     private void addChildren(RecipeEntity entity,Recipe model) {
         Map<UUID,RecipeIngredientEntity> ingredients=model.ingredients().stream().map(value->{

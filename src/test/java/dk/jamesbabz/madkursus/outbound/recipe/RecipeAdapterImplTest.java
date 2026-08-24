@@ -74,7 +74,9 @@ class RecipeAdapterImplTest {
     @Test
     void deleteFlushesOwnedRecipeRemovalSoReferenceConflictsAreReportedInTheServiceTransaction() {
         UUID recipeId=UUID.randomUUID(),userId=UUID.randomUUID();
+        RecipeEntity managed=new RecipeEntity(recipeId,userId,"Recipe",null,Instant.now(),Instant.now());
+        when(repository.findByIdAndUserId(recipeId,userId)).thenReturn(Optional.of(managed));
         new RecipeAdapterImpl(repository,templateMapper,entityManager).deleteByIdAndUserId(recipeId,userId);
-        verify(repository).deleteByIdAndUserId(recipeId,userId); verify(repository).flush();
+        verify(repository).delete(managed); verify(repository,times(3)).flush();
     }
 }
