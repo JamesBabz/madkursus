@@ -31,6 +31,9 @@ public class InventoryService {
     public InventoryItem add(UUID productId, BigDecimal quantity) {
         Product product = productService.get(productId);
         UUID userId = currentUserProvider.currentUserId();
+        if (product.inventoryTrackingMode() == InventoryTrackingMode.UNTRACKED) {
+            throw new InvalidInputException("Untracked products are not stored in inventory");
+        }
         if (product.inventoryTrackingMode() == InventoryTrackingMode.PRESENCE) {
             return inventoryPort.findByProductIdAndUserId(productId, userId)
                     .orElseGet(() -> inventoryPort.save(new InventoryItem(null, product, null)));
@@ -45,6 +48,7 @@ public class InventoryService {
     @Transactional
     public InventoryItem addFromTemplate(UUID templateId, BigDecimal quantity) {
         ProductTemplate template = productTemplateService.get(templateId);
+        if(template.defaultTrackingMode()==InventoryTrackingMode.UNTRACKED)throw new InvalidInputException("Untracked products are not stored in inventory");
         Product product = productService.createFromTemplate(template.id(), template.name(), template.category(),
                 template.defaultUnit(), template.defaultTrackingMode());
         return add(product.id(), quantity);
@@ -124,6 +128,7 @@ public class InventoryService {
     @Transactional
     public Consumption consumeUpToAvailable(UUID productId, BigDecimal requested) {
         Product product = productService.get(productId);
+        if (product.inventoryTrackingMode() == InventoryTrackingMode.UNTRACKED) return new Consumption(BigDecimal.ZERO, BigDecimal.ZERO);
         if (product.inventoryTrackingMode() == InventoryTrackingMode.PRESENCE) return new Consumption(BigDecimal.ZERO, BigDecimal.ZERO);
         requireValidQuantity(requested, product.defaultUnit());
         UUID userId = currentUserProvider.currentUserId();

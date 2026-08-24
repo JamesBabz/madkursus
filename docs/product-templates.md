@@ -3,7 +3,7 @@
 ## Kanonisk kilde og identitet
 
 Det komplette globale katalog vedligeholdes i
-`src/main/resources/seed/product-templates.json`. Kilden indeholder 384 poster
+`src/main/resources/seed/product-templates.json`. Kilden indeholder 385 poster
 og viser for hver template dens stabile `key`, eksisterende UUID, navn, kategori,
 naturlige måleenhed, standard-lagertilstand, aliaser og `common`-flag.
 
@@ -35,8 +35,13 @@ datamigration og skriver ikke til brugerdata.
 
 `defaultUnit` beskriver, hvordan ingrediensen naturligt måles: `GRAM`,
 `MILLILITER` eller `PIECE`. `defaultTrackingMode` beskriver kun standarden ved
-oprettelse af et Product: `QUANTITY` eller `PRESENCE`. Eksempelvis er Salt målt i
+oprettelse af et Product: `QUANTITY`, `PRESENCE` eller `UNTRACKED`. Eksempelvis er Salt målt i
 gram, men spores som tilstedeværelse. De to begreber må ikke sammenblandes.
+
+`UNTRACKED` bruges til opskriftsdata, der stadig har mængde, enhed og portionsskalering,
+men aldrig skal optræde i lager, reservationer eller automatisk indkøb. Den kanoniske
+`VAND`-template bruger denne tilstand; opskrifter kan derfor bruge eksempelvis ½ dl vand
+uden at brugeren skal oprette Vand som et produkt eller en lagervare.
 
 Ved oprettelse kopieres navn, kategori, defaultUnit og defaultTrackingMode samt
 ProductTemplate-ID'et til `sourceTemplateId`. Aliaser kopieres ikke. Det nye

@@ -19,18 +19,20 @@ import dk.jamesbabz.madkursus.service.models.RecipeTemplateStep;
 import dk.jamesbabz.madkursus.service.ports.CurrentUserProvider;
 import dk.jamesbabz.madkursus.service.ports.RecipePort;
 import dk.jamesbabz.madkursus.service.ports.RecipeTemplatePort;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class RecipeTemplateService {
     private final RecipeTemplatePort port;
     private final RecipePort recipes;
     private final RecipeService recipeService;
     private final CurrentUserProvider currentUser;
     private final CookingProcessService cookingProcesses;
+    private final RecipeInstructionRenderer instructions;
+    @Autowired public RecipeTemplateService(RecipeTemplatePort port,RecipePort recipes,RecipeService recipeService,CurrentUserProvider currentUser,CookingProcessService cookingProcesses,RecipeInstructionRenderer instructions){this.port=port;this.recipes=recipes;this.recipeService=recipeService;this.currentUser=currentUser;this.cookingProcesses=cookingProcesses;this.instructions=instructions;}
+    public RecipeTemplateService(RecipeTemplatePort port,RecipePort recipes,RecipeService recipeService,CurrentUserProvider currentUser,CookingProcessService cookingProcesses){this(port,recipes,recipeService,currentUser,cookingProcesses,new RecipeInstructionRenderer());}
 
     public List<RecipeTemplate> search(String query) {
         return port.search(query);
@@ -50,9 +52,9 @@ public class RecipeTemplateService {
         if (portions <= 0) throw new InvalidInputException("Portions must be positive");
         RecipeTemplate template = get(id);
         BigDecimal factor = BigDecimal.valueOf(portions);
-        List<RecipeTemplateStep> steps = template.steps().stream().map(step -> render(step, factor)).toList();
+        List<RecipeTemplateStep> steps = template.steps().stream().map(step -> render(step, factor,template)).toList();
         List<String> equipment=cookingProcesses.equipmentOverview(template.steps().stream().filter(step->step.type()==RecipeStepType.PROCESS).map(RecipeTemplateStep::cookingProcessId).toList(),template.equipmentRequirements());
-        List<dk.jamesbabz.madkursus.service.models.RecipePreparationStep> preparation=aggregatePreparation(template.preparationSteps(),steps);
+        List<dk.jamesbabz.madkursus.service.models.RecipePreparationStep> preparation=aggregatePreparation(template.preparationSteps().stream().map(p->renderPreparation(p,template,factor)).toList(),steps);
         return new RecipeTemplate(template.id(), template.name(), template.description(), template.active(),
                 template.createdAt(), template.updatedAt(), template.ingredients(), steps,preparation,template.equipmentRequirements(),equipment,template.preparedComponents().stream().map(c->scaleComponent(c,factor)).toList());
     }
@@ -68,13 +70,14 @@ public class RecipeTemplateService {
         return recipeService.createFromTemplate(template);
     }
 
-    private RecipeTemplateStep render(RecipeTemplateStep step, BigDecimal portions) {
-        if (step.type() != RecipeStepType.PROCESS) return step;
+    private RecipeTemplateStep render(RecipeTemplateStep step, BigDecimal portions,RecipeTemplate template) {
+        if (step.type() != RecipeStepType.PROCESS) return step.structuredInstruction()==null?step:new RecipeTemplateStep(step.id(),step.type(),instructions.render(step.structuredInstruction(),template.ingredients(),template.preparedComponents(),portions),step.sortOrder(),null,List.of(),null,step.structuredInstruction());
         List<CookingProcessBinding> scaled = step.parameterBindings().stream()
                 .map(binding -> scaleIngredientBinding(binding, portions)).toList();
         return new RecipeTemplateStep(step.id(), step.type(), step.instruction(), step.sortOrder(),
                 step.cookingProcessId(), step.parameterBindings(), cookingProcesses.render(step.cookingProcessId(), scaled));
     }
+    private dk.jamesbabz.madkursus.service.models.RecipePreparationStep renderPreparation(dk.jamesbabz.madkursus.service.models.RecipePreparationStep step,RecipeTemplate template,BigDecimal portions){return step.structuredInstruction()==null?step:new dk.jamesbabz.madkursus.service.models.RecipePreparationStep(step.id(),instructions.render(step.structuredInstruction(),template.ingredients(),template.preparedComponents(),portions),step.sortOrder(),step.structuredInstruction());}
 
     private CookingProcessBinding scaleIngredientBinding(CookingProcessBinding binding, BigDecimal portions) {
         if (binding.preparedComponent()!=null)return new CookingProcessBinding(binding.id(),binding.parameterKey(),binding.recipeIngredientId(),binding.productTemplate(),binding.value(),binding.preparedComponentId(),scaleComponent(binding.preparedComponent(),portions));

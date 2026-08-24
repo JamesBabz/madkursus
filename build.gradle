@@ -34,6 +34,7 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'io.zonky.test:embedded-postgres:2.2.2'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -64,6 +65,36 @@ tasks.named('check') {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.register('validateRecipeTemplateDraft', JavaExec) {
+	group = 'recipe templates'
+	description = 'Validate one RecipeTemplate draft without changing files.'
+	classpath = sourceSets.main.runtimeClasspath
+	mainClass = 'dk.jamesbabz.madkursus.tools.recipetemplate.RecipeTemplateDraftCli'
+}
+
+tasks.register('importRecipeTemplateDraft', JavaExec) {
+	group = 'recipe templates'
+	description = 'Validate and import a RecipeTemplate draft; pass --update explicitly for an existing key.'
+	classpath = sourceSets.main.runtimeClasspath
+	mainClass = 'dk.jamesbabz.madkursus.tools.recipetemplate.RecipeTemplateDraftCli'
+	systemProperty 'recipeTemplateDraft.mode', 'import'
+}
+
+tasks.register('processRecipeTemplateDraft', JavaExec) {
+	group = 'recipe templates'
+	description = 'Validate and automatically add or update one RecipeTemplate draft based only on its stable key.'
+	classpath = sourceSets.main.runtimeClasspath
+	mainClass = 'dk.jamesbabz.madkursus.tools.recipetemplate.RecipeTemplateDraftCli'
+	systemProperty 'recipeTemplateDraft.mode', 'process'
+}
+
+tasks.register('generateRecipeAuthoringReference', JavaExec) {
+	group = 'recipe templates'
+	description = 'Generate the deterministic external-author reference from canonical catalogs and enums.'
+	classpath = sourceSets.main.runtimeClasspath
+	mainClass = 'dk.jamesbabz.madkursus.tools.recipetemplate.RecipeAuthoringReferenceGenerator'
 }
 
 // This service is deployed as Spring Boot's executable archive. Producing a

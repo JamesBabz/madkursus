@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "version": 1,
+    "language": "da",
+    "testedBatchPortions": 2,
+    "portionSemantics": "Alle ingrediensmængder og ingrediensbindinger er lagret for én portion.",
+    "note": "Kurateret og manuelt afprøvet opskrift med eksakte mængder for en testbatch på to portioner."
+  },
+  "recipe": {
+    "key": "MEATBALLS_IN_TOMATO_SAUCE_WITH_PASTA",
+    "name": "Kødboller i tomatsovs med pasta",
+    "description": "Manuelt afprøvede kødboller, der får stegeskorpe på panden og færdigtilberedes i tomatsovs med penne.",
+    "ingredients": [
+      {"key":"MEAT","productTemplate":"Hakket oksekød","quantity":200,"unit":"GRAM"},
+      {"key":"ONION","productTemplate":"Løg","quantity":0.5,"unit":"PIECE","preparation":"finthakket; halvdelen til fars og halvdelen til sovs"},
+      {"key":"EGG","productTemplate":"Æg","quantity":0.5,"unit":"PIECE"},
+      {"key":"FLOUR","productTemplate":"Hvedemel","quantity":1,"unit":"TABLESPOON"},
+      {"key":"MILK","productTemplate":"Letmælk","quantity":0.25,"unit":"DECILITER"},
+      {"key":"SALT","productTemplate":"Salt","quantity":1.75,"unit":"TEASPOON","preparation":"fordeles mellem fars, sovs og pastavand"},
+      {"key":"PEPPER","productTemplate":"Sort peber","quantity":7.5,"unit":"GRINDER_TURN","preparation":"fordeles mellem fars og sovs"},
+      {"key":"PAPRIKA","productTemplate":"Paprika","quantity":0.25,"unit":"TEASPOON"},
+      {"key":"GARLIC","productTemplate":"Hvidløg","quantity":1,"unit":"PIECE","preparation":"finthakket"},
+      {"key":"TOMATO_PASTE","productTemplate":"Tomatpuré","quantity":0.5,"unit":"TABLESPOON"},
+      {"key":"TOMATOES","productTemplate":"Hakkede tomater","quantity":200,"unit":"GRAM"},
+      {"key":"THYME","productTemplate":"Tørret timian","quantity":0.25,"unit":"TEASPOON"},
+      {"key":"OIL","productTemplate":"Olivenolie","quantity":0.5,"unit":"TABLESPOON","preparation":"til stegning"},
+      {"key":"PASTA","productTemplate":"Penne","quantity":100,"unit":"GRAM"}
+    ],
+    "preparation": [
+      "Hak løget fint.",
+      "Hak hvidløget fint.",
+      "Mål ingredienserne til farsen op.",
+      "Mål krydderier, vand og øvrige ingredienser til tomatsovsen op.",
+      "Åbn de hakkede tomater.",
+      "Mål pasta, pastavand og salt op efter mængderne i opskriften."
+    ],
+    "equipment": [{"label":"Låg til pande"}],
+    "steps": [
+      {"type":"PROCESS","process":"MIX_MEATBALL_MIXTURE","bindings":{"MEAT":{"ingredient":"MEAT","quantity":200,"unit":"GRAM"},"ONION":{"ingredient":"ONION","quantity":0.25,"unit":"PIECE"},"EGG":{"ingredient":"EGG","quantity":0.5,"unit":"PIECE"},"BINDER":{"ingredient":"FLOUR","quantity":1,"unit":"TABLESPOON"},"LIQUID":{"ingredient":"MILK","quantity":0.25,"unit":"DECILITER"},"SALT":{"ingredient":"SALT","quantity":0.5,"unit":"TEASPOON"},"PEPPER":{"ingredient":"PEPPER","quantity":5,"unit":"GRINDER_TURN"},"OTHER_SEASONING":{"ingredient":"PAPRIKA","quantity":0.25,"unit":"TEASPOON"},"MIX_TIME":{"durationSeconds":60}}},
+      {"type":"TEXT","instruction":"Form ca. 12 kødboller ved 2 portioner, svarende til ca. 6 pr. portion, på størrelse med bordtennisbolde."},
+      {"type":"PROCESS","process":"PAN_FRY_MEATBALLS","bindings":{"MEATBALLS":{"text":"de formede kødboller"},"FAT":{"ingredient":"OIL","quantity":0.5,"unit":"TABLESPOON"}}},
+      {"type":"TEXT","instruction":"Skru ned til middellav varme. Tilsæt resten af løget, og steg det i kødbollefedtet i 2 minutter; rør cirka hvert 30. sekund."},
+      {"type":"TEXT","instruction":"Tilsæt hvidløget og steg i 30 sekunder under omrøring. Tilsæt tomatpuré og steg videre i 1 minut under omrøring."},
+      {"type":"TEXT","instruction":"Tilsæt hakkede tomater, 1 dl vand, timian, ½ tsk salt og 5 omgange peber. Skrab den brunede stegerest fra panden ind i sovsen."},
+      {"type":"TEXT","instruction":"Skru op til middelhøj varme, til sovsen bobler tydeligt, og skru derefter ned til lav varme."},
+      {"type":"TEXT","instruction":"Læg kødbollerne tilbage i sovsen, vend dem forsigtigt i den, læg låg på, og lad dem simre i 10 minutter. Vend kødbollerne efter 5 minutter."},
+      {"type":"PROCESS","process":"BOIL_PASTA","bindings":{"PASTA":{"ingredient":"PASTA","quantity":100,"unit":"GRAM"},"WATER":{"quantity":1000,"unit":"MILLILITER"},"SALT":{"ingredient":"SALT","quantity":1,"unit":"TEASPOON"},"COOK_TIME":{"durationSeconds":720}}},
+      {"type":"TEXT","instruction":"Hvis pastaen ikke er klar efter kødbollernes 10 minutters simring, så sluk panden og lad kødbollerne stå med låg, mens pastaen bliver færdig."},
+      {"type":"TEXT","instruction":"Hæld vandet fra pastaen og server pastaen med kødboller og tomatsovs ovenpå."}
+    ]
+  }
+}

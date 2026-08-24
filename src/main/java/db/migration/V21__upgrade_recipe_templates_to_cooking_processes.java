@@ -19,7 +19,7 @@ import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
 
 /**
- * Explicit, versioned import of the canonical RecipeTemplate source. It only
+ * Explicit, versioned import of V21's immutable RecipeTemplate snapshot. It only
  * replaces children owned by global templates; copied user Recipes are never touched.
  */
 public class V21__upgrade_recipe_templates_to_cooking_processes extends BaseJavaMigration {
@@ -28,12 +28,12 @@ public class V21__upgrade_recipe_templates_to_cooking_processes extends BaseJava
     @Override
     public void migrate(Context context) throws Exception {
         JsonNode recipes;
-        try (var stream = getClass().getResourceAsStream("/seed/recipe-templates.json")) {
-            if (stream == null) throw new IllegalStateException("Canonical RecipeTemplate seed is missing");
+        try (var stream = getClass().getResourceAsStream("/db/migration/data/V21__recipe_templates.json")) {
+            if (stream == null) throw new IllegalStateException("V21 RecipeTemplate snapshot is missing");
             recipes = new ObjectMapper().readTree(stream).path("recipes");
         }
         if (!recipes.isArray() || recipes.size() != 15)
-            throw new IllegalStateException("Canonical RecipeTemplate seed must contain the 15 curated templates");
+            throw new IllegalStateException("V21 RecipeTemplate snapshot must contain the 15 curated templates");
 
         Set<String> names = new HashSet<>();
         Set<String> recipeKeys = new HashSet<>();

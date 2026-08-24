@@ -27,6 +27,7 @@ public class RecipeInteractionService {
             Recipe recipe=recipeService.get(selection.recipeId());
             for(RecipeIngredient ingredient:recipe.ingredients()){
                 ProductTemplate template=ingredient.productTemplate(); BigDecimal scaled=ingredient.quantity().multiply(selection.portions());
+                if(template.defaultTrackingMode()==InventoryTrackingMode.UNTRACKED)continue;
                 NormalizedRecipeQuantity normalized=normalizer.normalize(scaled,ingredient.unit(),template.defaultUnit()); Aggregate old=totals.get(template.id());
                 if(old==null)totals.put(template.id(),new Aggregate(template,normalized.quantity(),normalized.unit(),normalized.warning()));
                 else if(old.warning()!=null||normalized.warning()!=null)totals.put(template.id(),new Aggregate(template,null,template.defaultUnit(),old.warning()!=null?old.warning():normalized.warning()));
@@ -53,6 +54,7 @@ public class RecipeInteractionService {
     @Transactional public RecipeRequirementCalculation addMissingToShoppingList(List<RecipeSelection> selections,UUID excludedMealPlanId){
         RecipeRequirementCalculation calculation=calculate(selections,excludedMealPlanId);
         for(RecipeRequirement requirement:calculation.requirements()){
+            if(requirement.trackingMode()==InventoryTrackingMode.UNTRACKED)continue;
             if(requirement.warning()!=null||requirement.satisfied())continue;
             if(requirement.trackingMode()==InventoryTrackingMode.PRESENCE)shoppingListService.ensureAtLeastFromTemplate(requirement.productTemplate().id(),null);
             else shoppingListService.ensureAtLeastFromTemplate(requirement.productTemplate().id(),QuantityRoundingPolicy.forShoppingList(requirement.missingQuantity()));
@@ -64,6 +66,7 @@ public class RecipeInteractionService {
     @Transactional public RecipeCookResult cook(UUID recipeId,BigDecimal portions,UUID excludedMealPlanId){
         Recipe recipe=recipeService.get(recipeId); RecipeRequirementCalculation calculation=calculate(List.of(new RecipeSelection(recipeId,portions)),excludedMealPlanId); List<String>warnings=new ArrayList<>();
         for(RecipeRequirement requirement:calculation.requirements()){
+            if(requirement.trackingMode()==InventoryTrackingMode.UNTRACKED)continue;
             if(requirement.warning()!=null){warnings.add(requirement.productTemplate().name()+": "+requirement.warning());continue;}
             if(requirement.trackingMode()==InventoryTrackingMode.PRESENCE){if(!requirement.satisfied())warnings.add(requirement.productTemplate().name()+" var ikke registreret som på lager");continue;}
             BigDecimal amount=roundUp(requirement.requiredQuantity(),requirement.unit());

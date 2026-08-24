@@ -44,7 +44,9 @@ public class InventoryAvailabilityService {
                 if(planned.status()!=PlannedRecipeStatus.PLANNED) continue;
                 Map<UUID,MutableReservation> occurrence=new LinkedHashMap<>();
                 for(RecipeIngredient ingredient:planned.recipe().ingredients()) {
-                    ProductTemplate template=ingredient.productTemplate(); MutableReservation value=occurrence.computeIfAbsent(template.id(),ignored->new MutableReservation()); value.template=template;
+                    ProductTemplate template=ingredient.productTemplate();
+                    if(template.defaultTrackingMode()==InventoryTrackingMode.UNTRACKED)continue;
+                    MutableReservation value=occurrence.computeIfAbsent(template.id(),ignored->new MutableReservation()); value.template=template;
                     if(template.defaultTrackingMode()==InventoryTrackingMode.PRESENCE) continue;
                     BigDecimal scaled=ingredient.quantity().multiply(BigDecimal.valueOf(planned.portions()));
                     NormalizedRecipeQuantity normalized=normalizer.normalize(scaled,ingredient.unit(),template.defaultUnit());
@@ -62,6 +64,7 @@ public class InventoryAvailabilityService {
     public TemplateAvailability forTemplate(Snapshot snapshot,ProductTemplate template,Product product,InventoryTrackingMode mode) {
         InventoryItem item=product==null?null:snapshot.inventoryByProductId().get(product.id());
         Reservation reservation=snapshot.reservation(template.id());
+        if(mode==InventoryTrackingMode.UNTRACKED)return new TemplateAvailability(template,product,mode,null,null,null,null,0,List.of());
         if(mode==InventoryTrackingMode.PRESENCE) return new TemplateAvailability(template,product,mode,null,null,null,null,
                 reservation.usageCount(),reservation.details());
         BigDecimal physical=item==null||item.quantity()==null?BigDecimal.ZERO:item.quantity();
@@ -75,6 +78,7 @@ public class InventoryAvailabilityService {
         Snapshot snapshot=snapshot(null); List<InventoryAvailability> result=new ArrayList<>();
         for(InventoryItem item:snapshot.inventoryByProductId().values()) {
             Product product=item.product(); UUID templateId=product.sourceTemplateId();
+            if(product.inventoryTrackingMode()==InventoryTrackingMode.UNTRACKED)continue;
             Reservation reservation=templateId==null?snapshot.reservation(product):snapshot.reservation(templateId);
             if(product.inventoryTrackingMode()==InventoryTrackingMode.PRESENCE) {
                 result.add(new InventoryAvailability(item,null,null,null,null,reservation.usageCount(),reservation.details()));

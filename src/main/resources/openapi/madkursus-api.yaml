@@ -763,7 +763,7 @@ components:
       enum: [GRAM, MILLILITER, PIECE]
     InventoryTrackingMode:
       type: string
-      enum: [QUANTITY, PRESENCE]
+      enum: [QUANTITY, PRESENCE, UNTRACKED]
     CreateProduct:
       type: object
       required: [name, category, defaultUnit]

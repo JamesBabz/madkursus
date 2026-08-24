@@ -27,15 +27,15 @@ public class RecipeTemplateAdapterImpl implements RecipeTemplatePort {
                 .collect(Collectors.toMap(PreparedComponent::id, Function.identity()));
         return new RecipeTemplate(entity.getId(),entity.getName(),entity.getDescription(),entity.isActive(),entity.getCreatedAt(),entity.getUpdatedAt(),
                 entity.getIngredients().stream().map(i->new RecipeTemplateIngredient(i.getId(),products.toModel(i.getProductTemplate()),i.getQuantity(),i.getUnit(),i.getPreparation(),i.getSortOrder())).toList(),
-                entity.getSteps().stream().map(s->new RecipeTemplateStep(s.getId(),s.getStepType(),s.getInstruction(),s.getSortOrder(),s.getCookingProcessId(),s.getBindings().stream().map(b->binding(b,components)).toList(),null)).toList(),
-                entity.getPreparationSteps().stream().filter(p->p.getPreparedComponent()==null).map(p->new RecipePreparationStep(p.getId(),p.getInstruction(),p.getSortOrder())).toList(),
+                entity.getSteps().stream().map(s->new RecipeTemplateStep(s.getId(),s.getStepType(),s.getInstruction(),s.getSortOrder(),s.getCookingProcessId(),s.getBindings().stream().map(b->binding(b,components)).toList(),null,s.getStructuredInstruction())).toList(),
+                entity.getPreparationSteps().stream().filter(p->p.getPreparedComponent()==null).map(p->new RecipePreparationStep(p.getId(),p.getInstruction(),p.getSortOrder(),p.getStructuredInstruction())).toList(),
                 entity.getEquipmentRequirements().stream().map(e->new RecipeEquipmentRequirement(e.getId(),e.getEquipmentType(),e.getLabel(),e.getSortOrder())).toList(),List.of(),
                 components.values().stream().sorted(Comparator.comparingInt(PreparedComponent::sortOrder)).toList());
     }
     private PreparedComponent component(RecipeTemplatePreparedComponentEntity value) {
         return new PreparedComponent(value.getId(),value.getComponentKey(),value.getName(),value.getSortOrder(),
                 value.getIngredients().stream().map(a->new PreparedComponentIngredient(a.getId(),a.getRecipeIngredient().getId(),products.toModel(a.getRecipeIngredient().getProductTemplate()),a.getQuantity(),a.getUnit(),a.getSortOrder())).toList(),
-                value.getPreparationSteps().stream().map(p->new RecipePreparationStep(p.getId(),p.getInstruction(),p.getSortOrder())).toList());
+                value.getPreparationSteps().stream().map(p->new RecipePreparationStep(p.getId(),p.getInstruction(),p.getSortOrder(),p.getStructuredInstruction())).toList());
     }
     private CookingProcessBinding binding(RecipeTemplateProcessBindingEntity value,Map<UUID,PreparedComponent> components) {
         PreparedComponent component=value.getPreparedComponent()==null?null:components.get(value.getPreparedComponent().getId());

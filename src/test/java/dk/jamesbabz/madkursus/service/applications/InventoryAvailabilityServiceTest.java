@@ -42,6 +42,10 @@ class InventoryAvailabilityServiceTest {
   Product milkProduct=product(milk,InventoryTrackingMode.QUANTITY);when(plans.findAllByUserId(user)).thenReturn(List.of(plan("Plan",planned(recipe("Drik",ingredient(milk,"1",RecipeUnit.DECILITER),ingredient(milk,"2",RecipeUnit.TABLESPOON),ingredient(milk,"1",RecipeUnit.TEASPOON)),1,PlannedRecipeStatus.PLANNED))));
   assertThat(service.forTemplate(service.snapshot(null),milk,milkProduct,InventoryTrackingMode.QUANTITY).reservedQuantity()).isEqualByComparingTo("135");
  }
+ @Test void untrackedIngredientsNeverCreateMealPlanReservations(){
+  ProductTemplate water=template("Vand",Unit.MILLILITER,InventoryTrackingMode.UNTRACKED);when(plans.findAllByUserId(user)).thenReturn(List.of(plan("Plan",planned(recipe("Sovs",ingredient(water,"0.5",RecipeUnit.DECILITER)),4,PlannedRecipeStatus.PLANNED))));
+  var snapshot=service.snapshot(null);assertThat(snapshot.reservation(water.id()).quantity()).isZero();assertThat(snapshot.reservationsByTemplateId()).doesNotContainKey(water.id());
+ }
  private ProductTemplate template(String name,Unit unit,InventoryTrackingMode mode){return new ProductTemplate(UUID.randomUUID(),name,ProductCategory.OTHER,unit,mode,List.of(),false);}
  private Product product(ProductTemplate t,InventoryTrackingMode mode){return new Product(UUID.randomUUID(),user,t.id(),t.name(),t.category(),t.defaultUnit(),mode);}
  private RecipeIngredient ingredient(ProductTemplate t,String q,RecipeUnit u){return new RecipeIngredient(UUID.randomUUID(),t,new BigDecimal(q),u,null,1);}

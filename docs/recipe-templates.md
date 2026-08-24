@@ -84,6 +84,10 @@ snapshottes ikke ind i hver opskrift.
 
 ## Tilføj eller opdatér en template
 
+Det understøttede developer-workflow og CLI er dokumenteret i
+[`recipe-template-authoring.md`](recipe-template-authoring.md). Brug validator/importværktøjet
+frem for håndskrevne databaseændringer.
+
 1. Kontrollér ProductTemplate-navne og CookingProcess-keys i seed-kilderne.
 2. Redigér en ny version af den læsbare template-kilde. Brug stabile lokale
    ingredienskeys og bind alle nødvendige procesparametre.

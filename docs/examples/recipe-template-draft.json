@@ -1,0 +1,34 @@
+{
+  "key": "DILL_POTATOES_EXAMPLE",
+  "name": "Dildkartofler (forfattereksempel)",
+  "description": "Lille eksempel til validering af RecipeTemplate-forfatterværktøjet. Importeres ikke automatisk.",
+  "ingredients": [
+    {"key": "POTATOES", "productTemplate": "KARTOFFEL", "quantity": 250, "unit": "GRAM", "preparation": "skrubbet"}
+  ],
+  "preparedComponents": [
+    {
+      "key": "PREPARED_POTATOES",
+      "name": "Klargjorte kartofler",
+      "sortOrder": 1,
+      "ingredients": [
+        {"ingredient": "POTATOES", "quantity": 250, "unit": "GRAM"}
+      ],
+      "preparation": ["Skrub 250 g kartofler og kom dem i gryden."]
+    }
+  ],
+  "preparation": [
+    {"instruction": {"parts": [
+      {"text": "Skrub "},
+      {"ingredient": "POTATOES"},
+      {"text": " og kom dem i gryden."}
+    ]}, "component": "PREPARED_POTATOES"}
+  ],
+  "equipmentRequirements": ["POT", "STOVE"],
+  "steps": [
+    {"type": "PROCESS", "process": "BOIL_POTATOES", "bindings": {"POTATOES": {"component": "PREPARED_POTATOES"}}},
+    {"type": "TEXT", "instruction": {"parts": [
+      {"text": "Vend "}, {"component": "PREPARED_POTATOES"},
+      {"text": " med frisk dild og server straks. Del kun meget store kartofler i ca. 2 cm stykker."}
+    ]}}
+  ]
+}

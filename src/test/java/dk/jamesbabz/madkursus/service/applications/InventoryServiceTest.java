@@ -36,6 +36,8 @@ class InventoryServiceTest {
     @Mock CurrentUserProvider currentUserProvider;
     @InjectMocks InventoryService service;
 
+    @Test void untrackedProductCannotBeAddedToInventoryAndCookingIgnoresIt(){UUID id=UUID.randomUUID(),user=UUID.randomUUID();Product water=new Product(id,user,UUID.randomUUID(),"Vand",ProductCategory.OTHER,Unit.MILLILITER,dk.jamesbabz.madkursus.service.models.InventoryTrackingMode.UNTRACKED);when(productService.get(id)).thenReturn(water);assertThatThrownBy(()->service.add(id,BigDecimal.ONE)).isInstanceOf(InvalidInputException.class).hasMessageContaining("not stored");assertThat(service.consumeUpToAvailable(id,new BigDecimal("100"))).isEqualTo(new InventoryService.Consumption(BigDecimal.ZERO,BigDecimal.ZERO));verify(port,never()).save(any());}
+
     @Test
     void cookingConsumesOnlyAvailableStockAndReportsShortageWithoutGoingNegative() {
         UUID userId=UUID.randomUUID(), productId=UUID.randomUUID(), itemId=UUID.randomUUID();

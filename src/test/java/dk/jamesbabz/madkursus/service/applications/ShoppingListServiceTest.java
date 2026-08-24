@@ -28,6 +28,8 @@ class ShoppingListServiceTest {
     @Mock CurrentUserProvider currentUserProvider;
     @InjectMocks ShoppingListService service;
 
+    @Test void untrackedTemplateAndProductAreRejectedFromShoppingList(){UUID user=UUID.randomUUID(),templateId=UUID.randomUUID();ProductTemplate water=new ProductTemplate(templateId,"Vand",ProductCategory.OTHER,Unit.MILLILITER,InventoryTrackingMode.UNTRACKED,java.util.List.of(),true);Product product=new Product(UUID.randomUUID(),user,templateId,"Vand",ProductCategory.OTHER,Unit.MILLILITER,InventoryTrackingMode.UNTRACKED);when(templateService.get(templateId)).thenReturn(water);when(productService.get(product.id())).thenReturn(product);assertThatThrownBy(()->service.addFromTemplate(templateId,new BigDecimal("100"))).isInstanceOf(InvalidInputException.class);assertThatThrownBy(()->service.add(product.id(),new BigDecimal("100"))).isInstanceOf(InvalidInputException.class);verify(port,never()).save(any());}
+
     @Test void addsOwnedProductAndUsesItsUnit() {
         UUID user = UUID.randomUUID(); Product product = product(user, "Æg", Unit.PIECE);
         when(productService.get(product.id())).thenReturn(product); when(currentUserProvider.currentUserId()).thenReturn(user);

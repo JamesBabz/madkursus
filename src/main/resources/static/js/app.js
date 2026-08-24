@@ -493,10 +493,10 @@ async function searchInventoryCandidates(search) {
     if (requestId !== inventorySearchRequestId || input.value !== search) return;
     currentProducts = products;
     const query = normalizeName(search);
-    const matchingProducts = products.filter(product => !query || normalizeName(product.name).includes(query))
+    const matchingProducts = products.filter(product => product.inventoryTrackingMode !== 'UNTRACKED').filter(product => !query || normalizeName(product.name).includes(query))
       .map(product => ({ ...product, source: 'product' }));
     const ownedNames = new Set(products.map(product => normalizeName(product.name)));
-    const catalog = templates.filter(template => !ownedNames.has(normalizeName(template.name)))
+    const catalog = templates.filter(template => template.defaultTrackingMode !== 'UNTRACKED').filter(template => !ownedNames.has(normalizeName(template.name)))
       .map(template => ({ ...template, source: 'template' }));
     document.querySelector('#inventory-search-results').replaceChildren(
       ...[...matchingProducts, ...catalog].slice(0, 20).map(inventoryCandidateRow)
@@ -731,9 +731,9 @@ async function searchShoppingCandidates(search) {
     const input = document.querySelector('#shopping-search');
     if (requestId !== shoppingSearchRequestId || input.value !== search) return;
     const query = normalizeName(search);
-    const owned = products.filter(product => !query || normalizeName(product.name).includes(query)).map(product => ({ ...product, source: 'product' }));
+    const owned = products.filter(product => product.inventoryTrackingMode !== 'UNTRACKED').filter(product => !query || normalizeName(product.name).includes(query)).map(product => ({ ...product, source: 'product' }));
     const names = new Set(products.map(product => normalizeName(product.name)));
-    const catalog = templates.filter(template => !names.has(normalizeName(template.name))).map(template => ({ ...template, source: 'template' }));
+    const catalog = templates.filter(template => template.defaultTrackingMode !== 'UNTRACKED').filter(template => !names.has(normalizeName(template.name))).map(template => ({ ...template, source: 'template' }));
     document.querySelector('#shopping-search-results').replaceChildren(...[...owned, ...catalog].slice(0, 20).map(shoppingCandidateRow));
   } catch (error) { if (requestId === shoppingSearchRequestId) showToast(`Søgningen mislykkedes. ${error.message}`, 'error'); }
 }

@@ -209,8 +209,9 @@
       <select id="edit-product-tracking-mode" name="inventoryTrackingMode" required>
         <option value="QUANTITY">Præcis mængde</option>
         <option value="PRESENCE">Kun om jeg har varen</option>
+        <option value="UNTRACKED">Ikke lagerført</option>
       </select>
-      <p class="field-help">“Kun om jeg har varen” er god til fx salt, krydderier og ketchup.</p>
+      <p class="field-help">“Kun om jeg har varen” er god til fx salt og krydderier. “Ikke lagerført” bruges til opskriftsingredienser som postevand.</p>
       <div class="notice error" id="edit-product-error" role="alert" hidden></div>
       <button class="danger-button" id="request-delete-product" type="button">Fjern produkt</button>
       <section class="inline-confirmation" id="delete-product-confirmation" aria-live="polite" hidden>

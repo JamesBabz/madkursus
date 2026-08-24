@@ -13,24 +13,25 @@ class ProductTemplateSeedTest {
 
     @Test void canonicalCatalogIsCompleteUniqueTypedAndUsesStableMigrationIds() throws Exception {
         JsonNode root=read("seed/product-templates.json"),products=root.get("products");
-        assertThat(root.path("metadata").path("catalogCount").asInt()).isEqualTo(384);assertThat(products).hasSize(384);
+        assertThat(root.path("metadata").path("catalogCount").asInt()).isEqualTo(385);assertThat(products).hasSize(385);
         Set<String> keys=new HashSet<>(),ids=new HashSet<>(),names=new HashSet<>();int aliases=0,common=0,presence=0;
         for(JsonNode product:products){String key=product.path("key").asText(),name=product.path("name").asText(),id=product.path("id").asText();
             assertThat(key).matches("[A-Z][A-Z0-9_]*");assertThat(keys.add(key)).as("unique key %s",key).isTrue();
             assertThat(ids.add(id)).as("unique id %s",id).isTrue();assertThat(names.add(normalize(name))).as("unique name %s",name).isTrue();
             assertThat(UUID.fromString(id)).isEqualTo(stableId(name));assertThat(ProductCategory.valueOf(product.path("category").asText())).isNotNull();
             assertThat(Unit.valueOf(product.path("defaultUnit").asText())).isIn(Unit.GRAM,Unit.MILLILITER,Unit.PIECE);
-            InventoryTrackingMode mode=InventoryTrackingMode.valueOf(product.path("defaultTrackingMode").asText());assertThat(mode).isIn(InventoryTrackingMode.QUANTITY,InventoryTrackingMode.PRESENCE);if(mode==InventoryTrackingMode.PRESENCE)presence++;
+            InventoryTrackingMode mode=InventoryTrackingMode.valueOf(product.path("defaultTrackingMode").asText());assertThat(EnumSet.allOf(InventoryTrackingMode.class)).contains(mode);if(mode==InventoryTrackingMode.PRESENCE)presence++;
             if(product.path("common").asBoolean())common++;Set<String> localAliases=new HashSet<>();
             for(JsonNode alias:product.path("aliases")){String value=alias.asText();assertThat(value).isEqualTo(value.trim()).isNotBlank();assertThat(localAliases.add(normalize(value))).as("unique alias on %s",name).isTrue();aliases++;}}
-        assertThat(aliases).isEqualTo(211);assertThat(common).isEqualTo(94);assertThat(presence).isEqualTo(81);
+        assertThat(aliases).isEqualTo(212);assertThat(common).isEqualTo(95);assertThat(presence).isEqualTo(81);
     }
 
     @Test void canonicalCatalogExactlyRepresentsV6V10AndV14PointOneEndState() throws Exception {
         JsonNode canonical=read("seed/product-templates.json").get("products"),legacy=read("db/seed/madkursus-product-templates-seed.json").get("products");Map<String,JsonNode> byName=index(canonical);
-        assertThat(legacy).hasSize(383);assertThat(byName).hasSize(384);Set<String> explicitPresence=v10PresenceNames();
+        assertThat(legacy).hasSize(383);assertThat(byName).hasSize(385);Set<String> explicitPresence=v10PresenceNames();
         for(JsonNode old:legacy){JsonNode current=byName.get(old.path("name").asText());assertThat(current).isNotNull();assertThat(current.path("category")).isEqualTo(old.path("category"));assertThat(current.path("defaultUnit")).isEqualTo(old.path("defaultUnit"));assertThat(current.path("aliases")).isEqualTo(old.path("aliases"));assertThat(current.path("common")).isEqualTo(old.path("common"));String expected="SPICE".equals(old.path("category").asText())||explicitPresence.contains(old.path("name").asText())?"PRESENCE":"QUANTITY";assertThat(current.path("defaultTrackingMode").asText()).isEqualTo(expected);}
         JsonNode sausages=byName.get("Pølser");assertThat(sausages.path("id").asText()).isEqualTo(stableId("Pølser").toString());assertThat(sausages.path("category").asText()).isEqualTo("MEAT");assertThat(sausages.path("defaultUnit").asText()).isEqualTo("GRAM");assertThat(sausages.path("defaultTrackingMode").asText()).isEqualTo("QUANTITY");
+        JsonNode water=byName.get("Vand");assertThat(water.path("id").asText()).isEqualTo(stableId("Vand").toString());assertThat(water.path("defaultUnit").asText()).isEqualTo("MILLILITER");assertThat(water.path("defaultTrackingMode").asText()).isEqualTo("UNTRACKED");
     }
 
     @Test void aliasesAndTrackingSemanticsRemainSearchFriendlyAndSeparateFromUnits() throws Exception {
@@ -39,7 +40,7 @@ class ProductTemplateSeedTest {
     }
 
     @Test void allGlobalSeedCrossReferencesResolveAgainstCanonicalProducts() throws Exception {
-        Set<String> productNames=index(read("seed/product-templates.json").get("products")).keySet();read("seed/recipe-templates.json").get("recipes").forEach(recipe->recipe.path("ingredients").forEach(ingredient->assertThat(productNames).contains(ingredient.path("productTemplate").asText())));read("seed/recipe-template-meatballs-in-tomato-sauce.json").path("recipe").path("ingredients").forEach(ingredient->assertThat(productNames).contains(ingredient.path("productTemplate").asText()));List<String> futureReferences=new ArrayList<>();collectNamedFields(read("seed/cooking-processes.json"),"productTemplate",futureReferences);assertThat(productNames).containsAll(futureReferences);
+        Map<String,String> productKeysByReference=new HashMap<>();read("seed/product-templates.json").path("products").forEach(product->{String key=product.path("key").asText();productKeysByReference.put(key,key);productKeysByReference.put(product.path("name").asText(),key);});read("seed/recipe-templates.json").get("recipes").forEach(recipe->recipe.path("ingredients").forEach(ingredient->assertThat(productKeysByReference.get(ingredient.path("productTemplate").asText())).as("ProductTemplate reference %s",ingredient.path("productTemplate").asText()).isNotBlank()));read("seed/recipe-template-meatballs-in-tomato-sauce.json").path("recipe").path("ingredients").forEach(ingredient->assertThat(productKeysByReference.get(ingredient.path("productTemplate").asText())).isNotBlank());List<String> futureReferences=new ArrayList<>();collectNamedFields(read("seed/cooking-processes.json"),"productTemplate",futureReferences);futureReferences.forEach(reference->assertThat(productKeysByReference.get(reference)).isNotBlank());assertThat(productKeysByReference.get("HAKKET_OKSEKOED")).isEqualTo("HAKKET_OKSEKOED");
     }
 
     @Test void alreadyAppliedV19InputRemainsAnImmutableSubsetOfTheEvolvingCanonicalSource() throws Exception {Set<String> canonical=new HashSet<>(),legacy=new HashSet<>();read("seed/cooking-processes.json").path("processes").forEach(value->canonical.add(value.path("key").asText()));read("db/seed/madkursus-cooking-processes-seed.json").path("processes").forEach(value->legacy.add(value.path("key").asText()));assertThat(canonical).containsAll(legacy).contains("PAN_FRY_MEATBALLS");}

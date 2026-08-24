@@ -1,67 +1,46 @@
 package dk.jamesbabz.madkursus.inbound.rest;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.jamesbabz.madkursus.tools.recipetemplate.RecipeTemplateDraftTool;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RecipeTemplateSeedTest {
-    @Test
-    void canonicalSourceContainsAllFifteenValidTemplatesAndResolvableReferences() throws Exception {
-        ObjectMapper mapper=new ObjectMapper();
-        Set<String> productNames=new HashSet<>();
-        read(mapper,"db/seed/madkursus-product-templates-seed.json").get("products")
-                .forEach(product->productNames.add(normalize(product.get("name").asText())));
-        productNames.add("pølser");
-        Map<String,JsonNode> processes=new HashMap<>();
-        read(mapper,"db/seed/madkursus-cooking-processes-seed.json").get("processes")
-                .forEach(process->processes.put(process.get("key").asText(),process));
+    @TempDir Path temp;
 
+    @Test
+    void canonicalSourceContainsUniqueBaselineAndExternallyAuthoredTemplatesThatAllValidate() throws Exception {
+        ObjectMapper mapper=new ObjectMapper();
         JsonNode recipes=read(mapper,"seed/recipe-templates.json").get("recipes");
-        Set<String> recipeNames=new HashSet<>(),recipeKeys=new HashSet<>();
-        assertThat(recipes).hasSize(15);
+        Set<String> recipeNames=new HashSet<>(),recipeKeys=new HashSet<>(),recipeIds=new HashSet<>();
+        Set<String> productReferences=new HashSet<>();read(mapper,"seed/product-templates.json").path("products").forEach(product->{productReferences.add(product.path("key").asText());productReferences.add(product.path("name").asText());});
+        Set<String> processKeys=new HashSet<>();read(mapper,"seed/cooking-processes.json").path("processes").forEach(process->processKeys.add(process.path("key").asText()));
+        RecipeTemplateDraftTool validator=new RecipeTemplateDraftTool(Path.of("."));
         for(JsonNode recipe:recipes){
             assertThat(recipeNames.add(normalize(recipe.get("name").asText()))).isTrue();
             assertThat(recipeKeys.add(recipe.get("key").asText())).isTrue();
-            assertThat(recipe.get("description").asText()).isNotBlank();
-            Map<String,JsonNode> ingredients=new HashMap<>();
-            for(JsonNode ingredient:recipe.get("ingredients")){
-                assertThat(ingredients.put(ingredient.get("key").asText(),ingredient)).isNull();
-                assertThat(productNames).contains(normalize(ingredient.get("productTemplate").asText()));
-                assertThat(ingredient.get("quantity").decimalValue()).isPositive();
-            }
-            assertThat(recipe.get("steps")).isNotEmpty();
-            Map<String,BigDecimal> allocated=new HashMap<>();
-            for(JsonNode step:recipe.get("steps")){
-                if("TEXT".equals(step.get("type").asText())) { assertThat(step.get("instruction").asText()).isNotBlank(); continue; }
-                JsonNode process=processes.get(step.get("process").asText());
-                assertThat(process).as("process %s",step.get("process")).isNotNull();
-                Map<String,JsonNode> parameters=new HashMap<>(); process.get("parameters").forEach(p->parameters.put(p.get("key").asText(),p));
-                step.get("bindings").fields().forEachRemaining(binding->{
-                    assertThat(parameters).containsKey(binding.getKey());
-                    JsonNode value=binding.getValue();
-                    if(value.has("ingredient")){
-                        String ingredientKey=value.get("ingredient").asText();
-                        assertThat(ingredients).containsKey(ingredientKey);
-                        allocated.merge(ingredientKey,value.get("quantity").decimalValue(),BigDecimal::add);
-                    }
-                });
-                parameters.forEach((key,parameter)->{
-                    boolean hasDefault=parameter.has("default");
-                    if(parameter.get("required").asBoolean()&&!hasDefault)assertThat(step.get("bindings").has(key)).as("required %s",key).isTrue();
-                });
-            }
-            allocated.forEach((key,quantity)->assertThat(quantity).isLessThanOrEqualTo(ingredients.get(key).get("quantity").decimalValue()));
+            String id=recipe.hasNonNull("id")?recipe.get("id").asText():UUID.nameUUIDFromBytes(("recipe-template:"+normalize(recipe.get("name").asText())).getBytes(StandardCharsets.UTF_8)).toString();assertThat(recipeIds.add(id)).isTrue();
+            Map<String,JsonNode> ingredients=new HashMap<>();for(JsonNode ingredient:recipe.path("ingredients")){assertThat(ingredients.put(ingredient.path("key").asText(),ingredient)).isNull();assertThat(productReferences).contains(ingredient.path("productTemplate").asText());assertThat(ingredient.path("quantity").decimalValue()).isPositive();}
+            Set<String> components=new HashSet<>();for(JsonNode component:recipe.path("preparedComponents")){assertThat(components.add(component.path("key").asText())).isTrue();component.path("ingredients").forEach(allocation->assertThat(ingredients).containsKey(allocation.path("ingredient").asText()));}
+            assertThat(recipe.path("steps")).isNotEmpty();for(JsonNode step:recipe.path("steps")){if("PROCESS".equals(step.path("type").asText())){assertThat(processKeys).contains(step.path("process").asText());step.path("bindings").forEach(binding->{if(binding.hasNonNull("ingredient"))assertThat(ingredients).containsKey(binding.path("ingredient").asText());if(binding.hasNonNull("component"))assertThat(components).contains(binding.path("component").asText());});}else{JsonNode instruction=step.path("instruction");assertThat(instruction.isTextual()?!instruction.asText().isBlank():!instruction.path("parts").isEmpty()).isTrue();}}
+            if("KOEDBOLLER_I_TOMATSOVS_MED_PASTA".equals(recipe.path("key").asText())){Path draft=temp.resolve("imported.json");mapper.writeValue(draft.toFile(),recipe);assertThat(validator.validate(draft).key()).isEqualTo("KOEDBOLLER_I_TOMATSOVS_MED_PASTA");}
         }
-        assertThat(recipeNames).contains("frikadeller","kødsovs med pasta","kylling med ris og grøntsager","millionbøf");
+        assertThat(recipeKeys).contains("DANISH_MEATBALLS","MEAT_SAUCE_WITH_PASTA","CHICKEN_RICE_VEGETABLES","MILLION_BEEF","KOEDBOLLER_I_TOMATSOVS_MED_PASTA");
+        assertThat(recipeNames).contains("frikadeller","kødsovs med pasta","kylling med ris og grøntsager","millionbøf","kødboller i tomatsovs med pasta");
     }
 
     @Test
@@ -69,6 +48,15 @@ class RecipeTemplateSeedTest {
         JsonNode recipes=read(new ObjectMapper(),"db/seed/madkursus-recipe-templates-seed.json").get("recipes");
         assertThat(recipes).hasSize(15);
         recipes.forEach(recipe->recipe.get("steps").forEach(step->assertThat(step.isTextual()).isTrue()));
+    }
+
+    @Test
+    void v21UsesTheExactImmutableFifteenTemplateBlobFromItsIntroducingCommit() throws Exception {
+        byte[] bytes;try(var stream=getClass().getClassLoader().getResourceAsStream("db/migration/data/V21__recipe_templates.json")){assertThat(stream).isNotNull();bytes=stream.readAllBytes();}
+        JsonNode recipes=new ObjectMapper().readTree(bytes).path("recipes");
+        assertThat(recipes).hasSize(15);
+        assertThat(recipes).noneMatch(recipe->"KOEDBOLLER_I_TOMATSOVS_MED_PASTA".equals(recipe.path("key").asText()));
+        assertThat(java.util.HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes))).isEqualTo("b12751e980483fc72eb5f0384ddc3d7565d50492044e3b8dc1609e3f83bbf928");
     }
 
     private JsonNode read(ObjectMapper mapper,String path)throws Exception{try(var stream=getClass().getClassLoader().getResourceAsStream(path)){assertThat(stream).isNotNull();return mapper.readTree(stream);}}

@@ -16,13 +16,13 @@ public class V23__add_curated_meatballs_in_tomato_sauce extends BaseJavaMigratio
     private static final Instant UPDATED_AT=Instant.parse("2026-08-14T00:00:00Z");
 
     @Override public void migrate(Context context)throws Exception {
-        JsonNode processRoot=read("/seed/cooking-processes.json");
+        JsonNode processRoot=read("/db/migration/data/V23__cooking_processes.json");
         Map<String,JsonNode> processes=new HashMap<>();
         processRoot.path("processes").forEach(value->processes.put(value.path("key").asText(),value));
         addOptionalParameter(context,processes.get("MIX_MEATBALL_MIXTURE"),"OTHER_SEASONING");
         updateProcess(context,processes.get("BOIL_PASTA"));
         insertProcess(context,processes.get("PAN_FRY_MEATBALLS"));
-        insertRecipe(context,read("/seed/recipe-template-meatballs-in-tomato-sauce.json").path("recipe"));
+        insertRecipe(context,read("/db/migration/data/V23__curated_meatballs.json").path("recipe"));
     }
 
     private void addOptionalParameter(Context context,JsonNode definition,String parameterKey)throws Exception {

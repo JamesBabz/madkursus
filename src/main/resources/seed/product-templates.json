@@ -2,10 +2,10 @@
     "metadata":  {
                      "version":  1,
                      "language":  "da",
-                     "catalogCount":  384,
+                     "catalogCount":  385,
                      "idStrategy":  "UUID.nameUUIDFromBytes(UTF-8(\"madkursus-template:\" + name.trim().toLowerCase(Locale.ROOT)))",
                      "keyStrategy":  "Uppercase Danish name transliterated Æ/Ø/Å -\u003e AE/OE/AA; non-alphanumeric runs become underscore",
-                     "legacyComposition":  "V6 JSON catalog plus V10 tracking defaults plus V14.1 Pølser",
+                     "legacyComposition":  "V6 JSON catalog plus V10 tracking defaults plus V14.1 Pølser plus V31 Vand",
                      "description":  "Kanoniske globale ProductTemplates. Ændringer kræver en eksplicit ny Flyway-migration."
                  },
     "products":  [
@@ -4629,6 +4629,18 @@
 
                                      ],
                          "common":  false
+                     },
+                     {
+                         "key":  "VAND",
+                         "id":  "04a53a53-364c-373c-8fe9-68e4146652d4",
+                         "name":  "Vand",
+                         "category":  "OTHER",
+                         "defaultUnit":  "MILLILITER",
+                         "defaultTrackingMode":  "UNTRACKED",
+                         "aliases":  [
+                                         "postevand"
+                                     ],
+                         "common":  true
                      }
                  ]
 }

@@ -18,3 +18,8 @@ bevares uændrede.
 Valideringstests kontrollerer enums, identiteter, interne strukturer og
 krydsreferencer mellem de tre kilder. Se de domænespecifikke dokumenter for
 ændringsprocedurer og SQL-inspektion.
+# Kontrollerede RecipeTemplate-ændringer
+
+Nye og opdaterede globale opskriftsskabeloner valideres og importeres med workflowet i
+[`recipe-template-authoring.md`](recipe-template-authoring.md). Værktøjet ændrer aldrig databasen
+direkte; deployment kræver fortsat en reviewet, eksplicit Flyway-migration.

@@ -31,6 +31,7 @@ public class ShoppingListService {
     @Transactional
     public ShoppingListItem add(UUID productId, BigDecimal quantity) {
         Product product = productService.get(productId);
+        if(product.inventoryTrackingMode()==InventoryTrackingMode.UNTRACKED)throw new InvalidInputException("Untracked products do not belong on the shopping list");
         requireValidQuantity(product, quantity);
         UUID userId = currentUserProvider.currentUserId();
         return port.findActiveByProductIdAndUserId(productId, userId)
@@ -43,6 +44,7 @@ public class ShoppingListService {
     @Transactional
     public ShoppingListItem addFromTemplate(UUID templateId, BigDecimal quantity) {
         ProductTemplate template = templateService.get(templateId);
+        if(template.defaultTrackingMode()==InventoryTrackingMode.UNTRACKED)throw new InvalidInputException("Untracked products do not belong on the shopping list");
         Product product = productService.createFromTemplate(template.id(), template.name(), template.category(),
                 template.defaultUnit(), template.defaultTrackingMode());
         return add(product.id(), quantity);
@@ -51,6 +53,7 @@ public class ShoppingListService {
     @Transactional
     public ShoppingListItem ensureAtLeastFromTemplate(UUID templateId, BigDecimal requiredQuantity) {
         ProductTemplate template = templateService.get(templateId);
+        if(template.defaultTrackingMode()==InventoryTrackingMode.UNTRACKED)throw new InvalidInputException("Untracked products do not belong on the shopping list");
         Product product = productService.createFromTemplate(template.id(), template.name(), template.category(),
                 template.defaultUnit(), template.defaultTrackingMode());
         var active = port.findActiveByProductIdAndUserId(product.id(), currentUserProvider.currentUserId());

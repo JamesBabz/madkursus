@@ -50,6 +50,6 @@ public class V26__ensure_curated_recipe_presentation_data extends BaseJavaMigrat
         }
         throw new IllegalStateException("Missing curated RecipeTemplate: "+name);
     }
-    private JsonNode read()throws Exception {try(var input=getClass().getResourceAsStream("/seed/recipe-template-meatballs-in-tomato-sauce.json")){return new ObjectMapper().readTree(input);}}
+    private JsonNode read()throws Exception {try(var input=getClass().getResourceAsStream("/db/migration/data/V23__curated_meatballs.json")){return new ObjectMapper().readTree(input);}}
     private UUID id(String value){return UUID.nameUUIDFromBytes(value.getBytes(StandardCharsets.UTF_8));}
 }

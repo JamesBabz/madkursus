@@ -37,6 +37,16 @@ class RecipeInteractionServiceTest {
   assertThat(result.requirements().getFirst().missingQuantity()).isNull();verify(shopping).ensureAtLeastFromTemplate(salt.id(),null);
  }
 
+ @Test void untrackedIngredientIsRecipeDataButNeverBecomesARequirementShoppingItemOrDeduction(){
+  ProductTemplate water=new ProductTemplate(UUID.randomUUID(),"Vand",ProductCategory.OTHER,Unit.MILLILITER,InventoryTrackingMode.UNTRACKED,List.of(),true);
+  ProductTemplate salt=new ProductTemplate(UUID.randomUUID(),"Salt",ProductCategory.SPICE,Unit.GRAM,InventoryTrackingMode.PRESENCE,List.of(),false);
+  Recipe recipe=recipe("Sovs",ingredient(rice,"400",RecipeUnit.GRAM),ingredient(salt,"1",RecipeUnit.TEASPOON),ingredient(water,"1",RecipeUnit.DECILITER));Product beef=product(rice,InventoryTrackingMode.QUANTITY);
+  when(recipes.get(recipe.id())).thenReturn(recipe);when(products.findEquivalent(rice.id(),rice.name())).thenReturn(Optional.of(beef));when(products.findEquivalent(salt.id(),salt.name())).thenReturn(Optional.empty());when(history.save(any())).thenAnswer(c->c.getArgument(0));when(inventory.consumeUpToAvailable(eq(beef.id()),any())).thenReturn(new InventoryService.Consumption(new BigDecimal("400"),BigDecimal.ZERO));
+  var calculated=service.addMissingToShoppingList(List.of(new RecipeSelection(recipe.id(),BigDecimal.ONE)));
+  assertThat(calculated.requirements()).extracting(r->r.productTemplate().name()).containsExactly("Ris","Salt").doesNotContain("Vand");verify(shopping,never()).ensureAtLeastFromTemplate(eq(water.id()),any());
+  service.cook(recipe.id(),BigDecimal.ONE);verify(inventory,never()).consumeUpToAvailable(argThat(id->!id.equals(beef.id())),any());
+ }
+
  @Test void grinderTurnsUsePresenceWithoutConversionOrNumericDeduction(){
   ProductTemplate pepper=new ProductTemplate(UUID.randomUUID(),"Sort peber",ProductCategory.SPICE,Unit.GRAM,InventoryTrackingMode.PRESENCE,List.of(),false);Recipe recipe=recipe("Peber",ingredient(pepper,"10",RecipeUnit.GRINDER_TURN));Product pp=product(pepper,InventoryTrackingMode.PRESENCE);
   when(recipes.get(recipe.id())).thenReturn(recipe);when(products.findEquivalent(pepper.id(),pepper.name())).thenReturn(Optional.of(pp));
