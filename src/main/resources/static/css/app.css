@@ -263,6 +263,8 @@ button:disabled { cursor: wait; opacity: .65; }
 /* Unified 2026 UI system */
 :root {
   --color-primary: #2f7654;
+  --dialog-viewport-height: 100dvh;
+  --dialog-viewport-bottom: 0px;
   --color-primary-dark: #245c42;
   --color-primary-light: #e8f3ec;
   --color-bg: #f7f8f5;
@@ -379,10 +381,11 @@ input:focus, select:focus, textarea:focus { border-color: var(--color-primary); 
 .settings-list .nav-icon { width: 2.5rem; height: 2.5rem; color: var(--color-primary); background: var(--color-primary-light); border-radius: .7rem; }
 .settings-list .danger-row, .settings-list .danger-row small { color: var(--color-danger); }
 
-.edit-dialog { width: 100%; max-width: none; max-height: min(92dvh, 52rem); margin: auto 0 0; padding: var(--space-4) var(--space-4) max(var(--space-4), env(safe-area-inset-bottom)); border-radius: var(--radius-card) var(--radius-card) 0 0; box-shadow: 0 -12px 40px rgb(24 39 29 / 18%); }
+.edit-dialog { width: 100%; max-width: none; max-height: min(92dvh, 52rem); margin: auto 0 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scroll-padding-block: 4.75rem calc(5rem + env(safe-area-inset-bottom)); padding: var(--space-4) var(--space-4) max(var(--space-4), env(safe-area-inset-bottom)); border-radius: var(--radius-card) var(--radius-card) 0 0; box-shadow: 0 -12px 40px rgb(24 39 29 / 18%); -webkit-overflow-scrolling: touch; }
 .edit-dialog::backdrop { background: rgb(18 27 21 / 50%); backdrop-filter: blur(2px); }
 body:has(dialog[open]) { overflow: hidden; }
-.edit-dialog .section-heading { position: sticky; z-index: 2; top: 0; padding-bottom: var(--space-3); background: var(--color-surface); }
+.edit-dialog > .section-heading, .edit-dialog > form > .section-heading:first-child { position: sticky; z-index: 2; top: 0; padding-bottom: var(--space-3); background: var(--color-surface); }
+.edit-dialog :is(input, select, textarea, button) { scroll-margin-block: 4.75rem calc(5rem + env(safe-area-inset-bottom)); }
 .dialog-actions { gap: var(--space-2); }
 .dialog-actions > button { margin-top: 0; }
 .inline-confirmation { padding: var(--space-4); background: #fff5f5; border-color: #efd0d0; }
@@ -443,6 +446,9 @@ body:has(dialog[open]) { overflow: hidden; }
 .process-warnings { margin-top: var(--space-2); color: #7a4a18; font-size: .9rem; }
 
 @media (max-width: 39.99rem) {
+  html:has(dialog[open]), body:has(dialog[open]) { overflow: hidden; overscroll-behavior: none; }
+  .edit-dialog[open] { inset: auto 0 var(--dialog-viewport-bottom); max-height: calc(var(--dialog-viewport-height) - max(.5rem, env(safe-area-inset-top)) - max(.5rem, env(safe-area-inset-bottom))); margin: 0; }
+  .edit-dialog > form > .dialog-actions:last-child, .edit-dialog > .dialog-actions:last-child { position: sticky; z-index: 3; bottom: calc(0px - max(var(--space-4), env(safe-area-inset-bottom))); margin-inline: calc(0px - var(--space-4)); padding: var(--space-3) var(--space-4) max(var(--space-4), env(safe-area-inset-bottom)); background: var(--color-surface); border-top: 1px solid var(--color-border); }
   .section-add-button { position: fixed; z-index: 20; right: 1rem; bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom) + var(--space-2)); min-height: 2.75rem; padding-inline: 1rem; border-radius: 999px; box-shadow: 0 6px 20px rgb(30 70 45 / 20%); }
   .empty-state:not([hidden]) ~ * { display: none; }
   section:has(> .empty-state:not([hidden])) > .product-heading .section-add-button { display: none; }

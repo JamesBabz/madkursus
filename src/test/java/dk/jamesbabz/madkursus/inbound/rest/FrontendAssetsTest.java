@@ -23,8 +23,8 @@ class FrontendAssetsTest {
         assertThat(html).contains("edit-product-dialog", "edit-product-form", "id=\"toast\"");
         assertThat(javascript).contains("showToast", "setTimeout", "2600", "searchRequestId",
                 "templateSearch.value = ''", "method: 'PATCH'", "openProductEditor");
-        assertThat(worker).contains("madkursus-shell-v33", "/css/app.css?v=33", "/js/app.js?v=33");
-        assertThat(html).contains("/css/app.css?v=33", "/js/app.js?v=33");
+        assertThat(worker).contains("madkursus-shell-v34", "/css/app.css?v=34", "/js/dialog-viewport.js?v=34", "/js/app.js?v=34");
+        assertThat(html).contains("/css/app.css?v=34", "/js/dialog-viewport.js?v=34", "/js/app.js?v=34");
         assertThat(html).contains("inventory-view", "inventory-add-dialog", "edit-inventory-dialog");
         assertThat(javascript).contains("/v1/inventory", "searchInventoryCandidates", "from-template",
                 "loadInventory", "showToast", "inventorySearchRequestId");
@@ -88,6 +88,30 @@ class FrontendAssetsTest {
         assertThat(html).contains("inventory-reservation-dialog", "Planlagt til");
         assertThat(javascript).contains("reservedQuantity", "physicalQuantity", "availableQuantity",
                 "plannedShortfall", "openInventoryReservations");
+    }
+
+    @Test
+    void sharedDialogsUseTheVisibleViewportAndTheirOwnScrollContainer() throws Exception {
+        String html = resource("static/index.html");
+        String css = resource("static/css/app.css");
+        String javascript = resource("static/js/dialog-viewport.js");
+
+        assertThat(html).contains("interactive-widget=resizes-content");
+        assertThat(css).contains(
+                "--dialog-viewport-height: 100dvh",
+                "overflow-y: auto",
+                "overscroll-behavior: contain",
+                "scroll-padding-block",
+                "html:has(dialog[open]), body:has(dialog[open])",
+                ".edit-dialog > form > .dialog-actions:last-child",
+                "var(--dialog-viewport-bottom)");
+        assertThat(javascript).contains(
+                "function updateDialogViewport()",
+                "window.visualViewport",
+                "--dialog-viewport-height",
+                "--dialog-viewport-bottom",
+                "scrollIntoView({ block: 'nearest'",
+                "controlBounds.bottom > visibleBottom");
     }
 
     private String resource(String path) throws Exception {

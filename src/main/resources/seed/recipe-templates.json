@@ -8,246 +8,1609 @@
   },
   "recipes": [
     {
-      "key": "MEAT_SAUCE_WITH_PASTA", "name": "Kødsovs med pasta", "description": "Klassisk kødsovs til en nem hverdagsaften.",
+      "key": "MEAT_SAUCE_WITH_PASTA",
+      "name": "Kødsovs med pasta",
+      "description": "Klassisk kødsovs til en nem hverdagsaften.",
       "ingredients": [
-        {"key":"MEAT","productTemplate":"Hakket oksekød","quantity":125,"unit":"GRAM"},
-        {"key":"PASTA","productTemplate":"Spaghetti","quantity":100,"unit":"GRAM"},
-        {"key":"TOMATOES","productTemplate":"Hakkede tomater","quantity":200,"unit":"GRAM"},
-        {"key":"CARROT","productTemplate":"Gulerod","quantity":50,"unit":"GRAM","preparation":"revet"},
-        {"key":"OIL","productTemplate":"Olivenolie","quantity":10,"unit":"MILLILITER"}
+        {
+          "key": "MEAT",
+          "productTemplate": "Hakket oksekød",
+          "quantity": 125,
+          "unit": "GRAM"
+        },
+        {
+          "key": "PASTA",
+          "productTemplate": "Spaghetti",
+          "quantity": 100,
+          "unit": "GRAM"
+        },
+        {
+          "key": "TOMATOES",
+          "productTemplate": "Hakkede tomater",
+          "quantity": 200,
+          "unit": "GRAM"
+        },
+        {
+          "key": "CARROT",
+          "productTemplate": "Gulerod",
+          "quantity": 50,
+          "unit": "GRAM",
+          "preparation": "revet"
+        },
+        {
+          "key": "OIL",
+          "productTemplate": "Olivenolie",
+          "quantity": 10,
+          "unit": "MILLILITER"
+        }
       ],
       "steps": [
-        {"type":"PROCESS","process":"BOIL_PASTA","bindings":{"PASTA":{"ingredient":"PASTA","quantity":100,"unit":"GRAM"},"WATER":{"quantity":1000,"unit":"MILLILITER"}}},
-        {"type":"PROCESS","process":"BROWN_MINCED_MEAT","bindings":{"MEAT":{"ingredient":"MEAT","quantity":125,"unit":"GRAM"},"FAT":{"ingredient":"OIL","quantity":10,"unit":"MILLILITER"}}},
-        {"type":"TEXT","instruction":"Tilsæt gulerod og tomater, og lad sovsen simre i 15 minutter."},
-        {"type":"TEXT","instruction":"Server kødsovsen med pastaen."}
+        {
+          "type": "PROCESS",
+          "process": "BOIL_PASTA",
+          "bindings": {
+            "PASTA": {
+              "ingredient": "PASTA",
+              "quantity": 100,
+              "unit": "GRAM"
+            },
+            "WATER": {
+              "quantity": 1000,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "PROCESS",
+          "process": "BROWN_MINCED_MEAT",
+          "bindings": {
+            "MEAT": {
+              "ingredient": "MEAT",
+              "quantity": 125,
+              "unit": "GRAM"
+            },
+            "FAT": {
+              "ingredient": "OIL",
+              "quantity": 10,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Tilsæt gulerod og tomater, og lad sovsen simre i 15 minutter."
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Server kødsovsen med pastaen."
+        }
       ]
     },
     {
-      "key":"MEATBALLS_IN_CURRY","name":"Boller i karry","description":"Dansk familiefavorit med ris og mild karrysovs.",
-      "ingredients":[
-        {"key":"MEAT","productTemplate":"Hakket svinekød","quantity":125,"unit":"GRAM"},
-        {"key":"RICE","productTemplate":"Basmatiris","quantity":75,"unit":"GRAM"},
-        {"key":"MILK","productTemplate":"Sødmælk","quantity":125,"unit":"MILLILITER"},
-        {"key":"CURRY","productTemplate":"Karry","quantity":2,"unit":"GRAM"},
-        {"key":"FLOUR","productTemplate":"Hvedemel","quantity":8,"unit":"GRAM"},
-        {"key":"BUTTER","productTemplate":"Smør","quantity":8,"unit":"GRAM"}
+      "key": "MEATBALLS_IN_CURRY",
+      "name": "Boller i karry",
+      "description": "Dansk familiefavorit med ris og mild karrysovs.",
+      "ingredients": [
+        {
+          "key": "MEAT",
+          "productTemplate": "Hakket svinekød",
+          "quantity": 125,
+          "unit": "GRAM"
+        },
+        {
+          "key": "RICE",
+          "productTemplate": "Basmatiris",
+          "quantity": 75,
+          "unit": "GRAM"
+        },
+        {
+          "key": "MILK",
+          "productTemplate": "Sødmælk",
+          "quantity": 125,
+          "unit": "MILLILITER"
+        },
+        {
+          "key": "CURRY",
+          "productTemplate": "Karry",
+          "quantity": 2,
+          "unit": "GRAM"
+        },
+        {
+          "key": "FLOUR",
+          "productTemplate": "Hvedemel",
+          "quantity": 8,
+          "unit": "GRAM"
+        },
+        {
+          "key": "BUTTER",
+          "productTemplate": "Smør",
+          "quantity": 8,
+          "unit": "GRAM"
+        }
       ],
-      "steps":[
-        {"type":"TEXT","instruction":"Form farsen til små boller og kog dem forsigtigt i vand."},
-        {"type":"PROCESS","process":"BOIL_RICE","bindings":{"RICE":{"ingredient":"RICE","quantity":75,"unit":"GRAM"},"WATER":{"quantity":150,"unit":"MILLILITER"}}},
-        {"type":"TEXT","instruction":"Rist karryen kort i smørret uden at branke den."},
-        {"type":"PROCESS","process":"MAKE_ROUX_SAUCE","bindings":{"FAT":{"ingredient":"BUTTER","quantity":8,"unit":"GRAM"},"FLOUR":{"ingredient":"FLOUR","quantity":8,"unit":"GRAM"},"LIQUID":{"ingredient":"MILK","quantity":125,"unit":"MILLILITER"}}},
-        {"type":"TEXT","instruction":"Vend kødbollerne i sovsen og server med ris."}
+      "steps": [
+        {
+          "type": "TEXT",
+          "instruction": "Form farsen til små boller og kog dem forsigtigt i vand."
+        },
+        {
+          "type": "PROCESS",
+          "process": "BOIL_RICE",
+          "bindings": {
+            "RICE": {
+              "ingredient": "RICE",
+              "quantity": 75,
+              "unit": "GRAM"
+            },
+            "WATER": {
+              "quantity": 150,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Rist karryen kort i smørret uden at branke den."
+        },
+        {
+          "type": "PROCESS",
+          "process": "MAKE_ROUX_SAUCE",
+          "bindings": {
+            "FAT": {
+              "ingredient": "BUTTER",
+              "quantity": 8,
+              "unit": "GRAM"
+            },
+            "FLOUR": {
+              "ingredient": "FLOUR",
+              "quantity": 8,
+              "unit": "GRAM"
+            },
+            "LIQUID": {
+              "ingredient": "MILK",
+              "quantity": 125,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Vend kødbollerne i sovsen og server med ris."
+        }
       ]
     },
     {
-      "key":"DANISH_MEATBALLS","name":"Frikadeller","description":"Saftige frikadeller med kartofler.",
-      "ingredients":[
-        {"key":"MEAT","productTemplate":"Hakket svinekød","quantity":150,"unit":"GRAM"},
-        {"key":"EGG","productTemplate":"Æg","quantity":0.25,"unit":"PIECE"},
-        {"key":"MILK","productTemplate":"Sødmælk","quantity":30,"unit":"MILLILITER"},
-        {"key":"FLOUR","productTemplate":"Hvedemel","quantity":10,"unit":"GRAM"},
-        {"key":"POTATOES","productTemplate":"Kartoffel","quantity":250,"unit":"GRAM"}
+      "key": "DANISH_MEATBALLS",
+      "name": "Frikadeller",
+      "description": "Saftige frikadeller med kartofler.",
+      "ingredients": [
+        {
+          "key": "MEAT",
+          "productTemplate": "Hakket svinekød",
+          "quantity": 150,
+          "unit": "GRAM"
+        },
+        {
+          "key": "EGG",
+          "productTemplate": "Æg",
+          "quantity": 0.25,
+          "unit": "PIECE"
+        },
+        {
+          "key": "MILK",
+          "productTemplate": "Sødmælk",
+          "quantity": 30,
+          "unit": "MILLILITER"
+        },
+        {
+          "key": "FLOUR",
+          "productTemplate": "Hvedemel",
+          "quantity": 10,
+          "unit": "GRAM"
+        },
+        {
+          "key": "POTATOES",
+          "productTemplate": "Kartoffel",
+          "quantity": 250,
+          "unit": "GRAM"
+        }
       ],
-      "preparedComponents":[{"key":"MEATBALL_MIX","name":"Ingredienser til fars","sortOrder":1,"ingredients":[{"ingredient":"MEAT","quantity":150,"unit":"GRAM"},{"ingredient":"EGG","quantity":0.25,"unit":"PIECE"},{"ingredient":"FLOUR","quantity":10,"unit":"GRAM"},{"ingredient":"MILK","quantity":30,"unit":"MILLILITER"}],"preparation":["Mål ingredienserne konkret op og kom dem i en skål."]}],
-      "steps":[
-        {"type":"PROCESS","process":"MIX_MEATBALL_MIXTURE","bindings":{"MEAT":{"ingredient":"MEAT","quantity":150,"unit":"GRAM"},"EGG":{"ingredient":"EGG","quantity":0.25,"unit":"PIECE"},"BINDER":{"ingredient":"FLOUR","quantity":10,"unit":"GRAM"},"LIQUID":{"ingredient":"MILK","quantity":30,"unit":"MILLILITER"}}},
-        {"type":"TEXT","instruction":"Form frikadeller og steg dem gyldne og gennemstegte på panden."},
-        {"type":"PROCESS","process":"BOIL_POTATOES","bindings":{"POTATOES":{"ingredient":"POTATOES","quantity":250,"unit":"GRAM"},"WATER":{"quantity":750,"unit":"MILLILITER"}}},
-        {"type":"TEXT","instruction":"Server frikadellerne med kartoflerne."}
-      ]
-    },
-    {
-      "key":"CHICKEN_CURRY","name":"Kylling i karry","description":"Mild karryret med kylling og ris.",
-      "ingredients":[
-        {"key":"CHICKEN","productTemplate":"Kyllingebryst","quantity":150,"unit":"GRAM","preparation":"i tern"},
-        {"key":"RICE","productTemplate":"Basmatiris","quantity":75,"unit":"GRAM"},
-        {"key":"MILK","productTemplate":"Sødmælk","quantity":125,"unit":"MILLILITER"},
-        {"key":"CURRY","productTemplate":"Karry","quantity":3,"unit":"GRAM"},
-        {"key":"CARROT","productTemplate":"Gulerod","quantity":75,"unit":"GRAM"},
-        {"key":"OIL","productTemplate":"Olivenolie","quantity":10,"unit":"MILLILITER"}
-      ],
-      "steps":[
-        {"type":"PROCESS","process":"BOIL_RICE","bindings":{"RICE":{"ingredient":"RICE","quantity":75,"unit":"GRAM"},"WATER":{"quantity":150,"unit":"MILLILITER"}}},
-        {"type":"PROCESS","process":"PAN_FRY_CHICKEN_BREAST","bindings":{"CHICKEN":{"ingredient":"CHICKEN","quantity":150,"unit":"GRAM"},"FAT":{"ingredient":"OIL","quantity":10,"unit":"MILLILITER"}}},
-        {"type":"TEXT","instruction":"Tilsæt karry, gulerod og mælk, og lad retten simre, til guleroden er mør med let bid."}
-      ]
-    },
-    {
-      "key":"CHILI_CON_CARNE","name":"Chili con carne","description":"Varmende chili med oksekød og bønner.",
-      "ingredients":[
-        {"key":"MEAT","productTemplate":"Hakket oksekød","quantity":125,"unit":"GRAM"},
-        {"key":"BEANS","productTemplate":"Kidneybønner","quantity":100,"unit":"GRAM"},
-        {"key":"TOMATOES","productTemplate":"Hakkede tomater","quantity":200,"unit":"GRAM"},
-        {"key":"PAPRIKA","productTemplate":"Paprika","quantity":2,"unit":"GRAM"},
-        {"key":"CORN","productTemplate":"Majs","quantity":50,"unit":"GRAM"}
-      ],
-      "steps":[
-        {"type":"PROCESS","process":"BROWN_MINCED_MEAT","bindings":{"MEAT":{"ingredient":"MEAT","quantity":125,"unit":"GRAM"}}},
-        {"type":"TEXT","instruction":"Tilsæt paprika og tomater, og lad retten simre i cirka 15 minutter."},
-        {"type":"TEXT","instruction":"Vend bønner og majs i, og varm retten grundigt igennem."}
-      ]
-    },
-    {
-      "key":"CHICKEN_TOMATO_PASTA","name":"Pasta med kylling og tomat","description":"Hurtig pastaret med kylling.",
-      "ingredients":[
-        {"key":"PASTA","productTemplate":"Penne","quantity":100,"unit":"GRAM"},
-        {"key":"CHICKEN","productTemplate":"Kyllingebryst","quantity":150,"unit":"GRAM"},
-        {"key":"TOMATOES","productTemplate":"Hakkede tomater","quantity":175,"unit":"GRAM"},
-        {"key":"OIL","productTemplate":"Olivenolie","quantity":10,"unit":"MILLILITER"}
-      ],
-      "steps":[
-        {"type":"PROCESS","process":"BOIL_PASTA","bindings":{"PASTA":{"ingredient":"PASTA","quantity":100,"unit":"GRAM"},"WATER":{"quantity":1000,"unit":"MILLILITER"}}},
-        {"type":"PROCESS","process":"PAN_FRY_CHICKEN_BREAST","bindings":{"CHICKEN":{"ingredient":"CHICKEN","quantity":150,"unit":"GRAM"},"FAT":{"ingredient":"OIL","quantity":10,"unit":"MILLILITER"}}},
-        {"type":"TEXT","instruction":"Tilsæt tomaterne, lad dem koge kort ind, og vend den kogte pasta i."}
-      ]
-    },
-    {
-      "key":"CHICKEN_RICE_VEGETABLES","name":"Kylling med ris og grøntsager","description":"En enkel ret med kylling, ris og grønt.",
-      "ingredients":[
-        {"key":"CHICKEN","productTemplate":"Kyllingebryst","quantity":150,"unit":"GRAM"},
-        {"key":"RICE","productTemplate":"Basmatiris","quantity":75,"unit":"GRAM"},
-        {"key":"CARROT","productTemplate":"Gulerod","quantity":75,"unit":"GRAM","preparation":"i skiver"},
-        {"key":"PEPPER","productTemplate":"Peberfrugt","quantity":0.5,"unit":"PIECE","preparation":"i strimler"},
-        {"key":"OIL","productTemplate":"Olivenolie","quantity":10,"unit":"MILLILITER"}
-      ],
-      "steps":[
-        {"type":"PROCESS","process":"BOIL_RICE","bindings":{"RICE":{"ingredient":"RICE","quantity":75,"unit":"GRAM"},"WATER":{"quantity":150,"unit":"MILLILITER"}}},
-        {"type":"PROCESS","process":"PAN_FRY_CHICKEN_BREAST","bindings":{"CHICKEN":{"ingredient":"CHICKEN","quantity":150,"unit":"GRAM"},"FAT":{"ingredient":"OIL","quantity":5,"unit":"MILLILITER"}}},
-        {"type":"PROCESS","process":"SAUTE_VEGETABLES","bindings":{"VEGETABLES":{"ingredient":"CARROT","quantity":75,"unit":"GRAM"},"FAT":{"ingredient":"OIL","quantity":5,"unit":"MILLILITER"}}},
-        {"type":"TEXT","instruction":"Tilsæt peberfrugten de sidste minutter, så den bliver mør med bid."},
-        {"type":"TEXT","instruction":"Server kylling og grøntsager med ris."}
-      ]
-    },
-    {
-      "key":"DANISH_OMELETTE","name":"Æggekage","description":"Klassisk æggekage med bacon.",
-      "ingredients":[
-        {"key":"EGG","productTemplate":"Æg","quantity":3,"unit":"PIECE"},
-        {"key":"MILK","productTemplate":"Sødmælk","quantity":50,"unit":"MILLILITER"},
-        {"key":"BACON","productTemplate":"Bacon","quantity":50,"unit":"GRAM"}
-      ],
-      "steps":[
-        {"type":"TEXT","instruction":"Steg bacon sprødt, og lad det dryppe af."},
-        {"type":"TEXT","instruction":"Pisk æg og mælk sammen."},
-        {"type":"TEXT","instruction":"Hæld æggemassen på panden, fordel baconen, og steg ved lav varme, til æggekagen har sat sig."}
-      ]
-    },
-    {
-      "key":"MILLION_BEEF","name":"Millionbøf","description":"Hakket oksekød i brun sovs med kartofler.",
-      "ingredients":[
-        {"key":"MEAT","productTemplate":"Hakket oksekød","quantity":150,"unit":"GRAM"},
-        {"key":"POTATOES","productTemplate":"Kartoffel","quantity":250,"unit":"GRAM"},
-        {"key":"FLOUR","productTemplate":"Hvedemel","quantity":8,"unit":"GRAM"},
-        {"key":"BUTTER","productTemplate":"Smør","quantity":8,"unit":"GRAM"},
-        {"key":"STOCK","productTemplate":"Oksebouillon","quantity":2,"unit":"GRAM"}
-      ],
-      "steps":[
-        {"type":"PROCESS","process":"BOIL_POTATOES","bindings":{"POTATOES":{"ingredient":"POTATOES","quantity":250,"unit":"GRAM"},"WATER":{"quantity":750,"unit":"MILLILITER"}}},
-        {"type":"PROCESS","process":"BROWN_MINCED_MEAT","bindings":{"MEAT":{"ingredient":"MEAT","quantity":150,"unit":"GRAM"}}},
-        {"type":"TEXT","instruction":"Tilsæt smør og mel, og spæd gradvist med vand og bouillon under omrøring."},
-        {"type":"TEXT","instruction":"Lad sovsen simre, til den er jævn og uden melsmag, og server med kartofler."}
-      ]
-    },
-    {
-      "key":"PAPRIKA_STEW","name":"Paprikagryde","description":"Cremet paprikagryde med kylling.",
-      "ingredients":[
-        {"key":"CHICKEN","productTemplate":"Kyllingebryst","quantity":150,"unit":"GRAM"},
-        {"key":"PAPRIKA","productTemplate":"Paprika","quantity":3,"unit":"GRAM"},
-        {"key":"PEPPER","productTemplate":"Peberfrugt","quantity":0.5,"unit":"PIECE"},
-        {"key":"CREAM","productTemplate":"Piskefløde","quantity":100,"unit":"MILLILITER"},
-        {"key":"RICE","productTemplate":"Basmatiris","quantity":75,"unit":"GRAM"},
-        {"key":"OIL","productTemplate":"Olivenolie","quantity":10,"unit":"MILLILITER"}
-      ],
-      "steps":[
-        {"type":"PROCESS","process":"BOIL_RICE","bindings":{"RICE":{"ingredient":"RICE","quantity":75,"unit":"GRAM"},"WATER":{"quantity":150,"unit":"MILLILITER"}}},
-        {"type":"PROCESS","process":"PAN_FRY_CHICKEN_BREAST","bindings":{"CHICKEN":{"ingredient":"CHICKEN","quantity":150,"unit":"GRAM"},"FAT":{"ingredient":"OIL","quantity":10,"unit":"MILLILITER"}}},
-        {"type":"TEXT","instruction":"Tilsæt peberfrugt, paprika og fløde, og lad gryden simre, til peberfrugten er mør med bid."}
-      ]
-    },
-    {
-      "key":"SWEDISH_SAUSAGE_DISH","name":"Svensk pølseret","description":"Nem pølseret med kartofler og tomat.",
-      "ingredients":[
-        {"key":"SAUSAGES","productTemplate":"Pølser","quantity":125,"unit":"GRAM"},
-        {"key":"POTATOES","productTemplate":"Kartoffel","quantity":250,"unit":"GRAM"},
-        {"key":"TOMATO_PASTE","productTemplate":"Tomatpuré","quantity":20,"unit":"GRAM"},
-        {"key":"MILK","productTemplate":"Sødmælk","quantity":75,"unit":"MILLILITER"},
-        {"key":"PAPRIKA","productTemplate":"Paprika","quantity":2,"unit":"GRAM"}
-      ],
-      "steps":[
-        {"type":"PROCESS","process":"BOIL_POTATOES","bindings":{"POTATOES":{"ingredient":"POTATOES","quantity":250,"unit":"GRAM"},"WATER":{"quantity":750,"unit":"MILLILITER"},"SIMMER_TIME":{"durationSeconds":720}}},
-        {"type":"TEXT","instruction":"Skær de næsten møre kartofler i mundrette stykker."},
-        {"type":"TEXT","instruction":"Steg pølserne, til de har fået farve."},
-        {"type":"TEXT","instruction":"Tilsæt tomatpuré, paprika, mælk og kartofler, og varm retten grundigt igennem."}
-      ]
-    },
-    {
-      "key":"BEEF_PATTY_ONIONS","name":"Hakkebøf med bløde løg","description":"Hakkebøf med kartofler og stegte løg.",
-      "ingredients":[
-        {"key":"MEAT","productTemplate":"Hakket oksekød","quantity":175,"unit":"GRAM"},
-        {"key":"ONION","productTemplate":"Løg","quantity":1,"unit":"PIECE","preparation":"i skiver"},
-        {"key":"POTATOES","productTemplate":"Kartoffel","quantity":250,"unit":"GRAM"},
-        {"key":"BUTTER","productTemplate":"Smør","quantity":10,"unit":"GRAM"}
-      ],
-      "steps":[
-        {"type":"PROCESS","process":"BOIL_POTATOES","bindings":{"POTATOES":{"ingredient":"POTATOES","quantity":250,"unit":"GRAM"},"WATER":{"quantity":750,"unit":"MILLILITER"}}},
-        {"type":"TEXT","instruction":"Form kødet til en hakkebøf, krydr den, og steg den gylden og gennemstegt på panden."},
-        {"type":"PROCESS","process":"SAUTE_ONIONS","bindings":{"ONION":{"ingredient":"ONION","quantity":1,"unit":"PIECE"},"FAT":{"ingredient":"BUTTER","quantity":10,"unit":"GRAM"}}},
-        {"type":"TEXT","instruction":"Server de bløde løg over bøffen sammen med kartoflerne."}
-      ]
-    },
-    {
-      "key":"TOMATO_SOUP","name":"Tomatsuppe","description":"Enkel cremet tomatsuppe.",
-      "ingredients":[
-        {"key":"TOMATOES","productTemplate":"Hakkede tomater","quantity":300,"unit":"GRAM"},
-        {"key":"STOCK","productTemplate":"Grøntsagsbouillon","quantity":3,"unit":"GRAM"},
-        {"key":"CREAM","productTemplate":"Piskefløde","quantity":50,"unit":"MILLILITER"},
-        {"key":"OIL","productTemplate":"Olivenolie","quantity":10,"unit":"MILLILITER"}
-      ],
-      "steps":[
-        {"type":"TEXT","instruction":"Varm olien i en gryde, og tilsæt tomater og bouillon."},
-        {"type":"TEXT","instruction":"Lad suppen simre i 15 minutter."},
-        {"type":"TEXT","instruction":"Blend suppen glat på en sikker måde, rør fløden i, og varm den igennem igen."}
-      ]
-    },
-    {
-      "key":"POTATO_SOUP","name":"Kartoffelsuppe","description":"Blød og varmende kartoffelsuppe.",
-      "ingredients":[
-        {"key":"POTATOES","productTemplate":"Kartoffel","quantity":300,"unit":"GRAM","preparation":"i tern"},
-        {"key":"STOCK","productTemplate":"Grøntsagsbouillon","quantity":3,"unit":"GRAM"},
-        {"key":"CREAM","productTemplate":"Piskefløde","quantity":50,"unit":"MILLILITER"},
-        {"key":"BUTTER","productTemplate":"Smør","quantity":8,"unit":"GRAM"}
-      ],
-      "steps":[
-        {"type":"TEXT","instruction":"Skær kartoflerne i ensartede tern."},
-        {"type":"TEXT","instruction":"Kog kartoflerne møre i vand tilsat bouillon."},
-        {"type":"TEXT","instruction":"Blend suppen glat på en sikker måde, og rør smør og fløde i."}
-      ]
-    },
-    {
-      "key":"CHICKEN_RICE_DISH","name":"Risret med kylling","description":"Alt-i-en risret med kylling og grøntsager.",
-      "ingredients":[
-        {"key":"CHICKEN","productTemplate":"Kyllingebryst","quantity":150,"unit":"GRAM","preparation":"i tern"},
-        {"key":"RICE","productTemplate":"Basmatiris","quantity":75,"unit":"GRAM"},
-        {"key":"PEPPER","productTemplate":"Peberfrugt","quantity":0.5,"unit":"PIECE"},
-        {"key":"CORN","productTemplate":"Majs","quantity":50,"unit":"GRAM"},
-        {"key":"PAPRIKA","productTemplate":"Paprika","quantity":2,"unit":"GRAM"},
-        {"key":"OIL","productTemplate":"Olivenolie","quantity":10,"unit":"MILLILITER"}
-      ],
-      "steps":[
-        {"type":"PROCESS","process":"BOIL_RICE","bindings":{"RICE":{"ingredient":"RICE","quantity":75,"unit":"GRAM"},"WATER":{"quantity":150,"unit":"MILLILITER"}}},
-        {"type":"PROCESS","process":"PAN_FRY_CHICKEN_BREAST","bindings":{"CHICKEN":{"ingredient":"CHICKEN","quantity":150,"unit":"GRAM"},"FAT":{"ingredient":"OIL","quantity":10,"unit":"MILLILITER"}}},
-        {"type":"TEXT","instruction":"Tilsæt peberfrugt og paprika, og steg videre, til peberfrugten er mør med bid."},
-        {"type":"TEXT","instruction":"Vend de kogte ris og majs i, og varm retten grundigt igennem."}
-      ]
-    },
+      "preparedComponents": [
+        {
+          "key": "MEATBALL_MIX",
+          "name": "Ingredienser til fars",
+          "sortOrder": 1,
+          "ingredients": [
             {
-      "key" : "KOEDBOLLER_I_TOMATSOVS_MED_PASTA",
-      "name" : "Kødboller i tomatsovs med pasta",
-      "description" : "Stegte kødboller, der færdiggøres i tomatsovs og serveres med penne.",
+              "ingredient": "MEAT",
+              "quantity": 150,
+              "unit": "GRAM"
+            },
+            {
+              "ingredient": "EGG",
+              "quantity": 0.25,
+              "unit": "PIECE"
+            },
+            {
+              "ingredient": "FLOUR",
+              "quantity": 10,
+              "unit": "GRAM"
+            },
+            {
+              "ingredient": "MILK",
+              "quantity": 30,
+              "unit": "MILLILITER"
+            }
+          ],
+          "preparation": [
+            "Mål ingredienserne konkret op og kom dem i en skål."
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "type": "PROCESS",
+          "process": "MIX_MEATBALL_MIXTURE",
+          "bindings": {
+            "MEAT": {
+              "ingredient": "MEAT",
+              "quantity": 150,
+              "unit": "GRAM"
+            },
+            "EGG": {
+              "ingredient": "EGG",
+              "quantity": 0.25,
+              "unit": "PIECE"
+            },
+            "BINDER": {
+              "ingredient": "FLOUR",
+              "quantity": 10,
+              "unit": "GRAM"
+            },
+            "LIQUID": {
+              "ingredient": "MILK",
+              "quantity": 30,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Form frikadeller og steg dem gyldne og gennemstegte på panden."
+        },
+        {
+          "type": "PROCESS",
+          "process": "BOIL_POTATOES",
+          "bindings": {
+            "POTATOES": {
+              "ingredient": "POTATOES",
+              "quantity": 250,
+              "unit": "GRAM"
+            },
+            "WATER": {
+              "quantity": 750,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Server frikadellerne med kartoflerne."
+        }
+      ]
+    },
+    {
+      "key": "CHICKEN_CURRY",
+      "name": "Kylling i karry",
+      "description": "Mild karryret med kylling og ris.",
+      "ingredients": [
+        {
+          "key": "CHICKEN",
+          "productTemplate": "Kyllingebryst",
+          "quantity": 150,
+          "unit": "GRAM",
+          "preparation": "i tern"
+        },
+        {
+          "key": "RICE",
+          "productTemplate": "Basmatiris",
+          "quantity": 75,
+          "unit": "GRAM"
+        },
+        {
+          "key": "MILK",
+          "productTemplate": "Sødmælk",
+          "quantity": 125,
+          "unit": "MILLILITER"
+        },
+        {
+          "key": "CURRY",
+          "productTemplate": "Karry",
+          "quantity": 3,
+          "unit": "GRAM"
+        },
+        {
+          "key": "CARROT",
+          "productTemplate": "Gulerod",
+          "quantity": 75,
+          "unit": "GRAM"
+        },
+        {
+          "key": "OIL",
+          "productTemplate": "Olivenolie",
+          "quantity": 10,
+          "unit": "MILLILITER"
+        }
+      ],
+      "steps": [
+        {
+          "type": "PROCESS",
+          "process": "BOIL_RICE",
+          "bindings": {
+            "RICE": {
+              "ingredient": "RICE",
+              "quantity": 75,
+              "unit": "GRAM"
+            },
+            "WATER": {
+              "quantity": 150,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "PROCESS",
+          "process": "PAN_FRY_CHICKEN_BREAST",
+          "bindings": {
+            "CHICKEN": {
+              "ingredient": "CHICKEN",
+              "quantity": 150,
+              "unit": "GRAM"
+            },
+            "FAT": {
+              "ingredient": "OIL",
+              "quantity": 10,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Tilsæt karry, gulerod og mælk, og lad retten simre, til guleroden er mør med let bid."
+        }
+      ]
+    },
+    {
+      "key": "CHILI_CON_CARNE",
+      "name": "Chili con carne",
+      "description": "Varmende chili med oksekød og bønner.",
+      "ingredients": [
+        {
+          "key": "MEAT",
+          "productTemplate": "Hakket oksekød",
+          "quantity": 125,
+          "unit": "GRAM"
+        },
+        {
+          "key": "BEANS",
+          "productTemplate": "Kidneybønner",
+          "quantity": 100,
+          "unit": "GRAM"
+        },
+        {
+          "key": "TOMATOES",
+          "productTemplate": "Hakkede tomater",
+          "quantity": 200,
+          "unit": "GRAM"
+        },
+        {
+          "key": "PAPRIKA",
+          "productTemplate": "Paprika",
+          "quantity": 2,
+          "unit": "GRAM"
+        },
+        {
+          "key": "CORN",
+          "productTemplate": "Majs",
+          "quantity": 50,
+          "unit": "GRAM"
+        }
+      ],
+      "steps": [
+        {
+          "type": "PROCESS",
+          "process": "BROWN_MINCED_MEAT",
+          "bindings": {
+            "MEAT": {
+              "ingredient": "MEAT",
+              "quantity": 125,
+              "unit": "GRAM"
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Tilsæt paprika og tomater, og lad retten simre i cirka 15 minutter."
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Vend bønner og majs i, og varm retten grundigt igennem."
+        }
+      ]
+    },
+    {
+      "key": "CHICKEN_TOMATO_PASTA",
+      "name": "Pasta med kylling og tomat",
+      "description": "Hurtig pastaret med kylling.",
+      "ingredients": [
+        {
+          "key": "PASTA",
+          "productTemplate": "Penne",
+          "quantity": 100,
+          "unit": "GRAM"
+        },
+        {
+          "key": "CHICKEN",
+          "productTemplate": "Kyllingebryst",
+          "quantity": 150,
+          "unit": "GRAM"
+        },
+        {
+          "key": "TOMATOES",
+          "productTemplate": "Hakkede tomater",
+          "quantity": 175,
+          "unit": "GRAM"
+        },
+        {
+          "key": "OIL",
+          "productTemplate": "Olivenolie",
+          "quantity": 10,
+          "unit": "MILLILITER"
+        }
+      ],
+      "steps": [
+        {
+          "type": "PROCESS",
+          "process": "BOIL_PASTA",
+          "bindings": {
+            "PASTA": {
+              "ingredient": "PASTA",
+              "quantity": 100,
+              "unit": "GRAM"
+            },
+            "WATER": {
+              "quantity": 1000,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "PROCESS",
+          "process": "PAN_FRY_CHICKEN_BREAST",
+          "bindings": {
+            "CHICKEN": {
+              "ingredient": "CHICKEN",
+              "quantity": 150,
+              "unit": "GRAM"
+            },
+            "FAT": {
+              "ingredient": "OIL",
+              "quantity": 10,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Tilsæt tomaterne, lad dem koge kort ind, og vend den kogte pasta i."
+        }
+      ]
+    },
+    {
+      "key": "CHICKEN_RICE_VEGETABLES",
+      "name": "Kylling med ris og grøntsager",
+      "description": "En enkel ret med kylling, ris og grønt.",
+      "ingredients": [
+        {
+          "key": "CHICKEN",
+          "productTemplate": "Kyllingebryst",
+          "quantity": 150,
+          "unit": "GRAM"
+        },
+        {
+          "key": "RICE",
+          "productTemplate": "Basmatiris",
+          "quantity": 75,
+          "unit": "GRAM"
+        },
+        {
+          "key": "CARROT",
+          "productTemplate": "Gulerod",
+          "quantity": 75,
+          "unit": "GRAM",
+          "preparation": "i skiver"
+        },
+        {
+          "key": "PEPPER",
+          "productTemplate": "Peberfrugt",
+          "quantity": 0.5,
+          "unit": "PIECE",
+          "preparation": "i strimler"
+        },
+        {
+          "key": "OIL",
+          "productTemplate": "Olivenolie",
+          "quantity": 10,
+          "unit": "MILLILITER"
+        }
+      ],
+      "steps": [
+        {
+          "type": "PROCESS",
+          "process": "BOIL_RICE",
+          "bindings": {
+            "RICE": {
+              "ingredient": "RICE",
+              "quantity": 75,
+              "unit": "GRAM"
+            },
+            "WATER": {
+              "quantity": 150,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "PROCESS",
+          "process": "PAN_FRY_CHICKEN_BREAST",
+          "bindings": {
+            "CHICKEN": {
+              "ingredient": "CHICKEN",
+              "quantity": 150,
+              "unit": "GRAM"
+            },
+            "FAT": {
+              "ingredient": "OIL",
+              "quantity": 5,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "PROCESS",
+          "process": "SAUTE_VEGETABLES",
+          "bindings": {
+            "VEGETABLES": {
+              "ingredient": "CARROT",
+              "quantity": 75,
+              "unit": "GRAM"
+            },
+            "FAT": {
+              "ingredient": "OIL",
+              "quantity": 5,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Tilsæt peberfrugten de sidste minutter, så den bliver mør med bid."
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Server kylling og grøntsager med ris."
+        }
+      ]
+    },
+    {
+      "key": "DANISH_OMELETTE",
+      "name": "Æggekage",
+      "description": "Klassisk æggekage med bacon.",
+      "ingredients": [
+        {
+          "key": "EGG",
+          "productTemplate": "Æg",
+          "quantity": 3,
+          "unit": "PIECE"
+        },
+        {
+          "key": "MILK",
+          "productTemplate": "Sødmælk",
+          "quantity": 50,
+          "unit": "MILLILITER"
+        },
+        {
+          "key": "BACON",
+          "productTemplate": "Bacon",
+          "quantity": 50,
+          "unit": "GRAM"
+        }
+      ],
+      "steps": [
+        {
+          "type": "TEXT",
+          "instruction": "Steg bacon sprødt, og lad det dryppe af."
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Pisk æg og mælk sammen."
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Hæld æggemassen på panden, fordel baconen, og steg ved lav varme, til æggekagen har sat sig."
+        }
+      ]
+    },
+    {
+      "key": "MILLION_BEEF",
+      "name": "Millionbøf",
+      "description": "Hakket oksekød i brun sovs med kartofler.",
+      "ingredients": [
+        {
+          "key": "MEAT",
+          "productTemplate": "Hakket oksekød",
+          "quantity": 150,
+          "unit": "GRAM"
+        },
+        {
+          "key": "POTATOES",
+          "productTemplate": "Kartoffel",
+          "quantity": 250,
+          "unit": "GRAM"
+        },
+        {
+          "key": "FLOUR",
+          "productTemplate": "Hvedemel",
+          "quantity": 8,
+          "unit": "GRAM"
+        },
+        {
+          "key": "BUTTER",
+          "productTemplate": "Smør",
+          "quantity": 8,
+          "unit": "GRAM"
+        },
+        {
+          "key": "STOCK",
+          "productTemplate": "Oksebouillon",
+          "quantity": 2,
+          "unit": "GRAM"
+        }
+      ],
+      "steps": [
+        {
+          "type": "PROCESS",
+          "process": "BOIL_POTATOES",
+          "bindings": {
+            "POTATOES": {
+              "ingredient": "POTATOES",
+              "quantity": 250,
+              "unit": "GRAM"
+            },
+            "WATER": {
+              "quantity": 750,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "PROCESS",
+          "process": "BROWN_MINCED_MEAT",
+          "bindings": {
+            "MEAT": {
+              "ingredient": "MEAT",
+              "quantity": 150,
+              "unit": "GRAM"
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Tilsæt smør og mel, og spæd gradvist med vand og bouillon under omrøring."
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Lad sovsen simre, til den er jævn og uden melsmag, og server med kartofler."
+        }
+      ]
+    },
+    {
+      "key": "PAPRIKA_STEW",
+      "name": "Paprikagryde",
+      "description": "Cremet paprikagryde med kylling.",
+      "ingredients": [
+        {
+          "key": "CHICKEN",
+          "productTemplate": "Kyllingebryst",
+          "quantity": 150,
+          "unit": "GRAM"
+        },
+        {
+          "key": "PAPRIKA",
+          "productTemplate": "Paprika",
+          "quantity": 3,
+          "unit": "GRAM"
+        },
+        {
+          "key": "PEPPER",
+          "productTemplate": "Peberfrugt",
+          "quantity": 0.5,
+          "unit": "PIECE"
+        },
+        {
+          "key": "CREAM",
+          "productTemplate": "Piskefløde",
+          "quantity": 100,
+          "unit": "MILLILITER"
+        },
+        {
+          "key": "RICE",
+          "productTemplate": "Basmatiris",
+          "quantity": 75,
+          "unit": "GRAM"
+        },
+        {
+          "key": "OIL",
+          "productTemplate": "Olivenolie",
+          "quantity": 10,
+          "unit": "MILLILITER"
+        }
+      ],
+      "steps": [
+        {
+          "type": "PROCESS",
+          "process": "BOIL_RICE",
+          "bindings": {
+            "RICE": {
+              "ingredient": "RICE",
+              "quantity": 75,
+              "unit": "GRAM"
+            },
+            "WATER": {
+              "quantity": 150,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "PROCESS",
+          "process": "PAN_FRY_CHICKEN_BREAST",
+          "bindings": {
+            "CHICKEN": {
+              "ingredient": "CHICKEN",
+              "quantity": 150,
+              "unit": "GRAM"
+            },
+            "FAT": {
+              "ingredient": "OIL",
+              "quantity": 10,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Tilsæt peberfrugt, paprika og fløde, og lad gryden simre, til peberfrugten er mør med bid."
+        }
+      ]
+    },
+    {
+      "key": "SWEDISH_SAUSAGE_DISH",
+      "name": "Svensk pølseret",
+      "description": "Nem pølseret med kartofler og tomat.",
+      "ingredients": [
+        {
+          "key": "SAUSAGES",
+          "productTemplate": "Pølser",
+          "quantity": 125,
+          "unit": "GRAM"
+        },
+        {
+          "key": "POTATOES",
+          "productTemplate": "Kartoffel",
+          "quantity": 250,
+          "unit": "GRAM"
+        },
+        {
+          "key": "TOMATO_PASTE",
+          "productTemplate": "Tomatpuré",
+          "quantity": 20,
+          "unit": "GRAM"
+        },
+        {
+          "key": "MILK",
+          "productTemplate": "Sødmælk",
+          "quantity": 75,
+          "unit": "MILLILITER"
+        },
+        {
+          "key": "PAPRIKA",
+          "productTemplate": "Paprika",
+          "quantity": 2,
+          "unit": "GRAM"
+        }
+      ],
+      "steps": [
+        {
+          "type": "PROCESS",
+          "process": "BOIL_POTATOES",
+          "bindings": {
+            "POTATOES": {
+              "ingredient": "POTATOES",
+              "quantity": 250,
+              "unit": "GRAM"
+            },
+            "WATER": {
+              "quantity": 750,
+              "unit": "MILLILITER"
+            },
+            "SIMMER_TIME": {
+              "durationSeconds": 720
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Skær de næsten møre kartofler i mundrette stykker."
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Steg pølserne, til de har fået farve."
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Tilsæt tomatpuré, paprika, mælk og kartofler, og varm retten grundigt igennem."
+        }
+      ]
+    },
+    {
+      "key": "BEEF_PATTY_ONIONS",
+      "name": "Hakkebøf med bløde løg",
+      "description": "Hakkebøf med kartofler og stegte løg.",
+      "ingredients": [
+        {
+          "key": "MEAT",
+          "productTemplate": "Hakket oksekød",
+          "quantity": 175,
+          "unit": "GRAM"
+        },
+        {
+          "key": "ONION",
+          "productTemplate": "Løg",
+          "quantity": 1,
+          "unit": "PIECE",
+          "preparation": "i skiver"
+        },
+        {
+          "key": "POTATOES",
+          "productTemplate": "Kartoffel",
+          "quantity": 250,
+          "unit": "GRAM"
+        },
+        {
+          "key": "BUTTER",
+          "productTemplate": "Smør",
+          "quantity": 10,
+          "unit": "GRAM"
+        }
+      ],
+      "steps": [
+        {
+          "type": "PROCESS",
+          "process": "BOIL_POTATOES",
+          "bindings": {
+            "POTATOES": {
+              "ingredient": "POTATOES",
+              "quantity": 250,
+              "unit": "GRAM"
+            },
+            "WATER": {
+              "quantity": 750,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Form kødet til en hakkebøf, krydr den, og steg den gylden og gennemstegt på panden."
+        },
+        {
+          "type": "PROCESS",
+          "process": "SAUTE_ONIONS",
+          "bindings": {
+            "ONION": {
+              "ingredient": "ONION",
+              "quantity": 1,
+              "unit": "PIECE"
+            },
+            "FAT": {
+              "ingredient": "BUTTER",
+              "quantity": 10,
+              "unit": "GRAM"
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Server de bløde løg over bøffen sammen med kartoflerne."
+        }
+      ]
+    },
+    {
+      "key": "TOMATO_SOUP",
+      "name": "Tomatsuppe",
+      "description": "Enkel cremet tomatsuppe.",
+      "ingredients": [
+        {
+          "key": "TOMATOES",
+          "productTemplate": "Hakkede tomater",
+          "quantity": 300,
+          "unit": "GRAM"
+        },
+        {
+          "key": "STOCK",
+          "productTemplate": "Grøntsagsbouillon",
+          "quantity": 3,
+          "unit": "GRAM"
+        },
+        {
+          "key": "CREAM",
+          "productTemplate": "Piskefløde",
+          "quantity": 50,
+          "unit": "MILLILITER"
+        },
+        {
+          "key": "OIL",
+          "productTemplate": "Olivenolie",
+          "quantity": 10,
+          "unit": "MILLILITER"
+        }
+      ],
+      "steps": [
+        {
+          "type": "TEXT",
+          "instruction": "Varm olien i en gryde, og tilsæt tomater og bouillon."
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Lad suppen simre i 15 minutter."
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Blend suppen glat på en sikker måde, rør fløden i, og varm den igennem igen."
+        }
+      ]
+    },
+    {
+      "key": "POTATO_SOUP",
+      "name": "Kartoffelsuppe",
+      "description": "Blød og varmende kartoffelsuppe.",
+      "ingredients": [
+        {
+          "key": "POTATOES",
+          "productTemplate": "Kartoffel",
+          "quantity": 300,
+          "unit": "GRAM",
+          "preparation": "i tern"
+        },
+        {
+          "key": "STOCK",
+          "productTemplate": "Grøntsagsbouillon",
+          "quantity": 3,
+          "unit": "GRAM"
+        },
+        {
+          "key": "CREAM",
+          "productTemplate": "Piskefløde",
+          "quantity": 50,
+          "unit": "MILLILITER"
+        },
+        {
+          "key": "BUTTER",
+          "productTemplate": "Smør",
+          "quantity": 8,
+          "unit": "GRAM"
+        }
+      ],
+      "steps": [
+        {
+          "type": "TEXT",
+          "instruction": "Skær kartoflerne i ensartede tern."
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Kog kartoflerne møre i vand tilsat bouillon."
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Blend suppen glat på en sikker måde, og rør smør og fløde i."
+        }
+      ]
+    },
+    {
+      "key": "CHICKEN_RICE_DISH",
+      "name": "Risret med kylling",
+      "description": "Alt-i-en risret med kylling og grøntsager.",
+      "ingredients": [
+        {
+          "key": "CHICKEN",
+          "productTemplate": "Kyllingebryst",
+          "quantity": 150,
+          "unit": "GRAM",
+          "preparation": "i tern"
+        },
+        {
+          "key": "RICE",
+          "productTemplate": "Basmatiris",
+          "quantity": 75,
+          "unit": "GRAM"
+        },
+        {
+          "key": "PEPPER",
+          "productTemplate": "Peberfrugt",
+          "quantity": 0.5,
+          "unit": "PIECE"
+        },
+        {
+          "key": "CORN",
+          "productTemplate": "Majs",
+          "quantity": 50,
+          "unit": "GRAM"
+        },
+        {
+          "key": "PAPRIKA",
+          "productTemplate": "Paprika",
+          "quantity": 2,
+          "unit": "GRAM"
+        },
+        {
+          "key": "OIL",
+          "productTemplate": "Olivenolie",
+          "quantity": 10,
+          "unit": "MILLILITER"
+        }
+      ],
+      "steps": [
+        {
+          "type": "PROCESS",
+          "process": "BOIL_RICE",
+          "bindings": {
+            "RICE": {
+              "ingredient": "RICE",
+              "quantity": 75,
+              "unit": "GRAM"
+            },
+            "WATER": {
+              "quantity": 150,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "PROCESS",
+          "process": "PAN_FRY_CHICKEN_BREAST",
+          "bindings": {
+            "CHICKEN": {
+              "ingredient": "CHICKEN",
+              "quantity": 150,
+              "unit": "GRAM"
+            },
+            "FAT": {
+              "ingredient": "OIL",
+              "quantity": 10,
+              "unit": "MILLILITER"
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Tilsæt peberfrugt og paprika, og steg videre, til peberfrugten er mør med bid."
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Vend de kogte ris og majs i, og varm retten grundigt igennem."
+        }
+      ]
+    },
+    {
+      "key": "KOEDBOLLER_I_TOMATSOVS_MED_PASTA",
+      "name": "Kødboller i tomatsovs med pasta",
+      "description": "Stegte kødboller, der færdiggøres i tomatsovs og serveres med penne.",
+      "ingredients": [
+        {
+          "key": "OKSEKOED",
+          "productTemplate": "HAKKET_OKSEKOED",
+          "quantity": 200,
+          "unit": "GRAM"
+        },
+        {
+          "key": "LOEG",
+          "productTemplate": "LOEG",
+          "quantity": 0.5,
+          "unit": "PIECE"
+        },
+        {
+          "key": "AEG",
+          "productTemplate": "AEG",
+          "quantity": 0.5,
+          "unit": "PIECE"
+        },
+        {
+          "key": "HVEDEMEL",
+          "productTemplate": "HVEDEMEL",
+          "quantity": 1,
+          "unit": "TABLESPOON"
+        },
+        {
+          "key": "LETMAELK",
+          "productTemplate": "LETMAELK",
+          "quantity": 0.25,
+          "unit": "DECILITER"
+        },
+        {
+          "key": "SALT",
+          "productTemplate": "SALT",
+          "quantity": 0.75,
+          "unit": "TEASPOON"
+        },
+        {
+          "key": "SORT_PEBER",
+          "productTemplate": "SORT_PEBER",
+          "quantity": 7.5,
+          "unit": "GRINDER_TURN"
+        },
+        {
+          "key": "PAPRIKA",
+          "productTemplate": "PAPRIKA",
+          "quantity": 0.25,
+          "unit": "TEASPOON"
+        },
+        {
+          "key": "RAPSOLIE",
+          "productTemplate": "RAPSOLIE",
+          "quantity": 0.5,
+          "unit": "TABLESPOON"
+        },
+        {
+          "key": "HVIDLOEG",
+          "productTemplate": "HVIDLOEG",
+          "quantity": 1,
+          "unit": "PIECE"
+        },
+        {
+          "key": "TOMATPURE",
+          "productTemplate": "TOMATPURE",
+          "quantity": 0.5,
+          "unit": "TABLESPOON"
+        },
+        {
+          "key": "HAKKEDE_TOMATER",
+          "productTemplate": "HAKKEDE_TOMATER",
+          "quantity": 200,
+          "unit": "GRAM"
+        },
+        {
+          "key": "VAND_TIL_SOVS",
+          "productTemplate": "VAND",
+          "quantity": 0.5,
+          "unit": "DECILITER"
+        },
+        {
+          "key": "TOERRET_TIMIAN",
+          "productTemplate": "TOERRET_TIMIAN",
+          "quantity": 0.25,
+          "unit": "TEASPOON"
+        },
+        {
+          "key": "PENNE",
+          "productTemplate": "PENNE",
+          "quantity": 100,
+          "unit": "GRAM"
+        }
+      ],
+      "preparation": [
+        {
+          "instruction": {
+            "parts": [
+              {
+                "text": "Hak "
+              },
+              {
+                "ingredient": "LOEG",
+                "quantity": 0.5,
+                "unit": "PIECE"
+              },
+              {
+                "text": " fint. Fordel løget i to lige store dele: den ene til farsen og den anden til tomatsovsen."
+              }
+            ]
+          }
+        },
+        {
+          "instruction": {
+            "parts": [
+              {
+                "text": "Hak "
+              },
+              {
+                "ingredient": "HVIDLOEG",
+                "quantity": 1,
+                "unit": "PIECE"
+              },
+              {
+                "text": " fint."
+              }
+            ]
+          }
+        },
+        {
+          "instruction": {
+            "parts": [
+              {
+                "text": "Mål "
+              },
+              {
+                "ingredient": "OKSEKOED",
+                "quantity": 200,
+                "unit": "GRAM"
+              },
+              {
+                "text": ", "
+              },
+              {
+                "ingredient": "AEG",
+                "quantity": 0.5,
+                "unit": "PIECE"
+              },
+              {
+                "text": ", "
+              },
+              {
+                "ingredient": "HVEDEMEL",
+                "quantity": 1,
+                "unit": "TABLESPOON"
+              },
+              {
+                "text": ", "
+              },
+              {
+                "ingredient": "LETMAELK",
+                "quantity": 0.25,
+                "unit": "DECILITER"
+              },
+              {
+                "text": ", "
+              },
+              {
+                "ingredient": "SALT",
+                "quantity": 0.5,
+                "unit": "TEASPOON"
+              },
+              {
+                "text": ", "
+              },
+              {
+                "ingredient": "SORT_PEBER",
+                "quantity": 5,
+                "unit": "GRINDER_TURN"
+              },
+              {
+                "text": " og "
+              },
+              {
+                "ingredient": "PAPRIKA",
+                "quantity": 0.25,
+                "unit": "TEASPOON"
+              },
+              {
+                "text": " op til farsen."
+              }
+            ]
+          },
+          "component": "FARS_INGREDIENSER"
+        },
+        {
+          "instruction": {
+            "parts": [
+              {
+                "text": "Mål "
+              },
+              {
+                "ingredient": "TOMATPURE",
+                "quantity": 0.5,
+                "unit": "TABLESPOON"
+              },
+              {
+                "text": ", "
+              },
+              {
+                "ingredient": "HAKKEDE_TOMATER",
+                "quantity": 200,
+                "unit": "GRAM"
+              },
+              {
+                "text": ", "
+              },
+              {
+                "ingredient": "VAND_TIL_SOVS",
+                "quantity": 0.5,
+                "unit": "DECILITER"
+              },
+              {
+                "text": ", "
+              },
+              {
+                "ingredient": "TOERRET_TIMIAN",
+                "quantity": 0.25,
+                "unit": "TEASPOON"
+              },
+              {
+                "text": ", "
+              },
+              {
+                "ingredient": "SALT",
+                "quantity": 0.25,
+                "unit": "TEASPOON"
+              },
+              {
+                "text": " og "
+              },
+              {
+                "ingredient": "SORT_PEBER",
+                "quantity": 2.5,
+                "unit": "GRINDER_TURN"
+              },
+              {
+                "text": " op til tomatsovsen."
+              }
+            ]
+          }
+        },
+        {
+          "instruction": {
+            "parts": [
+              {
+                "text": "Mål "
+              },
+              {
+                "ingredient": "PENNE",
+                "quantity": 100,
+                "unit": "GRAM"
+              },
+              {
+                "text": " op."
+              }
+            ]
+          }
+        }
+      ],
+      "preparedComponents": [
+        {
+          "key": "FARS_INGREDIENSER",
+          "name": "Ingredienser til fars",
+          "sortOrder": 1,
+          "ingredients": [
+            {
+              "ingredient": "OKSEKOED",
+              "quantity": 200,
+              "unit": "GRAM"
+            },
+            {
+              "ingredient": "LOEG",
+              "quantity": 0.25,
+              "unit": "PIECE"
+            },
+            {
+              "ingredient": "AEG",
+              "quantity": 0.5,
+              "unit": "PIECE"
+            },
+            {
+              "ingredient": "HVEDEMEL",
+              "quantity": 1,
+              "unit": "TABLESPOON"
+            },
+            {
+              "ingredient": "LETMAELK",
+              "quantity": 0.25,
+              "unit": "DECILITER"
+            },
+            {
+              "ingredient": "SALT",
+              "quantity": 0.5,
+              "unit": "TEASPOON"
+            },
+            {
+              "ingredient": "SORT_PEBER",
+              "quantity": 5,
+              "unit": "GRINDER_TURN"
+            },
+            {
+              "ingredient": "PAPRIKA",
+              "quantity": 0.25,
+              "unit": "TEASPOON"
+            }
+          ]
+        }
+      ],
+      "equipmentRequirements": [
+        "STOVE",
+        "PAN",
+        "POT"
+      ],
+      "steps": [
+        {
+          "type": "PROCESS",
+          "process": "MIX_MEATBALL_MIXTURE",
+          "bindings": {
+            "BASE": {
+              "component": "FARS_INGREDIENSER"
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": {
+            "parts": [
+              {
+                "text": "Form farsen til ca. "
+              },
+              {
+                "scaledNumber": 6
+              },
+              {
+                "text": " kødboller på størrelse med bordtennisbolde."
+              }
+            ]
+          }
+        },
+        {
+          "type": "PROCESS",
+          "process": "PAN_FRY_MEATBALLS",
+          "bindings": {
+            "MEATBALLS": {
+              "text": "Formede kødboller"
+            },
+            "FAT": {
+              "ingredient": "RAPSOLIE",
+              "quantity": 0.5,
+              "unit": "TABLESPOON"
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Tag kødbollerne af panden. De behøver ikke være gennemstegte endnu; de færdiggøres i tomatsovsen."
+        },
+        {
+          "type": "PROCESS",
+          "process": "BOIL_PASTA",
+          "bindings": {
+            "PASTA": {
+              "ingredient": "PENNE",
+              "quantity": 100,
+              "unit": "GRAM"
+            },
+            "COOK_TIME": {
+              "durationSeconds": 720
+            }
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": {
+            "parts": [
+              {
+                "text": "Skru panden ned til trin 4. Steg den resterende halvdel af det hakkede "
+              },
+              {
+                "ingredient": "LOEG",
+                "quantity": 0.25,
+                "unit": "PIECE"
+              },
+              {
+                "text": " i fedtet fra kødbollerne i 2 minutter, og rør cirka hvert 30. sekund."
+              }
+            ]
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": {
+            "parts": [
+              {
+                "text": "Tilsæt "
+              },
+              {
+                "ingredient": "HVIDLOEG",
+                "quantity": 1,
+                "unit": "PIECE"
+              },
+              {
+                "text": " og steg i 30 sekunder. Tilsæt derefter "
+              },
+              {
+                "ingredient": "TOMATPURE",
+                "quantity": 0.5,
+                "unit": "TABLESPOON"
+              },
+              {
+                "text": " og steg videre i 1 minut, mens du rører."
+              }
+            ]
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": {
+            "parts": [
+              {
+                "text": "Tilsæt "
+              },
+              {
+                "ingredient": "HAKKEDE_TOMATER",
+                "quantity": 200,
+                "unit": "GRAM"
+              },
+              {
+                "text": ", "
+              },
+              {
+                "ingredient": "VAND_TIL_SOVS",
+                "quantity": 0.5,
+                "unit": "DECILITER"
+              },
+              {
+                "text": ", "
+              },
+              {
+                "ingredient": "TOERRET_TIMIAN",
+                "quantity": 0.25,
+                "unit": "TEASPOON"
+              },
+              {
+                "text": ", "
+              },
+              {
+                "ingredient": "SALT",
+                "quantity": 0.25,
+                "unit": "TEASPOON"
+              },
+              {
+                "text": " og "
+              },
+              {
+                "ingredient": "SORT_PEBER",
+                "quantity": 2.5,
+                "unit": "GRINDER_TURN"
+              },
+              {
+                "text": ". Rør grundigt og skrab de brune stegerester fra bunden med op i sovsen. Skru op til trin 6, indtil sovsen bobler tydeligt."
+              }
+            ]
+          }
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Skru ned til trin 3. Læg kødbollerne tilbage i tomatsovsen, vend dem i sovsen og læg låg på. Lad dem småsimre i 10 minutter og vend dem efter 5 minutter."
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Hvis kødbollerne er færdige før pastaen, sluk for panden og lad tomatsovsen stå med låg. Smag på en penne før vandet hældes fra; den skal være blød med lidt bid."
+        },
+        {
+          "type": "TEXT",
+          "instruction": "Server penne med kødboller og tomatsovs ovenpå. Pasta og sovs holdes adskilt frem til servering."
+        }
+      ],
+      "id": "f94ea16d-7040-3bbc-9432-3455cc0c9360"
+    },
+        {
+      "key" : "KARBONADER_MED_KARTOFLER_GULEROEDDER_OG_BRUN_PANDESOVS",
+      "name" : "Karbonader med kartofler, gulerødder og brun pandesovs",
       "ingredients" : [ {
-        "key" : "OKSEKOED",
-        "productTemplate" : "HAKKET_OKSEKOED",
+        "key" : "SVINEKOED",
+        "productTemplate" : "HAKKET_SVINEKOED",
         "quantity" : 200,
         "unit" : "GRAM"
       }, {
@@ -258,68 +1621,58 @@
       }, {
         "key" : "AEG",
         "productTemplate" : "AEG",
-        "quantity" : 0.5,
+        "quantity" : 1,
         "unit" : "PIECE"
       }, {
         "key" : "HVEDEMEL",
         "productTemplate" : "HVEDEMEL",
-        "quantity" : 1,
+        "quantity" : 1.25,
         "unit" : "TABLESPOON"
       }, {
         "key" : "LETMAELK",
         "productTemplate" : "LETMAELK",
-        "quantity" : 0.25,
-        "unit" : "DECILITER"
+        "quantity" : 168.75,
+        "unit" : "MILLILITER"
       }, {
         "key" : "SALT",
         "productTemplate" : "SALT",
-        "quantity" : 0.75,
+        "quantity" : 0.5,
         "unit" : "TEASPOON"
       }, {
         "key" : "SORT_PEBER",
         "productTemplate" : "SORT_PEBER",
-        "quantity" : 7.5,
+        "quantity" : 6.5,
         "unit" : "GRINDER_TURN"
       }, {
-        "key" : "PAPRIKA",
-        "productTemplate" : "PAPRIKA",
-        "quantity" : 0.25,
-        "unit" : "TEASPOON"
+        "key" : "RASP",
+        "productTemplate" : "RASP",
+        "quantity" : 30,
+        "unit" : "GRAM"
       }, {
-        "key" : "RAPSOLIE",
-        "productTemplate" : "RAPSOLIE",
-        "quantity" : 0.5,
-        "unit" : "TABLESPOON"
+        "key" : "SMOER",
+        "productTemplate" : "SMOER",
+        "quantity" : 12.5,
+        "unit" : "GRAM"
       }, {
-        "key" : "HVIDLOEG",
-        "productTemplate" : "HVIDLOEG",
-        "quantity" : 1,
+        "key" : "KARTOFLER",
+        "productTemplate" : "KARTOFFEL",
+        "quantity" : 250,
+        "unit" : "GRAM"
+      }, {
+        "key" : "GULEROEDDER",
+        "productTemplate" : "GULEROD",
+        "quantity" : 125,
+        "unit" : "GRAM"
+      }, {
+        "key" : "OKSEBOUILLON",
+        "productTemplate" : "OKSEBOUILLON",
+        "quantity" : 0.125,
         "unit" : "PIECE"
       }, {
-        "key" : "TOMATPURE",
-        "productTemplate" : "TOMATPURE",
-        "quantity" : 0.5,
-        "unit" : "TABLESPOON"
-      }, {
-        "key" : "HAKKEDE_TOMATER",
-        "productTemplate" : "HAKKEDE_TOMATER",
-        "quantity" : 200,
-        "unit" : "GRAM"
-      }, {
-        "key" : "VAND_TIL_SOVS",
-        "productTemplate" : "VAND",
-        "quantity" : 0.5,
-        "unit" : "DECILITER"
-      }, {
-        "key" : "TOERRET_TIMIAN",
-        "productTemplate" : "TOERRET_TIMIAN",
+        "key" : "MADKULOER",
+        "productTemplate" : "MADKULOER",
         "quantity" : 0.25,
         "unit" : "TEASPOON"
-      }, {
-        "key" : "PENNE",
-        "productTemplate" : "PENNE",
-        "quantity" : 100,
-        "unit" : "GRAM"
       } ],
       "preparation" : [ {
         "instruction" : {
@@ -330,29 +1683,48 @@
             "quantity" : 0.5,
             "unit" : "PIECE"
           }, {
-            "text" : " fint. Fordel løget i to lige store dele: den ene til farsen og den anden til tomatsovsen."
+            "text" : " fint. Del det i to lige store portioner: én til farsen og én til sovsen."
           } ]
         }
       }, {
         "instruction" : {
           "parts" : [ {
-            "text" : "Hak "
+            "text" : "Skræl "
           }, {
-            "ingredient" : "HVIDLOEG",
-            "quantity" : 1,
-            "unit" : "PIECE"
+            "ingredient" : "KARTOFLER",
+            "quantity" : 250,
+            "unit" : "GRAM"
           }, {
-            "text" : " fint."
+            "text" : " og skær dem i nogenlunde ens stykker."
           } ]
         }
       }, {
         "instruction" : {
           "parts" : [ {
-            "text" : "Mål "
+            "text" : "Skræl "
           }, {
-            "ingredient" : "OKSEKOED",
+            "ingredient" : "GULEROEDDER",
+            "quantity" : 125,
+            "unit" : "GRAM"
+          }, {
+            "text" : " og skær dem i skiver på cirka 1 cm."
+          } ]
+        }
+      }, {
+        "component" : "FARS",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Kom "
+          }, {
+            "ingredient" : "SVINEKOED",
             "quantity" : 200,
             "unit" : "GRAM"
+          }, {
+            "text" : ", "
+          }, {
+            "ingredient" : "LOEG",
+            "quantity" : 0.25,
+            "unit" : "PIECE"
           }, {
             "text" : ", "
           }, {
@@ -363,98 +1735,121 @@
             "text" : ", "
           }, {
             "ingredient" : "HVEDEMEL",
-            "quantity" : 1,
+            "quantity" : 0.75,
             "unit" : "TABLESPOON"
           }, {
             "text" : ", "
           }, {
             "ingredient" : "LETMAELK",
-            "quantity" : 0.25,
-            "unit" : "DECILITER"
+            "quantity" : 1.25,
+            "unit" : "TABLESPOON"
           }, {
             "text" : ", "
           }, {
             "ingredient" : "SALT",
-            "quantity" : 0.5,
+            "quantity" : 0.375,
             "unit" : "TEASPOON"
-          }, {
-            "text" : ", "
-          }, {
-            "ingredient" : "SORT_PEBER",
-            "quantity" : 5,
-            "unit" : "GRINDER_TURN"
           }, {
             "text" : " og "
           }, {
-            "ingredient" : "PAPRIKA",
-            "quantity" : 0.25,
-            "unit" : "TEASPOON"
+            "ingredient" : "SORT_PEBER",
+            "quantity" : 4,
+            "unit" : "GRINDER_TURN"
           }, {
-            "text" : " op til farsen."
+            "text" : " i en skål."
           } ]
-        },
-        "component" : "FARS_INGREDIENSER"
+        }
+      }, {
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Pisk "
+          }, {
+            "ingredient" : "AEG",
+            "quantity" : 0.5,
+            "unit" : "PIECE"
+          }, {
+            "text" : " sammen på en tallerken. Kom "
+          }, {
+            "ingredient" : "RASP",
+            "quantity" : 30,
+            "unit" : "GRAM"
+          }, {
+            "text" : " på en anden tallerken."
+          } ]
+        }
       }, {
         "instruction" : {
           "parts" : [ {
             "text" : "Mål "
           }, {
-            "ingredient" : "TOMATPURE",
+            "ingredient" : "SMOER",
+            "quantity" : 7.5,
+            "unit" : "GRAM"
+          }, {
+            "text" : " af til stegning af karbonaderne."
+          } ]
+        }
+      }, {
+        "component" : "SOVSEINGREDIENSER",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Stil "
+          }, {
+            "ingredient" : "LOEG",
+            "quantity" : 0.25,
+            "unit" : "PIECE"
+          }, {
+            "text" : ", "
+          }, {
+            "ingredient" : "SMOER",
+            "quantity" : 5,
+            "unit" : "GRAM"
+          }, {
+            "text" : ", "
+          }, {
+            "ingredient" : "HVEDEMEL",
             "quantity" : 0.5,
             "unit" : "TABLESPOON"
           }, {
             "text" : ", "
           }, {
-            "ingredient" : "HAKKEDE_TOMATER",
-            "quantity" : 200,
-            "unit" : "GRAM"
-          }, {
-            "text" : ", "
-          }, {
-            "ingredient" : "VAND_TIL_SOVS",
-            "quantity" : 0.5,
+            "ingredient" : "LETMAELK",
+            "quantity" : 1.5,
             "unit" : "DECILITER"
           }, {
             "text" : ", "
           }, {
-            "ingredient" : "TOERRET_TIMIAN",
+            "ingredient" : "OKSEBOUILLON",
+            "quantity" : 0.125,
+            "unit" : "PIECE"
+          }, {
+            "text" : ", "
+          }, {
+            "ingredient" : "MADKULOER",
             "quantity" : 0.25,
             "unit" : "TEASPOON"
           }, {
             "text" : ", "
-          }, {
-            "ingredient" : "SALT",
-            "quantity" : 0.25,
-            "unit" : "TEASPOON"
-          }, {
-            "text" : " og "
           }, {
             "ingredient" : "SORT_PEBER",
             "quantity" : 2.5,
             "unit" : "GRINDER_TURN"
           }, {
-            "text" : " op til tomatsovsen."
-          } ]
-        }
-      }, {
-        "instruction" : {
-          "parts" : [ {
-            "text" : "Mål "
+            "text" : " og "
           }, {
-            "ingredient" : "PENNE",
-            "quantity" : 100,
-            "unit" : "GRAM"
+            "ingredient" : "SALT",
+            "quantity" : 0.125,
+            "unit" : "TEASPOON"
           }, {
-            "text" : " op."
+            "text" : " klar til sovsen."
           } ]
         }
       } ],
       "preparedComponents" : [ {
-        "key" : "FARS_INGREDIENSER",
-        "name" : "Ingredienser til fars",
-        "sortOrder" : 1,
+        "key" : "FARS",
+        "name" : "Fars til karbonader",
         "ingredients" : [ {
-          "ingredient" : "OKSEKOED",
+          "ingredient" : "SVINEKOED",
           "quantity" : 200,
           "unit" : "GRAM"
         }, {
@@ -467,86 +1862,160 @@
           "unit" : "PIECE"
         }, {
           "ingredient" : "HVEDEMEL",
-          "quantity" : 1,
+          "quantity" : 0.75,
           "unit" : "TABLESPOON"
         }, {
           "ingredient" : "LETMAELK",
-          "quantity" : 0.25,
-          "unit" : "DECILITER"
+          "quantity" : 18.75,
+          "unit" : "MILLILITER"
         }, {
           "ingredient" : "SALT",
-          "quantity" : 0.5,
+          "quantity" : 0.375,
           "unit" : "TEASPOON"
         }, {
           "ingredient" : "SORT_PEBER",
+          "quantity" : 4,
+          "unit" : "GRINDER_TURN"
+        } ]
+      }, {
+        "key" : "SOVSEINGREDIENSER",
+        "name" : "Ingredienser til brun pandesovs",
+        "ingredients" : [ {
+          "ingredient" : "LOEG",
+          "quantity" : 0.25,
+          "unit" : "PIECE"
+        }, {
+          "ingredient" : "SMOER",
           "quantity" : 5,
+          "unit" : "GRAM"
+        }, {
+          "ingredient" : "HVEDEMEL",
+          "quantity" : 0.5,
+          "unit" : "TABLESPOON"
+        }, {
+          "ingredient" : "LETMAELK",
+          "quantity" : 150,
+          "unit" : "MILLILITER"
+        }, {
+          "ingredient" : "OKSEBOUILLON",
+          "quantity" : 0.125,
+          "unit" : "PIECE"
+        }, {
+          "ingredient" : "MADKULOER",
+          "quantity" : 0.25,
+          "unit" : "TEASPOON"
+        }, {
+          "ingredient" : "SORT_PEBER",
+          "quantity" : 2.5,
           "unit" : "GRINDER_TURN"
         }, {
-          "ingredient" : "PAPRIKA",
-          "quantity" : 0.25,
+          "ingredient" : "SALT",
+          "quantity" : 0.125,
           "unit" : "TEASPOON"
         } ]
       } ],
-      "equipmentRequirements" : [ "STOVE", "PAN", "POT" ],
+      "equipmentRequirements" : [ "STOVE", "POT", "PAN", "THERMOMETER" ],
       "steps" : [ {
         "type" : "PROCESS",
         "process" : "MIX_MEATBALL_MIXTURE",
         "bindings" : {
           "BASE" : {
-            "component" : "FARS_INGREDIENSER"
+            "component" : "FARS"
           }
         }
       }, {
         "type" : "TEXT",
         "instruction" : {
           "parts" : [ {
-            "text" : "Form farsen til ca. "
+            "text" : "Del farsen og form cirka "
           }, {
-            "scaledNumber" : 6
+            "scaledNumber" : 2
           }, {
-            "text" : " kødboller på størrelse med bordtennisbolde."
+            "text" : " karbonader. Tryk dem flade, så de er cirka 2 cm tykke."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Kom "
+          }, {
+            "ingredient" : "KARTOFLER"
+          }, {
+            "text" : " og "
+          }, {
+            "ingredient" : "GULEROEDDER"
+          }, {
+            "text" : " i samme gryde."
           } ]
         }
       }, {
         "type" : "PROCESS",
-        "process" : "PAN_FRY_MEATBALLS",
+        "process" : "BOIL_POTATOES",
         "bindings" : {
-          "MEATBALLS" : {
-            "text" : "Formede kødboller"
+          "POTATOES" : {
+            "ingredient" : "KARTOFLER",
+            "quantity" : 250,
+            "unit" : "GRAM"
           },
-          "FAT" : {
-            "ingredient" : "RAPSOLIE",
-            "quantity" : 0.5,
-            "unit" : "TABLESPOON"
+          "SIMMER_TIME" : {
+            "durationSeconds" : 1200
           }
         }
       }, {
         "type" : "TEXT",
-        "instruction" : "Tag kødbollerne af panden. De behøver ikke være gennemstegte endnu; de færdiggøres i tomatsovsen."
-      }, {
-        "type" : "PROCESS",
-        "process" : "BOIL_PASTA",
-        "bindings" : {
-          "PASTA" : {
-            "ingredient" : "PENNE",
-            "quantity" : 100,
-            "unit" : "GRAM"
-          },
-          "COOK_TIME" : {
-            "durationSeconds" : 720
-          }
-        }
+        "instruction" : "Kontrollér et af de største kartoffelstykker med en kniv. Kartoflerne er færdige, når kniven glider let igennem. Hæld derefter vandet fra og læg låget på gryden."
       }, {
         "type" : "TEXT",
         "instruction" : {
           "parts" : [ {
-            "text" : "Skru panden ned til trin 4. Steg den resterende halvdel af det hakkede "
+            "text" : "Sæt panden på trin 7 og tilsæt "
+          }, {
+            "ingredient" : "SMOER",
+            "quantity" : 7.5,
+            "unit" : "GRAM"
+          }, {
+            "text" : ". Vent til smørret er smeltet og bruser. Vend én karbonade ad gangen i "
+          }, {
+            "ingredient" : "AEG",
+            "quantity" : 0.5,
+            "unit" : "PIECE"
+          }, {
+            "text" : " og derefter i "
+          }, {
+            "ingredient" : "RASP",
+            "quantity" : 30,
+            "unit" : "GRAM"
+          }, {
+            "text" : ". Læg karbonaden direkte på den varme pande efter panering, før den næste paneres."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : "Steg karbonaderne i 3 minutter uden at flytte dem. Vend dem og steg den anden side i 3 minutter. Skru derefter ned på trin 5. Steg videre i 4 minutter og vend dem efter 2 minutter."
+      }, {
+        "type" : "TEXT",
+        "instruction" : "Mål kernetemperaturen i den tykkeste karbonade ved at stikke stegetermometeret ind fra siden mod midten. Fortsæt stegningen om nødvendigt, til midten er mindst 70 °C. Tag derefter karbonaderne af panden."
+      }, {
+        "type" : "TEXT",
+        "instruction" : "Hvis kartoflerne endnu ikke er færdige, sluk panden og flyt den væk fra det varme blus, så stegeresterne ikke brænder."
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Brug den samme pande til sovsen. Fjern kun eventuelle helt sorte løse rester. Sæt panden på trin 4. Tilsæt "
+          }, {
+            "ingredient" : "SMOER",
+            "quantity" : 5,
+            "unit" : "GRAM"
+          }, {
+            "text" : " og "
           }, {
             "ingredient" : "LOEG",
             "quantity" : 0.25,
             "unit" : "PIECE"
           }, {
-            "text" : " i fedtet fra kødbollerne i 2 minutter, og rør cirka hvert 30. sekund."
+            "text" : ". Steg løget i 2 minutter og rør cirka hvert 30. sekund."
           } ]
         }
       }, {
@@ -555,17 +2024,11 @@
           "parts" : [ {
             "text" : "Tilsæt "
           }, {
-            "ingredient" : "HVIDLOEG",
-            "quantity" : 1,
-            "unit" : "PIECE"
-          }, {
-            "text" : " og steg i 30 sekunder. Tilsæt derefter "
-          }, {
-            "ingredient" : "TOMATPURE",
+            "ingredient" : "HVEDEMEL",
             "quantity" : 0.5,
             "unit" : "TABLESPOON"
           }, {
-            "text" : " og steg videre i 1 minut, mens du rører."
+            "text" : " og rør mel, løg, smør og stegerester grundigt sammen i 1 minut."
           } ]
         }
       }, {
@@ -574,25 +2037,33 @@
           "parts" : [ {
             "text" : "Tilsæt "
           }, {
-            "ingredient" : "HAKKEDE_TOMATER",
-            "quantity" : 200,
-            "unit" : "GRAM"
-          }, {
-            "text" : ", "
-          }, {
-            "ingredient" : "VAND_TIL_SOVS",
-            "quantity" : 0.5,
+            "ingredient" : "LETMAELK",
+            "quantity" : 1.5,
             "unit" : "DECILITER"
           }, {
-            "text" : ", "
+            "text" : " i 3 omtrent lige store portioner. Pisk sovsen helt jævn mellem hver tilsætning."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Smuldr "
           }, {
-            "ingredient" : "TOERRET_TIMIAN",
-            "quantity" : 0.25,
-            "unit" : "TEASPOON"
+            "ingredient" : "OKSEBOUILLON",
+            "quantity" : 0.125,
+            "unit" : "PIECE"
           }, {
-            "text" : ", "
+            "text" : " i sovsen og pisk, til den er opløst. Lad sovsen varme op på trin 4. Når den bobler forsigtigt, lad den boble i 2 minutter og pisk cirka hvert 20.-30. sekund."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Tilsæt "
           }, {
-            "ingredient" : "SALT",
+            "ingredient" : "MADKULOER",
             "quantity" : 0.25,
             "unit" : "TEASPOON"
           }, {
@@ -602,20 +2073,20 @@
             "quantity" : 2.5,
             "unit" : "GRINDER_TURN"
           }, {
-            "text" : ". Rør grundigt og skrab de brune stegerester fra bunden med op i sovsen. Skru op til trin 6, indtil sovsen bobler tydeligt."
+            "text" : ". Pisk det ud i sovsen. Tilsæt derefter "
+          }, {
+            "ingredient" : "SALT",
+            "quantity" : 0.125,
+            "unit" : "TEASPOON"
+          }, {
+            "text" : " og pisk igen."
           } ]
         }
       }, {
         "type" : "TEXT",
-        "instruction" : "Skru ned til trin 3. Læg kødbollerne tilbage i tomatsovsen, vend dem i sovsen og læg låg på. Lad dem småsimre i 10 minutter og vend dem efter 5 minutter."
-      }, {
-        "type" : "TEXT",
-        "instruction" : "Hvis kødbollerne er færdige før pastaen, sluk for panden og lad tomatsovsen stå med låg. Smag på en penne før vandet hældes fra; den skal være blød med lidt bid."
-      }, {
-        "type" : "TEXT",
-        "instruction" : "Server penne med kødboller og tomatsovs ovenpå. Pasta og sovs holdes adskilt frem til servering."
+        "instruction" : "Sluk panden og servér karbonaderne med kartofler, gulerødder og brun pandesovs."
       } ],
-      "id" : "f94ea16d-7040-3bbc-9432-3455cc0c9360"
+      "id" : "bc01b52c-f60e-361b-9f13-ed11243413b6"
     }
   ]
 }

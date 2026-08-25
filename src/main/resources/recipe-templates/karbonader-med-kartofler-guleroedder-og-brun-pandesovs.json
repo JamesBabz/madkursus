@@ -1,0 +1,645 @@
+{
+  "key": "KARBONADER_MED_KARTOFLER_GULEROEDDER_OG_BRUN_PANDESOVS",
+  "name": "Karbonader med kartofler, gulerødder og brun pandesovs",
+  "ingredients": [
+    {
+      "key": "SVINEKOED",
+      "productTemplate": "HAKKET_SVINEKOED",
+      "quantity": 200,
+      "unit": "GRAM"
+    },
+    {
+      "key": "LOEG",
+      "productTemplate": "LOEG",
+      "quantity": 0.5,
+      "unit": "PIECE"
+    },
+    {
+      "key": "AEG",
+      "productTemplate": "AEG",
+      "quantity": 1,
+      "unit": "PIECE"
+    },
+    {
+      "key": "HVEDEMEL",
+      "productTemplate": "HVEDEMEL",
+      "quantity": 1.25,
+      "unit": "TABLESPOON"
+    },
+    {
+      "key": "LETMAELK",
+      "productTemplate": "LETMAELK",
+      "quantity": 168.75,
+      "unit": "MILLILITER"
+    },
+    {
+      "key": "SALT",
+      "productTemplate": "SALT",
+      "quantity": 0.5,
+      "unit": "TEASPOON"
+    },
+    {
+      "key": "SORT_PEBER",
+      "productTemplate": "SORT_PEBER",
+      "quantity": 6.5,
+      "unit": "GRINDER_TURN"
+    },
+    {
+      "key": "RASP",
+      "productTemplate": "RASP",
+      "quantity": 30,
+      "unit": "GRAM"
+    },
+    {
+      "key": "SMOER",
+      "productTemplate": "SMOER",
+      "quantity": 12.5,
+      "unit": "GRAM"
+    },
+    {
+      "key": "KARTOFLER",
+      "productTemplate": "KARTOFFEL",
+      "quantity": 250,
+      "unit": "GRAM"
+    },
+    {
+      "key": "GULEROEDDER",
+      "productTemplate": "GULEROD",
+      "quantity": 125,
+      "unit": "GRAM"
+    },
+    {
+      "key": "OKSEBOUILLON",
+      "productTemplate": "OKSEBOUILLON",
+      "quantity": 0.125,
+      "unit": "PIECE"
+    },
+    {
+      "key": "MADKULOER",
+      "productTemplate": "MADKULOER",
+      "quantity": 0.25,
+      "unit": "TEASPOON"
+    }
+  ],
+  "preparation": [
+    {
+      "instruction": {
+        "parts": [
+          {
+            "text": "Hak "
+          },
+          {
+            "ingredient": "LOEG",
+            "quantity": 0.5,
+            "unit": "PIECE"
+          },
+          {
+            "text": " fint. Del det i to lige store portioner: én til farsen og én til sovsen."
+          }
+        ]
+      }
+    },
+    {
+      "instruction": {
+        "parts": [
+          {
+            "text": "Skræl "
+          },
+          {
+            "ingredient": "KARTOFLER",
+            "quantity": 250,
+            "unit": "GRAM"
+          },
+          {
+            "text": " og skær dem i nogenlunde ens stykker."
+          }
+        ]
+      }
+    },
+    {
+      "instruction": {
+        "parts": [
+          {
+            "text": "Skræl "
+          },
+          {
+            "ingredient": "GULEROEDDER",
+            "quantity": 125,
+            "unit": "GRAM"
+          },
+          {
+            "text": " og skær dem i skiver på cirka 1 cm."
+          }
+        ]
+      }
+    },
+    {
+      "component": "FARS",
+      "instruction": {
+        "parts": [
+          {
+            "text": "Kom "
+          },
+          {
+            "ingredient": "SVINEKOED",
+            "quantity": 200,
+            "unit": "GRAM"
+          },
+          {
+            "text": ", "
+          },
+          {
+            "ingredient": "LOEG",
+            "quantity": 0.25,
+            "unit": "PIECE"
+          },
+          {
+            "text": ", "
+          },
+          {
+            "ingredient": "AEG",
+            "quantity": 0.5,
+            "unit": "PIECE"
+          },
+          {
+            "text": ", "
+          },
+          {
+            "ingredient": "HVEDEMEL",
+            "quantity": 0.75,
+            "unit": "TABLESPOON"
+          },
+          {
+            "text": ", "
+          },
+          {
+            "ingredient": "LETMAELK",
+            "quantity": 1.25,
+            "unit": "TABLESPOON"
+          },
+          {
+            "text": ", "
+          },
+          {
+            "ingredient": "SALT",
+            "quantity": 0.375,
+            "unit": "TEASPOON"
+          },
+          {
+            "text": " og "
+          },
+          {
+            "ingredient": "SORT_PEBER",
+            "quantity": 4,
+            "unit": "GRINDER_TURN"
+          },
+          {
+            "text": " i en skål."
+          }
+        ]
+      }
+    },
+    {
+      "instruction": {
+        "parts": [
+          {
+            "text": "Pisk "
+          },
+          {
+            "ingredient": "AEG",
+            "quantity": 0.5,
+            "unit": "PIECE"
+          },
+          {
+            "text": " sammen på en tallerken. Kom "
+          },
+          {
+            "ingredient": "RASP",
+            "quantity": 30,
+            "unit": "GRAM"
+          },
+          {
+            "text": " på en anden tallerken."
+          }
+        ]
+      }
+    },
+    {
+      "instruction": {
+        "parts": [
+          {
+            "text": "Mål "
+          },
+          {
+            "ingredient": "SMOER",
+            "quantity": 7.5,
+            "unit": "GRAM"
+          },
+          {
+            "text": " af til stegning af karbonaderne."
+          }
+        ]
+      }
+    },
+    {
+      "component": "SOVSEINGREDIENSER",
+      "instruction": {
+        "parts": [
+          {
+            "text": "Stil "
+          },
+          {
+            "ingredient": "LOEG",
+            "quantity": 0.25,
+            "unit": "PIECE"
+          },
+          {
+            "text": ", "
+          },
+          {
+            "ingredient": "SMOER",
+            "quantity": 5,
+            "unit": "GRAM"
+          },
+          {
+            "text": ", "
+          },
+          {
+            "ingredient": "HVEDEMEL",
+            "quantity": 0.5,
+            "unit": "TABLESPOON"
+          },
+          {
+            "text": ", "
+          },
+          {
+            "ingredient": "LETMAELK",
+            "quantity": 1.5,
+            "unit": "DECILITER"
+          },
+          {
+            "text": ", "
+          },
+          {
+            "ingredient": "OKSEBOUILLON",
+            "quantity": 0.125,
+            "unit": "PIECE"
+          },
+          {
+            "text": ", "
+          },
+          {
+            "ingredient": "MADKULOER",
+            "quantity": 0.25,
+            "unit": "TEASPOON"
+          },
+          {
+            "text": ", "
+          },
+          {
+            "ingredient": "SORT_PEBER",
+            "quantity": 2.5,
+            "unit": "GRINDER_TURN"
+          },
+          {
+            "text": " og "
+          },
+          {
+            "ingredient": "SALT",
+            "quantity": 0.125,
+            "unit": "TEASPOON"
+          },
+          {
+            "text": " klar til sovsen."
+          }
+        ]
+      }
+    }
+  ],
+  "preparedComponents": [
+    {
+      "key": "FARS",
+      "name": "Fars til karbonader",
+      "ingredients": [
+        {
+          "ingredient": "SVINEKOED",
+          "quantity": 200,
+          "unit": "GRAM"
+        },
+        {
+          "ingredient": "LOEG",
+          "quantity": 0.25,
+          "unit": "PIECE"
+        },
+        {
+          "ingredient": "AEG",
+          "quantity": 0.5,
+          "unit": "PIECE"
+        },
+        {
+          "ingredient": "HVEDEMEL",
+          "quantity": 0.75,
+          "unit": "TABLESPOON"
+        },
+        {
+          "ingredient": "LETMAELK",
+          "quantity": 18.75,
+          "unit": "MILLILITER"
+        },
+        {
+          "ingredient": "SALT",
+          "quantity": 0.375,
+          "unit": "TEASPOON"
+        },
+        {
+          "ingredient": "SORT_PEBER",
+          "quantity": 4,
+          "unit": "GRINDER_TURN"
+        }
+      ]
+    },
+    {
+      "key": "SOVSEINGREDIENSER",
+      "name": "Ingredienser til brun pandesovs",
+      "ingredients": [
+        {
+          "ingredient": "LOEG",
+          "quantity": 0.25,
+          "unit": "PIECE"
+        },
+        {
+          "ingredient": "SMOER",
+          "quantity": 5,
+          "unit": "GRAM"
+        },
+        {
+          "ingredient": "HVEDEMEL",
+          "quantity": 0.5,
+          "unit": "TABLESPOON"
+        },
+        {
+          "ingredient": "LETMAELK",
+          "quantity": 150,
+          "unit": "MILLILITER"
+        },
+        {
+          "ingredient": "OKSEBOUILLON",
+          "quantity": 0.125,
+          "unit": "PIECE"
+        },
+        {
+          "ingredient": "MADKULOER",
+          "quantity": 0.25,
+          "unit": "TEASPOON"
+        },
+        {
+          "ingredient": "SORT_PEBER",
+          "quantity": 2.5,
+          "unit": "GRINDER_TURN"
+        },
+        {
+          "ingredient": "SALT",
+          "quantity": 0.125,
+          "unit": "TEASPOON"
+        }
+      ]
+    }
+  ],
+  "equipmentRequirements": [
+    "STOVE",
+    "POT",
+    "PAN",
+    "THERMOMETER"
+  ],
+  "steps": [
+    {
+      "type": "PROCESS",
+      "process": "MIX_MEATBALL_MIXTURE",
+      "bindings": {
+        "BASE": {
+          "component": "FARS"
+        }
+      }
+    },
+    {
+      "type": "TEXT",
+      "instruction": {
+        "parts": [
+          {
+            "text": "Del farsen og form cirka "
+          },
+          {
+            "scaledNumber": 2
+          },
+          {
+            "text": " karbonader. Tryk dem flade, så de er cirka 2 cm tykke."
+          }
+        ]
+      }
+    },
+    {
+      "type": "TEXT",
+      "instruction": {
+        "parts": [
+          {
+            "text": "Kom "
+          },
+          {
+            "ingredient": "KARTOFLER"
+          },
+          {
+            "text": " og "
+          },
+          {
+            "ingredient": "GULEROEDDER"
+          },
+          {
+            "text": " i samme gryde."
+          }
+        ]
+      }
+    },
+    {
+      "type": "PROCESS",
+      "process": "BOIL_POTATOES",
+      "bindings": {
+        "POTATOES": {
+          "ingredient": "KARTOFLER",
+          "quantity": 250,
+          "unit": "GRAM"
+        },
+        "SIMMER_TIME": {
+          "durationSeconds": 1200
+        }
+      }
+    },
+    {
+      "type": "TEXT",
+      "instruction": "Kontrollér et af de største kartoffelstykker med en kniv. Kartoflerne er færdige, når kniven glider let igennem. Hæld derefter vandet fra og læg låget på gryden."
+    },
+    {
+      "type": "TEXT",
+      "instruction": {
+        "parts": [
+          {
+            "text": "Sæt panden på trin 7 og tilsæt "
+          },
+          {
+            "ingredient": "SMOER",
+            "quantity": 7.5,
+            "unit": "GRAM"
+          },
+          {
+            "text": ". Vent til smørret er smeltet og bruser. Vend én karbonade ad gangen i "
+          },
+          {
+            "ingredient": "AEG",
+            "quantity": 0.5,
+            "unit": "PIECE"
+          },
+          {
+            "text": " og derefter i "
+          },
+          {
+            "ingredient": "RASP",
+            "quantity": 30,
+            "unit": "GRAM"
+          },
+          {
+            "text": ". Læg karbonaden direkte på den varme pande efter panering, før den næste paneres."
+          }
+        ]
+      }
+    },
+    {
+      "type": "TEXT",
+      "instruction": "Steg karbonaderne i 3 minutter uden at flytte dem. Vend dem og steg den anden side i 3 minutter. Skru derefter ned på trin 5. Steg videre i 4 minutter og vend dem efter 2 minutter."
+    },
+    {
+      "type": "TEXT",
+      "instruction": "Mål kernetemperaturen i den tykkeste karbonade ved at stikke stegetermometeret ind fra siden mod midten. Fortsæt stegningen om nødvendigt, til midten er mindst 70 °C. Tag derefter karbonaderne af panden."
+    },
+    {
+      "type": "TEXT",
+      "instruction": "Hvis kartoflerne endnu ikke er færdige, sluk panden og flyt den væk fra det varme blus, så stegeresterne ikke brænder."
+    },
+    {
+      "type": "TEXT",
+      "instruction": {
+        "parts": [
+          {
+            "text": "Brug den samme pande til sovsen. Fjern kun eventuelle helt sorte løse rester. Sæt panden på trin 4. Tilsæt "
+          },
+          {
+            "ingredient": "SMOER",
+            "quantity": 5,
+            "unit": "GRAM"
+          },
+          {
+            "text": " og "
+          },
+          {
+            "ingredient": "LOEG",
+            "quantity": 0.25,
+            "unit": "PIECE"
+          },
+          {
+            "text": ". Steg løget i 2 minutter og rør cirka hvert 30. sekund."
+          }
+        ]
+      }
+    },
+    {
+      "type": "TEXT",
+      "instruction": {
+        "parts": [
+          {
+            "text": "Tilsæt "
+          },
+          {
+            "ingredient": "HVEDEMEL",
+            "quantity": 0.5,
+            "unit": "TABLESPOON"
+          },
+          {
+            "text": " og rør mel, løg, smør og stegerester grundigt sammen i 1 minut."
+          }
+        ]
+      }
+    },
+    {
+      "type": "TEXT",
+      "instruction": {
+        "parts": [
+          {
+            "text": "Tilsæt "
+          },
+          {
+            "ingredient": "LETMAELK",
+            "quantity": 1.5,
+            "unit": "DECILITER"
+          },
+          {
+            "text": " i 3 omtrent lige store portioner. Pisk sovsen helt jævn mellem hver tilsætning."
+          }
+        ]
+      }
+    },
+    {
+      "type": "TEXT",
+      "instruction": {
+        "parts": [
+          {
+            "text": "Smuldr "
+          },
+          {
+            "ingredient": "OKSEBOUILLON",
+            "quantity": 0.125,
+            "unit": "PIECE"
+          },
+          {
+            "text": " i sovsen og pisk, til den er opløst. Lad sovsen varme op på trin 4. Når den bobler forsigtigt, lad den boble i 2 minutter og pisk cirka hvert 20.-30. sekund."
+          }
+        ]
+      }
+    },
+    {
+      "type": "TEXT",
+      "instruction": {
+        "parts": [
+          {
+            "text": "Tilsæt "
+          },
+          {
+            "ingredient": "MADKULOER",
+            "quantity": 0.25,
+            "unit": "TEASPOON"
+          },
+          {
+            "text": " og "
+          },
+          {
+            "ingredient": "SORT_PEBER",
+            "quantity": 2.5,
+            "unit": "GRINDER_TURN"
+          },
+          {
+            "text": ". Pisk det ud i sovsen. Tilsæt derefter "
+          },
+          {
+            "ingredient": "SALT",
+            "quantity": 0.125,
+            "unit": "TEASPOON"
+          },
+          {
+            "text": " og pisk igen."
+          }
+        ]
+      }
+    },
+    {
+      "type": "TEXT",
+      "instruction": "Sluk panden og servér karbonaderne med kartofler, gulerødder og brun pandesovs."
+    }
+  ]
+}
