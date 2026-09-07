@@ -31,6 +31,12 @@ server:
         max-age: 30d
 
 madkursus:
+  ai:
+    ollama:
+      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+      model: ${OLLAMA_MODEL:llama3.1:8b}
+      connect-timeout: ${OLLAMA_CONNECT_TIMEOUT:3s}
+      read-timeout: ${OLLAMA_READ_TIMEOUT:120s}
   admin-username: ${ADMIN_USERNAME:}
 
 # Never emit HTTP request payloads. In particular, login JSON necessarily contains a password.

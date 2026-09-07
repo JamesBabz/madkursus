@@ -9,6 +9,7 @@ servers:
   - url: https://madkursus.jamesbabz.duckdns.org
     description: Production
 tags:
+  - name: ai
   - name: product
   - name: inventory
   - name: auth
@@ -17,6 +18,31 @@ tags:
   - name: cooking-process
   - name: nutrition-admin
 paths:
+  /v1/ai/chat:
+    post:
+      tags: [ai]
+      operationId: chat
+      summary: Ask the meal-planning assistant using the authenticated user's current inventory
+      description: Stateless text chat. Requires the existing authenticated session and CSRF token. Inventory is loaded by the backend for every request.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/AiChatRequest'}
+      responses:
+        '200':
+          description: Assistant answer
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/AiChatResponse'}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '401': {$ref: '#/components/responses/unauthorized'}
+        '403': {$ref: '#/components/responses/forbidden'}
+        '503':
+          description: AI provider unavailable or returned an invalid response
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ErrorMessage'}
   /v1/admin/product-template-nutrition:
     get:
       tags: [nutrition-admin]
@@ -744,6 +770,22 @@ components:
         application/json:
           schema: {$ref: '#/components/schemas/ErrorMessage'}
   schemas:
+    AiChatRequest:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          minLength: 1
+          maxLength: 4000
+          pattern: '[\s\S]*\S[\s\S]*'
+          example: What can I make?
+    AiChatResponse:
+      type: object
+      required: [answer]
+      properties:
+        answer:
+          type: string
     EquipmentType:
       type: string
       enum: [STOVE, OVEN, POT, PAN, AIR_FRYER, THERMOMETER, MICROWAVE]

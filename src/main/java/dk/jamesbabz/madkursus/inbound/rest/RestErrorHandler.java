@@ -24,6 +24,11 @@ import org.springframework.security.authentication.DisabledException;
 @RestControllerAdvice
 @Slf4j
 public class RestErrorHandler {
+    @ExceptionHandler(dk.jamesbabz.madkursus.service.exceptions.AiUnavailableException.class)
+    ResponseEntity<ErrorMessageDTO> aiUnavailable(dk.jamesbabz.madkursus.service.exceptions.AiUnavailableException exception) {
+        return response(HttpStatus.SERVICE_UNAVAILABLE, exception.getMessage(), List.of());
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     ResponseEntity<ErrorMessageDTO> notFound(ResourceNotFoundException exception) {
         return response(HttpStatus.NOT_FOUND, exception.getMessage(), List.of());
