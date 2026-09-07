@@ -1,0 +1,5130 @@
+{
+  "generatedFor": {
+    "productTemplates": 385,
+    "dtuFoods": 1381,
+    "originalNoMatch": 182,
+    "sourceVersion": "DTU Frida 5.5"
+  },
+  "categoryDefinitions": {
+    "A": "Naming mismatch",
+    "B": "Missing alias",
+    "C": "More specific Madkursus product",
+    "D": "More specific DTU foods / ambiguous variants",
+    "E": "Product not represented in DTU",
+    "F": "Non-food / special Madkursus template",
+    "G": "Matching algorithm limitation",
+    "H": "Other"
+  },
+  "categoryCounts": {
+    "A": 9,
+    "B": 10,
+    "C": 13,
+    "D": 16,
+    "E": 77,
+    "F": 10,
+    "G": 23,
+    "H": 24
+  },
+  "items": [
+    {
+      "productTemplateName": "Durummel",
+      "productTemplateKey": "DURUMMEL",
+      "aliases": [
+        "durumhvedemel"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "B",
+      "categoryLabel": "Missing alias",
+      "explanation": "A known Danish naming variant or reordered phrase exists, but no current alias equals the DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1301",
+          "danishName": "Hvedemel",
+          "similarity": 0.762
+        },
+        {
+          "foodId": "1308",
+          "danishName": "Hvedemel, bagerimel",
+          "similarity": 0.762
+        },
+        {
+          "foodId": "1512",
+          "danishName": "Hvedemel, durum",
+          "similarity": 0.762
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Natron",
+      "productTemplateKey": "NATRON",
+      "aliases": [
+        "bikarbonat"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "21",
+          "danishName": "Citron, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "268",
+          "danishName": "Citronsaft, friskpresset",
+          "similarity": 0.6
+        },
+        {
+          "foodId": "377",
+          "danishName": "Makaroni, spaghetti, fuldkorns-, rå",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Panko",
+      "productTemplateKey": "PANKO",
+      "aliases": [
+        "pankorasp"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "B",
+      "categoryLabel": "Missing alias",
+      "explanation": "A known Danish naming variant or reordered phrase exists, but no current alias equals the DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "192",
+          "danishName": "Rasp",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "937",
+          "danishName": "Pastinak, rå",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "1752",
+          "danishName": "Pastinak, dansk, rå",
+          "similarity": 0.615
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tipo 00-mel",
+      "productTemplateKey": "TIPO_00_MEL",
+      "aliases": [
+        "tipo 00",
+        "pizzamel"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "C",
+      "categoryLabel": "More specific Madkursus product",
+      "explanation": "Madkursus specifies a cut, preparation, variety, or product form more narrowly than the closest DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "631",
+          "danishName": "Pizza, dybfrost, uspec.",
+          "similarity": 0.769
+        },
+        {
+          "foodId": "1648",
+          "danishName": "Pizza med salami, tomat og ost, fastfood",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "1650",
+          "danishName": "Pizza med kød, tomat og ost, fastfood",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tørgær",
+      "productTemplateKey": "TOERGAER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "B",
+      "categoryLabel": "Missing alias",
+      "explanation": "A known Danish naming variant or reordered phrase exists, but no current alias equals the DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1199",
+          "danishName": "Gær, tørret",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "351",
+          "danishName": "Tørkage, linse",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "504",
+          "danishName": "Tørkage, kokosmakroner",
+          "similarity": 0.615
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Vaniljesukker",
+      "productTemplateKey": "VANILJESUKKER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1929",
+          "danishName": "Vanilje is, <50% fløde",
+          "similarity": 0.696
+        },
+        {
+          "foodId": "1930",
+          "danishName": "Vanilje is, >50% fløde",
+          "similarity": 0.696
+        },
+        {
+          "foodId": "1931",
+          "danishName": "Vanilje is, uden fløde",
+          "similarity": 0.696
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Burgerbolle",
+      "productTemplateKey": "BURGERBOLLE",
+      "aliases": [
+        "burgerboller"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1406",
+          "danishName": "Melboller, dybfrost",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "165",
+          "danishName": "Fiskeboller, konserves",
+          "similarity": 0.609
+        },
+        {
+          "foodId": "330",
+          "danishName": "Flødeboller, skumboller",
+          "similarity": 0.609
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Ciabatta",
+      "productTemplateKey": "CIABATTA",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "714",
+          "danishName": "Batat, sød kartoffel, rå",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "223",
+          "danishName": "Croissant",
+          "similarity": 0.471
+        },
+        {
+          "foodId": "1110",
+          "danishName": "Camembert, 30+",
+          "similarity": 0.471
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Sandwichbrød",
+      "productTemplateKey": "SANDWICHBROED",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1626",
+          "danishName": "Sandwich med fisk, salat og dressing, fastfood",
+          "similarity": 0.621
+        },
+        {
+          "foodId": "1627",
+          "danishName": "Sandwich med kebab, salat og dressing, fastfood",
+          "similarity": 0.6
+        },
+        {
+          "foodId": "462",
+          "danishName": "Bondebrød, industrifremstillet",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tortillawrap",
+      "productTemplateKey": "TORTILLAWRAP",
+      "aliases": [
+        "wrap",
+        "tortilla"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "192",
+          "danishName": "Rasp",
+          "similarity": 0.75
+        },
+        {
+          "foodId": "97",
+          "danishName": "Mozzarella, 45+",
+          "similarity": 0.556
+        },
+        {
+          "foodId": "1299",
+          "danishName": "Mozzarella, 30+",
+          "similarity": 0.556
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Gouda",
+      "productTemplateKey": "GOUDA",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "258",
+          "danishName": "Vodka",
+          "similarity": 0.6
+        },
+        {
+          "foodId": "389",
+          "danishName": "Loquat, japansk mispel, rå",
+          "similarity": 0.545
+        },
+        {
+          "foodId": "908",
+          "danishName": "Nougat",
+          "similarity": 0.545
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Græsk yoghurt",
+      "productTemplateKey": "GRAESK_YOGHURT",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "C",
+      "categoryLabel": "More specific Madkursus product",
+      "explanation": "Madkursus specifies a cut, preparation, variety, or product form more narrowly than the closest DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1169",
+          "danishName": "Yoghurt, med frugt, 1.5 % fedt",
+          "similarity": 0.7
+        },
+        {
+          "foodId": "1286",
+          "danishName": "Yoghurt, sødmælk, med frugt",
+          "similarity": 0.7
+        },
+        {
+          "foodId": "1677",
+          "danishName": "Yoghurt, med frugt, 0.1 % fedt, uden tilsat sukker",
+          "similarity": 0.7
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Madlavningsfløde",
+      "productTemplateKey": "MADLAVNINGSFLOEDE",
+      "aliases": [
+        "madfløde"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "B",
+      "categoryLabel": "Missing alias",
+      "explanation": "A known Danish naming variant or reordered phrase exists, but no current alias equals the DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "303",
+          "danishName": "Fløde 9 %",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "152",
+          "danishName": "Fløde 50 %",
+          "similarity": 0.625
+        },
+        {
+          "foodId": "483",
+          "danishName": "Fløde 13 %",
+          "similarity": 0.625
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Mascarpone",
+      "productTemplateKey": "MASCARPONE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "377",
+          "danishName": "Makaroni, spaghetti, fuldkorns-, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "628",
+          "danishName": "Margarine, 70 %, bordbrug, blød, vegetabilsk fedt",
+          "similarity": 0.632
+        },
+        {
+          "foodId": "1020",
+          "danishName": "Margarine, 80 %, bordbrug, blød, vegetabilsk fedt",
+          "similarity": 0.632
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Ricotta",
+      "productTemplateKey": "RICOTTA",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1492",
+          "danishName": "Rucola, rå",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "895",
+          "danishName": "Cherimoya, rå",
+          "similarity": 0.5
+        },
+        {
+          "foodId": "257",
+          "danishName": "Spirituosa, gennemsnitlige værdier",
+          "similarity": 0.471
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Muslinger",
+      "productTemplateKey": "MUSLINGER",
+      "aliases": [
+        "blåmuslinger"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "B",
+      "categoryLabel": "Missing alias",
+      "explanation": "A known Danish naming variant or reordered phrase exists, but no current alias equals the DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1661",
+          "danishName": "Blåmusling, kogt",
+          "similarity": 0.909
+        },
+        {
+          "foodId": "387",
+          "danishName": "Musling, rå",
+          "similarity": 0.875
+        },
+        {
+          "foodId": "635",
+          "danishName": "Musling, konserves",
+          "similarity": 0.875
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tigerrejer",
+      "productTemplateKey": "TIGERREJER",
+      "aliases": [
+        "kongerejer"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "1548",
+          "danishName": "Tigerreje, opdræt, rå, dybfrost",
+          "similarity": 0.947
+        },
+        {
+          "foodId": "518",
+          "danishName": "Reje, dybvands-, kogt, dybfrost",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "527",
+          "danishName": "Reje, dybvands-, konserves",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Frosne blandede bær",
+      "productTemplateKey": "FROSNE_BLANDEDE_BAER",
+      "aliases": [
+        "frosne bær"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "F",
+      "categoryLabel": "Non-food / special Madkursus template",
+      "explanation": "The template is a generic mixture, culinary category, or special-purpose ingredient without one canonical DTU food.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "350",
+          "danishName": "Tranebær, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "726",
+          "danishName": "Kirsebær, syltede",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "1854",
+          "danishName": "Kirsebær, rå",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Frosne blåbær",
+      "productTemplateKey": "FROSNE_BLAABAER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "1817",
+          "danishName": "Blåbær, dybfrost",
+          "similarity": 0.632
+        },
+        {
+          "foodId": "1848",
+          "danishName": "Blåbær, rå",
+          "similarity": 0.632
+        },
+        {
+          "foodId": "350",
+          "danishName": "Tranebær, rå",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Frosne hindbær",
+      "productTemplateKey": "FROSNE_HINDBAER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "1818",
+          "danishName": "Hindbær, dybfrost",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "1850",
+          "danishName": "Hindbær, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "206",
+          "danishName": "Rosévin",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Frosne jordbær",
+      "productTemplateKey": "FROSNE_JORDBAER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "1",
+          "danishName": "Jordbær, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "482",
+          "danishName": "Jordbær, dybfrost, sukrede",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "718",
+          "danishName": "Jordbær, syltede",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Frosne majs",
+      "productTemplateKey": "FROSNE_MAJS",
+      "aliases": [
+        "majs frost"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "381",
+          "danishName": "Majroe, rå",
+          "similarity": 0.625
+        },
+        {
+          "foodId": "340",
+          "danishName": "Myseost, 33+",
+          "similarity": 0.588
+        },
+        {
+          "foodId": "1164",
+          "danishName": "Majs, kerner, konserves",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Frosne ærter",
+      "productTemplateKey": "FROSNE_AERTER",
+      "aliases": [
+        "ærter frost"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "55",
+          "danishName": "Grønne ærter, rå",
+          "similarity": 0.75
+        },
+        {
+          "foodId": "1314",
+          "danishName": "Grønne ærter, konserves",
+          "similarity": 0.75
+        },
+        {
+          "foodId": "1778",
+          "danishName": "Skæreost, 6%/10+",
+          "similarity": 0.632
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Frossen blomkål",
+      "productTemplateKey": "FROSSEN_BLOMKAAL",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "41",
+          "danishName": "Rosenkål, uspec., rå",
+          "similarity": 0.696
+        },
+        {
+          "foodId": "1159",
+          "danishName": "Rosenkål, vinter (januar til april), rå",
+          "similarity": 0.696
+        },
+        {
+          "foodId": "1196",
+          "danishName": "Rosenkål, efterår (oktober til december), rå",
+          "similarity": 0.696
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Frossen broccoli",
+      "productTemplateKey": "FROSSEN_BROCCOLI",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "17",
+          "danishName": "Broccoli, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "914",
+          "danishName": "Broccoli, kogt",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "1824",
+          "danishName": "Broccoli, dybfrost",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Frossen spinat",
+      "productTemplateKey": "FROSSEN_SPINAT",
+      "aliases": [
+        "spinat frost"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "50",
+          "danishName": "Spinat, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "843",
+          "danishName": "Spinat, hakket, dybfrost",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "958",
+          "danishName": "Spinat, konserves",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Grøntsagsblanding",
+      "productTemplateKey": "GROENTSAGSBLANDING",
+      "aliases": [
+        "frosne grøntsager"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "1972",
+          "danishName": "Forårsrulle med grøntsager, friturestegt, fastfood",
+          "similarity": 0.698
+        },
+        {
+          "foodId": "1870",
+          "danishName": "Blandet grøntsagsjuice",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "1873",
+          "danishName": "Frugt- og grøntsag smoothie",
+          "similarity": 0.605
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Wokgrøntsager",
+      "productTemplateKey": "WOKGROENTSAGER",
+      "aliases": [
+        "wokblanding"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "F",
+      "categoryLabel": "Non-food / special Madkursus template",
+      "explanation": "The template is a generic mixture, culinary category, or special-purpose ingredient without one canonical DTU food.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1582",
+          "danishName": "Kransekage, industrifremstillet",
+          "similarity": 0.609
+        },
+        {
+          "foodId": "1661",
+          "danishName": "Blåmusling, kogt",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "1972",
+          "danishName": "Forårsrulle med grøntsager, friturestegt, fastfood",
+          "similarity": 0.564
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Clementin",
+      "productTemplateKey": "CLEMENTIN",
+      "aliases": [
+        "clementiner"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "261",
+          "danishName": "Emmentaler, 45+",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "681",
+          "danishName": "Linser, tørrede, rå",
+          "similarity": 0.588
+        },
+        {
+          "foodId": "1799",
+          "danishName": "Linser, røde, tørrede, rå",
+          "similarity": 0.588
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Vindruer",
+      "productTemplateKey": "VINDRUER",
+      "aliases": [
+        "druer"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "54",
+          "danishName": "Vindrue, rå",
+          "similarity": 0.933
+        },
+        {
+          "foodId": "508",
+          "danishName": "Vindrue, grønne, rå",
+          "similarity": 0.933
+        },
+        {
+          "foodId": "860",
+          "danishName": "Due, vildt, kød, rå",
+          "similarity": 0.75
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Basmatiris",
+      "productTemplateKey": "BASMATIRIS",
+      "aliases": [
+        "basmati"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "714",
+          "danishName": "Batat, sød kartoffel, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "229",
+          "danishName": "Campari",
+          "similarity": 0.588
+        },
+        {
+          "foodId": "1741",
+          "danishName": "Babyspinat, rå",
+          "similarity": 0.588
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Couscous",
+      "productTemplateKey": "COUSCOUS",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "223",
+          "danishName": "Croissant",
+          "similarity": 0.471
+        },
+        {
+          "foodId": "245",
+          "danishName": "Cognac",
+          "similarity": 0.429
+        },
+        {
+          "foodId": "1680",
+          "danishName": "Lactose, pulver",
+          "similarity": 0.4
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Farfalle",
+      "productTemplateKey": "FARFALLE",
+      "aliases": [
+        "sløjfepasta"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1008",
+          "danishName": "Karameller, blandede",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "419",
+          "danishName": "Forårsrulle, dybfrost",
+          "similarity": 0.632
+        },
+        {
+          "foodId": "305",
+          "danishName": "Pasta, rå",
+          "similarity": 0.625
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Fettuccine",
+      "productTemplateKey": "FETTUCCINE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1190",
+          "danishName": "Gelatine",
+          "similarity": 0.556
+        },
+        {
+          "foodId": "856",
+          "danishName": "Tunge, gris, saltet",
+          "similarity": 0.533
+        },
+        {
+          "foodId": "913",
+          "danishName": "Tunge, kalv, saltet",
+          "similarity": 0.533
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Fusilli",
+      "productTemplateKey": "FUSILLI",
+      "aliases": [
+        "pastaskruer"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "396",
+          "danishName": "Müsli, uspec.",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "937",
+          "danishName": "Pastinak, rå",
+          "similarity": 0.632
+        },
+        {
+          "foodId": "1752",
+          "danishName": "Pastinak, dansk, rå",
+          "similarity": 0.632
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Gnocchi",
+      "productTemplateKey": "GNOCCHI",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "17",
+          "danishName": "Broccoli, rå",
+          "similarity": 0.533
+        },
+        {
+          "foodId": "914",
+          "danishName": "Broccoli, kogt",
+          "similarity": 0.533
+        },
+        {
+          "foodId": "1824",
+          "danishName": "Broccoli, dybfrost",
+          "similarity": 0.533
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Jasminris",
+      "productTemplateKey": "JASMINRIS",
+      "aliases": [
+        "jasmin ris"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "979",
+          "danishName": "Minarine, 30 %, vegetabilsk fedt",
+          "similarity": 0.588
+        },
+        {
+          "foodId": "1191",
+          "danishName": "Minarine, gennemsnit",
+          "similarity": 0.588
+        },
+        {
+          "foodId": "1195",
+          "danishName": "Minarine, 40 %, vegetabilsk fedt",
+          "similarity": 0.588
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Lasagneplader",
+      "productTemplateKey": "LASAGNEPLADER",
+      "aliases": [
+        "lasagne"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "64",
+          "danishName": "Asparges, grønne, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "116",
+          "danishName": "Kastanje, ægte, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "594",
+          "danishName": "Lange, filet, rå",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Penne",
+      "productTemplateKey": "PENNE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "D",
+      "categoryLabel": "More specific DTU foods / ambiguous variants",
+      "explanation": "Several more-specific DTU variants are plausible; state or subtype must be chosen manually.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "204",
+          "danishName": "Sennep, brun, færdiglavet",
+          "similarity": 0.727
+        },
+        {
+          "foodId": "433",
+          "danishName": "Sennep, gul, færdiglavet",
+          "similarity": 0.727
+        },
+        {
+          "foodId": "1369",
+          "danishName": "Sennep, pulver",
+          "similarity": 0.727
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Ramen-nudler",
+      "productTemplateKey": "RAMEN_NUDLER",
+      "aliases": [
+        "ramen"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "C",
+      "categoryLabel": "More specific Madkursus product",
+      "explanation": "Madkursus specifies a cut, preparation, variety, or product form more narrowly than the closest DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "639",
+          "danishName": "Brasen, rå",
+          "similarity": 0.727
+        },
+        {
+          "foodId": "1008",
+          "danishName": "Karameller, blandede",
+          "similarity": 0.636
+        },
+        {
+          "foodId": "309",
+          "danishName": "Parmesan, 32+",
+          "similarity": 0.615
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Ravioli",
+      "productTemplateKey": "RAVIOLI",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "A",
+      "categoryLabel": "Naming mismatch",
+      "explanation": "A likely equivalent DTU food uses different spelling, spacing, word order, or terminology.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1957",
+          "danishName": "Aioli",
+          "similarity": 0.833
+        },
+        {
+          "foodId": "1483",
+          "danishName": "Rapsolie",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "1081",
+          "danishName": "Risklid",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Risnudler",
+      "productTemplateKey": "RISNUDLER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "775",
+          "danishName": "Koriander, frø",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "835",
+          "danishName": "Koriander, blade, tørrede",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "867",
+          "danishName": "Koriander, blade, friske",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Risottoris",
+      "productTemplateKey": "RISOTTORIS",
+      "aliases": [
+        "arborio"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "403",
+          "danishName": "Abrikos, konserves, let sukkerlage",
+          "similarity": 0.714
+        },
+        {
+          "foodId": "421",
+          "danishName": "Abrikos, konserves, uden tilsat sukker",
+          "similarity": 0.714
+        },
+        {
+          "foodId": "458",
+          "danishName": "Abrikos, tørret",
+          "similarity": 0.714
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tagliatelle",
+      "productTemplateKey": "TAGLIATELLE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1008",
+          "danishName": "Karameller, blandede",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "1694",
+          "danishName": "Galia melon, rå",
+          "similarity": 0.545
+        },
+        {
+          "foodId": "1131",
+          "danishName": "Mintgele",
+          "similarity": 0.526
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tortellini",
+      "productTemplateKey": "TORTELLINI",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "273",
+          "danishName": "Portvin",
+          "similarity": 0.588
+        },
+        {
+          "foodId": "97",
+          "danishName": "Mozzarella, 45+",
+          "similarity": 0.5
+        },
+        {
+          "foodId": "251",
+          "danishName": "Oliven, sorte, uden sten, i saltlage",
+          "similarity": 0.5
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Udon-nudler",
+      "productTemplateKey": "UDON_NUDLER",
+      "aliases": [
+        "udon"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "103",
+          "danishName": "Buddingpulver",
+          "similarity": 0.583
+        },
+        {
+          "foodId": "904",
+          "danishName": "Tun, rå",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "1653",
+          "danishName": "Tun, gulfinnet, rå",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Ægnudler",
+      "productTemplateKey": "AEGNUDLER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "24",
+          "danishName": "Gulerod, uspec., rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "410",
+          "danishName": "Gulerod, konserves",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "502",
+          "danishName": "Gulerod, dybfrost",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Frisk estragon",
+      "productTemplateKey": "FRISK_ESTRAGON",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "434",
+          "danishName": "Fersken, konserves",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "1276",
+          "danishName": "Fersken, tørret",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "1853",
+          "danishName": "Fersken, rå",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Frisk rosmarin",
+      "productTemplateKey": "FRISK_ROSMARIN",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "C",
+      "categoryLabel": "More specific Madkursus product",
+      "explanation": "Madkursus specifies a cut, preparation, variety, or product form more narrowly than the closest DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "993",
+          "danishName": "Brisling (sardin), i tomat, konserves",
+          "similarity": 0.621
+        },
+        {
+          "foodId": "1120",
+          "danishName": "Brisling (sardin), i olie, konserves",
+          "similarity": 0.621
+        },
+        {
+          "foodId": "1748",
+          "danishName": "Riskiks/riskage, poppede brune ris",
+          "similarity": 0.552
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Frisk salvie",
+      "productTemplateKey": "FRISK_SALVIE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "C",
+      "categoryLabel": "More specific Madkursus product",
+      "explanation": "Madkursus specifies a cut, preparation, variety, or product form more narrowly than the closest DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "85",
+          "danishName": "Fiskeolie, hydrogeneret",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "1081",
+          "danishName": "Risklid",
+          "similarity": 0.632
+        },
+        {
+          "foodId": "1748",
+          "danishName": "Riskiks/riskage, poppede brune ris",
+          "similarity": 0.593
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Frisk timian",
+      "productTemplateKey": "FRISK_TIMIAN",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1657",
+          "danishName": "Fiskepinde, panerede, dybfrost",
+          "similarity": 0.545
+        },
+        {
+          "foodId": "434",
+          "danishName": "Fersken, konserves",
+          "similarity": 0.526
+        },
+        {
+          "foodId": "1081",
+          "danishName": "Risklid",
+          "similarity": 0.526
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Herbes de Provence",
+      "productTemplateKey": "HERBES_DE_PROVENCE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "F",
+      "categoryLabel": "Non-food / special Madkursus template",
+      "explanation": "The template is a generic mixture, culinary category, or special-purpose ingredient without one canonical DTU food.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1311",
+          "danishName": "Hvedegryn, mannagryn",
+          "similarity": 0.444
+        },
+        {
+          "foodId": "1808",
+          "danishName": "Baked beans (hvide bønner i tomatsauce)",
+          "similarity": 0.436
+        },
+        {
+          "foodId": "1238",
+          "danishName": "Sildepostej",
+          "similarity": 0.414
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Laurbærblade",
+      "productTemplateKey": "LAURBAERBLADE",
+      "aliases": [
+        "laurbær"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "D",
+      "categoryLabel": "More specific DTU foods / ambiguous variants",
+      "explanation": "Several more-specific DTU variants are plausible; state or subtype must be chosen manually.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1817",
+          "danishName": "Blåbær, dybfrost",
+          "similarity": 0.769
+        },
+        {
+          "foodId": "1848",
+          "danishName": "Blåbær, rå",
+          "similarity": 0.769
+        },
+        {
+          "foodId": "735",
+          "danishName": "Loganbær, frosne",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Mynte",
+      "productTemplateKey": "MYNTE",
+      "aliases": [
+        "frisk mynte"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1131",
+          "danishName": "Mintgele",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "989",
+          "danishName": "Sylte",
+          "similarity": 0.6
+        },
+        {
+          "foodId": "1255",
+          "danishName": "Rismel",
+          "similarity": 0.588
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tørret basilikum",
+      "productTemplateKey": "TOERRET_BASILIKUM",
+      "aliases": [
+        "basilikum tørret"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "1918",
+          "danishName": "Tørret skinke, Serrano",
+          "similarity": 0.69
+        },
+        {
+          "foodId": "1919",
+          "danishName": "Tørret skinke, Schwarzwalder",
+          "similarity": 0.69
+        },
+        {
+          "foodId": "435",
+          "danishName": "Likør, uspec.",
+          "similarity": 0.476
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tørret estragon",
+      "productTemplateKey": "TOERRET_ESTRAGON",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1918",
+          "danishName": "Tørret skinke, Serrano",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "1919",
+          "danishName": "Tørret skinke, Schwarzwalder",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "1876",
+          "danishName": "Koncentreret tranebærsaft, tilsat kunstig sødestof, fortyndes 1+4",
+          "similarity": 0.5
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tørret merian",
+      "productTemplateKey": "TOERRET_MERIAN",
+      "aliases": [
+        "merian"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "C",
+      "categoryLabel": "More specific Madkursus product",
+      "explanation": "Madkursus specifies a cut, preparation, variety, or product form more narrowly than the closest DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "787",
+          "danishName": "Marcipan",
+          "similarity": 0.714
+        },
+        {
+          "foodId": "1784",
+          "danishName": "Seitan",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "228",
+          "danishName": "Madeira",
+          "similarity": 0.615
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tørret oregano",
+      "productTemplateKey": "TOERRET_OREGANO",
+      "aliases": [
+        "oregano"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1918",
+          "danishName": "Tørret skinke, Serrano",
+          "similarity": 0.593
+        },
+        {
+          "foodId": "1919",
+          "danishName": "Tørret skinke, Schwarzwalder",
+          "similarity": 0.593
+        },
+        {
+          "foodId": "63",
+          "danishName": "Okra, rå",
+          "similarity": 0.545
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tørret persille",
+      "productTemplateKey": "TOERRET_PERSILLE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "8",
+          "danishName": "Persille, rå",
+          "similarity": 0.696
+        },
+        {
+          "foodId": "976",
+          "danishName": "Persillerod, rå",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "1918",
+          "danishName": "Tørret skinke, Serrano",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tørret rosmarin",
+      "productTemplateKey": "TOERRET_ROSMARIN",
+      "aliases": [
+        "rosmarin tørret"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "C",
+      "categoryLabel": "More specific Madkursus product",
+      "explanation": "Madkursus specifies a cut, preparation, variety, or product form more narrowly than the closest DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1918",
+          "danishName": "Tørret skinke, Serrano",
+          "similarity": 0.714
+        },
+        {
+          "foodId": "1919",
+          "danishName": "Tørret skinke, Schwarzwalder",
+          "similarity": 0.714
+        },
+        {
+          "foodId": "222",
+          "danishName": "Tamarind, rå",
+          "similarity": 0.522
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tørret salvie",
+      "productTemplateKey": "TOERRET_SALVIE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "D",
+      "categoryLabel": "More specific DTU foods / ambiguous variants",
+      "explanation": "Several more-specific DTU variants are plausible; state or subtype must be chosen manually.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1918",
+          "danishName": "Tørret skinke, Serrano",
+          "similarity": 0.769
+        },
+        {
+          "foodId": "1919",
+          "danishName": "Tørret skinke, Schwarzwalder",
+          "similarity": 0.769
+        },
+        {
+          "foodId": "1412",
+          "danishName": "Sesamolie",
+          "similarity": 0.545
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tørret timian",
+      "productTemplateKey": "TOERRET_TIMIAN",
+      "aliases": [
+        "timian tørret"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "C",
+      "categoryLabel": "More specific Madkursus product",
+      "explanation": "Madkursus specifies a cut, preparation, variety, or product form more narrowly than the closest DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1918",
+          "danishName": "Tørret skinke, Serrano",
+          "similarity": 0.692
+        },
+        {
+          "foodId": "1919",
+          "danishName": "Tørret skinke, Schwarzwalder",
+          "similarity": 0.692
+        },
+        {
+          "foodId": "1216",
+          "danishName": "Tomatpure, koncentreret",
+          "similarity": 0.545
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Butterbeans",
+      "productTemplateKey": "BUTTERBEANS",
+      "aliases": [
+        "limabønner"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "D",
+      "categoryLabel": "More specific DTU foods / ambiguous variants",
+      "explanation": "Several more-specific DTU variants are plausible; state or subtype must be chosen manually.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1801",
+          "danishName": "Bønner, hvide, tørrede, rå",
+          "similarity": 0.75
+        },
+        {
+          "foodId": "1802",
+          "danishName": "Bønner, røde kidney, tørrede, rå",
+          "similarity": 0.75
+        },
+        {
+          "foodId": "1810",
+          "danishName": "Bønner, røde kidney, kogte, konserves",
+          "similarity": 0.75
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Andebryst",
+      "productTemplateKey": "ANDEBRYST",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "601",
+          "danishName": "Sandart, rå",
+          "similarity": 0.625
+        },
+        {
+          "foodId": "473",
+          "danishName": "Hindbærsaft, sur, koncentreret",
+          "similarity": 0.6
+        },
+        {
+          "foodId": "762",
+          "danishName": "Hindbærsaft, sød, koncentreret",
+          "similarity": 0.6
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Chorizo",
+      "productTemplateKey": "CHORIZO",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "895",
+          "danishName": "Cherimoya, rå",
+          "similarity": 0.625
+        },
+        {
+          "foodId": "25",
+          "danishName": "Hornfisk, rå",
+          "similarity": 0.533
+        },
+        {
+          "foodId": "1351",
+          "danishName": "Sorbitol",
+          "similarity": 0.533
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Flæskesteg",
+      "productTemplateKey": "FLAESKESTEG",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1103",
+          "danishName": "Flæskesvær, snacks",
+          "similarity": 0.7
+        },
+        {
+          "foodId": "1884",
+          "danishName": "Fersken iste, tilsat sukker",
+          "similarity": 0.636
+        },
+        {
+          "foodId": "1886",
+          "danishName": "Fersken iste, tilsat kunstig sødestof",
+          "similarity": 0.636
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Gullaschkød",
+      "productTemplateKey": "GULLASCHKOED",
+      "aliases": [
+        "gullasch"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "56",
+          "danishName": "Squash, rå",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "614",
+          "danishName": "Squash, alle typer, rå",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "87",
+          "danishName": "Gås, kød og skind, rå",
+          "similarity": 0.545
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Hakket kalkun",
+      "productTemplateKey": "HAKKET_KALKUN",
+      "aliases": [
+        "kalkunfars"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "729",
+          "danishName": "Kalkun, bryst (filet), kogt/røget, pålæg",
+          "similarity": 0.75
+        },
+        {
+          "foodId": "732",
+          "danishName": "Kalkun, kød, rå",
+          "similarity": 0.75
+        },
+        {
+          "foodId": "785",
+          "danishName": "Kalkun, kød og skind, rå",
+          "similarity": 0.75
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Hakket kylling",
+      "productTemplateKey": "HAKKET_KYLLING",
+      "aliases": [
+        "kyllingefars"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "754",
+          "danishName": "Kylling, bryst (filet), kogt, pålæg",
+          "similarity": 0.737
+        },
+        {
+          "foodId": "795",
+          "danishName": "Kylling, kød, rå",
+          "similarity": 0.737
+        },
+        {
+          "foodId": "882",
+          "danishName": "Kylling, ben, kød og skind, rå",
+          "similarity": 0.737
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Hakket lammekød",
+      "productTemplateKey": "HAKKET_LAMMEKOED",
+      "aliases": [
+        "lammefars"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "71",
+          "danishName": "Lammekød, kølle, uspec., rå",
+          "similarity": 0.696
+        },
+        {
+          "foodId": "796",
+          "danishName": "Lammekød, kølle, afpudset, rå",
+          "similarity": 0.696
+        },
+        {
+          "foodId": "994",
+          "danishName": "Lammekød, bov, rå",
+          "similarity": 0.696
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Hel and",
+      "productTemplateKey": "HEL_AND",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "C",
+      "categoryLabel": "More specific Madkursus product",
+      "explanation": "Madkursus specifies a cut, preparation, variety, or product form more narrowly than the closest DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "302",
+          "danishName": "Hasselnød, tørret",
+          "similarity": 0.625
+        },
+        {
+          "foodId": "101",
+          "danishName": "And, kød og skind, rå",
+          "similarity": 0.6
+        },
+        {
+          "foodId": "728",
+          "danishName": "And, kød, rå",
+          "similarity": 0.6
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Hel kylling",
+      "productTemplateKey": "HEL_KYLLING",
+      "aliases": [
+        "kylling hel"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "D",
+      "categoryLabel": "More specific DTU foods / ambiguous variants",
+      "explanation": "Several more-specific DTU variants are plausible; state or subtype must be chosen manually.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "754",
+          "danishName": "Kylling, bryst (filet), kogt, pålæg",
+          "similarity": 0.778
+        },
+        {
+          "foodId": "795",
+          "danishName": "Kylling, kød, rå",
+          "similarity": 0.778
+        },
+        {
+          "foodId": "882",
+          "danishName": "Kylling, ben, kød og skind, rå",
+          "similarity": 0.778
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Kalkunbryst",
+      "productTemplateKey": "KALKUNBRYST",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "729",
+          "danishName": "Kalkun, bryst (filet), kogt/røget, pålæg",
+          "similarity": 0.706
+        },
+        {
+          "foodId": "732",
+          "danishName": "Kalkun, kød, rå",
+          "similarity": 0.706
+        },
+        {
+          "foodId": "785",
+          "danishName": "Kalkun, kød og skind, rå",
+          "similarity": 0.706
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Kalkunfilet",
+      "productTemplateKey": "KALKUNFILET",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "729",
+          "danishName": "Kalkun, bryst (filet), kogt/røget, pålæg",
+          "similarity": 0.706
+        },
+        {
+          "foodId": "732",
+          "danishName": "Kalkun, kød, rå",
+          "similarity": 0.706
+        },
+        {
+          "foodId": "785",
+          "danishName": "Kalkun, kød og skind, rå",
+          "similarity": 0.706
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Kyllingebryst",
+      "productTemplateKey": "KYLLINGEBRYST",
+      "aliases": [
+        "kyllingefilet",
+        "kyllingebrystfilet"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "925",
+          "danishName": "Kyllingepølse, pålæg",
+          "similarity": 0.769
+        },
+        {
+          "foodId": "1645",
+          "danishName": "Kyllingenuggets, friturestegt, fastfood",
+          "similarity": 0.714
+        },
+        {
+          "foodId": "754",
+          "danishName": "Kylling, bryst (filet), kogt, pålæg",
+          "similarity": 0.7
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Kyllingelår",
+      "productTemplateKey": "KYLLINGELAAR",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "D",
+      "categoryLabel": "More specific DTU foods / ambiguous variants",
+      "explanation": "Several more-specific DTU variants are plausible; state or subtype must be chosen manually.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "754",
+          "danishName": "Kylling, bryst (filet), kogt, pålæg",
+          "similarity": 0.778
+        },
+        {
+          "foodId": "795",
+          "danishName": "Kylling, kød, rå",
+          "similarity": 0.778
+        },
+        {
+          "foodId": "882",
+          "danishName": "Kylling, ben, kød og skind, rå",
+          "similarity": 0.778
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Kyllingeoverlår",
+      "productTemplateKey": "KYLLINGEOVERLAAR",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "925",
+          "danishName": "Kyllingepølse, pålæg",
+          "similarity": 0.643
+        },
+        {
+          "foodId": "754",
+          "danishName": "Kylling, bryst (filet), kogt, pålæg",
+          "similarity": 0.636
+        },
+        {
+          "foodId": "795",
+          "danishName": "Kylling, kød, rå",
+          "similarity": 0.636
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Kyllingeunderlår",
+      "productTemplateKey": "KYLLINGEUNDERLAAR",
+      "aliases": [
+        "drumsticks"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1740",
+          "danishName": "Kyllingekød, hakket, 3-10% fedt, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "1645",
+          "danishName": "Kyllingenuggets, friturestegt, fastfood",
+          "similarity": 0.645
+        },
+        {
+          "foodId": "925",
+          "danishName": "Kyllingepølse, pålæg",
+          "similarity": 0.621
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Kyllingevinger",
+      "productTemplateKey": "KYLLINGEVINGER",
+      "aliases": [
+        "chicken wings"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1645",
+          "danishName": "Kyllingenuggets, friturestegt, fastfood",
+          "similarity": 0.759
+        },
+        {
+          "foodId": "754",
+          "danishName": "Kylling, bryst (filet), kogt, pålæg",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "795",
+          "danishName": "Kylling, kød, rå",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Lammekotelet",
+      "productTemplateKey": "LAMMEKOTELET",
+      "aliases": [
+        "lammekoteletter"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "71",
+          "danishName": "Lammekød, kølle, uspec., rå",
+          "similarity": 0.6
+        },
+        {
+          "foodId": "796",
+          "danishName": "Lammekød, kølle, afpudset, rå",
+          "similarity": 0.6
+        },
+        {
+          "foodId": "994",
+          "danishName": "Lammekød, bov, rå",
+          "similarity": 0.6
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Lammekølle",
+      "productTemplateKey": "LAMMEKOELLE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "D",
+      "categoryLabel": "More specific DTU foods / ambiguous variants",
+      "explanation": "Several more-specific DTU variants are plausible; state or subtype must be chosen manually.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "71",
+          "danishName": "Lammekød, kølle, uspec., rå",
+          "similarity": 0.778
+        },
+        {
+          "foodId": "796",
+          "danishName": "Lammekød, kølle, afpudset, rå",
+          "similarity": 0.778
+        },
+        {
+          "foodId": "994",
+          "danishName": "Lammekød, bov, rå",
+          "similarity": 0.778
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Oksefilet",
+      "productTemplateKey": "OKSEFILET",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "D",
+      "categoryLabel": "More specific DTU foods / ambiguous variants",
+      "explanation": "Several more-specific DTU variants are plausible; state or subtype must be chosen manually.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "743",
+          "danishName": "Grisefilet, røget, pålæg",
+          "similarity": 0.737
+        },
+        {
+          "foodId": "1465",
+          "danishName": "Fiskefilet, paneret, friturestegt, fastfood",
+          "similarity": 0.737
+        },
+        {
+          "foodId": "1652",
+          "danishName": "Fiskefilet, paneret, stegt, delikatesse",
+          "similarity": 0.737
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Oksemørbrad",
+      "productTemplateKey": "OKSEMOERBRAD",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "770",
+          "danishName": "Oksekød, inderlår uden kappe, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "805",
+          "danishName": "Oksekød, tykstegsfilet uden kappe, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "818",
+          "danishName": "Oksekød, uspec., helt magert, råt",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Pancetta",
+      "productTemplateKey": "PANCETTA",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "305",
+          "danishName": "Pasta, rå",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "1296",
+          "danishName": "Pasta, kogt",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "864",
+          "danishName": "Peanuts, (jordnød, ristet og saltet)",
+          "similarity": 0.533
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Pepperoni",
+      "productTemplateKey": "PEPPERONI",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "496",
+          "danishName": "Peberrod, rå",
+          "similarity": 0.588
+        },
+        {
+          "foodId": "153",
+          "danishName": "Peber, hvid",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "236",
+          "danishName": "Peber, sort",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Ribbensteg",
+      "productTemplateKey": "RIBBENSTEG",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1106",
+          "danishName": "Ribbensstegssandwich",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "1628",
+          "danishName": "Sandwich med ribbenssteg, rødkål og agurk, fastfood",
+          "similarity": 0.588
+        },
+        {
+          "foodId": "40",
+          "danishName": "Ribs, rå",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Ribeye",
+      "productTemplateKey": "RIBEYE",
+      "aliases": [
+        "rib eye"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "709",
+          "danishName": "Ribsgele",
+          "similarity": 0.714
+        },
+        {
+          "foodId": "43",
+          "danishName": "Rødbede, rå",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "492",
+          "danishName": "Rødbede, konserves, uden tilsat sukker",
+          "similarity": 0.615
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Skinkestrimler",
+      "productTemplateKey": "SKINKESTRIMLER",
+      "aliases": [
+        "skinke i strimler"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1043",
+          "danishName": "Skinkepølse, pålæg",
+          "similarity": 0.64
+        },
+        {
+          "foodId": "1943",
+          "danishName": "Skinkesalat, light",
+          "similarity": 0.64
+        },
+        {
+          "foodId": "1944",
+          "danishName": "Skinkesalat",
+          "similarity": 0.64
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Svinekam",
+      "productTemplateKey": "SVINEKAM",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1135",
+          "danishName": "Vekao",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "50",
+          "danishName": "Spinat, rå",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "221",
+          "danishName": "Sveske, rå",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Svinekotelet",
+      "productTemplateKey": "SVINEKOTELET",
+      "aliases": [
+        "koteletter"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1845",
+          "danishName": "Kartoffel kroketter, dybfrost",
+          "similarity": 0.621
+        },
+        {
+          "foodId": "1131",
+          "danishName": "Mintgele",
+          "similarity": 0.6
+        },
+        {
+          "foodId": "221",
+          "danishName": "Sveske, rå",
+          "similarity": 0.556
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Svinemørbrad",
+      "productTemplateKey": "SVINEMOERBRAD",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "181",
+          "danishName": "Wienerbrød, spandauer",
+          "similarity": 0.636
+        },
+        {
+          "foodId": "279",
+          "danishName": "Wienerbrød, kanelsnegl",
+          "similarity": 0.636
+        },
+        {
+          "foodId": "280",
+          "danishName": "Wienerbrød, uspec.",
+          "similarity": 0.636
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Cashewnødder",
+      "productTemplateKey": "CASHEWNOEDDER",
+      "aliases": [
+        "cashews"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "A",
+      "categoryLabel": "Naming mismatch",
+      "explanation": "A likely equivalent DTU food uses different spelling, spacing, word order, or terminology.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "390",
+          "danishName": "Cashewnød, olieristet",
+          "similarity": 0.857
+        },
+        {
+          "foodId": "815",
+          "danishName": "Cashewnød, tørristet",
+          "similarity": 0.857
+        },
+        {
+          "foodId": "321",
+          "danishName": "Cheddar, 50+",
+          "similarity": 0.632
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Hasselnødder",
+      "productTemplateKey": "HASSELNOEDDER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "A",
+      "categoryLabel": "Naming mismatch",
+      "explanation": "A likely equivalent DTU food uses different spelling, spacing, word order, or terminology.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "302",
+          "danishName": "Hasselnød, tørret",
+          "similarity": 0.857
+        },
+        {
+          "foodId": "700",
+          "danishName": "Helleflynder, røget",
+          "similarity": 0.583
+        },
+        {
+          "foodId": "711",
+          "danishName": "Helleflynder, rå",
+          "similarity": 0.583
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Pistacienødder",
+      "productTemplateKey": "PISTACIENOEDDER",
+      "aliases": [
+        "pistacie"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "A",
+      "categoryLabel": "Naming mismatch",
+      "explanation": "A likely equivalent DTU food uses different spelling, spacing, word order, or terminology.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "328",
+          "danishName": "Pistacienød, tørret",
+          "similarity": 0.88
+        },
+        {
+          "foodId": "757",
+          "danishName": "Pistacienød, tørristet med salt",
+          "similarity": 0.88
+        },
+        {
+          "foodId": "305",
+          "danishName": "Pasta, rå",
+          "similarity": 0.615
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Solsikkekerner",
+      "productTemplateKey": "SOLSIKKEKERNER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "D",
+      "categoryLabel": "More specific DTU foods / ambiguous variants",
+      "explanation": "Several more-specific DTU variants are plausible; state or subtype must be chosen manually.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "438",
+          "danishName": "Solsikkefrø, afskallede, tørrede",
+          "similarity": 0.72
+        },
+        {
+          "foodId": "1382",
+          "danishName": "Solsikkeolie",
+          "similarity": 0.692
+        },
+        {
+          "foodId": "880",
+          "danishName": "Rosin uden kerner",
+          "similarity": 0.645
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Valnødder",
+      "productTemplateKey": "VALNOEDDER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "D",
+      "categoryLabel": "More specific DTU foods / ambiguous variants",
+      "explanation": "Several more-specific DTU variants are plausible; state or subtype must be chosen manually.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "647",
+          "danishName": "Valnød, tørret",
+          "similarity": 0.8
+        },
+        {
+          "foodId": "1384",
+          "danishName": "Valnøddeolie",
+          "similarity": 0.762
+        },
+        {
+          "foodId": "1760",
+          "danishName": "Gulerødder, importeret, uden skræl, rå",
+          "similarity": 0.632
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Neutral olie",
+      "productTemplateKey": "NEUTRAL_OLIE",
+      "aliases": [
+        "madolie"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "F",
+      "categoryLabel": "Non-food / special Madkursus template",
+      "explanation": "The template is a generic mixture, culinary category, or special-purpose ingredient without one canonical DTU food.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1415",
+          "danishName": "Majsolie",
+          "similarity": 0.8
+        },
+        {
+          "foodId": "1333",
+          "danishName": "Majskimolie",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "1461",
+          "danishName": "Sojaolie",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Svinefedt",
+      "productTemplateKey": "SVINEFEDT",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1016",
+          "danishName": "Gåsefedt",
+          "similarity": 0.706
+        },
+        {
+          "foodId": "78",
+          "danishName": "Grisefedt, afsmeltet, Raffinol",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "79",
+          "danishName": "Grisefedt, afsmeltet",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Grøn karrypasta",
+      "productTemplateKey": "GROEN_KARRYPASTA",
+      "aliases": [
+        "grøn curry paste"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "55",
+          "danishName": "Grønne ærter, rå",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "498",
+          "danishName": "Grisekød i karrysovs, dybfrost",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "1314",
+          "danishName": "Grønne ærter, konserves",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Gul karrypasta",
+      "productTemplateKey": "GUL_KARRYPASTA",
+      "aliases": [
+        "gul curry paste"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1950",
+          "danishName": "Karrysalat",
+          "similarity": 0.583
+        },
+        {
+          "foodId": "305",
+          "danishName": "Pasta, rå",
+          "similarity": 0.526
+        },
+        {
+          "foodId": "657",
+          "danishName": "Karry, pulver",
+          "similarity": 0.526
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Hvid chokolade",
+      "productTemplateKey": "HVID_CHOKOLADE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "675",
+          "danishName": "Chokolade, fløde",
+          "similarity": 0.783
+        },
+        {
+          "foodId": "804",
+          "danishName": "Chokolade, fløde, med nødder",
+          "similarity": 0.783
+        },
+        {
+          "foodId": "1022",
+          "danishName": "Chokolade, mørk",
+          "similarity": 0.783
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Kokosflager",
+      "productTemplateKey": "KOKOSFLAGER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1440",
+          "danishName": "Kokosolie",
+          "similarity": 0.7
+        },
+        {
+          "foodId": "331",
+          "danishName": "Hirseflager",
+          "similarity": 0.636
+        },
+        {
+          "foodId": "704",
+          "danishName": "Kokosmel",
+          "similarity": 0.632
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Lys chokolade",
+      "productTemplateKey": "LYS_CHOKOLADE",
+      "aliases": [
+        "mælkechokolade"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "675",
+          "danishName": "Chokolade, fløde",
+          "similarity": 0.818
+        },
+        {
+          "foodId": "804",
+          "danishName": "Chokolade, fløde, med nødder",
+          "similarity": 0.818
+        },
+        {
+          "foodId": "1022",
+          "danishName": "Chokolade, mørk",
+          "similarity": 0.818
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Madkulør",
+      "productTemplateKey": "MADKULOER",
+      "aliases": [
+        "kulør"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "F",
+      "categoryLabel": "Non-food / special Madkursus template",
+      "explanation": "The template is a generic mixture, culinary category, or special-purpose ingredient without one canonical DTU food.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "582",
+          "danishName": "Kuller, rå",
+          "similarity": 0.727
+        },
+        {
+          "foodId": "1087",
+          "danishName": "Kuller, paneret, stegt",
+          "similarity": 0.727
+        },
+        {
+          "foodId": "435",
+          "danishName": "Likør, uspec.",
+          "similarity": 0.6
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Rød karrypasta",
+      "productTemplateKey": "ROED_KARRYPASTA",
+      "aliases": [
+        "rød curry paste"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "498",
+          "danishName": "Grisekød i karrysovs, dybfrost",
+          "similarity": 0.588
+        },
+        {
+          "foodId": "685",
+          "danishName": "Brøndkarse, rå",
+          "similarity": 0.583
+        },
+        {
+          "foodId": "1950",
+          "danishName": "Karrysalat",
+          "similarity": 0.583
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Flåede tomater",
+      "productTemplateKey": "FLAAEDE_TOMATER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "330",
+          "danishName": "Flødeboller, skumboller",
+          "similarity": 0.56
+        },
+        {
+          "foodId": "1731",
+          "danishName": "Flydende olie margarine",
+          "similarity": 0.541
+        },
+        {
+          "foodId": "1732",
+          "danishName": "Flydende olie margarine, beriget med A- og D-vitamin",
+          "similarity": 0.541
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Hakkede tomater",
+      "productTemplateKey": "HAKKEDE_TOMATER",
+      "aliases": [
+        "tomater på dåse"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "C",
+      "categoryLabel": "More specific Madkursus product",
+      "explanation": "Madkursus specifies a cut, preparation, variety, or product form more narrowly than the closest DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "960",
+          "danishName": "Makrel i tomat, konserves",
+          "similarity": 0.621
+        },
+        {
+          "foodId": "1785",
+          "danishName": "Hakket, med mycoprotein",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "1786",
+          "danishName": "Hakket, med sojaprotein",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Kapers",
+      "productTemplateKey": "KAPERS",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "969",
+          "danishName": "Karse, frisk",
+          "similarity": 0.727
+        },
+        {
+          "foodId": "1581",
+          "danishName": "Kage, trøffelprodukt / koldprodukt, industrifremstillet",
+          "similarity": 0.6
+        },
+        {
+          "foodId": "8",
+          "danishName": "Persille, rå",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Kidneybønner på dåse",
+      "productTemplateKey": "KIDNEYBOENNER_PAA_DAASE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "1815",
+          "danishName": "Hvide bønner, tørrede og kogt",
+          "similarity": 0.562
+        },
+        {
+          "foodId": "900",
+          "danishName": "Wienerpølse, konserves",
+          "similarity": 0.516
+        },
+        {
+          "foodId": "1093",
+          "danishName": "Wienerpølse, kogt, fastfood",
+          "similarity": 0.516
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Kikærter på dåse",
+      "productTemplateKey": "KIKAERTER_PAA_DAASE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "1803",
+          "danishName": "Kikærter, tørrede, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "1812",
+          "danishName": "Kikærter, lyse, kogte, konserves",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "1813",
+          "danishName": "Kikærter, lyse, dampede, spiseklare",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Kokosfløde",
+      "productTemplateKey": "KOKOSFLOEDE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "88",
+          "danishName": "Kokosnød, rå",
+          "similarity": 0.778
+        },
+        {
+          "foodId": "1440",
+          "danishName": "Kokosolie",
+          "similarity": 0.737
+        },
+        {
+          "foodId": "704",
+          "danishName": "Kokosmel",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Kokosmælk",
+      "productTemplateKey": "KOKOSMAELK",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "A",
+      "categoryLabel": "Naming mismatch",
+      "explanation": "A likely equivalent DTU food uses different spelling, spacing, word order, or terminology.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "704",
+          "danishName": "Kokosmel",
+          "similarity": 0.824
+        },
+        {
+          "foodId": "1440",
+          "danishName": "Kokosolie",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "6",
+          "danishName": "Sødmælk, konventionel (ikke-økologisk)",
+          "similarity": 0.625
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Majs på dåse",
+      "productTemplateKey": "MAJS_PAA_DAASE",
+      "aliases": [
+        "dåsemajs"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "C",
+      "categoryLabel": "More specific Madkursus product",
+      "explanation": "Madkursus specifies a cut, preparation, variety, or product form more narrowly than the closest DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1164",
+          "danishName": "Majs, kerner, konserves",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "1820",
+          "danishName": "Majs, dybfrost",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "1584",
+          "danishName": "Babymajs, rå",
+          "similarity": 0.625
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Passata",
+      "productTemplateKey": "PASSATA",
+      "aliases": [
+        "tomatpassata"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "A",
+      "categoryLabel": "Naming mismatch",
+      "explanation": "A likely equivalent DTU food uses different spelling, spacing, word order, or terminology.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "305",
+          "danishName": "Pasta, rå",
+          "similarity": 0.833
+        },
+        {
+          "foodId": "1296",
+          "danishName": "Pasta, kogt",
+          "similarity": 0.833
+        },
+        {
+          "foodId": "510",
+          "danishName": "Papaya, rå",
+          "similarity": 0.615
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Rødbeder på glas",
+      "productTemplateKey": "ROEDBEDER_PAA_GLAS",
+      "aliases": [
+        "syltede rødbeder"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "1760",
+          "danishName": "Gulerødder, importeret, uden skræl, rå",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "1761",
+          "danishName": "Gulerødder, dansk, uden skræl, rå",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "43",
+          "danishName": "Rødbede, rå",
+          "similarity": 0.609
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Soltørrede tomater",
+      "productTemplateKey": "SOLTOERREDE_TOMATER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "960",
+          "danishName": "Makrel i tomat, konserves",
+          "similarity": 0.5
+        },
+        {
+          "foodId": "1840",
+          "danishName": "Søde kartoffel fritter, dybfrost",
+          "similarity": 0.5
+        },
+        {
+          "foodId": "460",
+          "danishName": "Müsli med tilsat sukker.",
+          "similarity": 0.488
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Syltede agurker",
+      "productTemplateKey": "SYLTEDE_AGURKER",
+      "aliases": [
+        "drueagurker"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "C",
+      "categoryLabel": "More specific Madkursus product",
+      "explanation": "Madkursus specifies a cut, preparation, variety, or product form more narrowly than the closest DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "540",
+          "danishName": "Drueagurk (sylteagurk), rå",
+          "similarity": 0.71
+        },
+        {
+          "foodId": "317",
+          "danishName": "Agurk, syltet, uden tilsat sukker",
+          "similarity": 0.625
+        },
+        {
+          "foodId": "388",
+          "danishName": "Agurk, rå",
+          "similarity": 0.625
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Syltede jalapeños",
+      "productTemplateKey": "SYLTEDE_JALAPENOS",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1057",
+          "danishName": "Syltetøj, uspec.",
+          "similarity": 0.48
+        },
+        {
+          "foodId": "98",
+          "danishName": "Smelteost, 45+",
+          "similarity": 0.462
+        },
+        {
+          "foodId": "1202",
+          "danishName": "Smelteost, 20+",
+          "similarity": 0.462
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Barbecuesauce",
+      "productTemplateKey": "BARBECUESAUCE",
+      "aliases": [
+        "bbq sauce"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "B",
+      "categoryLabel": "Missing alias",
+      "explanation": "A known Danish naming variant or reordered phrase exists, but no current alias equals the DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "439",
+          "danishName": "Sauce, gravad laks",
+          "similarity": 0.714
+        },
+        {
+          "foodId": "459",
+          "danishName": "Sauce, barbeque",
+          "similarity": 0.714
+        },
+        {
+          "foodId": "92",
+          "danishName": "Soja sauce",
+          "similarity": 0.632
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Dijonsennep",
+      "productTemplateKey": "DIJONSENNEP",
+      "aliases": [
+        "dijon"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "204",
+          "danishName": "Sennep, brun, færdiglavet",
+          "similarity": 0.706
+        },
+        {
+          "foodId": "433",
+          "danishName": "Sennep, gul, færdiglavet",
+          "similarity": 0.706
+        },
+        {
+          "foodId": "1369",
+          "danishName": "Sennep, pulver",
+          "similarity": 0.706
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Fiskesauce",
+      "productTemplateKey": "FISKESAUCE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "439",
+          "danishName": "Sauce, gravad laks",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "459",
+          "danishName": "Sauce, barbeque",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "85",
+          "danishName": "Fiskeolie, hydrogeneret",
+          "similarity": 0.632
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Hoisinsauce",
+      "productTemplateKey": "HOISINSAUCE",
+      "aliases": [
+        "hoisin"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "546",
+          "danishName": "Ising, rå",
+          "similarity": 0.727
+        },
+        {
+          "foodId": "266",
+          "danishName": "Ispind, jordbær",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "505",
+          "danishName": "Ispind, vanille",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Ketchup",
+      "productTemplateKey": "KETCHUP",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "B",
+      "categoryLabel": "Missing alias",
+      "explanation": "A known Danish naming variant or reordered phrase exists, but no current alias equals the DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "922",
+          "danishName": "Tomatketchup, stærk",
+          "similarity": 0.737
+        },
+        {
+          "foodId": "1262",
+          "danishName": "Tomatketchup",
+          "similarity": 0.737
+        },
+        {
+          "foodId": "132",
+          "danishName": "Kartoffelchips, grove",
+          "similarity": 0.476
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Sojasauce",
+      "productTemplateKey": "SOJASAUCE",
+      "aliases": [
+        "soya",
+        "soy sauce"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "B",
+      "categoryLabel": "Missing alias",
+      "explanation": "A known Danish naming variant or reordered phrase exists, but no current alias equals the DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "92",
+          "danishName": "Soja sauce",
+          "similarity": 0.947
+        },
+        {
+          "foodId": "439",
+          "danishName": "Sauce, gravad laks",
+          "similarity": 0.714
+        },
+        {
+          "foodId": "459",
+          "danishName": "Sauce, barbeque",
+          "similarity": 0.714
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Sriracha",
+      "productTemplateKey": "SRIRACHA",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "90",
+          "danishName": "Salat, mayonnaise-, makrel-",
+          "similarity": 0.462
+        },
+        {
+          "foodId": "308",
+          "danishName": "Grana, 32+",
+          "similarity": 0.462
+        },
+        {
+          "foodId": "439",
+          "danishName": "Sauce, gravad laks",
+          "similarity": 0.462
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Sweet chili sauce",
+      "productTemplateKey": "SWEET_CHILI_SAUCE",
+      "aliases": [
+        "sweet chili"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "92",
+          "danishName": "Soja sauce",
+          "similarity": 0.519
+        },
+        {
+          "foodId": "1152",
+          "danishName": "Spegesild",
+          "similarity": 0.5
+        },
+        {
+          "foodId": "1088",
+          "danishName": "Tun i olie, konserves",
+          "similarity": 0.476
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tabasco",
+      "productTemplateKey": "TABASCO",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "141",
+          "danishName": "Bacon, kogestykke, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "216",
+          "danishName": "Bacon, stegestykke, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "1584",
+          "danishName": "Babymajs, rå",
+          "similarity": 0.533
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tahini",
+      "productTemplateKey": "TAHINI",
+      "aliases": [
+        "sesampasta"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "B",
+      "categoryLabel": "Missing alias",
+      "explanation": "A known Danish naming variant or reordered phrase exists, but no current alias equals the DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1699",
+          "danishName": "Tahin, lys",
+          "similarity": 0.909
+        },
+        {
+          "foodId": "305",
+          "danishName": "Pasta, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "1296",
+          "danishName": "Pasta, kogt",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Teriyakisauce",
+      "productTemplateKey": "TERIYAKISAUCE",
+      "aliases": [
+        "teriyaki"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "895",
+          "danishName": "Cherimoya, rå",
+          "similarity": 0.588
+        },
+        {
+          "foodId": "439",
+          "danishName": "Sauce, gravad laks",
+          "similarity": 0.556
+        },
+        {
+          "foodId": "459",
+          "danishName": "Sauce, barbeque",
+          "similarity": 0.556
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Worcestershire sauce",
+      "productTemplateKey": "WORCESTERSHIRE_SAUCE",
+      "aliases": [
+        "worcestershiresauce"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "214",
+          "danishName": "Cheshire, 50+",
+          "similarity": 0.519
+        },
+        {
+          "foodId": "1916",
+          "danishName": "Porter/Stout, 8 % alk. vol.",
+          "similarity": 0.5
+        },
+        {
+          "foodId": "92",
+          "danishName": "Soja sauce",
+          "similarity": 0.467
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Østerssauce",
+      "productTemplateKey": "OESTERSSAUCE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "163",
+          "danishName": "Østers, rå",
+          "similarity": 0.706
+        },
+        {
+          "foodId": "439",
+          "danishName": "Sauce, gravad laks",
+          "similarity": 0.625
+        },
+        {
+          "foodId": "459",
+          "danishName": "Sauce, barbeque",
+          "similarity": 0.625
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Allehånde",
+      "productTemplateKey": "ALLEHAANDE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "526",
+          "danishName": "Valle",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "594",
+          "danishName": "Lange, filet, rå",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "700",
+          "danishName": "Helleflynder, røget",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Bukkehorn",
+      "productTemplateKey": "BUKKEHORN",
+      "aliases": [
+        "fenugreek"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "77",
+          "danishName": "Sukker, stødt melis (sakkarose)",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "876",
+          "danishName": "Sukker, brun farin",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "1414",
+          "danishName": "Sukker, brunt rørsukker",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Cayennepeber",
+      "productTemplateKey": "CAYENNEPEBER",
+      "aliases": [
+        "cayenne"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "204",
+          "danishName": "Sennep, brun, færdiglavet",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "428",
+          "danishName": "Cayote, Kayote, rå",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "433",
+          "danishName": "Sennep, gul, færdiglavet",
+          "similarity": 0.615
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Chiliflager",
+      "productTemplateKey": "CHILIFLAGER",
+      "aliases": [
+        "chili flakes"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "331",
+          "danishName": "Hirseflager",
+          "similarity": 0.727
+        },
+        {
+          "foodId": "395",
+          "danishName": "Cornflakes, uspec.",
+          "similarity": 0.636
+        },
+        {
+          "foodId": "436",
+          "danishName": "Cornflakes, frosted",
+          "similarity": 0.636
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Chilipulver",
+      "productTemplateKey": "CHILIPULVER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "977",
+          "danishName": "Vallepulver, tørret",
+          "similarity": 0.636
+        },
+        {
+          "foodId": "162",
+          "danishName": "Hyben pulver, tørret",
+          "similarity": 0.609
+        },
+        {
+          "foodId": "103",
+          "danishName": "Buddingpulver",
+          "similarity": 0.583
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Fennikelfrø",
+      "productTemplateKey": "FENNIKELFROE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "A",
+      "categoryLabel": "Naming mismatch",
+      "explanation": "A likely equivalent DTU food uses different spelling, spacing, word order, or terminology.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "65",
+          "danishName": "Fennikel, knold, rå",
+          "similarity": 0.842
+        },
+        {
+          "foodId": "793",
+          "danishName": "Fennikel, frø",
+          "similarity": 0.842
+        },
+        {
+          "foodId": "324",
+          "danishName": "Fiskefars, rå",
+          "similarity": 0.6
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Five spice",
+      "productTemplateKey": "FIVE_SPICE",
+      "aliases": [
+        "kinesisk femkrydderi"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "F",
+      "categoryLabel": "Non-food / special Madkursus template",
+      "explanation": "The template is a generic mixture, culinary category, or special-purpose ingredient without one canonical DTU food.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1657",
+          "danishName": "Fiskepinde, panerede, dybfrost",
+          "similarity": 0.6
+        },
+        {
+          "foodId": "285",
+          "danishName": "Linsespirer, rå",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "1865",
+          "danishName": "Sveskejuice",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Garam masala",
+      "productTemplateKey": "GARAM_MASALA",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "F",
+      "categoryLabel": "Non-food / special Madkursus template",
+      "explanation": "The template is a generic mixture, culinary category, or special-purpose ingredient without one canonical DTU food.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "61",
+          "danishName": "Grahamsmel, fuldkornshvedemel",
+          "similarity": 0.545
+        },
+        {
+          "foodId": "1950",
+          "danishName": "Karrysalat",
+          "similarity": 0.545
+        },
+        {
+          "foodId": "1694",
+          "danishName": "Galia melon, rå",
+          "similarity": 0.522
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Gurkemeje",
+      "productTemplateKey": "GURKEMEJE",
+      "aliases": [
+        "turmeric"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "518",
+          "danishName": "Reje, dybvands-, kogt, dybfrost",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "527",
+          "danishName": "Reje, dybvands-, konserves",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "1549",
+          "danishName": "Reje, sort tiger-, opdræt, kogt, dybfrost",
+          "similarity": 0.615
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Hvidløgspulver",
+      "productTemplateKey": "HVIDLOEGSPULVER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "205",
+          "danishName": "Hvidløg, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "650",
+          "danishName": "Hvidløg, tørret, pulver",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "511",
+          "danishName": "Sødmælkspulver",
+          "similarity": 0.643
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Ingefærpulver",
+      "productTemplateKey": "INGEFAERPULVER",
+      "aliases": [
+        "stødt ingefær"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "62",
+          "danishName": "Ingefær, rod, rå",
+          "similarity": 0.7
+        },
+        {
+          "foodId": "1312",
+          "danishName": "Bagepulver",
+          "similarity": 0.696
+        },
+        {
+          "foodId": "103",
+          "danishName": "Buddingpulver",
+          "similarity": 0.692
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Kardemomme",
+      "productTemplateKey": "KARDEMOMME",
+      "aliases": [
+        "stødt kardemomme"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1697",
+          "danishName": "Kommen, rå",
+          "similarity": 0.625
+        },
+        {
+          "foodId": "412",
+          "danishName": "Kartoffelmos, pulver med tørmælk",
+          "similarity": 0.545
+        },
+        {
+          "foodId": "602",
+          "danishName": "Kartoffelmos, pulver uden tørmælk",
+          "similarity": 0.545
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Korianderfrø",
+      "productTemplateKey": "KORIANDERFROE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "A",
+      "categoryLabel": "Naming mismatch",
+      "explanation": "A likely equivalent DTU food uses different spelling, spacing, word order, or terminology.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "775",
+          "danishName": "Koriander, frø",
+          "similarity": 0.857
+        },
+        {
+          "foodId": "835",
+          "danishName": "Koriander, blade, tørrede",
+          "similarity": 0.857
+        },
+        {
+          "foodId": "867",
+          "danishName": "Koriander, blade, friske",
+          "similarity": 0.857
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Løgpulver",
+      "productTemplateKey": "LOEGPULVER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "D",
+      "categoryLabel": "More specific DTU foods / ambiguous variants",
+      "explanation": "Several more-specific DTU variants are plausible; state or subtype must be chosen manually.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1312",
+          "danishName": "Bagepulver",
+          "similarity": 0.737
+        },
+        {
+          "foodId": "977",
+          "danishName": "Vallepulver, tørret",
+          "similarity": 0.7
+        },
+        {
+          "foodId": "103",
+          "danishName": "Buddingpulver",
+          "similarity": 0.636
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Nellike",
+      "productTemplateKey": "NELLIKE",
+      "aliases": [
+        "stødt nellike"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "896",
+          "danishName": "Hellefisk, gravad",
+          "similarity": 0.625
+        },
+        {
+          "foodId": "897",
+          "danishName": "Hellefisk, rå",
+          "similarity": 0.625
+        },
+        {
+          "foodId": "1002",
+          "danishName": "Hellefisk, røget",
+          "similarity": 0.625
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Paprika",
+      "productTemplateKey": "PAPRIKA",
+      "aliases": [
+        "paprikapulver"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "510",
+          "danishName": "Papaya, rå",
+          "similarity": 0.615
+        },
+        {
+          "foodId": "1312",
+          "danishName": "Bagepulver",
+          "similarity": 0.609
+        },
+        {
+          "foodId": "1747",
+          "danishName": "Valle protein pulver",
+          "similarity": 0.606
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Ras el hanout",
+      "productTemplateKey": "RAS_EL_HANOUT",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "F",
+      "categoryLabel": "Non-food / special Madkursus template",
+      "explanation": "The template is a generic mixture, culinary category, or special-purpose ingredient without one canonical DTU food.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "639",
+          "danishName": "Brasen, rå",
+          "similarity": 0.526
+        },
+        {
+          "foodId": "1640",
+          "danishName": "Fransk hot dog, fastfood",
+          "similarity": 0.519
+        },
+        {
+          "foodId": "864",
+          "danishName": "Peanuts, (jordnød, ristet og saltet)",
+          "similarity": 0.5
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Røget paprika",
+      "productTemplateKey": "ROEGET_PAPRIKA",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "520",
+          "danishName": "Frugtkvark",
+          "similarity": 0.522
+        },
+        {
+          "foodId": "1879",
+          "danishName": "Frugtnektar, tilsat sukker",
+          "similarity": 0.5
+        },
+        {
+          "foodId": "1880",
+          "danishName": "Frugtnektar, tilsat kunstig sødestof",
+          "similarity": 0.5
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Sennepsfrø",
+      "productTemplateKey": "SENNEPSFROE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "D",
+      "categoryLabel": "More specific DTU foods / ambiguous variants",
+      "explanation": "Several more-specific DTU variants are plausible; state or subtype must be chosen manually.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "204",
+          "danishName": "Sennep, brun, færdiglavet",
+          "similarity": 0.75
+        },
+        {
+          "foodId": "433",
+          "danishName": "Sennep, gul, færdiglavet",
+          "similarity": 0.75
+        },
+        {
+          "foodId": "1369",
+          "danishName": "Sennep, pulver",
+          "similarity": 0.75
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Stjerneanis",
+      "productTemplateKey": "STJERNEANIS",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "579",
+          "danishName": "Stjernefrugt, rå",
+          "similarity": 0.609
+        },
+        {
+          "foodId": "163",
+          "danishName": "Østers, rå",
+          "similarity": 0.588
+        },
+        {
+          "foodId": "249",
+          "danishName": "Snaps, krydder-, uspec.",
+          "similarity": 0.5
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Stærk paprika",
+      "productTemplateKey": "STAERK_PAPRIKA",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1796",
+          "danishName": "Surbær (Aroniabær)",
+          "similarity": 0.552
+        },
+        {
+          "foodId": "49",
+          "danishName": "Spidskål, rå",
+          "similarity": 0.476
+        },
+        {
+          "foodId": "486",
+          "danishName": "Sakkarin",
+          "similarity": 0.476
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Stødt koriander",
+      "productTemplateKey": "STOEDT_KORIANDER",
+      "aliases": [
+        "korianderpulver"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "G",
+      "categoryLabel": "Matching algorithm limitation",
+      "explanation": "Safe inflection/descriptor-aware token comparison now finds review candidates; no mapping is auto-approved.",
+      "nowSuggestedByImprovedMatcher": true,
+      "topDtuCandidates": [
+        {
+          "foodId": "775",
+          "danishName": "Koriander, frø",
+          "similarity": 0.75
+        },
+        {
+          "foodId": "835",
+          "danishName": "Koriander, blade, tørrede",
+          "similarity": 0.75
+        },
+        {
+          "foodId": "867",
+          "danishName": "Koriander, blade, friske",
+          "similarity": 0.75
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Tandoori-krydderi",
+      "productTemplateKey": "TANDOORI_KRYDDERI",
+      "aliases": [
+        "tandoori"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "F",
+      "categoryLabel": "Non-food / special Madkursus template",
+      "explanation": "The template is a generic mixture, culinary category, or special-purpose ingredient without one canonical DTU food.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "452",
+          "danishName": "Mandarin, konserves",
+          "similarity": 0.625
+        },
+        {
+          "foodId": "560",
+          "danishName": "Mandarin, rå",
+          "similarity": 0.625
+        },
+        {
+          "foodId": "426",
+          "danishName": "Krydder",
+          "similarity": 0.583
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Za'atar",
+      "productTemplateKey": "ZA_ATAR",
+      "aliases": [
+        "zaatar"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "F",
+      "categoryLabel": "Non-food / special Madkursus template",
+      "explanation": "The template is a generic mixture, culinary category, or special-purpose ingredient without one canonical DTU food.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1100",
+          "danishName": "Kantarel, rå",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "90",
+          "danishName": "Salat, mayonnaise-, makrel-",
+          "similarity": 0.545
+        },
+        {
+          "foodId": "305",
+          "danishName": "Pasta, rå",
+          "similarity": 0.545
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Fiskebouillon",
+      "productTemplateKey": "FISKEBOUILLON",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "D",
+      "categoryLabel": "More specific DTU foods / ambiguous variants",
+      "explanation": "Several more-specific DTU variants are plausible; state or subtype must be chosen manually.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "277",
+          "danishName": "Bouillon, hønsekød, spiseklar",
+          "similarity": 0.762
+        },
+        {
+          "foodId": "534",
+          "danishName": "Bouillon, oksekød, terning, spiseklar",
+          "similarity": 0.762
+        },
+        {
+          "foodId": "1253",
+          "danishName": "Bouillon, oksekød, koncentreret, terning",
+          "similarity": 0.762
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Grøntsagsbouillon",
+      "productTemplateKey": "GROENTSAGSBOUILLON",
+      "aliases": [
+        "bouillon grøntsag"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "277",
+          "danishName": "Bouillon, hønsekød, spiseklar",
+          "similarity": 0.64
+        },
+        {
+          "foodId": "534",
+          "danishName": "Bouillon, oksekød, terning, spiseklar",
+          "similarity": 0.64
+        },
+        {
+          "foodId": "1253",
+          "danishName": "Bouillon, oksekød, koncentreret, terning",
+          "similarity": 0.64
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Grøntsagsfond",
+      "productTemplateKey": "GROENTSAGSFOND",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1870",
+          "danishName": "Blandet grøntsagsjuice",
+          "similarity": 0.514
+        },
+        {
+          "foodId": "1873",
+          "danishName": "Frugt- og grøntsag smoothie",
+          "similarity": 0.513
+        },
+        {
+          "foodId": "23",
+          "danishName": "Grønkål, rå",
+          "similarity": 0.5
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Hønsebouillon",
+      "productTemplateKey": "HOENSEBOUILLON",
+      "aliases": [
+        "kyllingebouillon",
+        "bouillon kylling"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "D",
+      "categoryLabel": "More specific DTU foods / ambiguous variants",
+      "explanation": "Several more-specific DTU variants are plausible; state or subtype must be chosen manually.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "277",
+          "danishName": "Bouillon, hønsekød, spiseklar",
+          "similarity": 0.762
+        },
+        {
+          "foodId": "534",
+          "danishName": "Bouillon, oksekød, terning, spiseklar",
+          "similarity": 0.762
+        },
+        {
+          "foodId": "1253",
+          "danishName": "Bouillon, oksekød, koncentreret, terning",
+          "similarity": 0.762
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Kyllingefond",
+      "productTemplateKey": "KYLLINGEFOND",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1740",
+          "danishName": "Kyllingekød, hakket, 3-10% fedt, rå",
+          "similarity": 0.783
+        },
+        {
+          "foodId": "754",
+          "danishName": "Kylling, bryst (filet), kogt, pålæg",
+          "similarity": 0.737
+        },
+        {
+          "foodId": "795",
+          "danishName": "Kylling, kød, rå",
+          "similarity": 0.737
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Oksebouillon",
+      "productTemplateKey": "OKSEBOUILLON",
+      "aliases": [
+        "oksebouillonterning",
+        "bouillon okse"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "D",
+      "categoryLabel": "More specific DTU foods / ambiguous variants",
+      "explanation": "Several more-specific DTU variants are plausible; state or subtype must be chosen manually.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "277",
+          "danishName": "Bouillon, hønsekød, spiseklar",
+          "similarity": 0.8
+        },
+        {
+          "foodId": "534",
+          "danishName": "Bouillon, oksekød, terning, spiseklar",
+          "similarity": 0.8
+        },
+        {
+          "foodId": "1253",
+          "danishName": "Bouillon, oksekød, koncentreret, terning",
+          "similarity": 0.8
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Oksefond",
+      "productTemplateKey": "OKSEFOND",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "770",
+          "danishName": "Oksekød, inderlår uden kappe, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "805",
+          "danishName": "Oksekød, tykstegsfilet uden kappe, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "818",
+          "danishName": "Oksekød, uspec., helt magert, råt",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Ahornsirup",
+      "productTemplateKey": "AHORNSIRUP",
+      "aliases": [
+        "maple syrup"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1098",
+          "danishName": "Sirup",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "25",
+          "danishName": "Hornfisk, rå",
+          "similarity": 0.556
+        },
+        {
+          "foodId": "542",
+          "danishName": "Asier, syltede",
+          "similarity": 0.533
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Flormelis",
+      "productTemplateKey": "FLORMELIS",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "694",
+          "danishName": "Bækforel, rå",
+          "similarity": 0.588
+        },
+        {
+          "foodId": "1188",
+          "danishName": "Bækforel, filet, røget",
+          "similarity": 0.588
+        },
+        {
+          "foodId": "1927",
+          "danishName": "Sorbetis, hindbær",
+          "similarity": 0.588
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Mørk sirup",
+      "productTemplateKey": "MOERK_SIRUP",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "C",
+      "categoryLabel": "More specific Madkursus product",
+      "explanation": "Madkursus specifies a cut, preparation, variety, or product form more narrowly than the closest DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1098",
+          "danishName": "Sirup",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "66",
+          "danishName": "Mørksej, rå",
+          "similarity": 0.588
+        },
+        {
+          "foodId": "1911",
+          "danishName": "Mørk hvidtøl, 1-2 % alk. vol.",
+          "similarity": 0.545
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Vaniljeekstrakt",
+      "productTemplateKey": "VANILJEEKSTRAKT",
+      "aliases": [
+        "vaniljeessens"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1929",
+          "danishName": "Vanilje is, <50% fløde",
+          "similarity": 0.696
+        },
+        {
+          "foodId": "1930",
+          "danishName": "Vanilje is, >50% fløde",
+          "similarity": 0.696
+        },
+        {
+          "foodId": "1931",
+          "danishName": "Vanilje is, uden fløde",
+          "similarity": 0.696
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Cherrytomat",
+      "productTemplateKey": "CHERRYTOMAT",
+      "aliases": [
+        "cherrytomater"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "52",
+          "danishName": "Tomat, uspec., rå",
+          "similarity": 0.625
+        },
+        {
+          "foodId": "169",
+          "danishName": "Tomat, soltørret",
+          "similarity": 0.625
+        },
+        {
+          "foodId": "451",
+          "danishName": "Tomat, dansk, rå",
+          "similarity": 0.625
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Hjertesalat",
+      "productTemplateKey": "HJERTESALAT",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "566",
+          "danishName": "Hjerte, kalv, råt",
+          "similarity": 0.706
+        },
+        {
+          "foodId": "641",
+          "danishName": "Hjerte, okse, råt",
+          "similarity": 0.706
+        },
+        {
+          "foodId": "644",
+          "danishName": "Hjerte, gris, råt",
+          "similarity": 0.706
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Jalapeño",
+      "productTemplateKey": "JALAPENO",
+      "aliases": [
+        "jalapeno"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1912",
+          "danishName": "Ale, Mørk, 5-7 % alk. vol.",
+          "similarity": 0.545
+        },
+        {
+          "foodId": "1913",
+          "danishName": "Ale, Lys (blonde), 6-7 % alk. vol.",
+          "similarity": 0.545
+        },
+        {
+          "foodId": "1694",
+          "danishName": "Galia melon, rå",
+          "similarity": 0.526
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Knoldselleri",
+      "productTemplateKey": "KNOLDSELLERI",
+      "aliases": [
+        "sellerirod"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "B",
+      "categoryLabel": "Missing alias",
+      "explanation": "A known Danish naming variant or reordered phrase exists, but no current alias equals the DTU wording.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "46",
+          "danishName": "Selleri, rod, rå",
+          "similarity": 0.824
+        },
+        {
+          "foodId": "767",
+          "danishName": "Selleri, blade, rå",
+          "similarity": 0.824
+        },
+        {
+          "foodId": "1485",
+          "danishName": "Selleri, rod, dansk, rå",
+          "similarity": 0.824
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Portobello",
+      "productTemplateKey": "PORTOBELLO",
+      "aliases": [
+        "portobellosvamp"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1585",
+          "danishName": "Pomelo, rå",
+          "similarity": 0.625
+        },
+        {
+          "foodId": "1351",
+          "danishName": "Sorbitol",
+          "similarity": 0.556
+        },
+        {
+          "foodId": "412",
+          "danishName": "Kartoffelmos, pulver med tørmælk",
+          "similarity": 0.545
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Rødløg",
+      "productTemplateKey": "ROEDLOEG",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "44",
+          "danishName": "Rødkål, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "114",
+          "danishName": "Løg, ristede",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "342",
+          "danishName": "Rødkål, konserves, uden tilsat sukker",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Skalotteløg",
+      "productTemplateKey": "SKALOTTELOEG",
+      "aliases": [
+        "skalotte"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1102",
+          "danishName": "Sapote, stor sapodil, rå",
+          "similarity": 0.714
+        },
+        {
+          "foodId": "417",
+          "danishName": "Salt, bordsalt (jodberiget)",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "556",
+          "danishName": "Salt, havsalt (ikke jodberiget)",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Sukkerærter",
+      "productTemplateKey": "SUKKERAERTER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "D",
+      "categoryLabel": "More specific DTU foods / ambiguous variants",
+      "explanation": "Several more-specific DTU variants are plausible; state or subtype must be chosen manually.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1803",
+          "danishName": "Kikærter, tørrede, rå",
+          "similarity": 0.737
+        },
+        {
+          "foodId": "1812",
+          "danishName": "Kikærter, lyse, kogte, konserves",
+          "similarity": 0.737
+        },
+        {
+          "foodId": "1813",
+          "danishName": "Kikærter, lyse, dampede, spiseklare",
+          "similarity": 0.737
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Østershat",
+      "productTemplateKey": "OESTERSHAT",
+      "aliases": [
+        "østershatte"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "163",
+          "danishName": "Østers, rå",
+          "similarity": 0.8
+        },
+        {
+          "foodId": "1941",
+          "danishName": "Hønsesalat, light",
+          "similarity": 0.632
+        },
+        {
+          "foodId": "1942",
+          "danishName": "Hønsesalat",
+          "similarity": 0.632
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Balsamico",
+      "productTemplateKey": "BALSAMICO",
+      "aliases": [
+        "balsamicoeddike"
+      ],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "489",
+          "danishName": "Salami",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "141",
+          "danishName": "Bacon, kogestykke, rå",
+          "similarity": 0.571
+        },
+        {
+          "foodId": "216",
+          "danishName": "Bacon, stegestykke, rå",
+          "similarity": 0.571
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Hvidvinseddike",
+      "productTemplateKey": "HVIDVINSEDDIKE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "164",
+          "danishName": "Hvidvin, tør",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "167",
+          "danishName": "Hvidvin, uspec.",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "168",
+          "danishName": "Hvidvin, Rhinskvin",
+          "similarity": 0.667
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Limesaft",
+      "productTemplateKey": "LIMESAFT",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "464",
+          "danishName": "Lime, rå",
+          "similarity": 0.667
+        },
+        {
+          "foodId": "407",
+          "danishName": "Druesaft",
+          "similarity": 0.625
+        },
+        {
+          "foodId": "481",
+          "danishName": "Ribssaft, sur, koncentreret",
+          "similarity": 0.625
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Riseddike",
+      "productTemplateKey": "RISEDDIKE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "226",
+          "danishName": "Eddike",
+          "similarity": 0.8
+        },
+        {
+          "foodId": "490",
+          "danishName": "Ræddike, rå",
+          "similarity": 0.75
+        },
+        {
+          "foodId": "1691",
+          "danishName": "Risdrik, ikke beriget",
+          "similarity": 0.75
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Rødvinseddike",
+      "productTemplateKey": "ROEDVINSEDDIKE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "E",
+      "categoryLabel": "Product not represented in DTU",
+      "explanation": "No reasonable DTU Frida 5.5 food was found; nearest names are weak lexical coincidences.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "171",
+          "danishName": "Rødvin, rosévin, uden alkohol",
+          "similarity": 0.632
+        },
+        {
+          "foodId": "213",
+          "danishName": "Rødvin, uspec.",
+          "similarity": 0.632
+        },
+        {
+          "foodId": "226",
+          "danishName": "Eddike",
+          "similarity": 0.632
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Æblecidereddike",
+      "productTemplateKey": "AEBLECIDEREDDIKE",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "H",
+      "categoryLabel": "Other",
+      "explanation": "No deterministic relationship was found; manual catalog review is required.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "1882",
+          "danishName": "Æblecider, tilsat sukker, alkohol<0,7%",
+          "similarity": 0.75
+        },
+        {
+          "foodId": "1881",
+          "danishName": "Pærecider, tilsat sukker, alkohol<0,7%",
+          "similarity": 0.583
+        },
+        {
+          "foodId": "1883",
+          "danishName": "Pærecider, tilsat kunstig sødestof, alkohol<0,7%",
+          "similarity": 0.583
+        }
+      ]
+    },
+    {
+      "productTemplateName": "Pølser",
+      "productTemplateKey": "POELSER",
+      "aliases": [],
+      "currentNutritionState": "MISSING",
+      "category": "A",
+      "categoryLabel": "Naming mismatch",
+      "explanation": "A likely equivalent DTU food uses different spelling, spacing, word order, or terminology.",
+      "nowSuggestedByImprovedMatcher": false,
+      "topDtuCandidates": [
+        {
+          "foodId": "301",
+          "danishName": "Pølse, tepølse",
+          "similarity": 0.909
+        },
+        {
+          "foodId": "1056",
+          "danishName": "Pølse, bierwurst",
+          "similarity": 0.909
+        },
+        {
+          "foodId": "1128",
+          "danishName": "Pølse, cervelatpølse, pålæg",
+          "similarity": 0.909
+        }
+      ]
+    }
+  ]
+}
