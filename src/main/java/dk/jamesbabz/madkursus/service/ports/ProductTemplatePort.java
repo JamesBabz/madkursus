@@ -8,4 +8,5 @@ import dk.jamesbabz.madkursus.service.models.ProductTemplate;
 public interface ProductTemplatePort {
     List<ProductTemplate> search(String search, Boolean common);
     Optional<ProductTemplate> findById(UUID id);
+    ProductTemplate updateNutrition(UUID id,dk.jamesbabz.madkursus.service.models.NutritionData nutrition);
 }

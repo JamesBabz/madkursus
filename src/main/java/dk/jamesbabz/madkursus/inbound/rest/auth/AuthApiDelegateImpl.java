@@ -79,6 +79,6 @@ public class AuthApiDelegateImpl implements AuthApiDelegate {
     }
 
     private CurrentUserDTO toDto(AuthenticatedUser user) {
-        return new CurrentUserDTO(user.id(), user.username());
+        return new CurrentUserDTO(user.id(), user.username()).admin(user.admin());
     }
 }

@@ -10,6 +10,7 @@ import dk.jamesbabz.madkursus.service.models.ProductTemplate;
 import dk.jamesbabz.madkursus.service.ports.ProductTemplatePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component @RequiredArgsConstructor
 public class ProductTemplateAdapterImpl implements ProductTemplatePort {
@@ -20,4 +21,5 @@ public class ProductTemplateAdapterImpl implements ProductTemplatePort {
         return repository.search(normalized, common).stream().map(mapper::toModel).toList();
     }
     public Optional<ProductTemplate> findById(UUID id) { return repository.findById(id).map(mapper::toModel); }
+    @Transactional public ProductTemplate updateNutrition(UUID id,dk.jamesbabz.madkursus.service.models.NutritionData n){var entity=repository.findById(id).orElseThrow();entity.updateNutrition(n.carbohydrateGrams(),n.basisQuantity(),n.basisUnit(),n.source(),n.provider(),n.externalFoodId(),n.sourceVersion(),n.sourceUrl(),n.note());return mapper.toModel(repository.save(entity));}
 }

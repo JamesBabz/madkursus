@@ -36,6 +36,7 @@ public class SecurityConfig {
                                 "/manifest.json", "/service-worker.js").permitAll()
                         .requestMatchers("/v1/auth/login", "/v1/auth/register",
                                 "/v1/auth/registration-status", "/v1/auth/csrf").permitAll()
+                        .requestMatchers("/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/v1/**").authenticated()
                         .anyRequest().denyAll())
                 .requestCache(cache -> cache.disable())

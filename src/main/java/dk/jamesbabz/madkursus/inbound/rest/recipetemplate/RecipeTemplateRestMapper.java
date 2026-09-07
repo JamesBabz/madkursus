@@ -40,8 +40,9 @@ public class RecipeTemplateRestMapper {
         return new RecipeTemplateDTO(template.id(), template.name(), template.active(), copied.isPresent(),
                 template.createdAt().atOffset(ZoneOffset.UTC), template.updatedAt().atOffset(ZoneOffset.UTC),
                 ingredients, steps,preparation,template.equipmentOverview()).description(template.description())
-                .userRecipeId(copied.map(Recipe::id).orElse(null)).preparedComponents(template.preparedComponents().stream().map(this::component).toList());
+                .userRecipeId(copied.map(Recipe::id).orElse(null)).preparedComponents(template.preparedComponents().stream().map(this::component).toList()).carbohydrates(carbohydrates(template.carbohydrates()));
     }
+    private CarbohydrateResultDTO carbohydrates(CarbohydrateResult value){return new CarbohydrateResultDTO(value.perPortionGrams(),value.totalGrams(),value.complete(),value.unknownIngredientCount(),value.ingredients().stream().map(i->new CarbohydrateIngredientResultDTO(i.recipeIngredientId(),i.productTemplateId(),i.name(),i.known()).grams(i.grams())).toList());}
 
     private CookingProcessBindingDTO binding(CookingProcessBinding binding) {
         var value = binding.value()==null?new CookingProcessValue(null,null,null,null,null,null,null):binding.value();

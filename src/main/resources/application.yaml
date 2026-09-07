@@ -29,3 +29,13 @@ server:
         secure: ${SESSION_COOKIE_SECURE:false}
         same-site: strict
         max-age: 30d
+
+madkursus:
+  admin-username: ${ADMIN_USERNAME:}
+
+# Never emit HTTP request payloads. In particular, login JSON necessarily contains a password.
+logging:
+  level:
+    org.springframework.web.HttpLogging: OFF
+    org.springframework.web.filter.CommonsRequestLoggingFilter: OFF
+    org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor: INFO

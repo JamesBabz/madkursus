@@ -15,7 +15,74 @@ tags:
   - name: product-template
   - name: kitchen-equipment
   - name: cooking-process
+  - name: nutrition-admin
 paths:
+  /v1/admin/product-template-nutrition:
+    get:
+      tags: [nutrition-admin]
+      operationId: getProductTemplateNutrition
+      parameters:
+        - {name: status, in: query, required: false, schema: {type: string, enum: [ALL, MISSING, KNOWN]}}
+        - {name: search, in: query, required: false, schema: {type: string}}
+      responses:
+        '200': {description: Product template nutrition, content: {application/json: {schema: {type: array, items: {$ref: '#/components/schemas/ProductTemplateNutrition'}}}}}
+        '403': {$ref: '#/components/responses/forbidden'}
+  /v1/admin/recipe-template-nutrition-coverage:
+    get:
+      tags: [nutrition-admin]
+      operationId: getRecipeTemplateNutritionCoverage
+      responses:
+        '200': {description: Active RecipeTemplate nutrition coverage, content: {application/json: {schema: {type: array, items: {$ref: '#/components/schemas/RecipeTemplateNutritionCoverage'}}}}}
+        '403': {$ref: '#/components/responses/forbidden'}
+  /v1/admin/product-template-nutrition/{id}:
+    parameters: [{$ref: '#/components/parameters/id'}]
+    put:
+      tags: [nutrition-admin]
+      operationId: updateProductTemplateNutrition
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/NutritionDataInput'}}}}
+      responses:
+        '200': {description: Updated nutrition, content: {application/json: {schema: {$ref: '#/components/schemas/ProductTemplateNutrition'}}}}
+        '403': {$ref: '#/components/responses/forbidden'}
+  /v1/admin/product-template-nutrition/{id}/dtu-mapping:
+    parameters: [{$ref: '#/components/parameters/id'}]
+    post:
+      tags: [nutrition-admin]
+      operationId: approveDtuMapping
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/DtuMappingApproval'}}}}
+      responses:
+        '200': {description: Explicitly approved mapping and updated canonical nutrition, content: {application/json: {schema: {$ref: '#/components/schemas/ProductTemplateNutrition'}}}}
+        '403': {$ref: '#/components/responses/forbidden'}
+  /v1/admin/product-template-nutrition/dtu-mappings:
+    post:
+      tags: [nutrition-admin]
+      operationId: approveDtuMappings
+      requestBody: {required: true, content: {application/json: {schema: {type: array, minItems: 1, items: {$ref: '#/components/schemas/DtuBulkMappingApproval'}}}}}
+      responses:
+        '200': {description: Explicitly reviewed bulk mappings, content: {application/json: {schema: {type: array, items: {$ref: '#/components/schemas/ProductTemplateNutrition'}}}}}
+        '403': {$ref: '#/components/responses/forbidden'}
+  /v1/admin/product-template-nutrition/dtu-mappings/approve-safe:
+    post:
+      tags: [nutrition-admin]
+      operationId: approveSafeDtuMappings
+      responses:
+        '200': {description: Explicitly approved semantically compatible mappings with equivalent carbohydrate values, content: {application/json: {schema: {type: array, items: {$ref: '#/components/schemas/ProductTemplateNutrition'}}}}}
+        '403': {$ref: '#/components/responses/forbidden'}
+  /v1/admin/dtu-catalog:
+    get:
+      tags: [nutrition-admin]
+      operationId: searchDtuCatalog
+      parameters:
+        - {name: search, in: query, required: false, schema: {type: string}}
+      responses:
+        '200': {description: Latest imported DTU reference foods, content: {application/json: {schema: {type: array, items: {$ref: '#/components/schemas/DtuReferenceFood'}}}}}
+        '403': {$ref: '#/components/responses/forbidden'}
+  /v1/admin/dtu-catalog/import-bundled:
+    post:
+      tags: [nutrition-admin]
+      operationId: importBundledDtuCatalog
+      responses:
+        '200': {description: Explicit import result, content: {application/json: {schema: {$ref: '#/components/schemas/DtuImportResult'}}}}
+        '403': {$ref: '#/components/responses/forbidden'}
   /v1/cooking-processes:
     get:
       tags: [cooking-process]
@@ -745,6 +812,99 @@ components:
       properties:
         id: {type: string, format: uuid}
         username: {type: string}
+        admin: {type: boolean, default: false}
+    NutritionDataInput:
+      type: object
+      required: [carbohydrateGrams, basisQuantity, basisUnit, source]
+      properties:
+        carbohydrateGrams: {type: number, minimum: 0}
+        basisQuantity: {type: number, exclusiveMinimum: 0}
+        basisUnit: {$ref: '#/components/schemas/RecipeUnit'}
+        source: {type: string, minLength: 1}
+        provider: {type: string, nullable: true}
+        externalFoodId: {type: string, nullable: true}
+        sourceVersion: {type: string, nullable: true}
+        sourceUrl: {type: string, nullable: true}
+        note: {type: string, nullable: true}
+    ProductTemplateNutrition:
+      type: object
+      required: [productTemplateId, name, key, aliases, status]
+      properties:
+        productTemplateId: {type: string, format: uuid}
+        name: {type: string}
+        key: {type: string}
+        aliases: {type: array, items: {type: string}}
+        status: {type: string, enum: [MISSING, KNOWN_ZERO, KNOWN]}
+        nutrition: {allOf: [{$ref: '#/components/schemas/NutritionDataInput'}], nullable: true}
+        dtuSuggestion: {allOf: [{$ref: '#/components/schemas/DtuSuggestion'}], nullable: true}
+        dtuMapping: {allOf: [{$ref: '#/components/schemas/DtuMapping'}], nullable: true}
+        recipeTemplateUsageCount: {type: integer, minimum: 0, default: 0}
+    RecipeTemplateNutritionCoverage:
+      type: object
+      required: [recipeTemplateId, name, coveredIngredients, totalIngredients, missing]
+      properties:
+        recipeTemplateId: {type: string, format: uuid}
+        name: {type: string}
+        coveredIngredients: {type: integer, minimum: 0}
+        totalIngredients: {type: integer, minimum: 0}
+        missing: {type: array, items: {$ref: '#/components/schemas/ProductTemplateNutrition'}}
+    DtuReferenceFood:
+      type: object
+      required: [datasetVersion, foodId, danishName, carbohydrateGrams, sourceDate, sourceUrl]
+      properties:
+        datasetVersion: {type: string}
+        foodId: {type: string}
+        danishName: {type: string}
+        carbohydrateGrams: {type: number, minimum: 0}
+        stateDescription: {type: string, nullable: true}
+        sourceDate: {type: string, format: date}
+        sourceUrl: {type: string}
+    DtuCandidate:
+      type: object
+      required: [food, classification, score, reason]
+      properties:
+        food: {$ref: '#/components/schemas/DtuReferenceFood'}
+        classification: {type: string, enum: [EXACT, HIGH_CONFIDENCE, REVIEW_REQUIRED, NO_MATCH]}
+        score: {type: integer, minimum: 0, maximum: 100}
+        reason: {type: string}
+    DtuSuggestion:
+      type: object
+      required: [classification, candidates]
+      properties:
+        classification: {type: string, enum: [EXACT, HIGH_CONFIDENCE, REVIEW_REQUIRED, NO_MATCH]}
+        candidates: {type: array, items: {$ref: '#/components/schemas/DtuCandidate'}}
+        reason: {type: string, nullable: true}
+        resolution: {type: string, enum: [NONE, AUTO_EQUIVALENT_CARBOHYDRATE], default: NONE}
+        representative: {allOf: [{$ref: '#/components/schemas/DtuReferenceFood'}], nullable: true}
+        equivalentCandidateCount: {type: integer, minimum: 0, default: 0}
+        carbohydrateSpread: {type: number, nullable: true}
+    DtuMapping:
+      type: object
+      required: [status]
+      properties:
+        status: {type: string, enum: [UNMAPPED, APPROVED, REQUIRES_REVIEW]}
+        food: {allOf: [{$ref: '#/components/schemas/DtuReferenceFood'}], nullable: true}
+        approvedCarbohydrateGrams: {type: number, nullable: true}
+    DtuMappingApproval:
+      type: object
+      required: [datasetVersion, foodId]
+      properties:
+        datasetVersion: {type: string}
+        foodId: {type: string}
+    DtuBulkMappingApproval:
+      allOf:
+        - $ref: '#/components/schemas/DtuMappingApproval'
+        - type: object
+          required: [productTemplateId]
+          properties:
+            productTemplateId: {type: string, format: uuid}
+    DtuImportResult:
+      type: object
+      required: [datasetVersion, importedFoods, alreadyImported]
+      properties:
+        datasetVersion: {type: string}
+        importedFoods: {type: integer}
+        alreadyImported: {type: boolean}
     RegistrationStatus:
       type: object
       required: [enabled]
@@ -1061,7 +1221,7 @@ components:
         renderedProcess: {allOf: [{$ref: '#/components/schemas/RenderedCookingProcess'}], nullable: true}
     Recipe:
       type: object
-      required: [id, name, ingredients, steps, preparationSteps, equipment, createdAt, updatedAt]
+      required: [id, name, ingredients, steps, preparationSteps, equipment, createdAt, updatedAt, carbohydrates]
       properties:
         id: {type: string, format: uuid}
         name: {type: string}
@@ -1074,6 +1234,25 @@ components:
         updatedAt: {type: string, format: date-time}
         sourceTemplateId: {type: string, format: uuid, nullable: true, readOnly: true}
         preparedComponents: {type: array, items: {$ref: '#/components/schemas/PreparedComponent'}}
+        carbohydrates: {$ref: '#/components/schemas/CarbohydrateResult'}
+    CarbohydrateIngredientResult:
+      type: object
+      required: [recipeIngredientId, productTemplateId, name, known]
+      properties:
+        recipeIngredientId: {type: string, format: uuid}
+        productTemplateId: {type: string, format: uuid}
+        name: {type: string}
+        grams: {type: number, minimum: 0, nullable: true}
+        known: {type: boolean}
+    CarbohydrateResult:
+      type: object
+      required: [perPortionGrams, totalGrams, complete, unknownIngredientCount, ingredients]
+      properties:
+        perPortionGrams: {type: number, minimum: 0}
+        totalGrams: {type: number, minimum: 0}
+        complete: {type: boolean}
+        unknownIngredientCount: {type: integer, minimum: 0}
+        ingredients: {type: array, items: {$ref: '#/components/schemas/CarbohydrateIngredientResult'} }
     RecipeTemplateIngredient:
       type: object
       required: [id, productTemplate, quantity, unit, sortOrder]
@@ -1118,6 +1297,7 @@ components:
             preparationSteps: {type: array, items: {$ref: '#/components/schemas/RecipePreparationStep'}}
             preparedComponents: {type: array, items: {$ref: '#/components/schemas/PreparedComponent'}}
             equipment: {type: array, items: {type: string}}
+            carbohydrates: {$ref: '#/components/schemas/CarbohydrateResult'}
     RecipeSelection:
       type: object
       required: [recipeId, portions]

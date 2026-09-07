@@ -184,7 +184,7 @@ class RecipeServiceTest {
         assertThatThrownBy(()->service.delete(recipeId)).isInstanceOf(ConflictException.class)
                 .hasMessage("Opskriften er stadig med i en aktiv madplan. Fjern den fra madplanen først.");
         verify(mealPlans,never()).detachHistoricalRecipeReferences(any(),any()); verify(port,never()).deleteByIdAndUserId(any(),any());
-        assertThat(service.get(recipeId)).isEqualTo(recipe);
+        assertThat(service.get(recipeId)).usingRecursiveComparison().ignoringFields("carbohydrates").isEqualTo(recipe);
     }
 
     @Test

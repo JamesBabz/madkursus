@@ -8,7 +8,7 @@
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/icons/icon.svg">
-  <link rel="stylesheet" href="/css/app.css?v=34">
+  <link rel="stylesheet" href="/css/app.css?v=41">
   <title>Madkursus</title>
 </head>
 <body>
@@ -54,6 +54,7 @@
       <span class="nav-divider" aria-hidden="true"></span>
       <button class="nav-button secondary-nav" id="show-products" type="button"><span class="nav-icon" data-icon="products"></span><span>Produkter</span></button>
       <button class="nav-button secondary-nav" id="show-kitchen" type="button"><span class="nav-icon" data-icon="kitchen"></span><span>Mit køkken</span></button>
+      <button class="nav-button secondary-nav" id="show-nutrition" type="button" hidden><span class="nav-icon" data-icon="products"></span><span>Fødevaredata</span></button>
       <button class="nav-button mobile-more" id="show-more" type="button"><span class="nav-icon" data-icon="more"></span><span>Mere</span></button>
     </nav>
     <button class="logout-button sidebar-logout" id="logout" type="button"><span class="nav-icon" data-icon="logout"></span>Log ud</button>
@@ -184,11 +185,28 @@
       <div class="settings-list">
         <button id="more-products" type="button"><span class="nav-icon" data-icon="products"></span><span><strong>Produkter</strong><small>Administrer produkter og standardenheder</small></span><span aria-hidden="true">›</span></button>
         <button id="more-kitchen" type="button"><span class="nav-icon" data-icon="kitchen"></span><span><strong>Mit køkken</strong><small>Udstyr, kapacitet og varmeindstillinger</small></span><span aria-hidden="true">›</span></button>
+        <button id="more-nutrition" type="button" hidden><span class="nav-icon" data-icon="products"></span><span><strong>Fødevaredata</strong><small>Vedligehold kulhydratdata og kilder</small></span><span aria-hidden="true">›</span></button>
         <button id="more-logout" class="danger-row" type="button"><span class="nav-icon" data-icon="logout"></span><span><strong>Log ud</strong><small>Afslut din session på denne enhed</small></span><span aria-hidden="true">›</span></button>
       </div>
     </section>
+    <section id="nutrition-admin-view" aria-labelledby="nutrition-admin-title" hidden>
+      <div class="page-heading nutrition-heading"><div><p class="eyebrow">Administration</p><h2 id="nutrition-admin-title">Fødevaredata</h2><p class="page-subtitle">Central vedligeholdelse af ProductTemplate-kulhydratdata</p></div><button class="secondary-button compact-button" id="import-dtu-catalog" type="button">Importér DTU 5.5</button></div>
+      <div class="nutrition-summary" aria-label="DTU-arbejdskøer"><button type="button" data-nutrition-queue="HAS_DATA"><strong id="nutrition-count-data">0</strong><span>Har data / mapped</span></button><button type="button" data-nutrition-queue="AUTO"><strong id="nutrition-count-auto">0</strong><span>Sikre kulhydratmatches</span></button><button type="button" data-nutrition-queue="READY"><strong id="nutrition-count-ready">0</strong><span>Klar til godkendelse</span></button><button type="button" data-nutrition-queue="REVIEW_REQUIRED"><strong id="nutrition-count-review">0</strong><span>Kræver gennemgang</span></button><button type="button" data-nutrition-queue="NO_MATCH"><strong id="nutrition-count-none">0</strong><span>Intet match</span></button></div>
+      <section class="nutrition-coverage" aria-labelledby="nutrition-coverage-title"><div class="section-heading"><div><h3 id="nutrition-coverage-title">RecipeTemplate nutrition coverage</h3><p id="nutrition-coverage-summary" class="help-text"></p></div></div><div id="nutrition-coverage-list"></div></section>
+      <div class="nutrition-filters"><label>Status<select id="nutrition-status"><option value="ALL">Alle</option><option value="MISSING">Mangler data</option><option value="KNOWN">Har data</option></select></label><label>DTU-match<select id="nutrition-dtu-status"><option value="ALL">Alle</option><option value="HAS_DATA">Har data / mapped</option><option value="AUTO">Sikre kulhydratmatches</option><option value="READY">Klar til godkendelse</option><option value="REVIEW_REQUIRED">Kræver gennemgang</option><option value="NO_MATCH">Intet match</option></select></label><label>Opskrifter<select id="nutrition-recipe-usage"><option value="ALL">Alle</option><option value="USED">Bruges i opskrifter</option><option value="USED_MISSING">Bruges i opskrifter + mangler data</option></select></label><label class="nutrition-search">Søg<input id="nutrition-search" type="search" placeholder="Navn eller alias"></label></div>
+      <div class="nutrition-review-tools" id="nutrition-safe-tools" hidden><span>Semantisk tilsvarende kandidater med højst 2 g forskel pr. 100 g/ml.</span><button class="primary-button compact-button" id="approve-safe-dtu" type="button">Godkend sikre kulhydratmatches</button></div>
+      <div class="nutrition-review-tools" id="nutrition-review-tools" hidden><label><input id="select-all-nutrition" type="checkbox"> Vælg alle viste klare forslag</label><small>Kun EXACT og HIGH_CONFIDENCE kan vælges her.</small></div>
+      <div class="nutrition-bulk-actions" id="nutrition-bulk-actions" hidden><span id="nutrition-selected-count"></span><button class="primary-button compact-button" id="approve-selected-dtu" type="button">Godkend valgte</button></div>
+      <div class="nutrition-list-header" aria-hidden="true"><span>Produkt</span><span>Status</span><span>Kulhydrat</span><span>Kilde</span><span>DTU-match</span><span>Handling</span></div>
+      <div id="nutrition-admin-list" class="nutrition-admin-list"></div>
+      <button class="secondary-button full-button" id="close-nutrition-admin" type="button">Tilbage</button>
+    </section>
   </main>
   </div>
+
+  <dialog class="edit-dialog" id="nutrition-edit-dialog"><form id="nutrition-edit-form"><div class="section-heading"><h2 id="nutrition-edit-title">Kulhydratdata</h2><button class="icon-button" id="close-nutrition-edit" type="button">×</button></div><input id="nutrition-template-id" type="hidden"><label>Kulhydrat (g)<input id="nutrition-grams" type="text" inputmode="decimal" required></label><div class="field-pair"><label>Basis<input id="nutrition-basis" type="text" inputmode="decimal" value="100" required></label><label>Enhed<select id="nutrition-basis-unit"><option value="GRAM">g</option><option value="MILLILITER">ml</option><option value="PIECE">stk</option></select></label></div><label>Kilde<input id="nutrition-source" required placeholder="Fx DTU Fødevaredatabase"></label><label>Udbyder<input id="nutrition-provider" placeholder="Fx DTU"></label><label>Eksternt fødevare-ID<input id="nutrition-external-id"></label><label>Kildeversion/dato<input id="nutrition-source-version"></label><label>Kildelink<input id="nutrition-source-url" type="url"></label><label>Note<textarea id="nutrition-note" rows="2"></textarea></label><div class="notice error" id="nutrition-edit-error" hidden></div><div class="dialog-actions"><button class="secondary-button" id="cancel-nutrition-edit" type="button">Annuller</button><button class="primary-button" type="submit">Gem</button></div></form></dialog>
+  <dialog class="edit-dialog" id="nutrition-match-dialog"><form method="dialog"><div class="section-heading"><div><p class="eyebrow">DTU-reference</p><h2 id="nutrition-match-title">Vælg fødevare</h2></div><button class="icon-button" id="close-nutrition-match" type="button">×</button></div><p class="help-text"><strong>Forslag</strong> viser kun automatisk vurderede, semantisk plausible kandidater.</p><label>Søg i hele DTU-kataloget<input id="nutrition-dtu-search" type="search" placeholder="Navn, betydende ord eller DTU-ID"></label><p class="help-text">Manuel søgning dækker hele kataloget. Kontrollér altid identitet, form og tilberedning; kun Godkend gemmer data.</p><div id="nutrition-dtu-results" class="dtu-results"></div></form></dialog>
+  <dialog class="edit-dialog confirmation-dialog" id="nutrition-bulk-confirm-dialog"><div class="section-heading"><h2>Godkend DTU-matches?</h2><button class="icon-button" id="close-nutrition-bulk-confirm" type="button">×</button></div><p id="nutrition-bulk-confirm-text"></p><p class="help-text">De valgte DTU-værdier bliver gemt som ProductTemplate-fødevaredata med fuld provenance.</p><div class="dialog-actions"><button class="secondary-button" id="cancel-nutrition-bulk-confirm" type="button">Annuller</button><button class="primary-button" id="confirm-nutrition-bulk" type="button">Godkend valgte</button></div></dialog>
 
   <dialog class="edit-dialog" id="edit-product-dialog" aria-labelledby="edit-product-title">
     <form id="edit-product-form">
@@ -232,6 +250,7 @@
     <div class="section-heading"><h2 id="recipe-template-detail-title"></h2><button class="icon-button" id="close-recipe-template-detail" type="button" aria-label="Luk">×</button></div>
     <p id="recipe-template-detail-description" class="product-meta"></p>
     <div class="portion-control" aria-label="Antal portioner"><button id="recipe-template-portions-down" type="button" aria-label="Færre portioner">−</button><strong id="recipe-template-portions">2 portioner</strong><button id="recipe-template-portions-up" type="button" aria-label="Flere portioner">+</button></div>
+    <section id="recipe-template-carbohydrates" class="nutrition-card"></section>
     <h3>Ingredienser</h3><div id="recipe-template-detail-ingredients" class="recipe-ingredients"></div>
     <section id="recipe-template-preparation-section"><h3>Forberedelse</h3><small>Mise en place</small><ol id="recipe-template-detail-preparation" class="recipe-steps compact-steps"></ol></section>
     <section id="recipe-template-equipment-section"><h3>Udstyr</h3><ul id="recipe-template-detail-equipment" class="equipment-list"></ul></section>
@@ -321,6 +340,7 @@
     <div class="section-heading"><h2 id="recipe-detail-title"></h2><button class="icon-button" id="close-recipe-detail" type="button" aria-label="Luk">×</button></div>
     <p id="recipe-detail-description" class="product-meta"></p>
     <div class="portion-control" aria-label="Antal portioner"><button id="recipe-portions-down" type="button" aria-label="Færre portioner">−</button><strong id="recipe-portions">2 portioner</strong><button id="recipe-portions-up" type="button" aria-label="Flere portioner">+</button></div>
+    <section id="recipe-carbohydrates" class="nutrition-card"></section>
     <h3>Ingredienser</h3><div id="recipe-detail-ingredients" class="recipe-ingredients"></div>
     <section id="recipe-preparation-section"><h3>Forberedelse</h3><small>Mise en place</small><ol id="recipe-detail-preparation" class="recipe-steps compact-steps"></ol></section>
     <section id="recipe-equipment-section"><h3>Udstyr</h3><ul id="recipe-detail-equipment" class="equipment-list"></ul></section>
@@ -418,7 +438,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden><span id="toast-message"></span><button id="toast-action" type="button" hidden></button></div>
 
-  <script src="/js/dialog-viewport.js?v=34" defer></script>
-  <script src="/js/app.js?v=34" defer></script>
+  <script src="/js/dialog-viewport.js?v=41" defer></script>
+  <script src="/js/app.js?v=41" defer></script>
 </body>
 </html>

@@ -12,17 +12,20 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = {ProductApiController.class, AuthApiController.class, CookingProcessApiController.class})
+@WebMvcTest(controllers = {ProductApiController.class, AuthApiController.class, CookingProcessApiController.class,NutritionAdminApiController.class})
 @Import(SecurityConfig.class)
 class SecurityRulesTest {
     @Autowired MockMvc mvc;
     @MockitoBean ProductApiDelegate productDelegate;
     @MockitoBean AuthApiDelegate authDelegate;
     @MockitoBean CookingProcessApiDelegate cookingProcessDelegate;
+    @MockitoBean NutritionAdminApiDelegate nutritionAdminDelegate;
     @MockitoBean UserDetailsService userDetailsService;
 
     @Test
@@ -53,4 +56,5 @@ class SecurityRulesTest {
                 .content("{\"username\":\"user\",\"password\":\"long-password\"}"))
                 .andExpect(status().is2xxSuccessful());
     }
+    @Test void normalUserCannotAccessOrMutateGlobalNutrition()throws Exception{mvc.perform(get("/v1/admin/dtu-catalog").with(user("normal"))).andExpect(status().isForbidden());mvc.perform(post("/v1/admin/dtu-catalog/import-bundled").with(user("normal")).with(csrf())).andExpect(status().isForbidden());mvc.perform(put("/v1/admin/product-template-nutrition/"+java.util.UUID.randomUUID()).with(user("normal")).with(csrf()).contentType("application/json").content("{\"carbohydrateGrams\":0,\"basisQuantity\":100,\"basisUnit\":\"GRAM\",\"source\":\"test\"}")).andExpect(status().isForbidden());}
 }

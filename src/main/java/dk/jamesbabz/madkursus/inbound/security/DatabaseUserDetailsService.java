@@ -8,16 +8,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 
 @Component
 @RequiredArgsConstructor
 public class DatabaseUserDetailsService implements UserDetailsService {
     private final UserPort userPort;
+    @Value("${madkursus.admin-username:}") private String adminUsername;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userPort.findByUsername(UserService.normalizeUsername(username))
                 .orElseThrow(() -> new UsernameNotFoundException("Invalid credentials"));
-        return new AuthenticatedUser(user.id(), user.username(), user.passwordHash(), user.enabled());
+        return new AuthenticatedUser(user.id(), user.username(), user.passwordHash(), user.enabled(),adminUsername!=null&&!adminUsername.isBlank()&&user.username().equals(UserService.normalizeUsername(adminUsername)));
     }
 }

@@ -3,6 +3,8 @@ package dk.jamesbabz.madkursus.outbound.producttemplate.details;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.math.BigDecimal;
+import dk.jamesbabz.madkursus.service.models.RecipeUnit;
 import dk.jamesbabz.madkursus.service.models.ProductCategory;
 import dk.jamesbabz.madkursus.service.models.Unit;
 import dk.jamesbabz.madkursus.service.models.InventoryTrackingMode;
@@ -19,6 +21,16 @@ public class ProductTemplateEntity {
     @Enumerated(EnumType.STRING) private Unit defaultUnit;
     @Enumerated(EnumType.STRING) private InventoryTrackingMode defaultTrackingMode;
     private boolean common;
+    private BigDecimal carbohydrateGrams;
+    private BigDecimal nutritionBasisQuantity;
+    @Enumerated(EnumType.STRING) private RecipeUnit nutritionBasisUnit;
+    private String nutritionSource;
+    private String nutritionProvider;
+    private String nutritionExternalFoodId;
+    private String nutritionSourceVersion;
+    private String nutritionSourceUrl;
+    private String nutritionNote;
+    public void updateNutrition(BigDecimal grams,BigDecimal basisQuantity,RecipeUnit basisUnit,String source,String provider,String externalFoodId,String sourceVersion,String sourceUrl,String note){this.carbohydrateGrams=grams;this.nutritionBasisQuantity=basisQuantity;this.nutritionBasisUnit=basisUnit;this.nutritionSource=source;this.nutritionProvider=provider;this.nutritionExternalFoodId=externalFoodId;this.nutritionSourceVersion=sourceVersion;this.nutritionSourceUrl=sourceUrl;this.nutritionNote=note;}
     @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="product_template_aliases", joinColumns=@JoinColumn(name="template_id"))
     @Column(name="alias")

@@ -15,6 +15,7 @@ import dk.jamesbabz.madkursus.service.models.PreparedComponentIngredient;
 import dk.jamesbabz.madkursus.service.models.Recipe;
 import dk.jamesbabz.madkursus.service.models.RecipeStepType;
 import dk.jamesbabz.madkursus.service.models.RecipeTemplate;
+import dk.jamesbabz.madkursus.service.models.RecipeTemplateIngredient;
 import dk.jamesbabz.madkursus.service.models.RecipeTemplateStep;
 import dk.jamesbabz.madkursus.service.ports.CurrentUserProvider;
 import dk.jamesbabz.madkursus.service.ports.RecipePort;
@@ -31,8 +32,9 @@ public class RecipeTemplateService {
     private final CurrentUserProvider currentUser;
     private final CookingProcessService cookingProcesses;
     private final RecipeInstructionRenderer instructions;
-    @Autowired public RecipeTemplateService(RecipeTemplatePort port,RecipePort recipes,RecipeService recipeService,CurrentUserProvider currentUser,CookingProcessService cookingProcesses,RecipeInstructionRenderer instructions){this.port=port;this.recipes=recipes;this.recipeService=recipeService;this.currentUser=currentUser;this.cookingProcesses=cookingProcesses;this.instructions=instructions;}
-    public RecipeTemplateService(RecipeTemplatePort port,RecipePort recipes,RecipeService recipeService,CurrentUserProvider currentUser,CookingProcessService cookingProcesses){this(port,recipes,recipeService,currentUser,cookingProcesses,new RecipeInstructionRenderer());}
+    private final CarbohydrateCalculator carbohydrateCalculator;
+    @Autowired public RecipeTemplateService(RecipeTemplatePort port,RecipePort recipes,RecipeService recipeService,CurrentUserProvider currentUser,CookingProcessService cookingProcesses,RecipeInstructionRenderer instructions,CarbohydrateCalculator carbohydrateCalculator){this.port=port;this.recipes=recipes;this.recipeService=recipeService;this.currentUser=currentUser;this.cookingProcesses=cookingProcesses;this.instructions=instructions;this.carbohydrateCalculator=carbohydrateCalculator;}
+    public RecipeTemplateService(RecipeTemplatePort port,RecipePort recipes,RecipeService recipeService,CurrentUserProvider currentUser,CookingProcessService cookingProcesses){this(port,recipes,recipeService,currentUser,cookingProcesses,new RecipeInstructionRenderer(),new CarbohydrateCalculator());}
 
     public List<RecipeTemplate> search(String query) {
         return port.search(query);
@@ -56,7 +58,7 @@ public class RecipeTemplateService {
         List<String> equipment=cookingProcesses.equipmentOverview(template.steps().stream().filter(step->step.type()==RecipeStepType.PROCESS).map(RecipeTemplateStep::cookingProcessId).toList(),template.equipmentRequirements());
         List<dk.jamesbabz.madkursus.service.models.RecipePreparationStep> preparation=aggregatePreparation(template.preparationSteps().stream().map(p->renderPreparation(p,template,factor)).toList(),steps);
         return new RecipeTemplate(template.id(), template.name(), template.description(), template.active(),
-                template.createdAt(), template.updatedAt(), template.ingredients(), steps,preparation,template.equipmentRequirements(),equipment,template.preparedComponents().stream().map(c->scaleComponent(c,factor)).toList());
+                template.createdAt(), template.updatedAt(), template.ingredients().stream().map(i->new RecipeTemplateIngredient(i.id(),i.productTemplate(),i.quantity().multiply(factor),i.unit(),i.preparation(),i.sortOrder())).toList(), steps,preparation,template.equipmentRequirements(),equipment,template.preparedComponents().stream().map(c->scaleComponent(c,factor)).toList(),carbohydrateCalculator.calculateTemplate(template.ingredients(),factor));
     }
 
     public Optional<Recipe> copiedRecipe(UUID templateId) {

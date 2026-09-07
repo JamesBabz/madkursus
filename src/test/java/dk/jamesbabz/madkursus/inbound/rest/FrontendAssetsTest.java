@@ -23,8 +23,16 @@ class FrontendAssetsTest {
         assertThat(html).contains("edit-product-dialog", "edit-product-form", "id=\"toast\"");
         assertThat(javascript).contains("showToast", "setTimeout", "2600", "searchRequestId",
                 "templateSearch.value = ''", "method: 'PATCH'", "openProductEditor");
-        assertThat(worker).contains("madkursus-shell-v34", "/css/app.css?v=34", "/js/dialog-viewport.js?v=34", "/js/app.js?v=34");
-        assertThat(html).contains("/css/app.css?v=34", "/js/dialog-viewport.js?v=34", "/js/app.js?v=34");
+        assertThat(html).contains("recipe-carbohydrates", "recipe-template-carbohydrates");
+        assertThat(javascript).contains("renderCarbohydrates", "g pr. portion", "ukendt bidrag", "Vis fordeling");
+        assertThat(html).contains("show-nutrition", "more-nutrition", "nutrition-admin-view", "nutrition-edit-form", "Fødevaredata");
+        assertThat(javascript).contains("renderAdminNavigation", "currentUser?.admin === true", "currentUser = await jsonRequest(`${AUTH_API}/login`", "renderUnknownCarbohydrates", "Vis ukendte", "Mangler kulhydratdata", "NUTRITION_ADMIN_API");
+        assertThat(html).contains("nutrition-list-header", "nutrition-admin-list", "nutrition-dtu-status", "nutrition-match-dialog");
+        assertThat(html).contains("Klar til godkendelse", "Intet match", "Sikre kulhydratmatches", "Godkend sikre kulhydratmatches", "select-all-nutrition", "nutrition-bulk-confirm-dialog");
+        assertThat(html).contains("Forslag", "Søg i hele DTU-kataloget", "semantisk plausible kandidater");
+        assertThat(javascript).contains("nutrition-product-name", "nutrition-cell", "nutrition-row-actions", "approveSelectedDtu", "approveSafeDtu", "AUTO_EQUIVALENT_CARBOHYDRATE", "requestApproveSelectedDtu", "Søg i DTU", "Åbn Fødevaredata");
+        assertThat(worker).contains("madkursus-shell-v41", "/css/app.css?v=41", "/js/dialog-viewport.js?v=41", "/js/app.js?v=41");
+        assertThat(html).contains("/css/app.css?v=41", "/js/dialog-viewport.js?v=41", "/js/app.js?v=41");
         assertThat(html).contains("inventory-view", "inventory-add-dialog", "edit-inventory-dialog");
         assertThat(javascript).contains("/v1/inventory", "searchInventoryCandidates", "from-template",
                 "loadInventory", "showToast", "inventorySearchRequestId");

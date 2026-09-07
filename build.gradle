@@ -98,6 +98,30 @@ tasks.register('generateRecipeAuthoringReference', JavaExec) {
 	mainClass = 'dk.jamesbabz.madkursus.tools.recipetemplate.RecipeAuthoringReferenceGenerator'
 }
 
+tasks.register('exportNutritionMappingReview', JavaExec) {
+	group = 'nutrition'
+	description = 'Export unresolved ProductTemplates and local DTU candidates for external AI-assisted review.'
+	dependsOn tasks.named('testClasses')
+	classpath = sourceSets.test.runtimeClasspath
+	mainClass = 'dk.jamesbabz.madkursus.tools.NutritionMappingReviewExportCli'
+}
+
+tasks.register('importNutritionMappingReview', JavaExec) {
+	group = 'nutrition'
+	description = 'Validate and explicitly apply MATCH/HIGH DTU nutrition review decisions without overwriting approved nutrition.'
+	dependsOn tasks.named('testClasses')
+	classpath = sourceSets.test.runtimeClasspath
+	mainClass = 'dk.jamesbabz.madkursus.tools.NutritionAiReviewImportCli'
+	if (project.hasProperty('reviewFile')) systemProperty 'nutritionReviewFile', project.property('reviewFile')
+}
+
+tasks.register('profileNutritionAdminList', JavaExec) {
+	group = 'nutrition'
+	dependsOn tasks.named('testClasses')
+	classpath = sourceSets.test.runtimeClasspath
+	mainClass = 'dk.jamesbabz.madkursus.tools.NutritionEndpointProfileCli'
+}
+
 // This service is deployed as Spring Boot's executable archive. Producing a
 // second dependency-free *-plain.jar makes it easy to launch the wrong artifact.
 tasks.named('jar') {
