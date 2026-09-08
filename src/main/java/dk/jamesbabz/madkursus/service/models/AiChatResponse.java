@@ -1,3 +1,5 @@
 package dk.jamesbabz.madkursus.service.models;
-
-public record AiChatResponse(String answer) {}
+import java.util.List;
+public record AiChatResponse(String answer, List<RecipeMatch> knownRecipes) {
+    public AiChatResponse(String answer) { this(answer, List.of()); }
+}

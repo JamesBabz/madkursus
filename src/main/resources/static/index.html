@@ -8,7 +8,7 @@
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/icons/icon.svg">
-  <link rel="stylesheet" href="/css/app.css?v=41">
+  <link rel="stylesheet" href="/css/app.css?v=48">
   <title>Madkursus</title>
 </head>
 <body>
@@ -44,6 +44,11 @@
   </section>
 
   <div id="application" class="app-shell" hidden>
+  <button id="chat-launcher" class="chat-launcher" type="button" aria-label="Åbn Madhjælp" title="Åbn Madhjælp" aria-haspopup="dialog" aria-controls="chat-drawer" aria-expanded="false"><span class="nav-icon" data-icon="chat" aria-hidden="true"></span></button>
+  <section id="chat-drawer" class="chat-drawer" role="dialog" aria-modal="false" aria-labelledby="chat-drawer-title" hidden>
+    <div class="section-heading"><div><p class="eyebrow">Din køkkenhjælper</p><h2 id="chat-drawer-title">Madhjælp</h2></div><button id="chat-minimize" class="icon-button" type="button" aria-label="Minimér Madhjælp" title="Minimér Madhjælp" autofocus><span class="nav-icon" data-icon="minimize" aria-hidden="true"></span></button></div>
+    <div id="chat-drawer-host"></div>
+  </section>
   <aside class="app-sidebar">
     <div class="brand"><span class="brand-mark" aria-hidden="true">M</span><span>Madkursus</span></div>
     <nav class="primary-nav" aria-label="Primær navigation">
@@ -52,6 +57,7 @@
       <button class="nav-button" id="show-shopping" type="button"><span class="nav-icon" data-icon="cart"></span><span>Indkøb</span></button>
       <button class="nav-button" id="show-recipes" type="button"><span class="nav-icon" data-icon="recipe"></span><span>Opskrifter</span></button>
       <span class="nav-divider" aria-hidden="true"></span>
+      <button class="nav-button secondary-nav" id="show-ai" type="button"><span class="nav-icon" data-icon="chat"></span><span>Madhjælp</span></button>
       <button class="nav-button secondary-nav" id="show-products" type="button"><span class="nav-icon" data-icon="products"></span><span>Produkter</span></button>
       <button class="nav-button secondary-nav" id="show-kitchen" type="button"><span class="nav-icon" data-icon="kitchen"></span><span>Mit køkken</span></button>
       <button class="nav-button secondary-nav" id="show-nutrition" type="button" hidden><span class="nav-icon" data-icon="products"></span><span>Fødevaredata</span></button>
@@ -60,6 +66,29 @@
     <button class="logout-button sidebar-logout" id="logout" type="button"><span class="nav-icon" data-icon="logout"></span>Log ud</button>
   </aside>
   <main class="app-content">
+    <section id="ai-view" class="chat-page" aria-labelledby="chat-title" hidden>
+      <div class="page-heading"><p class="eyebrow">Madhjælp · Prøveversion</p><h2 id="chat-title">Din køkkenhjælper</h2><p class="page-subtitle">Få idéer til aftensmaden med Madkursus – med udgangspunkt i dit lager.</p></div>
+      <div class="chat-panel" id="chat-component">
+        <p id="chat-model" class="chat-model" role="status">Henter modelnavn…</p>
+        <div id="chat-empty" class="chat-empty">
+          <h3>Hvad har du lyst til i aften?</h3>
+          <p>Find en opskrift med det, du har.</p>
+          <div class="chat-examples" aria-label="Forslag til spørgsmål">
+            <button class="secondary-button" type="button" data-chat-prompt>Hvad kan jeg lave?</button>
+            <button class="secondary-button" type="button" data-chat-prompt data-max-extra="0">Brug kun det jeg har</button>
+            <button class="secondary-button" type="button" data-chat-prompt="Hvad kan jeg lave, hvis jeg køber højst 1 ekstra ingrediens?" data-max-extra="1">Højst 1 ekstra vare</button>
+          </div>
+        </div>
+        <div id="chat-messages" class="chat-messages" role="log" aria-label="Dine spørgsmål og svar" aria-live="polite" aria-relevant="additions" tabindex="0" hidden></div>
+        <p id="chat-loading" class="chat-loading" role="status" hidden>Madhjælpen tænker over dine muligheder. Det kan tage et øjeblik…</p>
+        <div id="chat-error" class="notice error" role="alert" hidden></div>
+        <form id="chat-form" class="chat-composer">
+          <select id="chat-max-extra" class="chat-limit" aria-label="Ekstra ingredienser"><option value="">Ingen fast grænse</option><option value="0">Kun det jeg har</option><option value="1">Højst 1 ekstra</option><option value="2">Højst 2 ekstra</option><option value="3">Højst 3 ekstra</option></select>
+          <div class="chat-input-row"><textarea id="chat-input" rows="2" maxlength="4000" required aria-label="Spørg om aftensmaden" placeholder="Skriv en besked…" aria-describedby="chat-help"></textarea><button id="chat-send" class="primary-button" type="submit" disabled>Send</button></div>
+          <p id="chat-help" class="field-help">Nævn retten igen, hvis du spørger videre.</p>
+        </form>
+      </div>
+    </section>
     <div id="products-view">
     <section class="form-panel" id="product-form-panel" aria-labelledby="form-title" hidden>
       <div class="section-heading">
@@ -182,7 +211,8 @@
     </section>
     <section id="more-view" aria-labelledby="more-title" hidden>
       <div class="page-heading"><p class="eyebrow">Indstillinger</p><h2 id="more-title">Mere</h2><p class="page-subtitle">Administration, køkken og konto</p></div>
-      <div class="settings-list">
+        <div class="settings-list">
+          <button id="more-ai" type="button"><span class="nav-icon" data-icon="chat"></span><span><strong>Madhjælp</strong><small>Idéer til aftensmad med det, du har hjemme</small></span><span aria-hidden="true">›</span></button>
         <button id="more-products" type="button"><span class="nav-icon" data-icon="products"></span><span><strong>Produkter</strong><small>Administrer produkter og standardenheder</small></span><span aria-hidden="true">›</span></button>
         <button id="more-kitchen" type="button"><span class="nav-icon" data-icon="kitchen"></span><span><strong>Mit køkken</strong><small>Udstyr, kapacitet og varmeindstillinger</small></span><span aria-hidden="true">›</span></button>
         <button id="more-nutrition" type="button" hidden><span class="nav-icon" data-icon="products"></span><span><strong>Fødevaredata</strong><small>Vedligehold kulhydratdata og kilder</small></span><span aria-hidden="true">›</span></button>
@@ -438,7 +468,8 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden><span id="toast-message"></span><button id="toast-action" type="button" hidden></button></div>
 
-  <script src="/js/dialog-viewport.js?v=41" defer></script>
-  <script src="/js/app.js?v=41" defer></script>
+  <script src="/js/dialog-viewport.js?v=48" defer></script>
+  <script src="/js/ai-chat.js?v=48" defer></script>
+  <script src="/js/app.js?v=48" defer></script>
 </body>
 </html>

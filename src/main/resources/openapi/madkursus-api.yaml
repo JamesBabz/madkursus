@@ -18,6 +18,19 @@ tags:
   - name: cooking-process
   - name: nutrition-admin
 paths:
+  /v1/ai/chat/model:
+    get:
+      tags: [ai]
+      operationId: getAiChatModel
+      summary: Get the currently configured chat model
+      description: Requires an authenticated session. Returns the model configured for chat without contacting the AI provider.
+      responses:
+        '200':
+          description: Configured chat model
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/AiChatModel'}
+        '401': {$ref: '#/components/responses/unauthorized'}
   /v1/ai/chat:
     post:
       tags: [ai]
@@ -770,10 +783,22 @@ components:
         application/json:
           schema: {$ref: '#/components/schemas/ErrorMessage'}
   schemas:
+    AiChatModel:
+      type: object
+      required: [model]
+      properties:
+        model:
+          type: string
+          minLength: 1
     AiChatRequest:
       type: object
       required: [message]
       properties:
+        maxAdditionalIngredients:
+          type: integer
+          minimum: 0
+          maximum: 20
+          description: Optional explicit upper bound on distinct ingredient shortages, checked by the backend. A small set of meal-discovery phrases also accepts an explicit numeric limit; other natural-language constraints are not parsed.
         message:
           type: string
           minLength: 1
@@ -786,6 +811,22 @@ components:
       properties:
         answer:
           type: string
+          description: Plain Danish text assembled from validated meal proposals; never raw model JSON or a model-authored purchase list.
+        knownRecipes:
+          type: array
+          description: Verified stored recipes for one portion. Empty or absent for AI meal ideas.
+          items: {$ref: '#/components/schemas/AiKnownRecipe'}
+    AiKnownRecipe:
+      type: object
+      required: [id, source, name, state, missingIngredientCount, missingIngredients, uncertainIngredients]
+      properties:
+        id: {type: string, format: uuid}
+        source: {type: string, enum: [RECIPE, TEMPLATE]}
+        name: {type: string}
+        state: {type: string, enum: [COOKABLE, NEAR_MATCH, CHECK_QUANTITIES]}
+        missingIngredientCount: {type: integer, minimum: 0}
+        missingIngredients: {type: array, items: {type: string}}
+        uncertainIngredients: {type: array, items: {type: string}}
     EquipmentType:
       type: string
       enum: [STOVE, OVEN, POT, PAN, AIR_FRYER, THERMOMETER, MICROWAVE]

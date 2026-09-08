@@ -20,6 +20,12 @@ public class ProductTemplateAdapterImpl implements ProductTemplatePort {
         String normalized = search == null ? "" : search.trim().toLowerCase(Locale.ROOT);
         return repository.search(normalized, common).stream().map(mapper::toModel).toList();
     }
+    public List<ProductTemplate> findByNameOrAlias(String term) {
+        return repository.findByNameOrAlias(term.trim().toLowerCase(Locale.ROOT)).stream().map(mapper::toModel).toList();
+    }
+    public List<ProductTemplate> findByDiscoveryTerm(String term) {
+        return repository.findByDiscoveryTerm(term.trim().toLowerCase(Locale.ROOT)).stream().map(mapper::toModel).toList();
+    }
     public Optional<ProductTemplate> findById(UUID id) { return repository.findById(id).map(mapper::toModel); }
     @Transactional public ProductTemplate updateNutrition(UUID id,dk.jamesbabz.madkursus.service.models.NutritionData n){var entity=repository.findById(id).orElseThrow();entity.updateNutrition(n.carbohydrateGrams(),n.basisQuantity(),n.basisUnit(),n.source(),n.provider(),n.externalFoodId(),n.sourceVersion(),n.sourceUrl(),n.note());return mapper.toModel(repository.save(entity));}
 }

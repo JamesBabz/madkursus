@@ -31,8 +31,8 @@ class FrontendAssetsTest {
         assertThat(html).contains("Klar til godkendelse", "Intet match", "Sikre kulhydratmatches", "Godkend sikre kulhydratmatches", "select-all-nutrition", "nutrition-bulk-confirm-dialog");
         assertThat(html).contains("Forslag", "Søg i hele DTU-kataloget", "semantisk plausible kandidater");
         assertThat(javascript).contains("nutrition-product-name", "nutrition-cell", "nutrition-row-actions", "approveSelectedDtu", "approveSafeDtu", "AUTO_EQUIVALENT_CARBOHYDRATE", "requestApproveSelectedDtu", "Søg i DTU", "Åbn Fødevaredata");
-        assertThat(worker).contains("madkursus-shell-v41", "/css/app.css?v=41", "/js/dialog-viewport.js?v=41", "/js/app.js?v=41");
-        assertThat(html).contains("/css/app.css?v=41", "/js/dialog-viewport.js?v=41", "/js/app.js?v=41");
+        assertThat(worker).contains("madkursus-shell-v48", "/css/app.css?v=48", "/js/dialog-viewport.js?v=48", "/js/app.js?v=48");
+        assertThat(html).contains("/css/app.css?v=48", "/js/dialog-viewport.js?v=48", "/js/app.js?v=48");
         assertThat(html).contains("inventory-view", "inventory-add-dialog", "edit-inventory-dialog");
         assertThat(javascript).contains("/v1/inventory", "searchInventoryCandidates", "from-template",
                 "loadInventory", "showToast", "inventorySearchRequestId");
@@ -85,7 +85,7 @@ class FrontendAssetsTest {
                 "changePlannedPortions", "cookPlanned", "togglePlannedSkip", "Færdig ✓");
         assertThat(html).contains("show-recipe-templates", "recipe-templates-panel", "recipe-template-detail-dialog",
                 "Føj til mine opskrifter");
-        assertThat(javascript).contains("/v1/recipe-templates", "loadRecipeTemplates", "recipeTemplatePortions=2",
+        assertThat(javascript).contains("/v1/recipe-templates", "loadRecipeTemplates", "initialPortions=2",
                 "add-to-my-recipes", "userRecipeId");
         assertThat(html).contains("show-kitchen", "kitchen-view", "kitchen-equipment-dialog", "Mit køkken",
                 "data-equipment-fields=\"STOVE\"", "data-equipment-fields=\"OVEN\"");
@@ -120,6 +120,25 @@ class FrontendAssetsTest {
                 "--dialog-viewport-bottom",
                 "scrollIntoView({ block: 'nearest'",
                 "controlBounds.bottom > visibleBottom");
+    }
+
+    @Test
+    void chatIsWiredIntoNavigationAndPwaWithSafeTextRendering() throws Exception {
+        String html = resource("static/index.html");
+        String app = resource("static/js/app.js");
+        String chat = resource("static/js/ai-chat.js");
+        assertThat(html).contains("chat-launcher", "chat-drawer", "chat-minimize", "Åbn Madhjælp", "aria-haspopup=\"dialog\"",
+                "show-ai", "more-ai", "ai-view", "Madhjælp", "chat-input", "chat-send",
+                "data-chat-prompt", "aria-live=\"polite\"", "maxlength=\"4000\"");
+        assertThat(html.indexOf("/js/ai-chat.js?v=48")).isLessThan(html.indexOf("/js/app.js?v=48"));
+        assertThat(app).contains("createAiChat(document.querySelector('#chat-component'), jsonRequest,",
+                "aiChat.reset()", "showView('ai')");
+        assertThat(chat).contains("'/v1/ai/chat'", "JSON.stringify({ message,", "maxAdditionalIngredients", "content.textContent = text")
+                .doesNotContain("innerHTML", "localStorage", "sessionStorage", "11434", "llama3.1");
+        assertThat(html).contains("aria-modal=\"false\"");
+        assertThat(chat).doesNotContain("showModal");
+        assertThat(resource("static/service-worker.js")).contains("/js/ai-chat.js?v=48");
+        assertThat(resource("static/css/app.css")).contains("white-space: pre-wrap", ".chat-message-user", ".chat-message-assistant");
     }
 
     private String resource(String path) throws Exception {

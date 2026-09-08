@@ -1,7 +1,7 @@
 function keepFocusedDialogControlVisible(viewport) {
   window.requestAnimationFrame(() => {
     const activeControl = document.activeElement;
-    const dialog = activeControl?.closest?.('dialog[open]');
+    const dialog = activeControl?.closest?.('dialog[open], #chat-drawer:not([hidden])');
     if (!dialog) return;
 
     const header = dialog.querySelector(':scope > .section-heading, :scope > form > .section-heading:first-child');

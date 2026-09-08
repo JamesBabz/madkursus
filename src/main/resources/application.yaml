@@ -45,3 +45,13 @@ logging:
     org.springframework.web.HttpLogging: OFF
     org.springframework.web.filter.CommonsRequestLoggingFilter: OFF
     org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor: INFO
+
+    dk:
+      jamesbabz:
+        madkursus:
+          service:
+            applications:
+              AiSuggestionValidator: DEBUG
+          outbound:
+            ollama:
+              OllamaChatAdapter: DEBUG

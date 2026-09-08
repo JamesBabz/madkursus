@@ -83,6 +83,12 @@ let editingKitchenEquipment = null;
 
 let csrfToken = '';
 let registrationEnabled = false;
+const aiChat = createAiChat(document.querySelector('#chat-component'), jsonRequest, recipe => {
+  aiChatLauncher.close();
+  if (recipe.source === 'TEMPLATE') openRecipeTemplate(recipe.id, 1);
+  else openRecipe(recipe.id, 1);
+});
+const aiChatLauncher = createAiChatLauncher(document, aiChat);
 
 function showMessage(element, message) {
   element.textContent = message;
@@ -157,6 +163,8 @@ function renderAdminNavigation() {
 }
 
 function showUnauthenticatedApp() {
+  aiChatLauncher.close();
+  aiChat.reset();
   currentUser = null;
   renderAdminNavigation();
   application.hidden = true;
@@ -233,6 +241,8 @@ async function register(event) {
 }
 
 async function logout() {
+  aiChatLauncher.close();
+  aiChat.reset();
   try { await jsonRequest(`${AUTH_API}/logout`, { method: 'POST' }); } finally {
     csrfToken = '';
     await refreshCsrfToken();
@@ -382,6 +392,8 @@ async function loadProducts() {
 }
 
 function showView(view) {
+  aiChatLauncher.close();
+  document.querySelector('#chat-launcher').hidden = view === 'ai';
   const inventoryActive = view === 'inventory';
   const shoppingActive = view === 'shopping';
   const productsActive = view === 'products';
@@ -390,7 +402,11 @@ function showView(view) {
   const mealPlansActive = view === 'meal-plans';
   const moreActive = view === 'more';
   const nutritionActive = view === 'nutrition-admin';
-  const moreNavActive = moreActive || productsActive || kitchenActive || nutritionActive;
+  const aiActive = view === 'ai';
+  const moreNavActive = moreActive || productsActive || kitchenActive || nutritionActive || aiActive;
+  document.querySelector('#ai-view').hidden = !aiActive;
+  document.querySelector('#show-ai').classList.toggle('active', aiActive);
+  if (aiActive) { aiChat.scrollToLatest(); aiChat.refreshModel(); }
   document.querySelector('#products-view').hidden = !productsActive;
   document.querySelector('#inventory-view').hidden = !inventoryActive;
   document.querySelector('#shopping-view').hidden = !shoppingActive;
@@ -1062,7 +1078,7 @@ async function loadRecipeTemplates(query=''){const request=++recipeTemplateCatal
 function renderRecipeTemplateDetail(){if(!currentRecipeTemplate)return;document.querySelector('#recipe-template-portions').textContent=`${recipeTemplatePortions} ${recipeTemplatePortions===1?'portion':'portioner'}`;document.querySelector('#recipe-template-portions-down').disabled=recipeTemplatePortions===1;document.querySelector('#recipe-template-detail-ingredients').replaceChildren(...[...currentRecipeTemplate.ingredients].sort((a,b)=>a.sortOrder-b.sortOrder).map(ingredient=>{const row=document.createElement('div');row.className='recipe-ingredient-row';const text=document.createElement('div');const name=document.createElement('div');name.textContent=ingredient.productTemplate.name;const prep=document.createElement('small');prep.textContent=ingredient.preparation||'';text.append(name,prep);const scaled=scaledDecimal(ingredient.quantity,recipeTemplatePortions);const amount=document.createElement('strong');amount.textContent=`${danishDecimal(scaled)} ${recipeUnitLabel(ingredient.unit,scaled)}`;row.append(text,amount);return row;}));document.querySelector('#recipe-template-detail-steps').replaceChildren(...[...currentRecipeTemplate.steps].sort((a,b)=>a.sortOrder-b.sortOrder).map(step=>{const item=document.createElement('li');if(step.type==='PROCESS'&&step.renderedProcess)item.append(renderProcessDetails(step));else item.textContent=step.instruction;return item;}));const add=document.querySelector('#add-recipe-template');add.textContent=currentRecipeTemplate.added?'Åbn min opskrift':'Føj til mine opskrifter';}
 function renderRecipeTemplateMeta(){const preparation=currentRecipeTemplate.preparationSteps||[];document.querySelector('#recipe-template-preparation-section').hidden=!preparation.length;document.querySelector('#recipe-template-detail-preparation').replaceChildren(...preparation.sort((a,b)=>a.sortOrder-b.sortOrder).map(value=>{const item=document.createElement('li');item.textContent=value.instruction;return item;}));const equipment=currentRecipeTemplate.equipment||[];document.querySelector('#recipe-template-equipment-section').hidden=!equipment.length;document.querySelector('#recipe-template-detail-equipment').replaceChildren(...equipment.map(value=>{const item=document.createElement('li');item.textContent=value;return item;}));}
 async function loadRecipeTemplateDetail(id,portions){currentRecipeTemplate=await jsonRequest(`${RECIPE_TEMPLATE_API}/${id}?portions=${portions}`);renderRecipeTemplateDetail();renderRecipeTemplateMeta();renderCarbohydrates(currentRecipeTemplate.carbohydrates,document.querySelector('#recipe-template-carbohydrates'));renderUnknownCarbohydrates(currentRecipeTemplate.carbohydrates,document.querySelector('#recipe-template-carbohydrates'));}
-async function openRecipeTemplate(id){try{recipeTemplatePortions=2;await loadRecipeTemplateDetail(id,recipeTemplatePortions);document.querySelector('#recipe-template-detail-title').textContent=currentRecipeTemplate.name;const description=document.querySelector('#recipe-template-detail-description');description.textContent=currentRecipeTemplate.description||'';description.hidden=!currentRecipeTemplate.description;showMessage(document.querySelector('#recipe-template-error'),'');document.querySelector('#recipe-template-detail-dialog').showModal();}catch(error){showToast(`Opskriften kunne ikke åbnes. ${error.message}`,'error');}}
+async function openRecipeTemplate(id, initialPortions=2){try{recipeTemplatePortions=initialPortions;await loadRecipeTemplateDetail(id,recipeTemplatePortions);document.querySelector('#recipe-template-detail-title').textContent=currentRecipeTemplate.name;const description=document.querySelector('#recipe-template-detail-description');description.textContent=currentRecipeTemplate.description||'';description.hidden=!currentRecipeTemplate.description;showMessage(document.querySelector('#recipe-template-error'),'');document.querySelector('#recipe-template-detail-dialog').showModal();}catch(error){showToast(`Opskriften kunne ikke åbnes. ${error.message}`,'error');}}
 function closeRecipeTemplate(){const dialog=document.querySelector('#recipe-template-detail-dialog');if(dialog.open)dialog.close();}
 async function addRecipeTemplate(){if(!currentRecipeTemplate)return;const button=document.querySelector('#add-recipe-template');button.disabled=true;try{if(currentRecipeTemplate.added&&currentRecipeTemplate.userRecipeId){closeRecipeTemplate();showRecipeSection('recipes');await openRecipe(currentRecipeTemplate.userRecipeId);return;}const recipe=await jsonRequest(`${RECIPE_TEMPLATE_API}/${currentRecipeTemplate.id}/add-to-my-recipes`,{method:'POST'});currentRecipeTemplate.added=true;currentRecipeTemplate.userRecipeId=recipe.id;await Promise.all([loadRecipes(),loadRecipeTemplates(document.querySelector('#recipe-template-catalog-search').value)]);showToast(`${recipe.name} er føjet til dine opskrifter`);renderRecipeTemplateDetail();}catch(error){showMessage(document.querySelector('#recipe-template-error'),error.message);}finally{button.disabled=false;}}
 function mealPlanCard(plan){const button=document.createElement('button');button.type='button';button.className='recipe-card';const name=document.createElement('strong');name.textContent=plan.name;const meta=document.createElement('span');meta.textContent=plan.completed?`${plan.recipes.length} retter · Færdig ✓`:`${plan.recipes.length} ${plan.recipes.length===1?'ret':'retter'}`;button.append(name,meta);button.onclick=()=>openMealPlan(plan.id);return button;}
@@ -1134,6 +1150,8 @@ document.querySelector('#show-shopping').addEventListener('click', () => showVie
 document.querySelector('#show-recipes').addEventListener('click', () => showView('recipes'));
 document.querySelector('#show-meal-plans-primary').addEventListener('click', () => showView('meal-plans'));
 document.querySelector('#show-more').addEventListener('click', () => showView('more'));
+document.querySelector('#show-ai').addEventListener('click', () => showView('ai'));
+document.querySelector('#more-ai').addEventListener('click', () => showView('ai'));
 let nutritionEntries=[],nutritionCoverage=[],pendingNutritionTemplateId=null,currentNutritionMatch=null;const selectedNutritionMappings=new Map();
 function nutritionStatusText(entry){return entry.status==='MISSING'?'Mangler data':entry.status==='KNOWN_ZERO'?'Kendt 0':'Har data';}
 function dtuMatchText(entry){if(entry.dtuMapping?.status==='REQUIRES_REVIEW')return `Ændret: ${entry.dtuMapping.food.danishName}`;if(entry.dtuMapping?.status==='APPROVED')return `DTU: ${entry.dtuMapping.food.danishName}`;const suggestion=entry.dtuSuggestion,candidate=suggestion?.candidates?.[0];if(suggestion?.resolution==='AUTO_EQUIVALENT_CARBOHYDRATE')return `${danishDecimal(suggestion.representative.carbohydrateGrams)} g / 100 g · Auto-valgt fra ${suggestion.equivalentCandidateCount} tilsvarende DTU-poster`;if(!candidate)return 'Intet forslag';if(suggestion.classification==='REVIEW_REQUIRED'&&suggestion.candidates.length>1)return `${suggestion.candidates.length} mulige matches`;return `DTU: ${candidate.food.danishName}`;}
@@ -1288,6 +1306,8 @@ const iconPaths = {
   products: '<path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4.5 7.8 7.5 4.3 7.5-4.3M12 12v9"/>',
   kitchen: '<path d="M4 10h16M6 10v10h12V10M8 10V6a4 4 0 0 1 8 0v4M9 14h6"/>',
   more: '<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
+  minimize: '<path d="M5 12h14"/>',
+  chat: '<path d="M21 11a8 8 0 0 1-8 8H7l-4 3V11a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8Z"/><path d="M7 9h10M7 13h6"/>',
   logout: '<path d="M10 17l5-5-5-5M15 12H3M14 3h5a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5"/>'
 };
 document.querySelectorAll('[data-icon]').forEach(element => {

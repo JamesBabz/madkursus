@@ -22,6 +22,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 class OllamaChatAdapterTest {
     private MockRestServiceServer server;
     private OllamaChatAdapter adapter;
+    private com.fasterxml.jackson.databind.JsonNode sentSchema;
     private final AiChatRequest request = new AiChatRequest(List.of(
             new AiChatMessage(AiChatMessage.Role.SYSTEM, "Inventory: potatoes"),
             new AiChatMessage(AiChatMessage.Role.USER, "Dinner?")));
@@ -39,17 +40,22 @@ class OllamaChatAdapterTest {
     @Test
     void sendsConfiguredModelAndOrderedMessagesWithoutStreaming() {
         mockServer();
+        assertThat(adapter.configuredModel()).isEqualTo("configured-model");
         server.expect(requestTo("http://home-server:11434/api/chat"))
+                .andExpect(r -> sentSchema = new com.fasterxml.jackson.databind.ObjectMapper().readTree(((org.springframework.mock.http.client.MockClientHttpRequest)r).getBodyAsString()).get("format"))
                 .andExpect(method(HttpMethod.POST))
-                .andExpect(content().json("""
-                        {"model":"configured-model","stream":false,"messages":[
-                          {"role":"system","content":"Inventory: potatoes"},
-                          {"role":"user","content":"Dinner?"}]}
-                        """))
+                .andExpect(jsonPath("$.model").value("configured-model"))
+                .andExpect(jsonPath("$.stream").value(false))
+                .andExpect(jsonPath("$.format.anyOf[0].properties.suggestions.maxItems").value(3))
+                .andExpect(jsonPath("$.format.anyOf[0].properties.suggestions.items.properties.ingredients.items.anyOf[0].properties.quantity.type").value("null"))
+                .andExpect(jsonPath("$.format.anyOf[0].properties.suggestions.items.properties.ingredients.items.anyOf[1].required").value(org.hamcrest.Matchers.contains("reference", "quantity", "unit")))
+                .andExpect(jsonPath("$.format.anyOf[0].properties.suggestions.items.properties.ingredients.items.anyOf[1].properties.unit.enum").value(org.hamcrest.Matchers.contains("GRAM", "MILLILITER", "PIECE")))
+                .andExpect(jsonPath("$.messages[0].content").value("Inventory: potatoes"))
+                .andExpect(jsonPath("$.messages[1].content").value("Dinner?"))
                 .andRespond(withSuccess("""
-                        {"message":{"role":"assistant","content":"Roasted potatoes"},"done":true,"total_duration":42}
+                        {"message":{"role":"assistant","content":"{\\"reply\\":\\"NO_SUGGESTIONS\\",\\"suggestions\\":[]}"},"done":true}
                         """, MediaType.APPLICATION_JSON));
-        assertThat(adapter.chat(request).answer()).isEqualTo("Roasted potatoes");
+        assertThat(adapter.chat(request).reply()).isEqualTo(AiMealProposal.Reply.NO_SUGGESTIONS);
         server.verify();
     }
 
@@ -57,6 +63,7 @@ class OllamaChatAdapterTest {
     void convertsHttpErrorToProviderIndependentFailure() {
         mockServer();
         server.expect(requestTo("http://home-server:11434/api/chat"))
+                .andExpect(r -> sentSchema = new com.fasterxml.jackson.databind.ObjectMapper().readTree(((org.springframework.mock.http.client.MockClientHttpRequest)r).getBodyAsString()).get("format"))
                 .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR).body("private provider details"));
         assertThatThrownBy(() -> adapter.chat(request)).isInstanceOf(AiUnavailableException.class)
                 .hasMessageNotContaining("private provider details");
@@ -67,6 +74,7 @@ class OllamaChatAdapterTest {
     void convertsConnectionOrReadTimeoutToProviderIndependentFailure() {
         mockServer();
         server.expect(requestTo("http://home-server:11434/api/chat"))
+                .andExpect(r -> sentSchema = new com.fasterxml.jackson.databind.ObjectMapper().readTree(((org.springframework.mock.http.client.MockClientHttpRequest)r).getBodyAsString()).get("format"))
                 .andRespond(withException(new SocketTimeoutException("Read timed out")));
         assertThatThrownBy(() -> adapter.chat(request)).isInstanceOf(AiUnavailableException.class);
         server.verify();
@@ -78,6 +86,7 @@ class OllamaChatAdapterTest {
     void rejectsInvalidOrIncompleteResponses(String body) {
         mockServer();
         server.expect(requestTo("http://home-server:11434/api/chat"))
+                .andExpect(r -> sentSchema = new com.fasterxml.jackson.databind.ObjectMapper().readTree(((org.springframework.mock.http.client.MockClientHttpRequest)r).getBodyAsString()).get("format"))
                 .andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
         assertThatThrownBy(() -> adapter.chat(request)).isInstanceOf(AiUnavailableException.class);
         server.verify();
@@ -87,5 +96,152 @@ class OllamaChatAdapterTest {
     void rejectsUnlimitedTimeoutConfiguration() {
         assertThatThrownBy(() -> new OllamaChatAdapter(RestClient.builder(), "http://localhost", "model",
                 Duration.ZERO, Duration.ofSeconds(1))).isInstanceOf(IllegalArgumentException.class);
+    }
+    @Test void optionalQuantitiesParseAndMalformedSiblingIsIsolated() throws Exception {
+        mockServer();
+        String content = """
+                {"reply":"SUGGESTIONS","suggestions":[
+                  {"name":"Løgret","ingredients":[{"reference":"product:1"}]},
+                  {"name":"Forkert","ingredients":[{"reference":"product:1","unit":"BOGUS"}]},
+                  {"name":"Anden ret","ingredients":[{"reference":"product:1","quantity":1,"unit":"PIECE"}]}]}
+                """;
+        var body=new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(java.util.Map.of("done",true,"message",java.util.Map.of("role","assistant","content",content)));
+        server.expect(requestTo("http://home-server:11434/api/chat"))
+                .andExpect(r -> sentSchema = new com.fasterxml.jackson.databind.ObjectMapper().readTree(((org.springframework.mock.http.client.MockClientHttpRequest)r).getBodyAsString()).get("format")).andRespond(withSuccess(body,MediaType.APPLICATION_JSON));
+        var proposal=adapter.chat(request);
+        assertThat(proposal.suggestions()).hasSize(3);
+        assertThat(proposal.suggestions().get(0).ingredients().getFirst().quantity()).isNull();
+        assertThat(proposal.suggestions().get(1)).isNull();
+        assertThat(proposal.suggestions().get(2).ingredients().getFirst().quantity()).isEqualByComparingTo("1");
+        server.verify();
+    }
+    @ParameterizedTest
+    @ValueSource(strings = {"null", "{", "{}", "{\"reply\":\"SUGGESTIONS\",\"suggestions\":null}"})
+    void malformedStructuredEnvelopeFailsClosed(String content) throws Exception {
+        mockServer();
+        var body=new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(java.util.Map.of("done",true,"message",java.util.Map.of("role","assistant","content",content)));
+        server.expect(requestTo("http://home-server:11434/api/chat"))
+                .andExpect(r -> sentSchema = new com.fasterxml.jackson.databind.ObjectMapper().readTree(((org.springframework.mock.http.client.MockClientHttpRequest)r).getBodyAsString()).get("format")).andRespond(withSuccess(body,MediaType.APPLICATION_JSON));
+        assertThatThrownBy(()->adapter.chat(request)).isInstanceOf(AiUnavailableException.class);
+        server.verify();
+    }
+    @Test void diagnosticContentIsBoundedEscapedAndMarksTruncation() {
+        assertThat(OllamaChatAdapter.diagnosticContent(null)).isEqualTo("null");
+        assertThat(OllamaChatAdapter.diagnosticContent("hello\nworld")).isEqualTo("\"hello\\nworld\"").doesNotContain("\n");
+        assertThat(OllamaChatAdapter.diagnosticContent("x".repeat(8000))).contains("TRUNCATED").hasSizeLessThan(6100);
+        assertThat(OllamaChatAdapter.diagnosticContent("\n".repeat(8000))).contains("TRUNCATED").hasSizeLessThan(6100).doesNotContain("\n");
+        assertThat(OllamaChatAdapter.diagnosticContent("short")).doesNotContain("TRUNCATED");
+    }
+    @ParameterizedTest
+    @ValueSource(strings = {"plain prose", "```json\n{}\n```", "{\"wrongField\":true}", "{", "x"})
+    void failureContentIsDebugOnlyAndSizeMetricsMatchWireContent(String content) throws Exception {
+        mockServer();
+        var logger=(ch.qos.logback.classic.Logger)org.slf4j.LoggerFactory.getLogger(OllamaChatAdapter.class);
+        var previous=logger.getLevel();
+        var appender=new ch.qos.logback.core.read.ListAppender<ch.qos.logback.classic.spi.ILoggingEvent>();
+        appender.start(); logger.addAppender(appender); logger.setLevel(ch.qos.logback.classic.Level.DEBUG);
+        try {
+            var body=new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(java.util.Map.of("done",true,"message",java.util.Map.of("role","assistant","content",content)));
+            server.expect(requestTo("http://home-server:11434/api/chat"))
+                .andExpect(r -> sentSchema = new com.fasterxml.jackson.databind.ObjectMapper().readTree(((org.springframework.mock.http.client.MockClientHttpRequest)r).getBodyAsString()).get("format")).andRespond(withSuccess(body,MediaType.APPLICATION_JSON));
+            assertThatThrownBy(()->adapter.chat(request)).isInstanceOf(AiUnavailableException.class);
+            var raw=appender.list.stream().filter(e->e.getMessage().contains("rawContent=")).toList();
+            assertThat(raw).hasSize(1);
+            assertThat(raw.getFirst().getLevel()).isEqualTo(ch.qos.logback.classic.Level.DEBUG);
+            assertThat(raw.getFirst().getArgumentArray()).containsExactly("configured-model",content.length(),OllamaChatAdapter.diagnosticContent(content));
+            var completed=appender.list.stream().filter(e->e.getLevel()==ch.qos.logback.classic.Level.INFO && e.getMessage().contains("responseCharacters=")).findFirst().orElseThrow();
+            assertThat(completed.getArgumentArray()[2]).isEqualTo(content.length());
+            var generation=appender.list.stream().filter(e->e.getMessage().contains("schemaCharacters=")).findFirst().orElseThrow();
+            var schema=sentSchema;
+            assertThat(generation.getArgumentArray()[1]).isEqualTo(request.messages().stream().mapToInt(m->m.content().length()).sum());
+            assertThat(generation.getArgumentArray()[2]).isEqualTo(schema.toString().length());
+            assertThat(appender.list.stream().filter(e->e.getLevel().isGreaterOrEqual(ch.qos.logback.classic.Level.INFO)))
+                    .allMatch(e -> !e.getMessage().contains("rawContent=") && !java.util.Arrays.asList(e.getArgumentArray()).contains(content));
+            server.verify();
+        } finally { logger.detachAppender(appender);logger.setLevel(previous);appender.stop(); }
+    }
+    @Test void everyAdvertisedReplyParsesAndOnlySuggestionsMayContainMeals() throws Exception {
+        var json = new com.fasterxml.jackson.databind.ObjectMapper();
+        java.util.Set<String> advertised = new java.util.HashSet<>();
+        for (var reply : AiMealProposal.Reply.values()) {
+            mockServer();
+            String content=json.writeValueAsString(java.util.Map.of("reply",reply.name(),"suggestions",List.of()));
+            String body=json.writeValueAsString(java.util.Map.of("done",true,"message",java.util.Map.of("role","assistant","content",content)));
+            server.expect(requestTo("http://home-server:11434/api/chat"))
+                    .andExpect(r -> sentSchema=json.readTree(((org.springframework.mock.http.client.MockClientHttpRequest)r).getBodyAsString()).get("format"))
+                    .andRespond(withSuccess(body,MediaType.APPLICATION_JSON));
+            assertThat(adapter.chat(request).reply()).isEqualTo(reply);
+            for (var branch : sentSchema.get("anyOf")) {
+                for (var value : branch.at("/properties/reply/enum")) {
+                    advertised.add(value.asText());
+                    assertThat(json.readValue("\""+value.asText()+"\"",AiMealProposal.Reply.class)).isNotNull();
+                    if (!AiMealProposal.Reply.valueOf(value.asText()).allowsSuggestions())
+                        assertThat(branch.at("/properties/suggestions/maxItems").asInt()).isZero();
+                }
+            }
+            server.verify();
+        }
+        assertThat(advertised).containsExactlyInAnyOrderElementsOf(java.util.Arrays.stream(AiMealProposal.Reply.values()).map(Enum::name).toList());
+    }
+
+    @Test void actualMealWithOneExtraLimitParsesButNeedDishWithMealsRemainsInvalid() throws Exception {
+        String meal = """
+                [{"name":"Farfalle med Hakkede Tomater og Oksekød","ingredients":[{"reference":"p0"},{"reference":"p1"},{"reference":"p2"}]}]
+                """;
+        for (var reply : List.of(AiMealProposal.Reply.SUGGESTIONS,AiMealProposal.Reply.NEED_DISH)) {
+            mockServer();
+            var inventory=org.mockito.Mockito.mock(dk.jamesbabz.madkursus.service.applications.InventoryService.class);
+            var templates=org.mockito.Mockito.mock(dk.jamesbabz.madkursus.service.applications.ProductTemplateService.class);
+            org.mockito.Mockito.when(templates.search(null,true)).thenReturn(List.of());
+            org.mockito.Mockito.when(inventory.getAll()).thenReturn(java.util.stream.IntStream.range(0,3).mapToObj(i ->
+                    new InventoryItem(java.util.UUID.randomUUID(),new Product(java.util.UUID.randomUUID(),java.util.UUID.randomUUID(),"Food"+i,ProductCategory.OTHER,Unit.GRAM),java.math.BigDecimal.TEN)).toList());
+            var service=new dk.jamesbabz.madkursus.service.applications.AiChatService(inventory,adapter,templates,new dk.jamesbabz.madkursus.service.applications.AiSuggestionValidator(),org.mockito.Mockito.mock(dk.jamesbabz.madkursus.service.applications.RecipeMatchingService.class),
+                    org.mockito.Mockito.mock(dk.jamesbabz.madkursus.service.ports.AiIntentPort.class),
+                    new dk.jamesbabz.madkursus.service.applications.IngredientPreferenceResolver(templates),
+                    org.mockito.Mockito.mock(dk.jamesbabz.madkursus.service.ports.CurrentUserProvider.class));
+            var content="{\"reply\":\""+reply+"\",\"suggestions\":"+meal+"}";
+            var body=new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(java.util.Map.of("done",true,"message",java.util.Map.of("role","assistant","content",content)));
+            server.expect(requestTo("http://home-server:11434/api/chat"))
+                    .andExpect(jsonPath("$.messages[1].content").value(org.hamcrest.Matchers.containsString("Maximum additional ingredients: 1")))
+                    .andRespond(withSuccess(body,MediaType.APPLICATION_JSON));
+            if (reply==AiMealProposal.Reply.SUGGESTIONS) assertThat(service.chat("Dinner?",1).answer()).contains("Farfalle med Hakkede Tomater og Oksekød");
+            else assertThatThrownBy(()->service.chat("Dinner?",1)).isInstanceOf(AiUnavailableException.class);
+            server.verify();
+        }
+    }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.EnumSource(AiChatIntent.Intent.class)
+    void smallIntentRequestUsesSameModelAndOnlyMessageContext(AiChatIntent.Intent kind) throws Exception {
+        mockServer();
+        String message="Yo. Baseret på det jeg har hjemme, hvad kan jeg så lave?";
+        var content=new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(new AiChatIntent(kind,true,List.of("kylling"),List.of()));
+        var body=new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(java.util.Map.of("done",true,"message",java.util.Map.of("role","assistant","content",content)));
+        server.expect(requestTo("http://home-server:11434/api/chat"))
+                .andExpect(jsonPath("$.model").value("configured-model"))
+                .andExpect(jsonPath("$.stream").value(false))
+                .andExpect(jsonPath("$.messages.length()").value(2))
+                .andExpect(jsonPath("$.messages[0].content").value(OllamaChatAdapter.INTENT_PROMPT))
+                .andExpect(jsonPath("$.messages[1].content").value(message))
+                .andExpect(jsonPath("$.format.properties.intent.enum").value(org.hamcrest.Matchers.contains("MEAL_DISCOVERY","GENERAL_COOKING","OTHER")))
+                .andExpect(r -> {
+                    var wire=new com.fasterxml.jackson.databind.ObjectMapper().readTree(((org.springframework.mock.http.client.MockClientHttpRequest)r).getBodyAsString());
+                    assertThat(wire.get("format").toString().length()).isLessThan(800);
+                    assertThat(wire.get("messages").get(0).get("content").asText().length()).isLessThan(600);
+                }).andRespond(withSuccess(body,MediaType.APPLICATION_JSON));
+        var interpreted=adapter.interpret(message);
+        assertThat(interpreted.intent()).isEqualTo(kind);assertThat(interpreted.inventoryAware()).isTrue();
+        assertThat(interpreted.preferredIngredientTerms()).containsExactly("kylling");server.verify();
+    }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings={"not json","null","{}","{\"intent\":\"UNKNOWN\",\"inventoryAware\":true,\"preferredIngredientTerms\":[],\"excludedIngredientTerms\":[]}","{\"intent\":\"MEAL_DISCOVERY\",\"preferredIngredientTerms\":[],\"excludedIngredientTerms\":[]}","{\"intent\":\"MEAL_DISCOVERY\",\"inventoryAware\":true,\"preferredIngredientTerms\":[\"\"],\"excludedIngredientTerms\":[]}"})
+    void invalidIntentOutputIsProviderIndependentFailure(String content) throws Exception {
+        mockServer();
+        var body=new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(java.util.Map.of("done",true,"message",java.util.Map.of("role","assistant","content",content)));
+        server.expect(requestTo("http://home-server:11434/api/chat")).andRespond(withSuccess(body,MediaType.APPLICATION_JSON));
+        assertThatThrownBy(()->adapter.interpret("Dinner?")).isInstanceOf(AiUnavailableException.class);server.verify();
+    }
+    @Test void intentTimeoutDoesNotChangeProviderFailureContract() {
+        mockServer();server.expect(requestTo("http://home-server:11434/api/chat")).andRespond(withException(new SocketTimeoutException("Timed out")));
+        assertThatThrownBy(()->adapter.interpret("Dinner?")).isInstanceOf(AiUnavailableException.class);server.verify();
     }
 }

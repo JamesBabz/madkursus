@@ -9,11 +9,26 @@ import dk.jamesbabz.madkursus.service.ports.ProductTemplatePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service @RequiredArgsConstructor
+@Service @RequiredArgsConstructor @lombok.extern.slf4j.Slf4j
 public class ProductTemplateService {
     private final ProductTemplatePort port;
     private final ProductService productService;
     public List<ProductTemplate> search(String search, Boolean common) { return port.search(search, common); }
+    public List<ProductTemplate> findByNameOrAlias(String term) { return port.findByNameOrAlias(term); }
+    /** Catalog discovery groups are soft search preferences, never substitution identities. */
+    public List<ProductTemplate> resolveDiscoveryTerm(String term) {
+        var group = port.findByDiscoveryTerm(term);
+        if (!group.isEmpty()) {
+            log.debug("Catalog discovery term={} resolution=CURATED_GROUP candidateTemplates={}", term,
+                    group.stream().map(t -> t.id() + ":" + t.name()).toList());
+            return group;
+        }
+        var exact = port.findByNameOrAlias(term);
+        log.debug("Catalog discovery term={} resolution={} candidateTemplates={}", term,
+                exact.size() == 1 ? "EXACT_IDENTITY" : exact.isEmpty() ? "UNRESOLVED" : "AMBIGUOUS_IDENTITY",
+                exact.stream().map(t -> t.id() + ":" + t.name()).toList());
+        return exact.size() == 1 ? exact : List.of();
+    }
     public ProductTemplate get(UUID id) { return port.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product template", id)); }
     public Product addToProducts(UUID id) {
         ProductTemplate template = get(id);

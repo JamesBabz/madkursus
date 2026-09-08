@@ -1,8 +1,9 @@
 package dk.jamesbabz.madkursus.service.ports;
 
 import dk.jamesbabz.madkursus.service.models.AiChatRequest;
-import dk.jamesbabz.madkursus.service.models.AiChatResponse;
+import dk.jamesbabz.madkursus.service.models.AiMealProposal;
 
 public interface AiChatPort {
-    AiChatResponse chat(AiChatRequest request);
+    String configuredModel();
+    AiMealProposal chat(AiChatRequest request);
 }

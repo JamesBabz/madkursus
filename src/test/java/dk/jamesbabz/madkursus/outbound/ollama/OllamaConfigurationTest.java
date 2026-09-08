@@ -30,6 +30,7 @@ class OllamaConfigurationTest {
                 "OLLAMA_CONNECT_TIMEOUT=2s", "OLLAMA_READ_TIMEOUT=90s").run(context -> {
             assertThat(context).hasNotFailed().hasSingleBean(OllamaChatAdapter.class);
             assertThat(context.getEnvironment().getProperty("madkursus.ai.ollama.model")).isEqualTo("another-model");
+            assertThat(context.getBean(OllamaChatAdapter.class).configuredModel()).isEqualTo("another-model");
             assertThat(context.getEnvironment().getProperty("madkursus.ai.ollama.base-url")).isEqualTo("http://home-server:11434");
             assertThat(context.getEnvironment().getProperty("madkursus.ai.ollama.connect-timeout")).isEqualTo("2s");
             assertThat(context.getEnvironment().getProperty("madkursus.ai.ollama.read-timeout")).isEqualTo("90s");
