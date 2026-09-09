@@ -32,7 +32,7 @@ class DiscoveryPreferenceIntegrationTest {
             var beefRecipe=new Recipe(UUID.randomUUID(),user,"Frikadeller",null,null,null,List.of(new RecipeIngredient(UUID.randomUUID(),beef,new BigDecimal("100"),RecipeUnit.GRAM,null,1)),List.of());
             when(recipes.findAllByUserId(user)).thenReturn(List.of(beefRecipe));when(templates.search(null)).thenReturn(List.of(chicken));
             when(inventory.findAllByUserId(user)).thenReturn(List.of(new InventoryItem(UUID.randomUUID(),new Product(UUID.randomUUID(),user,beef.id(),beef.name(),beef.category(),beef.defaultUnit(),InventoryTrackingMode.QUANTITY),new BigDecimal("200"))));
-            var matcher=new RecipeMatchingService(current,inventory,recipes,templates,new RecipeQuantityNormalizer(),new RecipeMatchRanker());
+            var matcher=new RecipeMatchingService(current,new InventoryAvailabilityService(inventory,mock(MealPlanPort.class),current,new RecipeQuantityNormalizer()),recipes,templates,new RecipeQuantityNormalizer(),new RecipeMatchRanker());
             var intents=mock(AiIntentPort.class);var ai=mock(AiChatPort.class);
             String message="hvad kan jeg lave i aften? Gerne noget med kylling";
             when(intents.interpret(message)).thenReturn(new AiChatIntent(AiChatIntent.Intent.MEAL_DISCOVERY,false,List.of("kylling"),List.of()));

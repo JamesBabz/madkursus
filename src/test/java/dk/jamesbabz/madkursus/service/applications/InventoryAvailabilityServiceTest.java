@@ -21,13 +21,13 @@ class InventoryAvailabilityServiceTest {
  @Test void globallyAggregatesPlansScalesPortionsAndNeverMakesAvailabilityNegative(){
   MealPlan a=plan("A",planned(recipe("Frikadeller",ingredient(eggs,"2",RecipeUnit.PIECE)),4,PlannedRecipeStatus.PLANNED));
   MealPlan b=plan("B",planned(recipe("Æggekage",ingredient(eggs,"3",RecipeUnit.PIECE)),2,PlannedRecipeStatus.PLANNED));
-  when(plans.findAllByUserId(user)).thenReturn(List.of(a,b));var result=service.forTemplate(service.snapshot(null),eggs,eggProduct,InventoryTrackingMode.QUANTITY);
+  when(plans.findAllByUserId(user)).thenReturn(List.of(a,b));var result=service.forTemplate(service.snapshot(null),eggs);
   assertThat(result.reservedQuantity()).isEqualByComparingTo("14");assertThat(result.availableQuantity()).isZero();assertThat(result.plannedShortfall()).isEqualByComparingTo("4");assertThat(result.reservations()).hasSize(2);
   verify(plans).findAllByUserId(user);verify(plans,never()).findAllByUserId(otherUser);
  }
  @Test void exclusionMakesCompetingPlansSeeOnlyOtherReservations(){
   MealPlan a=plan("A",planned(recipe("A-ret",ingredient(eggs,"8",RecipeUnit.PIECE)),1,PlannedRecipeStatus.PLANNED));MealPlan b=plan("B",planned(recipe("B-ret",ingredient(eggs,"6",RecipeUnit.PIECE)),1,PlannedRecipeStatus.PLANNED));when(plans.findAllByUserId(user)).thenReturn(List.of(a,b));
-  var forA=service.forTemplate(service.snapshot(a.id()),eggs,eggProduct,InventoryTrackingMode.QUANTITY);var forB=service.forTemplate(service.snapshot(b.id()),eggs,eggProduct,InventoryTrackingMode.QUANTITY);
+  var forA=service.forTemplate(service.snapshot(a.id()),eggs);var forB=service.forTemplate(service.snapshot(b.id()),eggs);
   assertThat(forA.reservedQuantity()).isEqualByComparingTo("6");assertThat(forA.availableQuantity()).isEqualByComparingTo("4");assertThat(forB.reservedQuantity()).isEqualByComparingTo("8");assertThat(forB.availableQuantity()).isEqualByComparingTo("2");
  }
  @Test void cookedAndSkippedDoNotReserveAndChangingStateOrPortionsImmediatelyChangesResult(){
@@ -36,15 +36,34 @@ class InventoryAvailabilityServiceTest {
  }
  @Test void presenceRemainsAvailableAndCountsPlannedRecipeUsesWithoutFakeQuantity(){
   Recipe one=recipe("A",ingredient(salt,"2",RecipeUnit.GRAM)),two=recipe("B",ingredient(salt,"1",RecipeUnit.GRAM));when(inventory.findAllByUserId(user)).thenReturn(List.of(new InventoryItem(UUID.randomUUID(),saltProduct,null)));when(plans.findAllByUserId(user)).thenReturn(List.of(plan("Plan",planned(one,1,PlannedRecipeStatus.PLANNED),planned(two,1,PlannedRecipeStatus.PLANNED))));
-  var result=service.forTemplate(service.snapshot(null),salt,saltProduct,InventoryTrackingMode.PRESENCE);assertThat(result.physicalQuantity()).isNull();assertThat(result.reservedQuantity()).isNull();assertThat(result.plannedUsageCount()).isEqualTo(2);assertThat(result.reservations()).hasSize(2);
+  var result=service.forTemplate(service.snapshot(null),salt);assertThat(result.quantityCertain()).isFalse();assertThat(result.physicalQuantity()).isNull();assertThat(result.reservedQuantity()).isNull();assertThat(result.plannedUsageCount()).isEqualTo(2);assertThat(result.reservations()).hasSize(2);
  }
  @Test void reservationsReuseVolumeNormalization(){
   Product milkProduct=product(milk,InventoryTrackingMode.QUANTITY);when(plans.findAllByUserId(user)).thenReturn(List.of(plan("Plan",planned(recipe("Drik",ingredient(milk,"1",RecipeUnit.DECILITER),ingredient(milk,"2",RecipeUnit.TABLESPOON),ingredient(milk,"1",RecipeUnit.TEASPOON)),1,PlannedRecipeStatus.PLANNED))));
-  assertThat(service.forTemplate(service.snapshot(null),milk,milkProduct,InventoryTrackingMode.QUANTITY).reservedQuantity()).isEqualByComparingTo("135");
+  assertThat(service.forTemplate(service.snapshot(null),milk).reservedQuantity()).isEqualByComparingTo("135");
  }
  @Test void untrackedIngredientsNeverCreateMealPlanReservations(){
   ProductTemplate water=template("Vand",Unit.MILLILITER,InventoryTrackingMode.UNTRACKED);when(plans.findAllByUserId(user)).thenReturn(List.of(plan("Plan",planned(recipe("Sovs",ingredient(water,"0.5",RecipeUnit.DECILITER)),4,PlannedRecipeStatus.PLANNED))));
   var snapshot=service.snapshot(null);assertThat(snapshot.reservation(water.id()).quantity()).isZero();assertThat(snapshot.reservationsByTemplateId()).doesNotContainKey(water.id());
+ }
+ @Test void unknownReservationIsPreservedInSnapshotAndInventoryProjection(){
+  Recipe unknown=recipe("Unknown",ingredient(eggs,"100",RecipeUnit.GRAM));
+  when(plans.findAllByUserId(user)).thenReturn(List.of(plan("Existing",planned(unknown,2,PlannedRecipeStatus.PLANNED),planned(recipe("Known",ingredient(eggs,"2",RecipeUnit.PIECE)),1,PlannedRecipeStatus.PLANNED))));
+  var snapshot=service.snapshot(null);
+  assertThat(snapshot.reservation(eggs.id()).quantity()).isNull();
+  assertThat(snapshot.reservation(eggs.id()).warning()).isNotBlank();
+  var result=service.forTemplate(snapshot,eggs);
+  assertThat(result.quantityCertain()).isFalse();assertThat(result.physicalQuantity()).isEqualByComparingTo("10");
+  assertThat(result.reservedQuantity()).isNull();assertThat(result.availableQuantity()).isNull();assertThat(result.plannedShortfall()).isNull();
+  assertThat(result.reservations()).hasSize(2);
+  var inventoryResult=service.inventoryAvailability().getFirst();
+  assertThat(inventoryResult.availableQuantity()).isNull();assertThat(inventoryResult.reservedQuantity()).isNull();
+ }
+ @Test void duplicateCanonicalStockAndMismatchedUnitsRemainUnknown(){
+  Product duplicate=product(eggs,InventoryTrackingMode.QUANTITY);
+  when(inventory.findAllByUserId(user)).thenReturn(List.of(new InventoryItem(UUID.randomUUID(),eggProduct,new BigDecimal("10")),new InventoryItem(UUID.randomUUID(),duplicate,new BigDecimal("10"))));
+  var result=service.forTemplate(service.snapshot(null),eggs);
+  assertThat(result.warning()).isNotBlank();assertThat(result.availableQuantity()).isNull();
  }
  private ProductTemplate template(String name,Unit unit,InventoryTrackingMode mode){return new ProductTemplate(UUID.randomUUID(),name,ProductCategory.OTHER,unit,mode,List.of(),false);}
  private Product product(ProductTemplate t,InventoryTrackingMode mode){return new Product(UUID.randomUUID(),user,t.id(),t.name(),t.category(),t.defaultUnit(),mode);}

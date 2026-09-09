@@ -11,25 +11,25 @@ function createRecipeImport({document, request}) {
   function controls(value) {busy=value;[validate,submit,format,clear,input].forEach(node=>node.disabled=value);}
   function render(value) {
     result.replaceChildren();
-    if (!value.valid) {line(t("render.kladdenKunneIkkeValideres"),'strong');(value.errors||[]).forEach(error=>{
+    if (!value.valid) {line(t("recipes.import.validationFailed"),'strong');(value.errors||[]).forEach(error=>{
       const item=document.createElement('div');item.className='recipe-import-error';
       const path=document.createElement('code');path.textContent=error.path||'$';
       const message=document.createElement('p');message.textContent=typeof error==='string'?error:error.message;
       item.append(path,message);result.append(item);
     });result.scrollIntoView({block:'center'});return;}
-    line(value.imported?t("render.importeretLokalt"):t("render.kladdenErGyldig"),'strong');
+    line(value.imported?t("recipes.import.imported"):t("recipes.import.valid"),'strong');
     line(`${value.name} · ${value.key}`);
-    line(t("render.handlingAction", {action: value.action}));
-    line(t("render.ingredientsIngredienserPreparationStepsForberedelsestrinPreparedComponentsPreparedComponentsCookingProcesses", {ingredients: value.ingredients, preparationSteps: value.preparationSteps, preparedComponents: value.preparedComponents, cookingProcesses: value.cookingProcesses, textSteps: value.textSteps, processSteps: value.processSteps}));
-    (value.warnings||[]).forEach(warning=>line(t("render.bemaerkWarning", {warning: warning})));
+    line(t("recipes.import.action", {action: value.action}));
+    line(t("recipes.import.summary", {ingredients: value.ingredients, preparationSteps: value.preparationSteps, preparedComponents: value.preparedComponents, cookingProcesses: value.cookingProcesses, textSteps: value.textSteps, processSteps: value.processSteps}));
+    (value.warnings||[]).forEach(warning=>line(t("recipes.import.warning", {warning: warning})));
     if(value.imported) {
-      line(t("render.genereretCanonicalFileOgMigrationFile", {canonicalFile: value.canonicalFile, migrationFile: value.migrationFile}));
-      line(t("render.naesteKorCleanBuildStartAppenOg"));
+      line(t("recipes.import.generatedFiles", {canonicalFile: value.canonicalFile, migrationFile: value.migrationFile}));
+      line(t("recipes.import.nextSteps"));
     }
   }
   async function run(write) {
     if(busy || (write && validated!==input.value))return;
-    const draft=input.value, token=++epoch;controls(true);submit.hidden=true;result.replaceChildren();line(write?t("run.importererLokalt"):t("run.validerer"));
+    const draft=input.value, token=++epoch;controls(true);submit.hidden=true;result.replaceChildren();line(write?t("recipes.import.importing"):t("recipes.import.validating"));
     try {
       const value=await request(`/v1/admin/recipe-template-import/${write?'import':'validate'}`,{method:'POST',headers:{'Content-Type':'text/plain; charset=UTF-8'},body:draft});
       if(token!==epoch)return;
@@ -40,7 +40,7 @@ function createRecipeImport({document, request}) {
   input.addEventListener('input',invalidate);
   validate.addEventListener('click',()=>run(false));submit.addEventListener('click',()=>run(true));
   clear.addEventListener('click',()=>{input.value='';invalidate();input.focus();});
-  format.addEventListener('click',()=>{try{input.value=JSON.stringify(JSON.parse(input.value),null,2);invalidate();}catch(error){invalidate();line(t("createRecipeImport.ugyldigJSONMessage", {message: error.message}));}});
+  format.addEventListener('click',()=>{try{input.value=JSON.stringify(JSON.parse(input.value),null,2);invalidate();}catch(error){invalidate();line(t("recipes.import.invalidJson", {message: error.message}));}});
   return {reset(){epoch++;input.value='';invalidate();controls(false);}};
 }
 if(typeof module!=='undefined')module.exports={createRecipeImport};

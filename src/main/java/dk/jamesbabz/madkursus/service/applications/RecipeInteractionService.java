@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service @RequiredArgsConstructor
 public class RecipeInteractionService {
-    private final RecipeService recipeService; private final ProductService productService;
+    private final RecipeService recipeService;
     private final InventoryService inventoryService; private final ShoppingListService shoppingListService;
     private final RecipeCookHistoryPort historyPort; private final CurrentUserProvider currentUser;
     private final InventoryAvailabilityService availabilityService; private final RecipeQuantityNormalizer normalizer;
@@ -36,10 +36,11 @@ public class RecipeInteractionService {
         }
         InventoryAvailabilityService.Snapshot snapshot=availabilityService.snapshot(excludedMealPlanId); List<RecipeRequirement> results=new ArrayList<>();
         for(Aggregate aggregate:totals.values()){
-            Optional<Product> product=productService.findEquivalent(aggregate.template().id(),aggregate.template().name());
-            InventoryTrackingMode mode=product.map(Product::inventoryTrackingMode).orElse(aggregate.template().defaultTrackingMode());
-            var availability=availabilityService.forTemplate(snapshot,aggregate.template(),product.orElse(null),mode);
-            if(mode==InventoryTrackingMode.PRESENCE){boolean present=product.map(p->snapshot.inventoryByProductId().containsKey(p.id())).orElse(false);results.add(new RecipeRequirement(aggregate.template(),product.orElse(null),mode,aggregate.quantity(),aggregate.unit(),null,null,null,null,null,availability.plannedUsageCount(),availability.reservations(),present,null,aggregate.displayQuantity(),aggregate.displayUnit()));continue;}
+            var availability=availabilityService.forTemplate(snapshot,aggregate.template());
+            Optional<Product> product=Optional.ofNullable(availability.product());
+            InventoryTrackingMode mode=availability.trackingMode();
+            if(availability.warning()!=null){results.add(new RecipeRequirement(aggregate.template(),product.orElse(null),mode,aggregate.quantity(),aggregate.unit(),availability.physicalQuantity(),null,null,null,null,availability.plannedUsageCount(),availability.reservations(),false,availability.warning(),aggregate.displayQuantity(),aggregate.displayUnit()));continue;}
+            if(mode==InventoryTrackingMode.PRESENCE){boolean present=product.map(p->snapshot.inventoryByProductId().containsKey(p.id())).orElse(false);results.add(new RecipeRequirement(aggregate.template(),product.orElse(null),mode,null,aggregate.unit(),null,null,null,null,null,availability.plannedUsageCount(),availability.reservations(),present,null,aggregate.displayQuantity(),aggregate.displayUnit()));continue;}
             if(aggregate.warning()!=null){results.add(new RecipeRequirement(aggregate.template(),product.orElse(null),mode,null,aggregate.unit(),null,null,null,null,null,availability.plannedUsageCount(),availability.reservations(),false,aggregate.warning(),aggregate.displayQuantity(),aggregate.displayUnit()));continue;}
             BigDecimal rawMissing=aggregate.quantity().subtract(availability.availableQuantity()).max(BigDecimal.ZERO);
             BigDecimal missing=roundUp(rawMissing,aggregate.unit());
@@ -67,7 +68,12 @@ public class RecipeInteractionService {
         Recipe recipe=recipeService.get(recipeId); RecipeRequirementCalculation calculation=calculate(List.of(new RecipeSelection(recipeId,portions)),excludedMealPlanId); List<String>warnings=new ArrayList<>();
         for(RecipeRequirement requirement:calculation.requirements()){
             if(requirement.trackingMode()==InventoryTrackingMode.UNTRACKED)continue;
-            if(requirement.warning()!=null){warnings.add(requirement.productTemplate().name()+": "+requirement.warning());continue;}
+            if(requirement.warning()!=null){
+                warnings.add(requirement.productTemplate().name()+": "+requirement.warning());
+                // An unknown external reservation does not invalidate a known physical cooking deduction.
+                // Conversion/identity failures have no trusted required or physical quantity.
+                if(requirement.requiredQuantity()==null || requirement.physicalQuantity()==null || requirement.trackingMode()!=InventoryTrackingMode.QUANTITY)continue;
+            }
             if(requirement.trackingMode()==InventoryTrackingMode.PRESENCE){if(!requirement.satisfied())warnings.add(requirement.productTemplate().name()+" var ikke registreret som på lager");continue;}
             BigDecimal amount=roundUp(requirement.requiredQuantity(),requirement.unit());
             if(requirement.product()==null){warnings.add(format(amount,requirement.unit())+" "+requirement.productTemplate().name()+" blev brugt ud over registreret lager");continue;}

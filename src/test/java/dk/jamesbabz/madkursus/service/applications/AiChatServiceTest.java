@@ -206,7 +206,7 @@ class AiChatServiceTest {
         when(templates.resolveDiscoveryTerm("kylling")).thenReturn(List.of(chicken));
         when(intents.interpret(any())).thenReturn(new AiChatIntent(AiChatIntent.Intent.MEAL_DISCOVERY,true,List.of("kylling"),List.of()));
         var current=new SecurityCurrentUserProvider();
-        var realMatcher=new RecipeMatchingService(current,inventoryPort,recipes,catalog,new RecipeQuantityNormalizer(),new RecipeMatchRanker());
+        var realMatcher=new RecipeMatchingService(current,new InventoryAvailabilityService(inventoryPort,mock(MealPlanPort.class),current,new RecipeQuantityNormalizer()),recipes,catalog,new RecipeQuantityNormalizer(),new RecipeMatchRanker());
         var subject=new AiChatService(mock(InventoryService.class),aiPort,templates,new AiSuggestionValidator(),realMatcher,intents,new IngredientPreferenceResolver(templates),current);
         assertThat(subject.chat("Jeg har lyst til kylling i dag").knownRecipes()).extracting(RecipeMatch::name).containsExactly("Kylling i karry","Frikadeller");
         assertThat(subject.chat("Jeg har lyst til kylling i dag",0).knownRecipes()).extracting(RecipeMatch::name).containsExactly("Frikadeller");

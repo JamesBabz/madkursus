@@ -225,7 +225,7 @@ test('known recipe cards render safe names and navigation without tracking detai
   const message = s.messages.children[1];
   assert.equal(message.children[2].children[0].textContent, '<img src=x>');
   assert.equal(message.children[2].children[1].textContent, 'Du har alt, du skal bruge.');
-  assert.equal(message.children[3].children[1].textContent, 'Mangler: Bønner.');
+  assert.match(message.children[3].children[1].textContent, /^Mangler: Bønner\. Tjek mængderne/);
   message.children[2].children[2].fire('click'); message.children[3].children[2].fire('click');
   assert.deepEqual(s.opened, recipes);
   s.close.fire('click'); s.launcher.fire('click');
@@ -239,11 +239,11 @@ test('compact quick action submits its full prompt and explicit one-extra limit'
   assert.equal(s.empty.hidden, true); s.resolve({ answer: 'Et svar' }); await tick();
 });
 
-test('presence-only known match summary omits unknown-quantity list without changing response state', async () => {
+test('presence-only known match summary preserves quantity uncertainty', async () => {
   const s = setup(); s.example.fire('click');
   const recipe = { id: 'presence', source: 'RECIPE', name: 'Ret', state: 'CHECK_QUANTITIES', missingIngredients: [], uncertainIngredients: ['Salt', 'Sort peber', 'Rapsolie'] };
   s.resolve({ answer: 'Kendte opskrifter', knownRecipes: [recipe] }); await tick();
-  assert.equal(s.messages.children[1].children[2].children[1].textContent, 'Du har alt, du skal bruge.');
+  assert.match(s.messages.children[1].children[2].children[1].textContent, /Tjek mængderne/);
   assert.equal(recipe.state, 'CHECK_QUANTITIES'); assert.deepEqual(recipe.uncertainIngredients, ['Salt', 'Sort peber', 'Rapsolie']);
 });
 
@@ -256,3 +256,12 @@ for (const value of ['', '0', '1', '2', '3']) {
     s.resolve({ answer: 'Svar' }); await tick();
   });
 }
+
+test('uncertain known recipes never claim there is enough stock', async () => {
+  const s = setup(); s.example.fire('click');
+  s.resolve({answer:'Kendte opskrifter',knownRecipes:[{id:'known',source:'RECIPE',name:'Ret',state:'CHECK_QUANTITIES',missingIngredients:[],uncertainIngredients:['Salt']}]});
+  await tick();
+  const card=s.messages.children.at(-1).children.at(-1);
+  assert.match(card.children[1].textContent,/Tjek mængderne/);
+  assert.doesNotMatch(card.children[1].textContent,/Du har alt/);
+});

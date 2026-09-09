@@ -478,3 +478,38 @@ It verifies chicken-first ordering, zero-extra exclusion, no-preference/unresolv
 fallback ordering, stable results, and 300 g chicken required for two portions.
 Additional matcher tests cover 300/400 g stock, shortage/count/filter/ranking changes
 and unchanged presence behavior. No live production database or Ollama is accessed.
+
+
+## Phase 1: shared recipe/planning availability
+
+Known-recipe discovery now uses `InventoryAvailabilityService.snapshot(null)` once
+per discovery request. Both `RecipeMatchingService` and
+`RecipeInteractionService.calculate` use `forTemplate(snapshot, template)` for
+stock identity, tracking compatibility and effective availability. Recipe scaling
+still uses `RecipeQuantityNormalizer`; ranking rules are unchanged.
+
+- Only `Product.sourceTemplateId == ProductTemplate.id` establishes calculation
+  identity. Renamed linked products still count. Legacy same-name products without
+  the link do not count; the product-management name fallback is deliberately not
+  used by either calculator. No data is automatically linked or migrated.
+- Canonical stock with a different storage unit, an incompatible untracked mode,
+  invalid numeric stock, or multiple products for one template is uncertain.
+  Presence on either side is never upgraded into quantitative sufficiency.
+- All other `PLANNED` entries reserve stock. `COOKED` and `SKIPPED` entries do not.
+  Saved-plan calculation still excludes its own plan ID.
+- A failed reservation conversion preserves reservation details and a warning.
+  Reserved, available and planned-shortfall quantities are null, not zero.
+  Collective requirements carry the existing warning and a null missing quantity;
+  discovery uses `CHECK_QUANTITIES` and cannot pass the zero-extra hard filter.
+- Presence requirements use null numeric stock/requirement fields. Their
+  `satisfied` flag means only that the ingredient is present. Existing chat and
+  requirement rendering explicitly qualify quantity uncertainty.
+- Collective selection aggregation is unchanged. Calculations do not mutate
+  physical inventory. An explicitly invoked cooking operation still deducts its
+  known quantity even if a different plan has an unknown reservation; unknown
+  ingredient conversions or incompatible stock metadata are not deducted.
+
+This supersedes historical physical-stock and hidden-uncertainty descriptions
+above for **known-recipe discovery**. AI-generated inspiration still has its
+separate physical-stock validation contract. No planning intent, chat draft,
+selection action, endpoint or shopping confirmation is introduced here.

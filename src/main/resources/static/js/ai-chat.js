@@ -18,14 +18,14 @@ function createAiChat(root, request, openKnownRecipe = () => {}) {
     if (modelLoading) return;
     const currentGeneration = generation;
     modelLoading = true;
-    modelLabel.textContent = t("createAiChat.henterModelnavn");
+    modelLabel.textContent = t("chat.model.loading");
     try {
       const result = await request('/v1/ai/chat/model', { cache: 'no-store' });
       if (currentGeneration !== generation) return;
       if (typeof result?.model !== 'string' || !result.model.trim()) throw new Error('Missing model');
-      modelLabel.textContent = t("refreshModel.brugerModelModel", {model: result.model});
+      modelLabel.textContent = t("chat.model.current", {model: result.model});
     } catch {
-      if (currentGeneration === generation) modelLabel.textContent = t("refreshModel.modelnavnKunneIkkeHentes");
+      if (currentGeneration === generation) modelLabel.textContent = t("chat.model.loadFailed");
     } finally {
       if (currentGeneration === generation) modelLoading = false;
     }
@@ -41,7 +41,7 @@ function createAiChat(root, request, openKnownRecipe = () => {}) {
     input.disabled = value;
     maxExtra.disabled = value;
     send.disabled = value || !input.value.trim();
-    send.textContent = value ? t("setBusy.venter") : t("chat.send");
+    send.textContent = value ? t("chat.waiting") : t("chat.send");
     loading.hidden = !value;
     examples.forEach(button => { button.disabled = value; });
   }
@@ -50,7 +50,7 @@ function createAiChat(root, request, openKnownRecipe = () => {}) {
     const message = root.ownerDocument.createElement('article');
     message.className = `chat-message chat-message-${role}`;
     const label = root.ownerDocument.createElement('strong');
-    label.textContent = role === 'user' ? t("append.dig") : t("append.madhjaelp");
+    label.textContent = role === 'user' ? t("chat.userName") : t("chat.assistantName");
     const content = root.ownerDocument.createElement('p');
     content.textContent = text;
     message.append(label, content);
@@ -61,9 +61,11 @@ function createAiChat(root, request, openKnownRecipe = () => {}) {
       const name = root.ownerDocument.createElement('strong'); name.textContent = recipe.name;
       const summary = root.ownerDocument.createElement('p');
       const missing = Array.isArray(recipe.missingIngredients) ? recipe.missingIngredients : [];
-      summary.textContent = missing.length ? t("append.manglerValue1", {value1: missing.join(', ')}) : t("append.duHarAltDuSkalBruge");
+      const uncertain = Array.isArray(recipe.uncertainIngredients) ? recipe.uncertainIngredients : [];
+      summary.textContent = missing.length ? t("chat.missingIngredients", {value1: missing.join(', ')}) : uncertain.length || recipe.state === 'CHECK_QUANTITIES' ? t("chat.quantityUnknown") : t("chat.stockSufficient");
+      if (missing.length && uncertain.length) summary.textContent += ` ${t("chat.quantityUnknown")}`;
       const open = root.ownerDocument.createElement('button'); open.type = 'button'; open.className = 'text-button';
-      open.textContent = t("recipeTemplateCard.abnOpskrift"); open.addEventListener('click', () => openKnownRecipe(recipe));
+      open.textContent = t("recipes.open"); open.addEventListener('click', () => openKnownRecipe(recipe));
       card.append(name, summary, open); message.append(card);
     }
     log.append(message);
@@ -93,10 +95,10 @@ function createAiChat(root, request, openKnownRecipe = () => {}) {
       append('assistant', result.answer, Array.isArray(result.knownRecipes) ? result.knownRecipes : []);
     } catch (failure) {
       if (turn !== generation) return;
-      error.textContent = failure.status === 401 ? t("submit.dinSessionErUdlobetLogIndIgen")
-        : failure.status === 403 ? t("submit.beskedenKunneIkkeSendesGenindlaesSidenOg")
-        : failure.status === 503 ? t("submit.madhjaelpenErIkkeTilgaengeligLigeNuProv")
-        : t("submit.viKunneIkkeHenteEtSvarTjek");
+      error.textContent = failure.status === 401 ? t("chat.sessionExpired")
+        : failure.status === 403 ? t("chat.sendFailed")
+        : failure.status === 503 ? t("chat.unavailable")
+        : t("chat.requestFailed");
       error.hidden = false;
       input.value = message;
     } finally {
@@ -129,7 +131,7 @@ function createAiChat(root, request, openKnownRecipe = () => {}) {
     reset() {
       generation++;
       modelLoading = false;
-      modelLabel.textContent = t("createAiChat.henterModelnavn");
+      modelLabel.textContent = t("chat.model.loading");
       controller?.abort();
       log.replaceChildren();
       log.hidden = true;

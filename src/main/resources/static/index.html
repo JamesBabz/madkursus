@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <meta name="theme-color" content="#f7f8f5">
-  <meta name="description" content="" data-i18n-content="html.madkursusEtEnkeltOverblikOverDineProdukter">
+  <meta name="description" content="" data-i18n-content="app.description">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/icons/icon.svg">
@@ -14,29 +14,29 @@
 <body>
   <section class="auth-screen" id="auth-screen" hidden>
     <div class="auth-card">
-      <p class="eyebrow" data-i18n="html.velkommenTil"></p>
+      <p class="eyebrow" data-i18n="auth.welcome"></p>
       <h1>Madkursus</h1>
-      <div class="auth-tabs" id="auth-tabs" role="tablist" aria-label="" data-i18n-aria-label="html.vaelgAdgangstype">
-        <button class="active" id="auth-tab-login" type="button" role="tab" aria-selected="true" aria-controls="login-form" data-i18n="html.logInd"></button>
-        <button id="auth-tab-register" type="button" role="tab" aria-selected="false" aria-controls="register-form" hidden data-i18n="html.opretBruger"></button>
+      <div class="auth-tabs" id="auth-tabs" role="tablist" aria-label="" data-i18n-aria-label="auth.accessType">
+        <button class="active" id="auth-tab-login" type="button" role="tab" aria-selected="true" aria-controls="login-form" data-i18n="auth.login"></button>
+        <button id="auth-tab-register" type="button" role="tab" aria-selected="false" aria-controls="register-form" hidden data-i18n="auth.register"></button>
       </div>
       <form id="login-form" role="tabpanel" aria-labelledby="auth-tab-login">
-        <h2 data-i18n="html.logInd"></h2>
-        <label for="login-username" data-i18n="html.brugernavn"></label>
+        <h2 data-i18n="auth.login"></h2>
+        <label for="login-username" data-i18n="auth.username"></label>
         <input id="login-username" name="username" type="text" autocomplete="username" maxlength="100" required>
-        <label for="login-password" data-i18n="html.adgangskode"></label>
+        <label for="login-password" data-i18n="auth.password"></label>
         <input id="login-password" name="password" type="password" autocomplete="current-password" required>
-        <button class="primary-button" type="submit" data-i18n="html.logInd"></button>
+        <button class="primary-button" type="submit" data-i18n="auth.login"></button>
       </form>
       <form id="register-form" role="tabpanel" aria-labelledby="auth-tab-register" hidden>
-        <h2 data-i18n="html.opretBruger"></h2>
-        <label for="register-username" data-i18n="html.brugernavn"></label>
+        <h2 data-i18n="auth.register"></h2>
+        <label for="register-username" data-i18n="auth.username"></label>
         <input id="register-username" name="username" type="text" autocomplete="username" maxlength="100" required>
-        <label for="register-password" data-i18n="html.adgangskode"></label>
+        <label for="register-password" data-i18n="auth.password"></label>
         <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="10" required>
-        <label for="register-confirm" data-i18n="html.gentagAdgangskode"></label>
+        <label for="register-confirm" data-i18n="auth.confirmPassword"></label>
         <input id="register-confirm" name="passwordConfirmation" type="password" autocomplete="new-password" minlength="10" required>
-        <button class="primary-button" type="submit" data-i18n="html.opretKonto"></button>
+        <button class="primary-button" type="submit" data-i18n="auth.createAccount"></button>
       </form>
       <div class="notice error" id="auth-error" role="alert" hidden></div>
       <div class="notice success" id="auth-success" role="status" hidden></div>
@@ -44,91 +44,91 @@
   </section>
 
   <div id="application" class="app-shell" hidden>
-  <button id="chat-launcher" class="chat-launcher" type="button" aria-label="" data-i18n-aria-label="html.abnMadhjaelp" title="" data-i18n-title="html.abnMadhjaelp" aria-haspopup="dialog" aria-controls="chat-drawer" aria-expanded="false"><span class="nav-icon" data-icon="chat" aria-hidden="true"></span></button>
+  <button id="chat-launcher" class="chat-launcher" type="button" aria-label="" data-i18n-aria-label="chat.open" title="" data-i18n-title="chat.open" aria-haspopup="dialog" aria-controls="chat-drawer" aria-expanded="false"><span class="nav-icon" data-icon="chat" aria-hidden="true"></span></button>
   <section id="chat-drawer" class="chat-drawer" role="dialog" aria-modal="false" aria-labelledby="chat-drawer-title" hidden>
-    <div class="section-heading"><div><p class="eyebrow" data-i18n="html.dinKokkenhjaelper"></p><h2 id="chat-drawer-title" data-i18n="append.madhjaelp"></h2></div><button id="chat-minimize" class="icon-button" type="button" aria-label="" data-i18n-aria-label="html.minimerMadhjaelp" title="" data-i18n-title="html.minimerMadhjaelp" autofocus><span class="nav-icon" data-icon="minimize" aria-hidden="true"></span></button></div>
+    <div class="section-heading"><div><p class="eyebrow" data-i18n="chat.subtitle"></p><h2 id="chat-drawer-title" data-i18n="chat.assistantName"></h2></div><button id="chat-minimize" class="icon-button" type="button" aria-label="" data-i18n-aria-label="chat.minimize" title="" data-i18n-title="chat.minimize" autofocus><span class="nav-icon" data-icon="minimize" aria-hidden="true"></span></button></div>
     <div id="chat-drawer-host"></div>
   </section>
   <aside class="app-sidebar">
     <div class="brand"><span class="brand-mark" aria-hidden="true">M</span><span>Madkursus</span></div>
-    <nav class="primary-nav" aria-label="" data-i18n-aria-label="html.primaerNavigation">
-      <button class="nav-button" id="show-meal-plans-primary" type="button"><span class="nav-icon" data-icon="calendar"></span><span data-i18n="showView.madplan"></span></button>
-      <button class="nav-button active" id="show-inventory" type="button"><span class="nav-icon" data-icon="inventory"></span><span data-i18n="html.lager"></span></button>
-      <button class="nav-button" id="show-shopping" type="button"><span class="nav-icon" data-icon="cart"></span><span data-i18n="html.indkob"></span></button>
-      <button class="nav-button" id="show-recipes" type="button"><span class="nav-icon" data-icon="recipe"></span><span data-i18n="showView.opskrifter"></span></button>
+    <nav class="primary-nav" aria-label="" data-i18n-aria-label="navigation.primary">
+      <button class="nav-button" id="show-meal-plans-primary" type="button"><span class="nav-icon" data-icon="calendar"></span><span data-i18n="mealPlan.title"></span></button>
+      <button class="nav-button active" id="show-inventory" type="button"><span class="nav-icon" data-icon="inventory"></span><span data-i18n="inventory.title"></span></button>
+      <button class="nav-button" id="show-shopping" type="button"><span class="nav-icon" data-icon="cart"></span><span data-i18n="shoppingList.title"></span></button>
+      <button class="nav-button" id="show-recipes" type="button"><span class="nav-icon" data-icon="recipe"></span><span data-i18n="recipes.title"></span></button>
       <span class="nav-divider" aria-hidden="true"></span>
-      <button class="nav-button secondary-nav" id="show-ai" type="button"><span class="nav-icon" data-icon="chat"></span><span data-i18n="append.madhjaelp"></span></button>
-      <button class="nav-button secondary-nav" id="show-products" type="button"><span class="nav-icon" data-icon="products"></span><span data-i18n="html.produkter"></span></button>
-      <button class="nav-button secondary-nav" id="show-kitchen" type="button"><span class="nav-icon" data-icon="kitchen"></span><span data-i18n="html.mitKokken"></span></button>
-      <button class="nav-button secondary-nav" id="show-nutrition" type="button" hidden><span class="nav-icon" data-icon="products"></span><span data-i18n="html.fodevaredata"></span></button>
-      <button class="nav-button mobile-more" id="show-more" type="button"><span class="nav-icon" data-icon="more"></span><span data-i18n="html.mere"></span></button>
+      <button class="nav-button secondary-nav" id="show-ai" type="button"><span class="nav-icon" data-icon="chat"></span><span data-i18n="chat.assistantName"></span></button>
+      <button class="nav-button secondary-nav" id="show-products" type="button"><span class="nav-icon" data-icon="products"></span><span data-i18n="products.title"></span></button>
+      <button class="nav-button secondary-nav" id="show-kitchen" type="button"><span class="nav-icon" data-icon="kitchen"></span><span data-i18n="equipment.title"></span></button>
+      <button class="nav-button secondary-nav" id="show-nutrition" type="button" hidden><span class="nav-icon" data-icon="products"></span><span data-i18n="nutrition.title"></span></button>
+      <button class="nav-button mobile-more" id="show-more" type="button"><span class="nav-icon" data-icon="more"></span><span data-i18n="navigation.more"></span></button>
     </nav>
-    <button class="logout-button sidebar-logout" id="logout" type="button"><span class="nav-icon" data-icon="logout"></span><span data-i18n="html.logUd"></span></button>
+    <button class="logout-button sidebar-logout" id="logout" type="button"><span class="nav-icon" data-icon="logout"></span><span data-i18n="auth.logout"></span></button>
   </aside>
   <main class="app-content">
     <section id="ai-view" class="chat-page" aria-labelledby="chat-title" hidden>
-      <div class="page-heading"><p class="eyebrow" data-i18n="html.madhjaelpProveversion"></p><h2 id="chat-title" data-i18n="html.dinKokkenhjaelper"></h2><p class="page-subtitle" data-i18n="html.faIdeerTilAftensmadenMedMadkursusMed"></p></div>
+      <div class="page-heading"><p class="eyebrow" data-i18n="chat.previewTitle"></p><h2 id="chat-title" data-i18n="chat.subtitle"></h2><p class="page-subtitle" data-i18n="chat.description"></p></div>
       <div class="chat-panel" id="chat-component">
-        <p id="chat-model" class="chat-model" role="status" data-i18n="createAiChat.henterModelnavn"></p>
+        <p id="chat-model" class="chat-model" role="status" data-i18n="chat.model.loading"></p>
         <div id="chat-empty" class="chat-empty">
-          <h3 data-i18n="html.hvadHarDuLystTilIAften"></h3>
-          <p data-i18n="html.findEnOpskriftMedDetDuHar"></p>
-          <div class="chat-examples" aria-label="" data-i18n-aria-label="html.forslagTilSporgsmal">
-            <button class="secondary-button" type="button" data-chat-prompt data-i18n="html.hvadKanJegLave"></button>
-            <button class="secondary-button" type="button" data-chat-prompt data-max-extra="0" data-i18n="html.brugKunDetJegHar"></button>
-            <button class="secondary-button" type="button" data-chat-prompt="" data-i18n-data-chat-prompt="html.hvadKanJegLaveHvisJegKober" data-max-extra="1" data-i18n="html.hojst1EkstraVare"></button>
+          <h3 data-i18n="chat.welcomeTitle"></h3>
+          <p data-i18n="chat.welcomeHint"></p>
+          <div class="chat-examples" aria-label="" data-i18n-aria-label="chat.suggestedQuestions">
+            <button class="secondary-button" type="button" data-chat-prompt data-i18n="chat.prompts.discover"></button>
+            <button class="secondary-button" type="button" data-chat-prompt data-max-extra="0" data-i18n="chat.prompts.inventoryOnly"></button>
+            <button class="secondary-button" type="button" data-chat-prompt="" data-i18n-data-chat-prompt="chat.prompts.oneExtra" data-max-extra="1" data-i18n="chat.quickActions.oneExtra"></button>
           </div>
         </div>
-        <div id="chat-messages" class="chat-messages" role="log" aria-label="" data-i18n-aria-label="html.dineSporgsmalOgSvar" aria-live="polite" aria-relevant="additions" tabindex="0" hidden></div>
-        <p id="chat-loading" class="chat-loading" role="status" hidden data-i18n="html.madhjaelpenTaenkerOverDineMulighederDetKan"></p>
+        <div id="chat-messages" class="chat-messages" role="log" aria-label="" data-i18n-aria-label="chat.historyLabel" aria-live="polite" aria-relevant="additions" tabindex="0" hidden></div>
+        <p id="chat-loading" class="chat-loading" role="status" hidden data-i18n="chat.thinking"></p>
         <div id="chat-error" class="notice error" role="alert" hidden></div>
         <form id="chat-form" class="chat-composer">
-          <select id="chat-max-extra" class="chat-limit" aria-label="" data-i18n-aria-label="html.ekstraIngredienser"><option value="" data-i18n="html.ingenFastGraense"></option><option value="0" data-i18n="html.kunDetJegHar"></option><option value="1" data-i18n="html.hojst1Ekstra"></option><option value="2" data-i18n="html.hojst2Ekstra"></option><option value="3" data-i18n="html.hojst3Ekstra"></option></select>
-          <div class="chat-input-row"><textarea id="chat-input" rows="2" maxlength="4000" required aria-label="" data-i18n-aria-label="html.sporgOmAftensmaden" placeholder="" data-i18n-placeholder="html.skrivEnBesked" aria-describedby="chat-help"></textarea><button id="chat-send" class="primary-button" type="submit" disabled data-i18n="chat.send"></button></div>
-          <p id="chat-help" class="field-help" data-i18n="html.naevnRettenIgenHvisDuSporgerVidere"></p>
+          <select id="chat-max-extra" class="chat-limit" aria-label="" data-i18n-aria-label="chat.extraIngredients"><option value="" data-i18n="chat.limits.unlimited"></option><option value="0" data-i18n="chat.limits.inventoryOnly"></option><option value="1" data-i18n="chat.limits.oneExtra"></option><option value="2" data-i18n="chat.limits.twoExtra"></option><option value="3" data-i18n="chat.limits.threeExtra"></option></select>
+          <div class="chat-input-row"><textarea id="chat-input" rows="2" maxlength="4000" required aria-label="" data-i18n-aria-label="chat.inputLabel" placeholder="" data-i18n-placeholder="chat.inputPlaceholder" aria-describedby="chat-help"></textarea><button id="chat-send" class="primary-button" type="submit" disabled data-i18n="chat.send"></button></div>
+          <p id="chat-help" class="field-help" data-i18n="chat.followUpHint"></p>
         </form>
       </div>
     </section>
     <div id="products-view">
     <section class="form-panel" id="product-form-panel" aria-labelledby="form-title" hidden>
       <div class="section-heading">
-        <h2 id="form-title" data-i18n="html.tilfojProdukt"></h2>
-        <button class="icon-button" id="close-form" type="button" aria-label="" data-i18n-aria-label="html.lukFormular">×</button>
+        <h2 id="form-title" data-i18n="products.add"></h2>
+        <button class="icon-button" id="close-form" type="button" aria-label="" data-i18n-aria-label="common.closeForm">×</button>
       </div>
-      <label for="template-search" data-i18n="html.sogProdukter"></label>
-      <input id="template-search" type="search" placeholder="" data-i18n-placeholder="html.fxLogOksefarsEllerSoya" autocomplete="off">
+      <label for="template-search" data-i18n="products.search"></label>
+      <input id="template-search" type="search" placeholder="" data-i18n-placeholder="products.searchPlaceholder" autocomplete="off">
       <div class="template-results" id="template-results" aria-live="polite"></div>
-      <button class="secondary-button custom-toggle" id="show-custom-product" type="button" data-i18n="html.kanDuIkkeFindeDetOpretSelv"></button>
+      <button class="secondary-button custom-toggle" id="show-custom-product" type="button" data-i18n="products.createCustom"></button>
       <form id="product-form" hidden>
-        <label for="name" data-i18n="html.navn"></label>
+        <label for="name" data-i18n="common.name"></label>
         <input id="name" name="name" type="text" autocomplete="off" maxlength="100" required>
 
-        <label for="category" data-i18n="html.kategori"></label>
+        <label for="category" data-i18n="products.category"></label>
         <select id="category" name="category" required>
-          <option value="BAKING" data-i18n="domain.bagning"></option><option value="BREAD" data-i18n="domain.brod"></option>
-          <option value="EGG" data-i18n="domain.g2"></option><option value="FISH" data-i18n="domain.fisk"></option><option value="FROZEN" data-i18n="domain.frostvarer"></option>
-          <option value="GRAIN_PASTA" data-i18n="domain.kornRisOgPasta"></option><option value="HERB" data-i18n="domain.urter"></option>
-          <option value="LEGUME" data-i18n="domain.baelgfrugter"></option><option value="MEAT" data-i18n="domain.kod"></option>
-          <option value="NUT_SEED" data-i18n="domain.nodderOgFro"></option><option value="OIL_FAT" data-i18n="domain.olieOgFedt"></option>
-          <option value="PRESERVED" data-i18n="domain.konserves"></option><option value="SAUCE_CONDIMENT" data-i18n="domain.saucerOgTilbehor"></option>
-          <option value="STOCK" data-i18n="domain.fondOgBouillon"></option><option value="SWEETENER" data-i18n="domain.sodemidler"></option>
-          <option value="VINEGAR_ACID" data-i18n="domain.eddikeOgSyre"></option>
-          <option value="VEGETABLE" data-i18n="html.grontsag"></option>
-          <option value="FRUIT" data-i18n="domain.frugt"></option>
-          <option value="DAIRY" data-i18n="domain.mejeri"></option>
-          <option value="DRY_GOODS" data-i18n="domain.torvarer"></option>
-          <option value="SPICE" data-i18n="html.krydderi"></option>
-          <option value="OTHER" data-i18n="domain.andet"></option>
+          <option value="BAKING" data-i18n="products.categories.baking"></option><option value="BREAD" data-i18n="products.categories.bread"></option>
+          <option value="EGG" data-i18n="products.categories.eggs"></option><option value="FISH" data-i18n="products.categories.fish"></option><option value="FROZEN" data-i18n="products.categories.frozen"></option>
+          <option value="GRAIN_PASTA" data-i18n="products.categories.grainsPasta"></option><option value="HERB" data-i18n="products.categories.herbs"></option>
+          <option value="LEGUME" data-i18n="products.categories.legumes"></option><option value="MEAT" data-i18n="products.categories.meat"></option>
+          <option value="NUT_SEED" data-i18n="products.categories.nutsSeeds"></option><option value="OIL_FAT" data-i18n="products.categories.oilsFats"></option>
+          <option value="PRESERVED" data-i18n="products.categories.preserved"></option><option value="SAUCE_CONDIMENT" data-i18n="products.categories.saucesCondiments"></option>
+          <option value="STOCK" data-i18n="products.categories.stock"></option><option value="SWEETENER" data-i18n="products.categories.sweeteners"></option>
+          <option value="VINEGAR_ACID" data-i18n="products.categories.vinegarAcid"></option>
+          <option value="VEGETABLE" data-i18n="products.categoryOptions.vegetable"></option>
+          <option value="FRUIT" data-i18n="products.categories.fruit"></option>
+          <option value="DAIRY" data-i18n="products.categories.dairy"></option>
+          <option value="DRY_GOODS" data-i18n="products.categories.dryGoods"></option>
+          <option value="SPICE" data-i18n="products.categoryOptions.spice"></option>
+          <option value="OTHER" data-i18n="common.other"></option>
         </select>
 
-        <label for="default-unit" data-i18n="html.standardenhed"></label>
+        <label for="default-unit" data-i18n="products.defaultUnit"></label>
         <select id="default-unit" name="defaultUnit" required>
-          <option value="GRAM" data-i18n="domain.gram"></option>
-          <option value="MILLILITER" data-i18n="domain.milliliter"></option>
-          <option value="PIECE" data-i18n="domain.styk"></option>
+          <option value="GRAM" data-i18n="units.gram"></option>
+          <option value="MILLILITER" data-i18n="units.milliliter"></option>
+          <option value="PIECE" data-i18n="units.piece"></option>
         </select>
 
-        <button class="primary-button" id="save-product" type="submit" data-i18n="createProduct.gemProdukt"></button>
+        <button class="primary-button" id="save-product" type="submit" data-i18n="products.save"></button>
       </form>
     </section>
 
@@ -136,145 +136,145 @@
     <section aria-labelledby="products-title">
       <div class="section-heading product-heading">
         <div>
-          <p class="eyebrow" data-i18n="html.produkter"></p>
-          <h2 id="products-title" data-i18n="html.ditUdvalg"></h2>
+          <p class="eyebrow" data-i18n="products.title"></p>
+          <h2 id="products-title" data-i18n="products.subtitle"></h2>
         </div>
-        <button class="add-button section-add-button" id="open-form" type="button" aria-controls="product-form-panel" aria-expanded="false"><span aria-hidden="true">+</span> <span data-i18n="html.tilfojProdukt"></span></button>
+        <button class="add-button section-add-button" id="open-form" type="button" aria-controls="product-form-panel" aria-expanded="false"><span aria-hidden="true">+</span> <span data-i18n="products.add"></span></button>
       </div>
-      <p class="loading" id="loading-message" role="status" data-i18n="html.henterProdukter"></p>
+      <p class="loading" id="loading-message" role="status" data-i18n="products.loading"></p>
       <div class="product-list" id="product-list" aria-live="polite"></div>
       <div class="empty-state" id="empty-state" hidden>
-        <span class="empty-icon" data-icon="products"></span><h3 data-i18n="html.ingenProdukterEndnu"></h3><p data-i18n="html.tilfojProdukterSaDeKanBrugesI"></p>
-        <button class="primary-button" id="empty-add" type="button" data-i18n="html.tilfojProdukt2"></button>
+        <span class="empty-icon" data-icon="products"></span><h3 data-i18n="products.emptyTitle"></h3><p data-i18n="products.emptyHint"></p>
+        <button class="primary-button" id="empty-add" type="button" data-i18n="products.addShortcut"></button>
       </div>
     </section>
     </div>
 
     <section id="inventory-view" aria-labelledby="inventory-title" hidden>
       <div class="section-heading product-heading">
-        <div><p class="eyebrow" data-i18n="html.lager"></p><h2 id="inventory-title" data-i18n="html.detHarDuHjemme"></h2></div>
-        <button class="add-button section-add-button" id="open-inventory-add" type="button"><span aria-hidden="true">+</span> <span data-i18n="html.tilfojVare"></span></button>
+        <div><p class="eyebrow" data-i18n="inventory.title"></p><h2 id="inventory-title" data-i18n="inventory.subtitle"></h2></div>
+        <button class="add-button section-add-button" id="open-inventory-add" type="button"><span aria-hidden="true">+</span> <span data-i18n="common.addItem"></span></button>
       </div>
-      <p class="loading" id="inventory-loading" role="status" data-i18n="html.henterLager"></p>
-      <button class="secondary-button text-list-action" id="copy-inventory" type="button" disabled data-i18n="html.kopierLager"></button>
+      <p class="loading" id="inventory-loading" role="status" data-i18n="inventory.loading"></p>
+      <button class="secondary-button text-list-action" id="copy-inventory" type="button" disabled data-i18n="inventory.copy"></button>
       <div class="product-list" id="inventory-list" aria-live="polite"></div>
       <div class="empty-state" id="inventory-empty" hidden>
-        <span class="empty-icon" data-icon="inventory"></span><h3 data-i18n="html.ditLagerErTomt"></h3><p data-i18n="html.tilfojDeVarerDuHarHjemmeSa"></p>
-        <button class="primary-button" id="inventory-empty-add" type="button" data-i18n="html.tilfojForsteVare"></button>
+        <span class="empty-icon" data-icon="inventory"></span><h3 data-i18n="inventory.emptyTitle"></h3><p data-i18n="inventory.emptyHint"></p>
+        <button class="primary-button" id="inventory-empty-add" type="button" data-i18n="inventory.addFirst"></button>
       </div>
     </section>
 
     <section id="shopping-view" aria-labelledby="shopping-title" hidden>
       <div class="section-heading product-heading">
-        <div><p class="eyebrow" data-i18n="html.indkob"></p><h2 id="shopping-title" data-i18n="html.dinIndkobsliste"></h2></div>
-        <button class="add-button section-add-button" id="open-shopping-add" type="button"><span aria-hidden="true">+</span> <span data-i18n="html.tilfojVare"></span></button>
+        <div><p class="eyebrow" data-i18n="shoppingList.title"></p><h2 id="shopping-title" data-i18n="shoppingList.subtitle"></h2></div>
+        <button class="add-button section-add-button" id="open-shopping-add" type="button"><span aria-hidden="true">+</span> <span data-i18n="common.addItem"></span></button>
       </div>
-      <p class="loading" id="shopping-loading" role="status" data-i18n="html.henterIndkobsliste"></p>
+      <p class="loading" id="shopping-loading" role="status" data-i18n="shoppingList.loading"></p>
       <button class="secondary-button text-list-action" id="open-shopping-text" type="button" data-i18n="shoppingList.pasteList"></button>
       <div class="shopping-section" id="shopping-active-section">
         <div class="shopping-list" id="shopping-active-list" aria-live="polite"></div>
       </div>
       <section class="shopping-section purchased-section" id="shopping-purchased-section" hidden>
-        <div class="section-heading"><h3 data-i18n="common.purchased"></h3><button class="text-button" id="clear-purchased" type="button" data-i18n="html.rydKobte"></button></div>
+        <div class="section-heading"><h3 data-i18n="common.purchased"></h3><button class="text-button" id="clear-purchased" type="button" data-i18n="shoppingList.clearPurchased"></button></div>
         <div class="shopping-list" id="shopping-purchased-list" aria-live="polite"></div>
       </section>
-      <div class="empty-state" id="shopping-empty" hidden><span class="empty-icon" data-icon="cart"></span><h3 data-i18n="html.dinIndkobslisteErTom"></h3><p data-i18n="html.tilfojEnVareNarDuOpdagerNoget"></p><button class="primary-button" id="shopping-empty-add" type="button" data-i18n="html.tilfojForsteVare"></button></div>
+      <div class="empty-state" id="shopping-empty" hidden><span class="empty-icon" data-icon="cart"></span><h3 data-i18n="shoppingList.emptyTitle"></h3><p data-i18n="shoppingList.emptyHint"></p><button class="primary-button" id="shopping-empty-add" type="button" data-i18n="inventory.addFirst"></button></div>
     </section>
 
     <section id="recipes-view" aria-labelledby="recipes-title" hidden>
       <div class="section-heading product-heading">
-        <div><p class="eyebrow" data-i18n="showView.opskrifter"></p><h2 id="recipes-title" data-i18n="showView.dineOpskrifter"></h2></div>
-        <div class="header-actions"><button class="add-button section-add-button" id="plan-recipes" type="button" data-i18n="html.planlaeg"></button><button class="add-button section-add-button" id="new-recipe" type="button"><span aria-hidden="true">+</span> <span data-i18n="html.ny"></span></button></div>
+        <div><p class="eyebrow" data-i18n="recipes.title"></p><h2 id="recipes-title" data-i18n="recipes.yourRecipes"></h2></div>
+        <div class="header-actions"><button class="add-button section-add-button" id="plan-recipes" type="button" data-i18n="mealPlan.plan"></button><button class="add-button section-add-button" id="new-recipe" type="button"><span aria-hidden="true">+</span> <span data-i18n="recipes.new"></span></button></div>
       </div>
-      <div class="recipe-subnav"><button class="active" id="show-recipe-library" type="button" data-i18n="html.mineOpskrifter"></button><button id="show-recipe-templates" type="button" data-i18n="html.findOpskrifter"></button><button id="show-meal-plans" type="button" hidden data-i18n="html.madplaner"></button></div>
+      <div class="recipe-subnav"><button class="active" id="show-recipe-library" type="button" data-i18n="recipes.myRecipes"></button><button id="show-recipe-templates" type="button" data-i18n="recipes.discover"></button><button id="show-meal-plans" type="button" hidden data-i18n="mealPlan.pluralTitle"></button></div>
       <div id="recipe-library-panel">
-      <p class="loading" id="recipes-loading" role="status" data-i18n="html.henterOpskrifter"></p>
+      <p class="loading" id="recipes-loading" role="status" data-i18n="recipes.loading"></p>
       <div class="recipe-list" id="recipe-list" aria-live="polite"></div>
-      <div class="empty-state" id="recipes-empty" hidden><span class="empty-icon" data-icon="recipe"></span><h3 data-i18n="html.ingenOpskrifterEndnu"></h3><p data-i18n="html.opretDinForsteOpskriftEllerFindInspiration"></p><button class="primary-button" id="recipes-empty-add" type="button" data-i18n="html.opretForsteOpskrift"></button></div>
+      <div class="empty-state" id="recipes-empty" hidden><span class="empty-icon" data-icon="recipe"></span><h3 data-i18n="recipes.emptyTitle"></h3><p data-i18n="recipes.emptyHint"></p><button class="primary-button" id="recipes-empty-add" type="button" data-i18n="recipes.createFirst"></button></div>
       </div>
       <div id="recipe-templates-panel" hidden>
-        <label for="recipe-template-catalog-search" data-i18n="html.sogIOpskrifter"></label>
-        <input id="recipe-template-catalog-search" type="search" autocomplete="off" placeholder="" data-i18n-placeholder="html.fxKyllingEllerPasta">
-        <p class="loading" id="recipe-templates-loading" hidden data-i18n="html.henterOpskrifter"></p>
+        <label for="recipe-template-catalog-search" data-i18n="recipes.search"></label>
+        <input id="recipe-template-catalog-search" type="search" autocomplete="off" placeholder="" data-i18n-placeholder="recipes.searchPlaceholder">
+        <p class="loading" id="recipe-templates-loading" hidden data-i18n="recipes.loading"></p>
         <div class="recipe-list" id="recipe-template-list"></div>
-        <div class="empty-state" id="recipe-templates-empty" hidden><p data-i18n="html.ingenOpskrifterMatcherDinSogning"></p></div>
+        <div class="empty-state" id="recipe-templates-empty" hidden><p data-i18n="recipes.noSearchResults"></p></div>
       </div>
-      <div id="meal-plans-panel" hidden><p class="loading" id="meal-plans-loading" hidden data-i18n="html.henterMadplaner"></p><div class="recipe-list" id="meal-plan-list"></div><div class="empty-state" id="meal-plans-empty" hidden><p data-i18n="html.duHarIngenGemteMadplanerEndnu"></p><button class="secondary-button" id="meal-plans-empty-create" type="button" data-i18n="html.planlaegMad"></button></div></div>
+      <div id="meal-plans-panel" hidden><p class="loading" id="meal-plans-loading" hidden data-i18n="mealPlan.loading"></p><div class="recipe-list" id="meal-plan-list"></div><div class="empty-state" id="meal-plans-empty" hidden><p data-i18n="mealPlan.emptyHint"></p><button class="secondary-button" id="meal-plans-empty-create" type="button" data-i18n="mealPlan.create"></button></div></div>
     </section>
     <section id="kitchen-view" aria-labelledby="kitchen-title" hidden>
       <div class="section-heading product-heading">
-        <div><p class="eyebrow" data-i18n="html.indstillinger"></p><h2 id="kitchen-title" data-i18n="html.mitKokken"></h2></div>
-        <button class="add-button section-add-button" id="add-kitchen-equipment" type="button"><span aria-hidden="true">+</span> <span data-i18n="openKitchenEquipment.tilfojUdstyr"></span></button>
+        <div><p class="eyebrow" data-i18n="common.settings"></p><h2 id="kitchen-title" data-i18n="equipment.title"></h2></div>
+        <button class="add-button section-add-button" id="add-kitchen-equipment" type="button"><span aria-hidden="true">+</span> <span data-i18n="equipment.add"></span></button>
       </div>
-      <p class="loading" id="kitchen-loading" hidden data-i18n="html.henterDitKokken"></p>
+      <p class="loading" id="kitchen-loading" hidden data-i18n="equipment.loading"></p>
       <div class="equipment-list" id="kitchen-equipment-list" aria-live="polite"></div>
-      <div class="empty-state" id="kitchen-empty" hidden><span class="empty-icon" data-icon="kitchen"></span><h3 data-i18n="html.ditKokkenManglerUdstyr"></h3><p data-i18n="html.tilfojDetUdstyrDuBrugerSaOpskrifter"></p><button class="primary-button" id="kitchen-empty-add" type="button" data-i18n="html.tilfojForsteUdstyr"></button></div>
-      <button class="secondary-button full-button kitchen-back" id="close-kitchen" type="button" data-i18n="html.tilbage"></button>
+      <div class="empty-state" id="kitchen-empty" hidden><span class="empty-icon" data-icon="kitchen"></span><h3 data-i18n="equipment.emptyTitle"></h3><p data-i18n="equipment.emptyHint"></p><button class="primary-button" id="kitchen-empty-add" type="button" data-i18n="equipment.addFirst"></button></div>
+      <button class="secondary-button full-button kitchen-back" id="close-kitchen" type="button" data-i18n="common.back"></button>
     </section>
     <section id="more-view" aria-labelledby="more-title" hidden>
-      <div class="page-heading"><p class="eyebrow" data-i18n="html.indstillinger"></p><h2 id="more-title" data-i18n="html.mere"></h2><p class="page-subtitle" data-i18n="html.administrationKokkenOgKonto"></p></div>
+      <div class="page-heading"><p class="eyebrow" data-i18n="common.settings"></p><h2 id="more-title" data-i18n="navigation.more"></h2><p class="page-subtitle" data-i18n="navigation.moreDescription"></p></div>
         <div class="settings-list">
-          <button id="more-ai" type="button"><span class="nav-icon" data-icon="chat"></span><span><strong data-i18n="append.madhjaelp"></strong><small data-i18n="html.ideerTilAftensmadMedDetDuHar"></small></span><span aria-hidden="true">›</span></button>
-        <button id="more-products" type="button"><span class="nav-icon" data-icon="products"></span><span><strong data-i18n="html.produkter"></strong><small data-i18n="html.administrerProdukterOgStandardenheder"></small></span><span aria-hidden="true">›</span></button>
-        <button id="more-kitchen" type="button"><span class="nav-icon" data-icon="kitchen"></span><span><strong data-i18n="html.mitKokken"></strong><small data-i18n="html.udstyrKapacitetOgVarmeindstillinger"></small></span><span aria-hidden="true">›</span></button>
-        <button id="more-recipe-import" type="button" hidden><span class="nav-icon" data-icon="recipe"></span><span><strong data-i18n="html.importerOpskrift"></strong><small data-i18n="html.validerEnKladdeOgGemLokaleKildefiler"></small></span><span aria-hidden="true">›</span></button>
-        <button id="more-nutrition" type="button" hidden><span class="nav-icon" data-icon="products"></span><span><strong data-i18n="html.fodevaredata"></strong><small data-i18n="html.vedligeholdKulhydratdataOgKilder"></small></span><span aria-hidden="true">›</span></button>
-        <button id="more-logout" class="danger-row" type="button"><span class="nav-icon" data-icon="logout"></span><span><strong data-i18n="html.logUd"></strong><small data-i18n="html.afslutDinSessionPaDenneEnhed"></small></span><span aria-hidden="true">›</span></button>
+          <button id="more-ai" type="button"><span class="nav-icon" data-icon="chat"></span><span><strong data-i18n="chat.assistantName"></strong><small data-i18n="navigation.chatDescription"></small></span><span aria-hidden="true">›</span></button>
+        <button id="more-products" type="button"><span class="nav-icon" data-icon="products"></span><span><strong data-i18n="products.title"></strong><small data-i18n="navigation.productsDescription"></small></span><span aria-hidden="true">›</span></button>
+        <button id="more-kitchen" type="button"><span class="nav-icon" data-icon="kitchen"></span><span><strong data-i18n="equipment.title"></strong><small data-i18n="navigation.equipmentDescription"></small></span><span aria-hidden="true">›</span></button>
+        <button id="more-recipe-import" type="button" hidden><span class="nav-icon" data-icon="recipe"></span><span><strong data-i18n="recipes.import.title"></strong><small data-i18n="recipes.import.subtitle"></small></span><span aria-hidden="true">›</span></button>
+        <button id="more-nutrition" type="button" hidden><span class="nav-icon" data-icon="products"></span><span><strong data-i18n="nutrition.title"></strong><small data-i18n="navigation.nutritionDescription"></small></span><span aria-hidden="true">›</span></button>
+        <button id="more-logout" class="danger-row" type="button"><span class="nav-icon" data-icon="logout"></span><span><strong data-i18n="auth.logout"></strong><small data-i18n="auth.logoutDescription"></small></span><span aria-hidden="true">›</span></button>
       </div>
     </section>
     <section id="recipe-import-view" aria-labelledby="recipe-import-title" hidden>
-      <div class="section-heading"><div><p class="eyebrow" data-i18n="html.udviklervaerktoj"></p><h2 id="recipe-import-title" data-i18n="html.importerOpskrift"></h2></div><button id="close-recipe-import" type="button" class="text-button" data-i18n="html.tilbageTilMere"></button></div>
-      <p data-i18n="html.indsaetDinRecipeTemplateDraftFraMadlavningschattenImportGemmer"></p>
-      <label for="recipe-import-json" data-i18n="html.opskriftensJSON"></label>
-      <textarea id="recipe-import-json" rows="18" maxlength="500000" spellcheck="false" placeholder="" data-i18n-placeholder="html.indsaetRecipeTemplateDraftJSONHer"></textarea>
-      <div class="recipe-import-actions"><button id="recipe-import-validate" type="button" class="primary-button" data-i18n="html.valider"></button><button id="recipe-import-format" type="button" class="secondary-button" data-i18n="html.formaterJSON"></button><button id="recipe-import-clear" type="button" class="text-button" data-i18n="html.ryd"></button></div>
+      <div class="section-heading"><div><p class="eyebrow" data-i18n="recipes.import.developerTool"></p><h2 id="recipe-import-title" data-i18n="recipes.import.title"></h2></div><button id="close-recipe-import" type="button" class="text-button" data-i18n="navigation.backToMore"></button></div>
+      <p data-i18n="recipes.import.instructions"></p>
+      <label for="recipe-import-json" data-i18n="recipes.import.jsonLabel"></label>
+      <textarea id="recipe-import-json" rows="18" maxlength="500000" spellcheck="false" placeholder="" data-i18n-placeholder="recipes.import.jsonPlaceholder"></textarea>
+      <div class="recipe-import-actions"><button id="recipe-import-validate" type="button" class="primary-button" data-i18n="common.validate"></button><button id="recipe-import-format" type="button" class="secondary-button" data-i18n="recipes.import.formatJson"></button><button id="recipe-import-clear" type="button" class="text-button" data-i18n="common.clear"></button></div>
       <div id="recipe-import-result" role="status" aria-live="polite"></div>
-      <button id="recipe-import-submit" type="button" class="primary-button" hidden data-i18n="html.importer"></button>
+      <button id="recipe-import-submit" type="button" class="primary-button" hidden data-i18n="common.import"></button>
     </section>
 
     <section id="nutrition-admin-view" aria-labelledby="nutrition-admin-title" hidden>
-      <div class="page-heading nutrition-heading"><div><p class="eyebrow" data-i18n="html.administration"></p><h2 id="nutrition-admin-title" data-i18n="html.fodevaredata"></h2><p class="page-subtitle" data-i18n="html.centralVedligeholdelseAfProductTemplateKulhydratdata"></p></div><button class="secondary-button compact-button" id="import-dtu-catalog" type="button" data-i18n="html.importerDTU55"></button></div>
-      <div class="nutrition-summary" aria-label="" data-i18n-aria-label="html.dTUArbejdskoer"><button type="button" data-nutrition-queue="HAS_DATA"><strong id="nutrition-count-data">0</strong><span data-i18n="html.harDataMapped"></span></button><button type="button" data-nutrition-queue="AUTO"><strong id="nutrition-count-auto">0</strong><span data-i18n="html.sikreKulhydratmatches"></span></button><button type="button" data-nutrition-queue="READY"><strong id="nutrition-count-ready">0</strong><span data-i18n="html.klarTilGodkendelse"></span></button><button type="button" data-nutrition-queue="REVIEW_REQUIRED"><strong id="nutrition-count-review">0</strong><span data-i18n="html.kraeverGennemgang"></span></button><button type="button" data-nutrition-queue="NO_MATCH"><strong id="nutrition-count-none">0</strong><span data-i18n="html.intetMatch"></span></button></div>
-      <section class="nutrition-coverage" aria-labelledby="nutrition-coverage-title"><div class="section-heading"><div><h3 id="nutrition-coverage-title" data-i18n="html.recipeTemplateNutritionCoverage"></h3><p id="nutrition-coverage-summary" class="help-text"></p></div></div><div id="nutrition-coverage-list"></div></section>
-      <div class="nutrition-filters"><label><span data-i18n="renderNutritionAdmin.status"></span><select id="nutrition-status"><option value="ALL" data-i18n="html.alle"></option><option value="MISSING" data-i18n="nutritionStatusText.manglerData"></option><option value="KNOWN" data-i18n="nutritionStatusText.harData"></option></select></label><label><span data-i18n="html.dTUMatch"></span><select id="nutrition-dtu-status"><option value="ALL" data-i18n="html.alle"></option><option value="HAS_DATA" data-i18n="html.harDataMapped"></option><option value="AUTO" data-i18n="html.sikreKulhydratmatches"></option><option value="READY" data-i18n="html.klarTilGodkendelse"></option><option value="REVIEW_REQUIRED" data-i18n="html.kraeverGennemgang"></option><option value="NO_MATCH" data-i18n="html.intetMatch"></option></select></label><label><span data-i18n="showView.opskrifter"></span><select id="nutrition-recipe-usage"><option value="ALL" data-i18n="html.alle"></option><option value="USED" data-i18n="html.brugesIOpskrifter"></option><option value="USED_MISSING" data-i18n="html.brugesIOpskrifterManglerData"></option></select></label><label class="nutrition-search"><span data-i18n="html.sog"></span><input id="nutrition-search" type="search" placeholder="" data-i18n-placeholder="html.navnEllerAlias"></label></div>
-      <div class="nutrition-review-tools" id="nutrition-safe-tools" hidden><span data-i18n="html.semantiskTilsvarendeKandidaterMedHojst2G"></span><button class="primary-button compact-button" id="approve-safe-dtu" type="button" data-i18n="html.godkendSikreKulhydratmatches"></button></div>
-      <div class="nutrition-review-tools" id="nutrition-review-tools" hidden><label><input id="select-all-nutrition" type="checkbox"> <span data-i18n="html.vaelgAlleVisteKlareForslag"></span></label><small data-i18n="html.kunEXACTOgHIGHCONFIDENCEKanVaelges"></small></div>
-      <div class="nutrition-bulk-actions" id="nutrition-bulk-actions" hidden><span id="nutrition-selected-count"></span><button class="primary-button compact-button" id="approve-selected-dtu" type="button" data-i18n="html.godkendValgte"></button></div>
-      <div class="nutrition-list-header" aria-hidden="true"><span data-i18n="html.produkt"></span><span data-i18n="renderNutritionAdmin.status"></span><span data-i18n="renderNutritionAdmin.kulhydrat"></span><span data-i18n="renderNutritionAdmin.kilde"></span><span data-i18n="html.dTUMatch"></span><span data-i18n="html.handling"></span></div>
+      <div class="page-heading nutrition-heading"><div><p class="eyebrow" data-i18n="common.administration"></p><h2 id="nutrition-admin-title" data-i18n="nutrition.title"></h2><p class="page-subtitle" data-i18n="nutrition.description"></p></div><button class="secondary-button compact-button" id="import-dtu-catalog" type="button" data-i18n="nutrition.dtu.importCatalog"></button></div>
+      <div class="nutrition-summary" aria-label="" data-i18n-aria-label="nutrition.dtu.queues"><button type="button" data-nutrition-queue="HAS_DATA"><strong id="nutrition-count-data">0</strong><span data-i18n="nutrition.filters.mapped"></span></button><button type="button" data-nutrition-queue="AUTO"><strong id="nutrition-count-auto">0</strong><span data-i18n="nutrition.dtu.safeMatches"></span></button><button type="button" data-nutrition-queue="READY"><strong id="nutrition-count-ready">0</strong><span data-i18n="nutrition.dtu.readyForApproval"></span></button><button type="button" data-nutrition-queue="REVIEW_REQUIRED"><strong id="nutrition-count-review">0</strong><span data-i18n="nutrition.dtu.reviewRequired"></span></button><button type="button" data-nutrition-queue="NO_MATCH"><strong id="nutrition-count-none">0</strong><span data-i18n="nutrition.dtu.noMatch"></span></button></div>
+      <section class="nutrition-coverage" aria-labelledby="nutrition-coverage-title"><div class="section-heading"><div><h3 id="nutrition-coverage-title" data-i18n="nutrition.coverage.title"></h3><p id="nutrition-coverage-summary" class="help-text"></p></div></div><div id="nutrition-coverage-list"></div></section>
+      <div class="nutrition-filters"><label><span data-i18n="nutrition.status"></span><select id="nutrition-status"><option value="ALL" data-i18n="common.all"></option><option value="MISSING" data-i18n="nutrition.status.missing"></option><option value="KNOWN" data-i18n="nutrition.status.available"></option></select></label><label><span data-i18n="nutrition.dtu.match"></span><select id="nutrition-dtu-status"><option value="ALL" data-i18n="common.all"></option><option value="HAS_DATA" data-i18n="nutrition.filters.mapped"></option><option value="AUTO" data-i18n="nutrition.dtu.safeMatches"></option><option value="READY" data-i18n="nutrition.dtu.readyForApproval"></option><option value="REVIEW_REQUIRED" data-i18n="nutrition.dtu.reviewRequired"></option><option value="NO_MATCH" data-i18n="nutrition.dtu.noMatch"></option></select></label><label><span data-i18n="recipes.title"></span><select id="nutrition-recipe-usage"><option value="ALL" data-i18n="common.all"></option><option value="USED" data-i18n="nutrition.filters.usedInRecipes"></option><option value="USED_MISSING" data-i18n="nutrition.filters.usedAndMissing"></option></select></label><label class="nutrition-search"><span data-i18n="common.search"></span><input id="nutrition-search" type="search" placeholder="" data-i18n-placeholder="nutrition.searchPlaceholder"></label></div>
+      <div class="nutrition-review-tools" id="nutrition-safe-tools" hidden><span data-i18n="nutrition.dtu.equivalenceHint"></span><button class="primary-button compact-button" id="approve-safe-dtu" type="button" data-i18n="nutrition.dtu.approveSafe"></button></div>
+      <div class="nutrition-review-tools" id="nutrition-review-tools" hidden><label><input id="select-all-nutrition" type="checkbox"> <span data-i18n="nutrition.dtu.selectAllReady"></span></label><small data-i18n="nutrition.dtu.selectionHint"></small></div>
+      <div class="nutrition-bulk-actions" id="nutrition-bulk-actions" hidden><span id="nutrition-selected-count"></span><button class="primary-button compact-button" id="approve-selected-dtu" type="button" data-i18n="nutrition.dtu.approveSelected"></button></div>
+      <div class="nutrition-list-header" aria-hidden="true"><span data-i18n="products.singularTitle"></span><span data-i18n="nutrition.status"></span><span data-i18n="nutrition.carbohydrates"></span><span data-i18n="nutrition.source"></span><span data-i18n="nutrition.dtu.match"></span><span data-i18n="common.action"></span></div>
       <div id="nutrition-admin-list" class="nutrition-admin-list"></div>
-      <button class="secondary-button full-button" id="close-nutrition-admin" type="button" data-i18n="html.tilbage"></button>
+      <button class="secondary-button full-button" id="close-nutrition-admin" type="button" data-i18n="common.back"></button>
     </section>
   </main>
   </div>
 
-  <dialog class="edit-dialog" id="nutrition-edit-dialog"><form id="nutrition-edit-form"><div class="section-heading"><h2 id="nutrition-edit-title" data-i18n="html.kulhydratdata"></h2><button class="icon-button" id="close-nutrition-edit" type="button">×</button></div><input id="nutrition-template-id" type="hidden"><label><span data-i18n="html.kulhydratG"></span><input id="nutrition-grams" type="text" inputmode="decimal" required></label><div class="field-pair"><label><span data-i18n="html.basis"></span><input id="nutrition-basis" type="text" inputmode="decimal" value="100" required></label><label><span data-i18n="html.enhed"></span><select id="nutrition-basis-unit"><option value="GRAM" data-i18n="domain.g"></option><option value="MILLILITER" data-i18n="domain.ml"></option><option value="PIECE" data-i18n="domain.stk"></option></select></label></div><label><span data-i18n="renderNutritionAdmin.kilde"></span><input id="nutrition-source" required placeholder="" data-i18n-placeholder="html.fxDTUFodevaredatabase"></label><label><span data-i18n="html.udbyder"></span><input id="nutrition-provider" placeholder="" data-i18n-placeholder="html.fxDTU"></label><label><span data-i18n="html.eksterntFodevareID"></span><input id="nutrition-external-id"></label><label><span data-i18n="html.kildeversionDato"></span><input id="nutrition-source-version"></label><label><span data-i18n="html.kildelink"></span><input id="nutrition-source-url" type="url"></label><label><span data-i18n="html.note"></span><textarea id="nutrition-note" rows="2"></textarea></label><div class="notice error" id="nutrition-edit-error" hidden></div><div class="dialog-actions"><button class="secondary-button" id="cancel-nutrition-edit" type="button" data-i18n="common.cancel"></button><button class="primary-button" type="submit" data-i18n="common.save"></button></div></form></dialog>
-  <dialog class="edit-dialog" id="nutrition-match-dialog"><form method="dialog"><div class="section-heading"><div><p class="eyebrow" data-i18n="html.dTUReference"></p><h2 id="nutrition-match-title" data-i18n="html.vaelgFodevare"></h2></div><button class="icon-button" id="close-nutrition-match" type="button">×</button></div><p class="help-text"><strong data-i18n="html.forslag"></strong> <span data-i18n="html.viserKunAutomatiskVurderedeSemantiskPlausibleKandidater"></span></p><label><span data-i18n="html.sogIHeleDTUKataloget"></span><input id="nutrition-dtu-search" type="search" placeholder="" data-i18n-placeholder="html.navnBetydendeOrdEllerDTUID"></label><p class="help-text" data-i18n="html.manuelSogningDaekkerHeleKatalogetKontrollerAltid"></p><div id="nutrition-dtu-results" class="dtu-results"></div></form></dialog>
-  <dialog class="edit-dialog confirmation-dialog" id="nutrition-bulk-confirm-dialog"><div class="section-heading"><h2 data-i18n="html.godkendDTUMatches"></h2><button class="icon-button" id="close-nutrition-bulk-confirm" type="button">×</button></div><p id="nutrition-bulk-confirm-text"></p><p class="help-text" data-i18n="html.deValgteDTUVaerdierBliverGemtSom"></p><div class="dialog-actions"><button class="secondary-button" id="cancel-nutrition-bulk-confirm" type="button" data-i18n="common.cancel"></button><button class="primary-button" id="confirm-nutrition-bulk" type="button" data-i18n="html.godkendValgte"></button></div></dialog>
+  <dialog class="edit-dialog" id="nutrition-edit-dialog"><form id="nutrition-edit-form"><div class="section-heading"><h2 id="nutrition-edit-title" data-i18n="nutrition.editHeading"></h2><button class="icon-button" id="close-nutrition-edit" type="button">×</button></div><input id="nutrition-template-id" type="hidden"><label><span data-i18n="nutrition.carbohydratesGrams"></span><input id="nutrition-grams" type="text" inputmode="decimal" required></label><div class="field-pair"><label><span data-i18n="nutrition.basis"></span><input id="nutrition-basis" type="text" inputmode="decimal" value="100" required></label><label><span data-i18n="common.unit"></span><select id="nutrition-basis-unit"><option value="GRAM" data-i18n="units.gramShort"></option><option value="MILLILITER" data-i18n="units.milliliterShort"></option><option value="PIECE" data-i18n="units.pieceShort"></option></select></label></div><label><span data-i18n="nutrition.source"></span><input id="nutrition-source" required placeholder="" data-i18n-placeholder="nutrition.sourcePlaceholder"></label><label><span data-i18n="nutrition.provider"></span><input id="nutrition-provider" placeholder="" data-i18n-placeholder="nutrition.providerPlaceholder"></label><label><span data-i18n="nutrition.externalFoodId"></span><input id="nutrition-external-id"></label><label><span data-i18n="nutrition.sourceVersion"></span><input id="nutrition-source-version"></label><label><span data-i18n="nutrition.sourceUrl"></span><input id="nutrition-source-url" type="url"></label><label><span data-i18n="common.note"></span><textarea id="nutrition-note" rows="2"></textarea></label><div class="notice error" id="nutrition-edit-error" hidden></div><div class="dialog-actions"><button class="secondary-button" id="cancel-nutrition-edit" type="button" data-i18n="common.cancel"></button><button class="primary-button" type="submit" data-i18n="common.save"></button></div></form></dialog>
+  <dialog class="edit-dialog" id="nutrition-match-dialog"><form method="dialog"><div class="section-heading"><div><p class="eyebrow" data-i18n="nutrition.dtu.reference"></p><h2 id="nutrition-match-title" data-i18n="nutrition.dtu.selectFood"></h2></div><button class="icon-button" id="close-nutrition-match" type="button">×</button></div><p class="help-text"><strong data-i18n="nutrition.dtu.suggestions"></strong> <span data-i18n="nutrition.dtu.suggestionsHint"></span></p><label><span data-i18n="nutrition.dtu.searchCatalog"></span><input id="nutrition-dtu-search" type="search" placeholder="" data-i18n-placeholder="nutrition.dtu.searchPlaceholder"></label><p class="help-text" data-i18n="nutrition.dtu.manualSearchHint"></p><div id="nutrition-dtu-results" class="dtu-results"></div></form></dialog>
+  <dialog class="edit-dialog confirmation-dialog" id="nutrition-bulk-confirm-dialog"><div class="section-heading"><h2 data-i18n="nutrition.dtu.confirmApproval"></h2><button class="icon-button" id="close-nutrition-bulk-confirm" type="button">×</button></div><p id="nutrition-bulk-confirm-text"></p><p class="help-text" data-i18n="nutrition.dtu.approvalHint"></p><div class="dialog-actions"><button class="secondary-button" id="cancel-nutrition-bulk-confirm" type="button" data-i18n="common.cancel"></button><button class="primary-button" id="confirm-nutrition-bulk" type="button" data-i18n="nutrition.dtu.approveSelected"></button></div></dialog>
 
   <dialog class="edit-dialog" id="edit-product-dialog" aria-labelledby="edit-product-title">
     <form id="edit-product-form">
       <div class="section-heading">
-        <h2 id="edit-product-title" data-i18n="html.redigerProdukt"></h2>
-        <button class="icon-button" id="close-edit-product" type="button" aria-label="" data-i18n-aria-label="html.lukRedigering">×</button>
+        <h2 id="edit-product-title" data-i18n="products.edit"></h2>
+        <button class="icon-button" id="close-edit-product" type="button" aria-label="" data-i18n-aria-label="common.closeEditor">×</button>
       </div>
       <input id="edit-product-id" name="id" type="hidden">
-      <label for="edit-product-name" data-i18n="html.navn"></label>
+      <label for="edit-product-name" data-i18n="common.name"></label>
       <input id="edit-product-name" name="name" type="text" maxlength="100" required>
-      <label for="edit-product-category" data-i18n="html.kategori"></label>
+      <label for="edit-product-category" data-i18n="products.category"></label>
       <select id="edit-product-category" name="category" required></select>
-      <label for="edit-product-unit" data-i18n="html.standardenhed"></label>
+      <label for="edit-product-unit" data-i18n="products.defaultUnit"></label>
       <select id="edit-product-unit" name="defaultUnit" required>
-        <option value="GRAM" data-i18n="domain.gram"></option><option value="MILLILITER" data-i18n="domain.milliliter"></option><option value="PIECE" data-i18n="domain.styk"></option>
+        <option value="GRAM" data-i18n="units.gram"></option><option value="MILLILITER" data-i18n="units.milliliter"></option><option value="PIECE" data-i18n="units.piece"></option>
       </select>
-      <label for="edit-product-tracking-mode" data-i18n="html.lagerstyring"></label>
+      <label for="edit-product-tracking-mode" data-i18n="inventory.tracking.label"></label>
       <select id="edit-product-tracking-mode" name="inventoryTrackingMode" required>
-        <option value="QUANTITY" data-i18n="html.praecisMaengde"></option>
-        <option value="PRESENCE" data-i18n="html.kunOmJegHarVaren"></option>
-        <option value="UNTRACKED" data-i18n="html.ikkeLagerfort"></option>
+        <option value="QUANTITY" data-i18n="inventory.tracking.quantity"></option>
+        <option value="PRESENCE" data-i18n="inventory.tracking.presence"></option>
+        <option value="UNTRACKED" data-i18n="inventory.tracking.untracked"></option>
       </select>
-      <p class="field-help" data-i18n="html.kunOmJegHarVarenErGod"></p>
+      <p class="field-help" data-i18n="inventory.tracking.hint"></p>
       <div class="notice error" id="edit-product-error" role="alert" hidden></div>
-      <button class="danger-button" id="request-delete-product" type="button" data-i18n="html.fjernProdukt"></button>
+      <button class="danger-button" id="request-delete-product" type="button" data-i18n="products.remove"></button>
       <section class="inline-confirmation" id="delete-product-confirmation" aria-live="polite" hidden>
         <p id="delete-product-question"></p>
         <div class="dialog-actions">
@@ -292,99 +292,99 @@
   <dialog class="edit-dialog recipe-detail-dialog" id="recipe-template-detail-dialog" aria-labelledby="recipe-template-detail-title">
     <div class="section-heading"><h2 id="recipe-template-detail-title"></h2><button class="icon-button" id="close-recipe-template-detail" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
     <p id="recipe-template-detail-description" class="product-meta"></p>
-    <div class="portion-control" aria-label="" data-i18n-aria-label="html.antalPortioner"><button id="recipe-template-portions-down" type="button" aria-label="" data-i18n-aria-label="html.faerrePortioner">−</button><strong id="recipe-template-portions" data-i18n="html.2Portioner"></strong><button id="recipe-template-portions-up" type="button" aria-label="" data-i18n-aria-label="html.flerePortioner">+</button></div>
+    <div class="portion-control" aria-label="" data-i18n-aria-label="recipes.portions.label"><button id="recipe-template-portions-down" type="button" aria-label="" data-i18n-aria-label="recipes.portions.decrease">−</button><strong id="recipe-template-portions" data-i18n="recipes.portions.defaultLabel"></strong><button id="recipe-template-portions-up" type="button" aria-label="" data-i18n-aria-label="recipes.portions.increase">+</button></div>
     <section id="recipe-template-carbohydrates" class="nutrition-card"></section>
-    <h3 data-i18n="html.ingredienser"></h3><div id="recipe-template-detail-ingredients" class="recipe-ingredients"></div>
-    <section id="recipe-template-preparation-section"><h3 data-i18n="html.forberedelse"></h3><small data-i18n="html.miseEnPlace"></small><ol id="recipe-template-detail-preparation" class="recipe-steps compact-steps"></ol></section>
-    <section id="recipe-template-equipment-section"><h3 data-i18n="html.udstyr"></h3><ul id="recipe-template-detail-equipment" class="equipment-list"></ul></section>
-    <h3 data-i18n="html.fremgangsmade"></h3><ol id="recipe-template-detail-steps" class="recipe-steps"></ol>
-    <button class="primary-button full-button" id="add-recipe-template" type="button" data-i18n="renderRecipeTemplateDetail.fojTilMineOpskrifter"></button>
+    <h3 data-i18n="recipes.ingredients"></h3><div id="recipe-template-detail-ingredients" class="recipe-ingredients"></div>
+    <section id="recipe-template-preparation-section"><h3 data-i18n="recipes.preparation"></h3><small data-i18n="recipes.miseEnPlace"></small><ol id="recipe-template-detail-preparation" class="recipe-steps compact-steps"></ol></section>
+    <section id="recipe-template-equipment-section"><h3 data-i18n="recipes.equipment"></h3><ul id="recipe-template-detail-equipment" class="equipment-list"></ul></section>
+    <h3 data-i18n="recipes.instructions"></h3><ol id="recipe-template-detail-steps" class="recipe-steps"></ol>
+    <button class="primary-button full-button" id="add-recipe-template" type="button" data-i18n="recipes.catalog.addToLibrary"></button>
     <div class="notice error" id="recipe-template-error" hidden></div>
   </dialog>
 
   <dialog class="edit-dialog" id="inventory-add-dialog" aria-labelledby="inventory-add-title">
     <div class="section-heading">
-      <h2 id="inventory-add-title" data-i18n="html.tilfojTilLager"></h2>
+      <h2 id="inventory-add-title" data-i18n="inventory.add"></h2>
       <button class="icon-button" id="close-inventory-add" type="button" aria-label="" data-i18n-aria-label="common.close">×</button>
     </div>
     <div id="inventory-search-step">
-      <label for="inventory-search" data-i18n="html.sogVarer"></label>
-      <input id="inventory-search" type="search" placeholder="" data-i18n-placeholder="html.fxAegOksefarsEllerSoya" autocomplete="off">
+      <label for="inventory-search" data-i18n="inventory.search"></label>
+      <input id="inventory-search" type="search" placeholder="" data-i18n-placeholder="inventory.searchPlaceholder" autocomplete="off">
       <div class="template-results" id="inventory-search-results" aria-live="polite"></div>
     </div>
     <form id="inventory-amount-form" hidden>
       <h3 id="inventory-selected-name"></h3>
-      <div id="inventory-add-quantity-controls"><label for="inventory-add-quantity" data-i18n="html.maengde"></label>
+      <div id="inventory-add-quantity-controls"><label for="inventory-add-quantity" data-i18n="common.quantity"></label>
       <div class="quantity-field"><input id="inventory-add-quantity" name="quantity" type="number" inputmode="numeric" min="1" step="1" required><span id="inventory-selected-unit"></span></div>
       <p class="quantity-conversion" id="inventory-add-conversion" aria-live="polite"></p></div>
       <div class="notice error" id="inventory-add-error" role="alert" hidden></div>
       <div class="dialog-actions">
-        <button class="secondary-button" id="back-inventory-search" type="button" data-i18n="html.tilbage"></button>
+        <button class="secondary-button" id="back-inventory-search" type="button" data-i18n="common.back"></button>
         <button class="primary-button" type="submit" data-i18n="common.add"></button>
       </div>
     </form>
   </dialog>
 
   <dialog class="edit-dialog reservation-dialog" id="inventory-reservation-dialog" aria-labelledby="inventory-reservation-title">
-    <div class="section-heading"><div><p class="eyebrow" data-i18n="html.planlagtTil"></p><h2 id="inventory-reservation-title"></h2></div><button class="icon-button" id="close-inventory-reservations" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
+    <div class="section-heading"><div><p class="eyebrow" data-i18n="inventory.reservationsTitle"></p><h2 id="inventory-reservation-title"></h2></div><button class="icon-button" id="close-inventory-reservations" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
     <div id="inventory-reservation-list" class="reservation-detail-list"></div>
   </dialog>
 
   <dialog class="edit-dialog" id="edit-inventory-dialog" aria-labelledby="edit-inventory-title">
     <form id="edit-inventory-form">
-      <div class="section-heading"><h2 id="edit-inventory-title" data-i18n="html.redigerLager"></h2><button class="icon-button" id="close-edit-inventory" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
+      <div class="section-heading"><h2 id="edit-inventory-title" data-i18n="inventory.edit"></h2><button class="icon-button" id="close-edit-inventory" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
       <input id="edit-inventory-id" type="hidden">
       <h3 id="edit-inventory-name"></h3>
-      <div id="edit-inventory-quantity-controls"><label for="edit-inventory-quantity" data-i18n="requirementResultRow.paLager"></label>
+      <div id="edit-inventory-quantity-controls"><label for="edit-inventory-quantity" data-i18n="inventory.onHand"></label>
       <div class="quantity-field"><input id="edit-inventory-quantity" type="number" inputmode="numeric" min="0" step="1" required><span id="edit-inventory-unit"></span></div>
       <p class="quantity-conversion" id="edit-inventory-conversion" aria-live="polite"></p></div>
-      <p id="edit-inventory-presence" class="presence-label" hidden data-i18n="requirementResultRow.paLager"></p>
+      <p id="edit-inventory-presence" class="presence-label" hidden data-i18n="inventory.onHand"></p>
       <div class="notice error" id="edit-inventory-error" role="alert" hidden></div>
-      <button class="danger-button" id="request-delete-inventory" type="button" data-i18n="html.fjernFraLager"></button>
-      <section class="inline-confirmation" id="delete-inventory-confirmation" hidden><h3 data-i18n="html.fjernVareFraLager"></h3><p data-i18n="html.beholdningenFjernesFraLageretSelveProduktetBevares"></p><div class="dialog-actions"><button class="secondary-button" id="cancel-delete-inventory" type="button" data-i18n="common.cancel"></button><button class="danger-button" id="delete-inventory" type="button" data-i18n="html.fjernVare"></button></div></section>
+      <button class="danger-button" id="request-delete-inventory" type="button" data-i18n="inventory.remove"></button>
+      <section class="inline-confirmation" id="delete-inventory-confirmation" hidden><h3 data-i18n="inventory.confirmRemoval"></h3><p data-i18n="inventory.removalHint"></p><div class="dialog-actions"><button class="secondary-button" id="cancel-delete-inventory" type="button" data-i18n="common.cancel"></button><button class="danger-button" id="delete-inventory" type="button" data-i18n="common.removeItem"></button></div></section>
       <div class="dialog-actions"><button class="secondary-button" id="cancel-edit-inventory" type="button" data-i18n="common.cancel"></button><button class="primary-button" type="submit" data-i18n="common.save"></button></div>
     </form>
   </dialog>
 
   <dialog class="edit-dialog" id="shopping-add-dialog" aria-labelledby="shopping-add-title">
-    <div class="section-heading"><h2 id="shopping-add-title" data-i18n="submitShoppingText.tilfojTilIndkob"></h2><button class="icon-button" id="close-shopping-add" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
+    <div class="section-heading"><h2 id="shopping-add-title" data-i18n="shoppingList.import.add"></h2><button class="icon-button" id="close-shopping-add" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
     <div id="shopping-search-step">
-      <label for="shopping-search" data-i18n="html.sogVarer"></label>
-      <input id="shopping-search" type="search" placeholder="" data-i18n-placeholder="html.fxAegOksefarsEllerSoya" autocomplete="off">
+      <label for="shopping-search" data-i18n="inventory.search"></label>
+      <input id="shopping-search" type="search" placeholder="" data-i18n-placeholder="inventory.searchPlaceholder" autocomplete="off">
       <div class="template-results" id="shopping-search-results" aria-live="polite"></div>
     </div>
     <form id="shopping-amount-form" hidden>
       <h3 id="shopping-selected-name"></h3>
-      <div id="shopping-add-quantity-controls"><label for="shopping-add-quantity" data-i18n="html.maengde"></label>
+      <div id="shopping-add-quantity-controls"><label for="shopping-add-quantity" data-i18n="common.quantity"></label>
       <div class="quantity-field"><input id="shopping-add-quantity" type="number" inputmode="numeric" min="1" step="1" required><span id="shopping-selected-unit"></span></div>
       <p class="quantity-conversion" id="shopping-add-conversion" aria-live="polite"></p></div>
       <div class="notice error" id="shopping-add-error" role="alert" hidden></div>
-      <div class="dialog-actions"><button class="secondary-button" id="back-shopping-search" type="button" data-i18n="html.tilbage"></button><button class="primary-button" type="submit" data-i18n="common.add"></button></div>
+      <div class="dialog-actions"><button class="secondary-button" id="back-shopping-search" type="button" data-i18n="common.back"></button><button class="primary-button" type="submit" data-i18n="common.add"></button></div>
     </form>
   </dialog>
 
   <dialog class="edit-dialog" id="shopping-text-dialog" aria-labelledby="shopping-text-title">
     <form id="shopping-text-form">
       <div class="section-heading"><h2 id="shopping-text-title" data-i18n="shoppingList.pasteList"></h2><button class="icon-button" id="close-shopping-text" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
-      <p data-i18n="html.enVarePrLinjeMaengderLaeggesTil"></p>
-      <label for="shopping-text-input" data-i18n="html.indkobsliste"></label>
-      <textarea id="shopping-text-input" rows="9" maxlength="50000" required placeholder="" data-i18n-placeholder="html.kyllingebryst400G10G10Stk"></textarea>
-      <p class="help-text" data-i18n="html.brugGMlEllerStkNyeVarer"></p>
+      <p data-i18n="shoppingList.import.instructions"></p>
+      <label for="shopping-text-input" data-i18n="shoppingList.import.label"></label>
+      <textarea id="shopping-text-input" rows="9" maxlength="50000" required placeholder="" data-i18n-placeholder="shoppingList.import.placeholder"></textarea>
+      <p class="help-text" data-i18n="shoppingList.import.quantityHint"></p>
       <ul id="shopping-text-preview" aria-live="polite" hidden></ul>
       <div class="notice error" id="shopping-text-error" role="alert" hidden></div>
-      <div class="dialog-actions"><button class="secondary-button" id="cancel-shopping-text" type="button" data-i18n="common.cancel"></button><button class="primary-button" id="preview-shopping-text" type="submit" data-i18n="submitShoppingText.visForslag"></button><button class="primary-button" id="confirm-shopping-text" type="button" hidden data-i18n="submitShoppingText.tilfojTilIndkob"></button></div>
+      <div class="dialog-actions"><button class="secondary-button" id="cancel-shopping-text" type="button" data-i18n="common.cancel"></button><button class="primary-button" id="preview-shopping-text" type="submit" data-i18n="shoppingList.import.preview"></button><button class="primary-button" id="confirm-shopping-text" type="button" hidden data-i18n="shoppingList.import.add"></button></div>
     </form>
   </dialog>
 
   <dialog class="edit-dialog" id="edit-shopping-dialog" aria-labelledby="edit-shopping-title">
     <form id="edit-shopping-form">
-      <div class="section-heading"><h2 id="edit-shopping-title" data-i18n="html.redigerVare"></h2><button class="icon-button" id="close-edit-shopping" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
+      <div class="section-heading"><h2 id="edit-shopping-title" data-i18n="shoppingList.editItem"></h2><button class="icon-button" id="close-edit-shopping" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
       <input id="edit-shopping-id" type="hidden">
       <h3 id="edit-shopping-name"></h3>
-      <div id="edit-shopping-quantity-controls"><label for="edit-shopping-quantity" data-i18n="html.maengde"></label>
-      <div class="shopping-quantity-stepper"><button class="secondary-button" id="edit-shopping-minus" type="button" aria-label="" data-i18n-aria-label="html.mindskMaengde">−</button><div class="quantity-field"><input id="edit-shopping-quantity" type="number" inputmode="numeric" min="1" step="1" required><span id="edit-shopping-unit"></span></div><button class="secondary-button" id="edit-shopping-plus" type="button" aria-label="" data-i18n-aria-label="html.gMaengde">+</button></div>
+      <div id="edit-shopping-quantity-controls"><label for="edit-shopping-quantity" data-i18n="common.quantity"></label>
+      <div class="shopping-quantity-stepper"><button class="secondary-button" id="edit-shopping-minus" type="button" aria-label="" data-i18n-aria-label="shoppingList.decreaseQuantity">−</button><div class="quantity-field"><input id="edit-shopping-quantity" type="number" inputmode="numeric" min="1" step="1" required><span id="edit-shopping-unit"></span></div><button class="secondary-button" id="edit-shopping-plus" type="button" aria-label="" data-i18n-aria-label="shoppingList.increaseQuantity">+</button></div>
       <p class="quantity-conversion" id="edit-shopping-conversion" aria-live="polite"></p></div>
-      <p id="edit-shopping-presence" class="presence-label" hidden data-i18n="html.kobVaren"></p>
+      <p id="edit-shopping-presence" class="presence-label" hidden data-i18n="shoppingList.purchaseItem"></p>
       <div class="notice error" id="edit-shopping-error" role="alert" hidden></div>
       <div class="dialog-actions shopping-edit-actions"><button class="secondary-button" id="cancel-edit-shopping" type="button" data-i18n="common.cancel"></button><button class="danger-button" id="request-delete-shopping-item" type="button" data-i18n="common.remove"></button><button class="secondary-button" id="save-shopping-item" type="submit" data-i18n="common.save"></button><button class="primary-button" id="purchase-edit-shopping" type="button" data-i18n="common.purchased"></button></div>
     </form>
@@ -393,99 +393,99 @@
   <dialog class="edit-dialog recipe-detail-dialog" id="recipe-detail-dialog" aria-labelledby="recipe-detail-title">
     <div class="section-heading"><h2 id="recipe-detail-title"></h2><button class="icon-button" id="close-recipe-detail" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
     <p id="recipe-detail-description" class="product-meta"></p>
-    <div class="portion-control" aria-label="" data-i18n-aria-label="html.antalPortioner"><button id="recipe-portions-down" type="button" aria-label="" data-i18n-aria-label="html.faerrePortioner">−</button><strong id="recipe-portions" data-i18n="html.2Portioner"></strong><button id="recipe-portions-up" type="button" aria-label="" data-i18n-aria-label="html.flerePortioner">+</button></div>
+    <div class="portion-control" aria-label="" data-i18n-aria-label="recipes.portions.label"><button id="recipe-portions-down" type="button" aria-label="" data-i18n-aria-label="recipes.portions.decrease">−</button><strong id="recipe-portions" data-i18n="recipes.portions.defaultLabel"></strong><button id="recipe-portions-up" type="button" aria-label="" data-i18n-aria-label="recipes.portions.increase">+</button></div>
     <section id="recipe-carbohydrates" class="nutrition-card"></section>
-    <h3 data-i18n="html.ingredienser"></h3><div id="recipe-detail-ingredients" class="recipe-ingredients"></div>
-    <section id="recipe-preparation-section"><h3 data-i18n="html.forberedelse"></h3><small data-i18n="html.miseEnPlace"></small><ol id="recipe-detail-preparation" class="recipe-steps compact-steps"></ol></section>
-    <section id="recipe-equipment-section"><h3 data-i18n="html.udstyr"></h3><ul id="recipe-detail-equipment" class="equipment-list"></ul></section>
-    <h3 data-i18n="html.fremgangsmade"></h3><ol id="recipe-detail-steps" class="recipe-steps"></ol>
-    <section class="inline-confirmation" id="delete-recipe-confirmation" hidden><h3 data-i18n="html.sletOpskrift"></h3><p data-i18n="html.opskriftenOgDensTrinBliverSlettetPermanent"></p><div class="dialog-actions"><button class="secondary-button" id="keep-recipe" type="button" data-i18n="common.cancel"></button><button class="danger-button" id="confirm-delete-recipe" type="button" data-i18n="html.sletOpskrift2"></button></div></section>
-    <button class="primary-button full-button" id="cook-recipe" type="button" data-i18n="html.markerSomLavet"></button>
+    <h3 data-i18n="recipes.ingredients"></h3><div id="recipe-detail-ingredients" class="recipe-ingredients"></div>
+    <section id="recipe-preparation-section"><h3 data-i18n="recipes.preparation"></h3><small data-i18n="recipes.miseEnPlace"></small><ol id="recipe-detail-preparation" class="recipe-steps compact-steps"></ol></section>
+    <section id="recipe-equipment-section"><h3 data-i18n="recipes.equipment"></h3><ul id="recipe-detail-equipment" class="equipment-list"></ul></section>
+    <h3 data-i18n="recipes.instructions"></h3><ol id="recipe-detail-steps" class="recipe-steps"></ol>
+    <section class="inline-confirmation" id="delete-recipe-confirmation" hidden><h3 data-i18n="recipes.confirmDeletion"></h3><p data-i18n="recipes.deletionHint"></p><div class="dialog-actions"><button class="secondary-button" id="keep-recipe" type="button" data-i18n="common.cancel"></button><button class="danger-button" id="confirm-delete-recipe" type="button" data-i18n="recipes.delete"></button></div></section>
+    <button class="primary-button full-button" id="cook-recipe" type="button" data-i18n="recipes.markCooked"></button>
     <div class="notice" id="cook-recipe-summary" hidden></div>
-    <div class="dialog-actions"><button class="danger-button" id="delete-recipe" type="button" data-i18n="common.remove"></button><button class="secondary-button" id="edit-recipe" type="button" data-i18n="html.rediger"></button></div>
+    <div class="dialog-actions"><button class="danger-button" id="delete-recipe" type="button" data-i18n="common.remove"></button><button class="secondary-button" id="edit-recipe" type="button" data-i18n="common.edit"></button></div>
   </dialog>
 
   <dialog class="edit-dialog recipe-editor-dialog" id="recipe-plan-dialog" aria-labelledby="recipe-plan-title">
-    <div class="section-heading"><h2 id="recipe-plan-title" data-i18n="html.planlaegMad"></h2><button class="icon-button" id="close-recipe-plan" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
+    <div class="section-heading"><h2 id="recipe-plan-title" data-i18n="mealPlan.create"></h2><button class="icon-button" id="close-recipe-plan" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
     <div id="recipe-plan-list" class="recipe-plan-list"></div>
-    <button class="primary-button full-button" id="calculate-recipe-plan" type="button" data-i18n="html.beregnHvadJegMangler"></button>
-    <button class="secondary-button full-button" id="request-save-meal-plan" type="button" data-i18n="html.gemMadplan"></button>
-    <form id="save-meal-plan-form" class="sub-panel" hidden><label for="meal-plan-name" data-i18n="html.navnPaMadplan"></label><input id="meal-plan-name" maxlength="255" placeholder="" data-i18n-placeholder="html.fxUge33" required><div class="dialog-actions"><button class="secondary-button" id="cancel-save-meal-plan" type="button" data-i18n="common.cancel"></button><button class="primary-button" type="submit" data-i18n="common.save"></button></div></form>
-    <section id="recipe-plan-results" hidden><h3 data-i18n="html.samletBehov"></h3><div id="recipe-plan-requirements" class="requirement-list"></div><button class="primary-button full-button" id="add-recipe-missing" type="button" data-i18n="html.tilfojManglerTilIndkob"></button></section>
+    <button class="primary-button full-button" id="calculate-recipe-plan" type="button" data-i18n="mealPlan.calculateRequirements"></button>
+    <button class="secondary-button full-button" id="request-save-meal-plan" type="button" data-i18n="mealPlan.save"></button>
+    <form id="save-meal-plan-form" class="sub-panel" hidden><label for="meal-plan-name" data-i18n="mealPlan.name"></label><input id="meal-plan-name" maxlength="255" placeholder="" data-i18n-placeholder="mealPlan.namePlaceholder" required><div class="dialog-actions"><button class="secondary-button" id="cancel-save-meal-plan" type="button" data-i18n="common.cancel"></button><button class="primary-button" type="submit" data-i18n="common.save"></button></div></form>
+    <section id="recipe-plan-results" hidden><h3 data-i18n="mealPlan.totalRequirements"></h3><div id="recipe-plan-requirements" class="requirement-list"></div><button class="primary-button full-button" id="add-recipe-missing" type="button" data-i18n="mealPlan.addShortages"></button></section>
     <div class="notice error" id="recipe-plan-error" hidden></div>
   </dialog>
 
   <dialog class="edit-dialog recipe-editor-dialog" id="meal-plan-detail-dialog" aria-labelledby="meal-plan-detail-title">
     <div class="section-heading"><div><h2 id="meal-plan-detail-title"></h2><p id="meal-plan-detail-summary" class="product-meta"></p></div><button class="icon-button" id="close-meal-plan-detail" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
     <div id="meal-plan-recipes" class="meal-plan-recipes"></div>
-    <button class="secondary-button full-button" id="meal-plan-requirements" type="button" data-i18n="html.seHvadJegMangler"></button>
-    <section id="meal-plan-results" hidden><h3 data-i18n="html.samletBehov"></h3><div id="meal-plan-requirement-list" class="requirement-list"></div><button class="primary-button full-button" id="meal-plan-add-missing" type="button" data-i18n="html.tilfojManglerTilIndkob"></button></section>
-    <section class="inline-confirmation" id="delete-meal-plan-confirmation" hidden><h3 data-i18n="html.sletMadplan"></h3><p data-i18n="html.madplanenFjernesMenDineOpskrifterBevares"></p><div class="dialog-actions"><button class="secondary-button" id="keep-meal-plan" type="button" data-i18n="common.cancel"></button><button class="danger-button" id="confirm-delete-meal-plan" type="button" data-i18n="html.sletMadplan2"></button></div></section>
-    <button class="danger-button full-button" id="delete-meal-plan" type="button" data-i18n="html.sletMadplan2"></button><div class="notice error" id="meal-plan-error" hidden></div>
+    <button class="secondary-button full-button" id="meal-plan-requirements" type="button" data-i18n="mealPlan.showRequirements"></button>
+    <section id="meal-plan-results" hidden><h3 data-i18n="mealPlan.totalRequirements"></h3><div id="meal-plan-requirement-list" class="requirement-list"></div><button class="primary-button full-button" id="meal-plan-add-missing" type="button" data-i18n="mealPlan.addShortages"></button></section>
+    <section class="inline-confirmation" id="delete-meal-plan-confirmation" hidden><h3 data-i18n="mealPlan.confirmDeletion"></h3><p data-i18n="mealPlan.deletionHint"></p><div class="dialog-actions"><button class="secondary-button" id="keep-meal-plan" type="button" data-i18n="common.cancel"></button><button class="danger-button" id="confirm-delete-meal-plan" type="button" data-i18n="mealPlan.delete"></button></div></section>
+    <button class="danger-button full-button" id="delete-meal-plan" type="button" data-i18n="mealPlan.delete"></button><div class="notice error" id="meal-plan-error" hidden></div>
   </dialog>
 
   <dialog class="edit-dialog recipe-editor-dialog" id="recipe-editor-dialog" aria-labelledby="recipe-editor-title">
     <form id="recipe-form">
-      <div class="section-heading"><h2 id="recipe-editor-title" data-i18n="openRecipeEditor.nyOpskrift"></h2><button class="icon-button" id="close-recipe-editor" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
-      <label for="recipe-name" data-i18n="html.navn"></label><input id="recipe-name" maxlength="150" required>
-      <label for="recipe-description"><span data-i18n="html.beskrivelse"></span> <span class="optional" data-i18n="html.valgfri"></span></label><textarea id="recipe-description" rows="2" maxlength="1000"></textarea>
-      <div class="section-heading recipe-editor-heading"><h3 data-i18n="html.ingredienser"></h3><button class="text-button" id="add-recipe-ingredient" type="button" data-i18n="html.tilfoj"></button></div>
+      <div class="section-heading"><h2 id="recipe-editor-title" data-i18n="recipes.create"></h2><button class="icon-button" id="close-recipe-editor" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
+      <label for="recipe-name" data-i18n="common.name"></label><input id="recipe-name" maxlength="150" required>
+      <label for="recipe-description"><span data-i18n="common.description"></span> <span class="optional" data-i18n="common.optional"></span></label><textarea id="recipe-description" rows="2" maxlength="1000"></textarea>
+      <div class="section-heading recipe-editor-heading"><h3 data-i18n="recipes.ingredients"></h3><button class="text-button" id="add-recipe-ingredient" type="button" data-i18n="common.addShortcut"></button></div>
       <div id="recipe-editor-ingredients" class="editor-items"></div>
       <section id="ingredient-picker" class="sub-panel" hidden>
-        <label for="recipe-template-search" data-i18n="html.sogIngrediens"></label><input id="recipe-template-search" type="search" autocomplete="off" placeholder="" data-i18n-placeholder="html.fxLogEllerOksefars">
+        <label for="recipe-template-search" data-i18n="recipes.ingredient.search"></label><input id="recipe-template-search" type="search" autocomplete="off" placeholder="" data-i18n-placeholder="recipes.ingredient.searchPlaceholder">
         <div id="recipe-template-results" class="template-results"></div>
-        <div id="recipe-ingredient-fields" hidden><h4 id="recipe-selected-template"></h4><label for="recipe-ingredient-quantity" data-i18n="html.maengdePrPortion"></label><input id="recipe-ingredient-quantity" type="text" inputmode="decimal" placeholder="" data-i18n-placeholder="html.fx05">
-          <label for="recipe-ingredient-unit" data-i18n="html.enhed"></label><select id="recipe-ingredient-unit"><option value="GRAM" data-i18n="domain.g"></option><option value="MILLILITER" data-i18n="domain.ml"></option><option value="PIECE" data-i18n="domain.stk"></option><option value="TEASPOON" data-i18n="domain.tsk"></option><option value="TABLESPOON" data-i18n="domain.spsk"></option><option value="DECILITER" data-i18n="domain.dl"></option><option value="GRINDER_TURN" data-i18n="domain.omgange"></option></select>
-          <label for="recipe-ingredient-preparation"><span data-i18n="html.forberedelse"></span> <span class="optional" data-i18n="html.valgfri"></span></label><input id="recipe-ingredient-preparation" maxlength="200" placeholder="" data-i18n-placeholder="html.fxFinthakket">
+        <div id="recipe-ingredient-fields" hidden><h4 id="recipe-selected-template"></h4><label for="recipe-ingredient-quantity" data-i18n="recipes.ingredient.quantityPerPortion"></label><input id="recipe-ingredient-quantity" type="text" inputmode="decimal" placeholder="" data-i18n-placeholder="recipes.ingredient.quantityPlaceholder">
+          <label for="recipe-ingredient-unit" data-i18n="common.unit"></label><select id="recipe-ingredient-unit"><option value="GRAM" data-i18n="units.gramShort"></option><option value="MILLILITER" data-i18n="units.milliliterShort"></option><option value="PIECE" data-i18n="units.pieceShort"></option><option value="TEASPOON" data-i18n="units.teaspoonShort"></option><option value="TABLESPOON" data-i18n="units.tablespoonShort"></option><option value="DECILITER" data-i18n="units.deciliterShort"></option><option value="GRINDER_TURN" data-i18n="units.grinderTurns"></option></select>
+          <label for="recipe-ingredient-preparation"><span data-i18n="recipes.preparation"></span> <span class="optional" data-i18n="common.optional"></span></label><input id="recipe-ingredient-preparation" maxlength="200" placeholder="" data-i18n-placeholder="recipes.ingredient.preparationPlaceholder">
           <div class="dialog-actions"><button class="secondary-button" id="cancel-recipe-ingredient" type="button" data-i18n="common.cancel"></button><button class="primary-button" id="save-recipe-ingredient" type="button" data-i18n="common.add"></button></div>
         </div>
       </section>
-      <div class="section-heading recipe-editor-heading"><h3 data-i18n="html.forberedelse"></h3><button class="text-button" id="add-prepared-component" type="button" data-i18n="html.klargjortKomponent"></button></div>
+      <div class="section-heading recipe-editor-heading"><h3 data-i18n="recipes.preparation"></h3><button class="text-button" id="add-prepared-component" type="button" data-i18n="recipes.component.addShortcut"></button></div>
       <div id="recipe-editor-components" class="editor-items"></div>
-      <section id="prepared-component-picker" class="sub-panel" hidden><label for="prepared-component-name" data-i18n="html.navn"></label><input id="prepared-component-name" maxlength="150" placeholder="" data-i18n-placeholder="html.fxSurSodSauce"><fieldset><legend data-i18n="html.ingredienser"></legend><div id="prepared-component-ingredients"></div></fieldset><label for="prepared-component-preparation" data-i18n="html.forberedelse"></label><textarea id="prepared-component-preparation" rows="2" placeholder="" data-i18n-placeholder="html.fxBlandIngredienserneSammen"></textarea><div class="dialog-actions"><button class="secondary-button" id="cancel-prepared-component" type="button" data-i18n="common.cancel"></button><button class="primary-button" id="save-prepared-component" type="button" data-i18n="html.tilfojKomponent"></button></div></section>
-      <div class="section-heading recipe-editor-heading"><h3 data-i18n="html.fremgangsmade"></h3><button class="text-button" id="add-recipe-step" type="button" data-i18n="html.tilfojTrin"></button></div>
-      <div class="step-add-actions"><button class="primary-button compact-button" id="add-process-step" type="button" data-i18n="html.proces"></button></div>
+      <section id="prepared-component-picker" class="sub-panel" hidden><label for="prepared-component-name" data-i18n="common.name"></label><input id="prepared-component-name" maxlength="150" placeholder="" data-i18n-placeholder="recipes.component.namePlaceholder"><fieldset><legend data-i18n="recipes.ingredients"></legend><div id="prepared-component-ingredients"></div></fieldset><label for="prepared-component-preparation" data-i18n="recipes.preparation"></label><textarea id="prepared-component-preparation" rows="2" placeholder="" data-i18n-placeholder="recipes.step.placeholder"></textarea><div class="dialog-actions"><button class="secondary-button" id="cancel-prepared-component" type="button" data-i18n="common.cancel"></button><button class="primary-button" id="save-prepared-component" type="button" data-i18n="recipes.component.add"></button></div></section>
+      <div class="section-heading recipe-editor-heading"><h3 data-i18n="recipes.instructions"></h3><button class="text-button" id="add-recipe-step" type="button" data-i18n="recipes.step.addShortcut"></button></div>
+      <div class="step-add-actions"><button class="primary-button compact-button" id="add-process-step" type="button" data-i18n="recipes.process.addShortcut"></button></div>
       <div id="recipe-editor-steps" class="editor-items"></div>
       <section id="process-picker" class="sub-panel" hidden>
-        <label for="cooking-process-select" data-i18n="html.vaelgMadlavningsproces"></label>
-        <select id="cooking-process-select"><option value="" data-i18n="openProcessPicker.vaelgProces"></option></select>
+        <label for="cooking-process-select" data-i18n="recipes.process.selectTitle"></label>
+        <select id="cooking-process-select"><option value="" data-i18n="recipes.process.select"></option></select>
         <p id="cooking-process-description" class="help-text"></p>
         <div id="cooking-process-parameters" class="process-parameter-fields"></div>
-        <div class="dialog-actions"><button class="secondary-button" id="cancel-process-step" type="button" data-i18n="common.cancel"></button><button class="primary-button" id="save-process-step" type="button" data-i18n="openProcessPicker.tilfojProces"></button></div>
+        <div class="dialog-actions"><button class="secondary-button" id="cancel-process-step" type="button" data-i18n="common.cancel"></button><button class="primary-button" id="save-process-step" type="button" data-i18n="recipes.process.add"></button></div>
       </section>
       <div class="notice error" id="recipe-error" role="alert" hidden></div>
-      <div class="dialog-actions"><button class="secondary-button" id="cancel-recipe" type="button" data-i18n="common.cancel"></button><button class="primary-button" type="submit" data-i18n="html.gemOpskrift"></button></div>
+      <div class="dialog-actions"><button class="secondary-button" id="cancel-recipe" type="button" data-i18n="common.cancel"></button><button class="primary-button" type="submit" data-i18n="recipes.save"></button></div>
     </form>
   </dialog>
 
   <dialog class="edit-dialog equipment-dialog" id="kitchen-equipment-dialog" aria-labelledby="kitchen-equipment-title">
     <form id="kitchen-equipment-form">
-      <div class="section-heading"><h2 id="kitchen-equipment-title" data-i18n="openKitchenEquipment.tilfojUdstyr"></h2><button class="icon-button" id="close-kitchen-equipment" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
+      <div class="section-heading"><h2 id="kitchen-equipment-title" data-i18n="equipment.add"></h2><button class="icon-button" id="close-kitchen-equipment" type="button" aria-label="" data-i18n-aria-label="common.close">×</button></div>
       <input id="kitchen-equipment-id" type="hidden">
-      <h3 class="form-section-title" data-i18n="html.grundoplysninger"></h3>
-      <label for="kitchen-equipment-type" data-i18n="html.hvadVilDuTilfoje"></label>
-      <select id="kitchen-equipment-type" required><option value="STOVE" data-i18n="resetKitchenEquipmentForm.komfur"></option><option value="OVEN" data-i18n="equipmentSummary.ovn"></option><option value="POT" data-i18n="equipmentSummary.gryde"></option><option value="PAN" data-i18n="equipmentSummary.stegepande"></option><option value="AIR_FRYER" data-i18n="equipmentSummary.airfryer"></option><option value="THERMOMETER" data-i18n="domain.stegetermometer"></option><option value="MICROWAVE" data-i18n="equipmentSummary.mikroovn"></option></select>
-      <label for="kitchen-equipment-name" data-i18n="html.navn"></label><input id="kitchen-equipment-name" maxlength="255" required>
-      <label class="check-row" id="kitchen-preferred-row"><input id="kitchen-equipment-preferred" type="checkbox"> <span data-i18n="html.foretrukketUdstyr"></span></label>
+      <h3 class="form-section-title" data-i18n="equipment.generalSettings"></h3>
+      <label for="kitchen-equipment-type" data-i18n="equipment.typePrompt"></label>
+      <select id="kitchen-equipment-type" required><option value="STOVE" data-i18n="equipment.types.stove"></option><option value="OVEN" data-i18n="equipment.types.oven"></option><option value="POT" data-i18n="equipment.types.pot"></option><option value="PAN" data-i18n="equipment.types.pan"></option><option value="AIR_FRYER" data-i18n="equipment.types.airFryer"></option><option value="THERMOMETER" data-i18n="equipment.types.cookingThermometer"></option><option value="MICROWAVE" data-i18n="equipment.types.microwave"></option></select>
+      <label for="kitchen-equipment-name" data-i18n="common.name"></label><input id="kitchen-equipment-name" maxlength="255" required>
+      <label class="check-row" id="kitchen-preferred-row"><input id="kitchen-equipment-preferred" type="checkbox"> <span data-i18n="equipment.preferredLabel"></span></label>
       <section class="equipment-fields" data-equipment-fields="STOVE">
-        <h3 data-i18n="html.varmeOgTrin"></h3>
-        <label for="stove-heat-source" data-i18n="html.type"></label><select id="stove-heat-source"><option value="INDUCTION" data-i18n="domain.induktion"></option><option value="CERAMIC" data-i18n="domain.keramisk"></option><option value="ELECTRIC" data-i18n="domain.elektrisk"></option><option value="GAS" data-i18n="domain.gas"></option><option value="OTHER" data-i18n="domain.andet"></option></select>
-        <div class="field-pair"><label><span data-i18n="html.lavesteTrin"></span><input id="stove-minimum-level" type="number" min="0" value="1"></label><label><span data-i18n="html.hojesteTrin"></span><input id="stove-maximum-level" type="number" min="0" value="9"></label></div>
-        <div class="section-heading heat-heading"><h3 data-i18n="html.varmetrin"></h3><button class="text-button" id="generate-heat-mappings" type="button" data-i18n="html.foreslaTrin"></button></div>
-        <div class="heat-mapping-grid"><label><span data-i18n="processParameterField.lav"></span><input data-heat="LOW" inputmode="numeric"></label><label><span data-i18n="processParameterField.middelLav"></span><input data-heat="MEDIUM_LOW" inputmode="numeric"></label><label><span data-i18n="processParameterField.middel"></span><input data-heat="MEDIUM" inputmode="numeric"></label><label><span data-i18n="processParameterField.middelHoj"></span><input data-heat="MEDIUM_HIGH" inputmode="numeric"></label><label><span data-i18n="processParameterField.hoj"></span><input data-heat="HIGH" inputmode="numeric"></label><label><span data-i18n="html.maks"></span><input data-heat="MAX" inputmode="numeric"></label></div>
+        <h3 data-i18n="equipment.heatSettings"></h3>
+        <label for="stove-heat-source" data-i18n="equipment.type"></label><select id="stove-heat-source"><option value="INDUCTION" data-i18n="equipment.heatSources.induction"></option><option value="CERAMIC" data-i18n="equipment.heatSources.ceramic"></option><option value="ELECTRIC" data-i18n="equipment.heatSources.electric"></option><option value="GAS" data-i18n="equipment.heatSources.gas"></option><option value="OTHER" data-i18n="common.other"></option></select>
+        <div class="field-pair"><label><span data-i18n="equipment.minimumLevel"></span><input id="stove-minimum-level" type="number" min="0" value="1"></label><label><span data-i18n="equipment.maximumLevel"></span><input id="stove-maximum-level" type="number" min="0" value="9"></label></div>
+        <div class="section-heading heat-heading"><h3 data-i18n="equipment.heatLevels"></h3><button class="text-button" id="generate-heat-mappings" type="button" data-i18n="equipment.suggestLevels"></button></div>
+        <div class="heat-mapping-grid"><label><span data-i18n="recipes.process.heat.low"></span><input data-heat="LOW" inputmode="numeric"></label><label><span data-i18n="recipes.process.heat.mediumLow"></span><input data-heat="MEDIUM_LOW" inputmode="numeric"></label><label><span data-i18n="recipes.process.heat.medium"></span><input data-heat="MEDIUM" inputmode="numeric"></label><label><span data-i18n="recipes.process.heat.mediumHigh"></span><input data-heat="MEDIUM_HIGH" inputmode="numeric"></label><label><span data-i18n="recipes.process.heat.high"></span><input data-heat="HIGH" inputmode="numeric"></label><label><span data-i18n="equipment.maximum"></span><input data-heat="MAX" inputmode="numeric"></label></div>
       </section>
       <section class="equipment-fields" data-equipment-fields="OVEN" hidden>
-        <h3 data-i18n="html.varmeOgFunktioner"></h3>
-        <fieldset><legend data-i18n="html.ovnfunktioner"></legend><label class="check-row"><input type="checkbox" data-oven-mode="CONVENTIONAL"> <span data-i18n="domain.almindeligOvn"></span></label><label class="check-row"><input type="checkbox" data-oven-mode="FAN"> <span data-i18n="domain.varmluft"></span></label><label class="check-row"><input type="checkbox" data-oven-mode="GRILL"> <span data-i18n="domain.grill"></span></label></fieldset>
-        <div class="field-pair"><label><span data-i18n="html.minTemperaturC"></span><input id="oven-min-temperature" type="number" min="1"></label><label><span data-i18n="html.maksTemperaturC"></span><input id="oven-max-temperature" type="number" min="1"></label></div>
+        <h3 data-i18n="equipment.ovenSettings"></h3>
+        <fieldset><legend data-i18n="equipment.ovenModesLabel"></legend><label class="check-row"><input type="checkbox" data-oven-mode="CONVENTIONAL"> <span data-i18n="equipment.ovenModes.conventional"></span></label><label class="check-row"><input type="checkbox" data-oven-mode="FAN"> <span data-i18n="equipment.ovenModes.fan"></span></label><label class="check-row"><input type="checkbox" data-oven-mode="GRILL"> <span data-i18n="equipment.ovenModes.grill"></span></label></fieldset>
+        <div class="field-pair"><label><span data-i18n="equipment.minimumTemperature"></span><input id="oven-min-temperature" type="number" min="1"></label><label><span data-i18n="equipment.maximumTemperature"></span><input id="oven-max-temperature" type="number" min="1"></label></div>
       </section>
-      <section class="equipment-fields" data-equipment-fields="POT" hidden><h3 data-i18n="html.kapacitet"></h3><label for="pot-capacity"><span data-i18n="html.kapacitetMl"></span> <span class="optional" data-i18n="html.valgfri"></span></label><input id="pot-capacity" type="number" min="1" step="1" placeholder="" data-i18n-placeholder="html.5000"></section>
-      <section class="equipment-fields" data-equipment-fields="PAN" hidden><h3 data-i18n="html.storrelseOgEgenskaber"></h3><label for="pan-diameter"><span data-i18n="html.diameterMm"></span> <span class="optional" data-i18n="html.valgfri"></span></label><input id="pan-diameter" type="number" min="1" step="1" placeholder="" data-i18n-placeholder="html.280"><label class="check-row"><input id="pan-non-stick" type="checkbox"> <span data-i18n="html.nonStickBelaegning"></span></label></section>
-      <section class="equipment-fields" data-equipment-fields="AIR_FRYER" hidden><h3 data-i18n="html.kapacitetOgTemperatur"></h3><label for="air-fryer-capacity"><span data-i18n="html.kapacitetMl"></span> <span class="optional" data-i18n="html.valgfri"></span></label><input id="air-fryer-capacity" type="number" min="1" placeholder="" data-i18n-placeholder="html.5000"><div class="field-pair"><label><span data-i18n="html.minTemperaturC"></span><input id="air-fryer-min-temperature" type="number" min="1"></label><label><span data-i18n="html.maksTemperaturC"></span><input id="air-fryer-max-temperature" type="number" min="1"></label></div></section>
-      <section class="equipment-fields" data-equipment-fields="THERMOMETER" hidden><h3 data-i18n="html.egenskaber"></h3><label for="thermometer-type" data-i18n="html.type"></label><select id="thermometer-type"><option value="INSTANT_READ" data-i18n="equipmentSummary.hurtigAflaesning"></option><option value="PROBE" data-i18n="equipmentSummary.stegesonde"></option><option value="OTHER" data-i18n="domain.andet"></option></select></section>
-      <section class="equipment-fields" data-equipment-fields="MICROWAVE" hidden><h3 data-i18n="html.effekt"></h3><label for="microwave-power"><span data-i18n="html.maksEffektWatt"></span> <span class="optional" data-i18n="html.valgfri"></span></label><input id="microwave-power" type="number" min="1" placeholder="" data-i18n-placeholder="html.900"></section>
+      <section class="equipment-fields" data-equipment-fields="POT" hidden><h3 data-i18n="equipment.capacity"></h3><label for="pot-capacity"><span data-i18n="equipment.capacityMilliliters"></span> <span class="optional" data-i18n="common.optional"></span></label><input id="pot-capacity" type="number" min="1" step="1" placeholder="" data-i18n-placeholder="equipment.capacityPlaceholder"></section>
+      <section class="equipment-fields" data-equipment-fields="PAN" hidden><h3 data-i18n="equipment.panSettings"></h3><label for="pan-diameter"><span data-i18n="equipment.diameterMillimeters"></span> <span class="optional" data-i18n="common.optional"></span></label><input id="pan-diameter" type="number" min="1" step="1" placeholder="" data-i18n-placeholder="equipment.diameterPlaceholder"><label class="check-row"><input id="pan-non-stick" type="checkbox"> <span data-i18n="equipment.nonStick"></span></label></section>
+      <section class="equipment-fields" data-equipment-fields="AIR_FRYER" hidden><h3 data-i18n="equipment.airFryerSettings"></h3><label for="air-fryer-capacity"><span data-i18n="equipment.capacityMilliliters"></span> <span class="optional" data-i18n="common.optional"></span></label><input id="air-fryer-capacity" type="number" min="1" placeholder="" data-i18n-placeholder="equipment.capacityPlaceholder"><div class="field-pair"><label><span data-i18n="equipment.minimumTemperature"></span><input id="air-fryer-min-temperature" type="number" min="1"></label><label><span data-i18n="equipment.maximumTemperature"></span><input id="air-fryer-max-temperature" type="number" min="1"></label></div></section>
+      <section class="equipment-fields" data-equipment-fields="THERMOMETER" hidden><h3 data-i18n="equipment.properties"></h3><label for="thermometer-type" data-i18n="equipment.type"></label><select id="thermometer-type"><option value="INSTANT_READ" data-i18n="equipment.thermometerTypes.instant"></option><option value="PROBE" data-i18n="equipment.thermometerTypes.probe"></option><option value="OTHER" data-i18n="common.other"></option></select></section>
+      <section class="equipment-fields" data-equipment-fields="MICROWAVE" hidden><h3 data-i18n="equipment.power"></h3><label for="microwave-power"><span data-i18n="equipment.maximumPower"></span> <span class="optional" data-i18n="common.optional"></span></label><input id="microwave-power" type="number" min="1" placeholder="" data-i18n-placeholder="equipment.powerPlaceholder"></section>
       <div class="notice error" id="kitchen-equipment-error" hidden></div>
-      <section class="inline-confirmation" id="delete-kitchen-equipment-confirmation" hidden><h3 data-i18n="html.sletUdstyr"></h3><p data-i18n="html.udstyretOgDetsIndstillingerBliverSlettetPermanent"></p><div class="dialog-actions"><button class="secondary-button" id="keep-kitchen-equipment" type="button" data-i18n="common.cancel"></button><button class="danger-button" id="confirm-delete-kitchen-equipment" type="button" data-i18n="html.sletUdstyr2"></button></div></section>
+      <section class="inline-confirmation" id="delete-kitchen-equipment-confirmation" hidden><h3 data-i18n="equipment.confirmDeletion"></h3><p data-i18n="equipment.deletionHint"></p><div class="dialog-actions"><button class="secondary-button" id="keep-kitchen-equipment" type="button" data-i18n="common.cancel"></button><button class="danger-button" id="confirm-delete-kitchen-equipment" type="button" data-i18n="equipment.delete"></button></div></section>
       <div class="dialog-actions"><button class="danger-button" id="delete-kitchen-equipment" type="button" hidden data-i18n="common.remove"></button><button class="primary-button" type="submit" data-i18n="common.save"></button></div>
     </form>
   </dialog>

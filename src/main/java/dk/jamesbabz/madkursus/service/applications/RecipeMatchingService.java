@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RecipeMatchingService {
     private final CurrentUserProvider currentUser;
-    private final InventoryPort inventory;
+    private final InventoryAvailabilityService availabilityService;
     private final RecipePort recipes;
     private final RecipeTemplatePort templates;
     private final RecipeQuantityNormalizer normalizer;
@@ -32,7 +32,7 @@ public class RecipeMatchingService {
         if (portions < 1) throw new InvalidInputException("Portions must be positive");
         if (maximum != null && (maximum < 0 || maximum > 20)) throw new InvalidInputException("Maximum additional ingredients must be between 0 and 20");
         UUID user = currentUser.currentUserId();
-        var stock = inventory.findAllByUserId(user).stream().filter(i -> user.equals(i.product().userId())).toList();
+        var stock = availabilityService.snapshot(null);
         var own = recipes.findAllByUserId(user).stream().filter(r -> user.equals(r.userId())).toList();
         var copied = own.stream().map(Recipe::sourceTemplateId).filter(Objects::nonNull).collect(Collectors.toSet());
         List<RecipeMatch> matches = new ArrayList<>();
@@ -48,7 +48,7 @@ public class RecipeMatchingService {
         return ranker.rank(eligible, preferredTemplateIds);
     }
 
-    private RecipeMatch match(UUID id, RecipeMatch.Source source, String name, List<RecipeIngredient> ingredients, List<InventoryItem> inventory, int portions) {
+    private RecipeMatch match(UUID id, RecipeMatch.Source source, String name, List<RecipeIngredient> ingredients, InventoryAvailabilityService.Snapshot inventory, int portions) {
         Map<UUID, ProductTemplate> identities = new LinkedHashMap<>();
         Map<UUID, BigDecimal> required = new HashMap<>();
         List<String> uncertain = new ArrayList<>();
@@ -61,29 +61,23 @@ public class RecipeMatchingService {
             }
             identities.putIfAbsent(template.id(), template);
             // Presence does not require inventing a conversion for a quantity we cannot measure.
-            boolean quantityUnknown = template.defaultTrackingMode() != InventoryTrackingMode.QUANTITY
-                    || inventory.stream().anyMatch(i -> template.id().equals(i.product().sourceTemplateId()) && i.product().inventoryTrackingMode() != InventoryTrackingMode.QUANTITY);
+            boolean quantityUnknown = availabilityService.forTemplate(inventory, template).trackingMode() != InventoryTrackingMode.QUANTITY;
             if (quantityUnknown) { required.putIfAbsent(template.id(), BigDecimal.ZERO); continue; }
             var amount = normalizer.normalize(ingredient.quantity().multiply(BigDecimal.valueOf(portions)), ingredient.unit(), template);
             if (amount.warning() != null) { unresolved = true; continue; }
             required.merge(template.id(), amount.quantity(), BigDecimal::add);
         }
         for (var template : identities.values()) {
-            var stock = inventory.stream().filter(i -> template.id().equals(i.product().sourceTemplateId())).toList();
+            var stock = availabilityService.forTemplate(inventory, template);
             if (!required.containsKey(template.id())) continue;
-            if (stock.stream().anyMatch(i -> i.unit() != template.defaultUnit())) { unresolved = true; continue; }
-            if (template.defaultTrackingMode() == InventoryTrackingMode.UNTRACKED || stock.stream().anyMatch(i -> i.product().inventoryTrackingMode() == InventoryTrackingMode.UNTRACKED)) {
-                // Matches existing recipe calculation: explicitly untracked requirements are excluded.
-                continue;
-            }
-            boolean presence = template.defaultTrackingMode() == InventoryTrackingMode.PRESENCE || stock.stream().anyMatch(i -> i.product().inventoryTrackingMode() == InventoryTrackingMode.PRESENCE);
-            if (presence) {
-                if (stock.isEmpty()) missing.add(new RecipeMatch.MissingIngredient(template.id(), template.name(), null, template.defaultUnit()));
+            if (stock.warning() != null) { uncertain.add(template.name()); continue; }
+            if (stock.trackingMode() == InventoryTrackingMode.UNTRACKED) continue;
+            if (stock.trackingMode() == InventoryTrackingMode.PRESENCE) {
+                if (stock.product() == null) missing.add(new RecipeMatch.MissingIngredient(template.id(), template.name(), null, template.defaultUnit()));
                 else uncertain.add(template.name());
                 continue;
             }
-            if (stock.stream().anyMatch(i -> i.quantity() == null || i.quantity().signum() < 0)) { unresolved = true; continue; }
-            BigDecimal available = stock.stream().map(InventoryItem::quantity).reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal available = stock.availableQuantity();
             BigDecimal shortage = required.get(template.id()).subtract(available).max(BigDecimal.ZERO);
             if (shortage.signum() > 0) missing.add(new RecipeMatch.MissingIngredient(template.id(), template.name(), QuantityRoundingPolicy.forInventory(shortage, template.defaultUnit()), template.defaultUnit()));
         }

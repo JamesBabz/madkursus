@@ -12,9 +12,10 @@ class RecipeMatchingServiceTest {
     final UUID user = UUID.randomUUID();
     final CurrentUserProvider current = mock(CurrentUserProvider.class);
     final InventoryPort inventory = mock(InventoryPort.class);
+    final MealPlanPort plans = mock(MealPlanPort.class);
     final RecipePort recipes = mock(RecipePort.class);
     final RecipeTemplatePort templates = mock(RecipeTemplatePort.class);
-    final RecipeMatchingService service = new RecipeMatchingService(current, inventory, recipes, templates, new RecipeQuantityNormalizer(), new RecipeMatchRanker());
+    final RecipeMatchingService service = new RecipeMatchingService(current, new InventoryAvailabilityService(inventory, plans, current, new RecipeQuantityNormalizer()), recipes, templates, new RecipeQuantityNormalizer(), new RecipeMatchRanker());
     @BeforeEach void setup() { when(current.currentUserId()).thenReturn(user); }
     @Test void twoPortionsScaleRequirementsBeforeShortagesFilteringAndRanking() {
         var pasta=template("Pasta",Unit.GRAM);
@@ -38,6 +39,56 @@ class RecipeMatchingServiceTest {
         when(inventory.findAllByUserId(user)).thenReturn(List.of(stock(salt,null)));
         assertThat(service.findMatches(null,Set.of(),2)).isEqualTo(service.findMatches(null));
         assertThat(service.findMatches(0,Set.of(),2)).isEmpty();
+    }
+    @Test void reservationsReduceDiscoveryStockAndAggregateAcrossPlans() {
+        var beef=template("Beef",Unit.GRAM);
+        when(recipes.findAllByUserId(user)).thenReturn(List.of(recipe("Dinner",ingredient(beef,"400",RecipeUnit.GRAM))));
+        when(inventory.findAllByUserId(user)).thenReturn(List.of(stock(beef,"400")));
+        when(plans.findAllByUserId(user)).thenReturn(List.of(plan(beef,"400",RecipeUnit.GRAM,PlannedRecipeStatus.PLANNED)));
+        var full=service.findMatches(null).getFirst();
+        assertThat(full.state()).isEqualTo(RecipeMatch.State.NEAR_MATCH);
+        assertThat(full.missingIngredients().getFirst().shortage()).isEqualByComparingTo("400");
+        assertThat(service.findMatches(0)).isEmpty();
+        when(inventory.findAllByUserId(user)).thenReturn(List.of(stock(beef,"500")));
+        when(plans.findAllByUserId(user)).thenReturn(List.of(plan(beef,"300",RecipeUnit.GRAM,PlannedRecipeStatus.PLANNED)));
+        assertThat(service.findMatches(null).getFirst().missingIngredients().getFirst().shortage()).isEqualByComparingTo("200");
+        when(plans.findAllByUserId(user)).thenReturn(List.of(plan(beef,"200",RecipeUnit.GRAM,PlannedRecipeStatus.PLANNED),plan(beef,"150",RecipeUnit.GRAM,PlannedRecipeStatus.PLANNED)));
+        assertThat(service.findMatches(null).getFirst().missingIngredients().getFirst().shortage()).isEqualByComparingTo("250");
+    }
+    @Test void cookedAndSkippedDoNotReserveDiscoveryStock() {
+        var beef=template("Beef",Unit.GRAM);
+        when(recipes.findAllByUserId(user)).thenReturn(List.of(recipe("Dinner",ingredient(beef,"400",RecipeUnit.GRAM))));
+        when(inventory.findAllByUserId(user)).thenReturn(List.of(stock(beef,"400")));
+        when(plans.findAllByUserId(user)).thenReturn(List.of(plan(beef,"400",RecipeUnit.GRAM,PlannedRecipeStatus.COOKED),plan(beef,"400",RecipeUnit.GRAM,PlannedRecipeStatus.SKIPPED)));
+        assertThat(service.findMatches(0).getFirst().state()).isEqualTo(RecipeMatch.State.COOKABLE);
+        verify(inventory).findAllByUserId(user);
+        verify(plans).findAllByUserId(user);
+    }
+    @Test void failedReservationConversionIsUncertainNotFreeStock() {
+        var beef=template("Beef",Unit.GRAM);
+        when(recipes.findAllByUserId(user)).thenReturn(List.of(recipe("Dinner",ingredient(beef,"400",RecipeUnit.GRAM))));
+        when(inventory.findAllByUserId(user)).thenReturn(List.of(stock(beef,"400")));
+        when(plans.findAllByUserId(user)).thenReturn(List.of(plan(beef,"1",RecipeUnit.PIECE,PlannedRecipeStatus.PLANNED)));
+        var result=service.findMatches(null).getFirst();
+        assertThat(result.state()).isEqualTo(RecipeMatch.State.CHECK_QUANTITIES);
+        assertThat(result.uncertainIngredients()).containsExactly("Beef");
+        assertThat(result.missingIngredients()).isEmpty(); // Unknown, not a fabricated shortage.
+        assertThat(service.findMatches(0)).isEmpty();
+    }
+    @Test void legacyNamesDoNotEstablishStockIdentityAndCanonicalMetadataMustBeCompatible() {
+        var beef=template("Beef",Unit.GRAM);
+        when(recipes.findAllByUserId(user)).thenReturn(List.of(recipe("Dinner",ingredient(beef,"400",RecipeUnit.GRAM))));
+        var legacy=new Product(UUID.randomUUID(),user,null,"Beef",beef.category(),Unit.GRAM,InventoryTrackingMode.QUANTITY);
+        when(inventory.findAllByUserId(user)).thenReturn(List.of(new InventoryItem(UUID.randomUUID(),legacy,new BigDecimal("500"))));
+        assertThat(service.findMatches(null).getFirst().missingIngredients().getFirst().shortage()).isEqualByComparingTo("400");
+        for(var unit:List.of(Unit.MILLILITER,Unit.GRAM)) {
+            var incompatible=new Product(legacy.id(),user,beef.id(),"Renamed",beef.category(),unit,unit==Unit.GRAM?InventoryTrackingMode.UNTRACKED:InventoryTrackingMode.QUANTITY);
+            when(inventory.findAllByUserId(user)).thenReturn(List.of(new InventoryItem(UUID.randomUUID(),incompatible,new BigDecimal("500"))));
+            assertThat(service.findMatches(null).getFirst().state()).isEqualTo(RecipeMatch.State.CHECK_QUANTITIES);
+        }
+    }
+    MealPlan plan(ProductTemplate template,String quantity,RecipeUnit unit,PlannedRecipeStatus status) {
+        return new MealPlan(UUID.randomUUID(),user,"Existing",null,null,List.of(new PlannedRecipe(UUID.randomUUID(),recipe("Reserved",ingredient(template,quantity,unit)),1,1,status)));
     }
     ProductTemplate template(String name, Unit unit) { return new ProductTemplate(UUID.randomUUID(), name, ProductCategory.OTHER, unit, List.of(), true); }
     RecipeIngredient ingredient(ProductTemplate template, String quantity, RecipeUnit unit) { return new RecipeIngredient(UUID.randomUUID(), template, new BigDecimal(quantity), unit, null, 1); }
