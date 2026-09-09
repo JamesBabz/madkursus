@@ -25,6 +25,7 @@ for (const template of [false, true]) {
       const nodes = new Map();
       const requests = [];
       const context = vm.createContext({
+        t: require("../../main/resources/static/js/i18n.js").t,
         document: {createElement: element, querySelector(selector) {
           if (!nodes.has(selector)) nodes.set(selector, element());
           return nodes.get(selector);

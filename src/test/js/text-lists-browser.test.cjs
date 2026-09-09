@@ -6,7 +6,7 @@ const path=require('node:path');
 let browser;
 before(async()=>{browser=await chromium.launch({headless:true,channel:process.env.CHAT_TEST_BROWSER_CHANNEL||'msedge'});});
 after(async()=>{await browser?.close();});
-async function setup(t,{invalid=false,width=390,clipboardFailure=false}={}) {
+async function setup(t,{invalid=false,validationError="Angiv enhed",width=390,clipboardFailure=false}={}) {
   const page=await browser.newPage({viewport:{width,height:844},serviceWorkers:'block'});
   t.after(()=>page.close());
   await page.addInitScript(fail=>{
@@ -17,7 +17,7 @@ async function setup(t,{invalid=false,width=390,clipboardFailure=false}={}) {
   page.on('pageerror',e=>errors.push(e.message));
   const inventory=[['Kyllingebryst',600,'GRAM','QUANTITY'],['Løg',3.5,'PIECE','QUANTITY'],['Salt',null,'GRAM','PRESENCE'],['Vandhanevand',null,'MILLILITER','UNTRACKED'],['Mælk',250,'MILLILITER','QUANTITY']]
     .map(([name,quantity,unit,mode],i)=>({id:String(i),product:{id:String(i),name,category:'OTHER',defaultUnit:unit,inventoryTrackingMode:mode},quantity,unit}));
-  const result={valid:!invalid,imported:false,items:invalid?[{line:2,text:'Ukendt 2',error:'Angiv enhed'}]:[
+  const result={valid:!invalid,imported:false,items:invalid?[{line:2,text:'Ukendt 2',error:validationError}]:[
     {line:1,name:'Kyllingebryst',quantity:400,unit:'GRAM',newProduct:false},
     {line:2,name:'Æg',quantity:10,unit:'PIECE',newProduct:false},
     {line:3,name:'Cola',quantity:null,newProduct:true}
@@ -90,4 +90,46 @@ for(const width of [320,390,1280])test(`paste dialog fits ${width}px and opens w
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
   const box=await page.locator('#shopping-text-input').boundingBox();assert.ok(box.height>=190);assert.ok(box.x>=0&&box.x+box.width<=width);
   await fs.mkdir('build',{recursive:true});await page.screenshot({path:`build/shopping-text-${width}.png`});
+});
+
+for (const [technical,expected] of [
+  ['Quantity must be a whole number','Mængden skal være et helt tal.'],
+  ['Unexpected database connection failure','Unexpected database connection failure']
+]) test('import preview error: '+technical,async t=>{
+  const {page}=await setup(t,{invalid:true,validationError:technical});await openPaste(page);
+  await page.locator('#shopping-text-input').fill('Hvedemel: 1000,5');await page.locator('#preview-shopping-text').click();
+  await page.locator('#shopping-text-error').waitFor();
+  assert.ok((await page.locator('#shopping-text-preview').textContent()).includes(expected));
+  assert.equal(await page.locator('#confirm-shopping-text').isVisible(),false);
+});
+test('static UI, placeholders and accessibility labels use the Danish dictionary',async t=>{
+  const {page}=await setup(t);
+  assert.equal(await page.locator('#show-inventory').innerText(),'Lager');
+  assert.equal(await page.locator('#open-shopping-text').textContent(),'Indsæt liste');
+  assert.equal(await page.locator('#auth-tab-login').textContent(),'Log ind');
+  assert.equal(await page.locator('#chat-launcher').getAttribute('aria-label'),'Åbn Madhjælp');
+  assert.equal(await page.locator('#shopping-text-input').getAttribute('placeholder'),'Kyllingebryst: 400 g\nÆg 10 stk.\nCola');
+  const audit=await page.evaluate(async()=>{
+    const doc=new DOMParser().parseFromString(await (await fetch('/')).text(),'text/html');
+    localizeHtml(doc);
+    return [...doc.querySelectorAll('[data-i18n]')].filter(el=>!el.textContent||el.textContent!==t(el.dataset.i18n)).map(el=>el.dataset.i18n);
+  });
+  assert.deepEqual(audit,[]);
+});
+test('native required-field validation is Danish and clears when edited',async t=>{
+  const {page}=await setup(t);
+  const message=await page.evaluate(()=>{
+    const input=document.querySelector('#login-username');input.value='';input.checkValidity();return input.validationMessage;
+  });
+  assert.equal(message,'Udfyld dette felt.');
+  assert.equal(await page.evaluate(()=>{
+    const input=document.querySelector('#login-username');input.value='Test';input.dispatchEvent(new Event('input',{bubbles:true}));return input.validationMessage;
+  }),'');
+});
+test('resetting a form clears localized custom validity',async t=>{
+  const {page}=await setup(t);
+  assert.equal(await page.evaluate(()=>{
+    const input=document.querySelector('#login-username');input.value='';input.checkValidity();
+    document.querySelector('#login-form').reset();input.value='Test';return input.checkValidity();
+  }),true);
 });
