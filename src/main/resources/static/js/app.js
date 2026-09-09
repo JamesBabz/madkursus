@@ -9,6 +9,13 @@ const KITCHEN_EQUIPMENT_API = '/v1/kitchen-equipment';
 const COOKING_PROCESS_API = '/v1/cooking-processes';
 const NUTRITION_ADMIN_API = '/v1/admin/product-template-nutrition';
 
+// Start dialogs on their header button, without opening a software keyboard.
+// Native dialog focus management still handles Tab, Escape, and focus restoration.
+document.querySelectorAll('dialog').forEach(dialog => {
+  const initialFocus = dialog.querySelector('.section-heading button');
+  if (initialFocus) initialFocus.autofocus = true;
+});
+
 const categoryLabels = {
   BAKING:'Bagning', BREAD:'Brød', DAIRY:'Mejeri', EGG:'Æg', FISH:'Fisk', FROZEN:'Frostvarer',
   FRUIT:'Frugt', GRAIN_PASTA:'Korn, ris og pasta', HERB:'Urter', LEGUME:'Bælgfrugter', MEAT:'Kød',
@@ -359,7 +366,6 @@ function openProductEditor(product) {
   document.querySelector('#delete-product-confirmation').hidden = true;
   document.querySelector('#request-delete-product').hidden = false;
   editDialog.showModal();
-  document.querySelector('#edit-product-name').focus();
 }
 
 function closeProductEditor() {
@@ -568,7 +574,7 @@ function resetInventoryAdd() {
 
 function openInventoryAdd() {
   resetInventoryAdd(); document.querySelector('#inventory-add-dialog').showModal();
-  document.querySelector('#inventory-search').focus(); searchInventoryCandidates('');
+  searchInventoryCandidates('');
 }
 
 function closeInventoryAdd() { const dialog = document.querySelector('#inventory-add-dialog'); if (dialog.open) dialog.close(); resetInventoryAdd(); }
@@ -623,7 +629,7 @@ function openInventoryEditor(item) {
   configureQuantityInput(document.querySelector('#edit-inventory-quantity'), item.unit, true);
   updateConversion(document.querySelector('#edit-inventory-quantity'), item.unit,
     document.querySelector('#edit-inventory-conversion'));
-  document.querySelector('#edit-inventory-dialog').showModal(); document.querySelector('#edit-inventory-quantity').focus();
+  document.querySelector('#edit-inventory-dialog').showModal();
 }
 
 function closeInventoryEditor() { const dialog = document.querySelector('#edit-inventory-dialog'); if (dialog.open) dialog.close(); showMessage(document.querySelector('#edit-inventory-error'), ''); }
@@ -749,14 +755,24 @@ async function loadShoppingList() {
   finally { loadingElement.hidden = true; }
 }
 
-async function purchaseShoppingItem(item) {
+const shoppingPurchasesInFlight = new Set();
+async function purchaseShoppingItem(item, quantity = undefined) {
+  if (shoppingPurchasesInFlight.has(item.id)) return false;
+  shoppingPurchasesInFlight.add(item.id);
   try {
-    await jsonRequest(`${SHOPPING_API}/items/${item.id}/purchase`, { method: 'POST' });
+    const options = { method: 'POST' };
+    if (quantity !== undefined) { options.headers = { 'Content-Type': 'application/json' }; options.body = JSON.stringify({ quantity }); }
+    await jsonRequest(`${SHOPPING_API}/items/${item.id}/purchase`, options);
     await loadShoppingList();
     showToast(`${item.product.name} er tilføjet til lageret`, 'success', {
       label: 'Fortryd', run: () => undoShoppingItem(item)
     });
-  } catch (error) { showToast(`Varen kunne ikke markeres som købt. ${error.message}`, 'error'); }
+    return true;
+  } catch (error) {
+    if (quantity !== undefined) throw error;
+    showToast(`Varen kunne ikke markeres som købt. ${error.message}`, 'error');
+    return false;
+  } finally { shoppingPurchasesInFlight.delete(item.id); }
 }
 
 async function undoShoppingItem(item) {
@@ -797,7 +813,7 @@ function resetShoppingAdd() {
   showMessage(document.querySelector('#shopping-add-error'), '');
 }
 
-function openShoppingAdd() { resetShoppingAdd(); document.querySelector('#shopping-add-dialog').showModal(); document.querySelector('#shopping-search').focus(); searchShoppingCandidates(''); }
+function openShoppingAdd() { resetShoppingAdd(); document.querySelector('#shopping-add-dialog').showModal(); searchShoppingCandidates(''); }
 function closeShoppingAdd() { const dialog = document.querySelector('#shopping-add-dialog'); if (dialog.open) dialog.close(); resetShoppingAdd(); }
 
 function selectShoppingCandidate(candidate) {
@@ -827,31 +843,70 @@ async function submitShoppingCandidate(quantity) {
   catch (error) { showMessage(document.querySelector('#shopping-add-error'), error.message); }
 }
 
+let shoppingEditorItem = null;
+let shoppingEditorBusy = false;
+function setShoppingEditorBusy(busy) {
+  shoppingEditorBusy = busy;
+  const form = document.querySelector('#edit-shopping-form');
+  form.setAttribute('aria-busy', String(busy));
+  form.querySelectorAll('button, input').forEach(control => { control.disabled = busy; });
+  document.querySelector('#purchase-edit-shopping').textContent = busy ? 'Vent…' : 'Købt';
+}
+function shoppingEditorQuantity() {
+  return shoppingEditorItem.product.inventoryTrackingMode === 'PRESENCE'
+    ? null : numericValue(document.querySelector('#edit-shopping-quantity'));
+}
+function changeShoppingEditorQuantity(direction) {
+  if (shoppingEditorBusy || !shoppingEditorItem || shoppingEditorItem.product.inventoryTrackingMode === 'PRESENCE') return;
+  const input = document.querySelector('#edit-shopping-quantity');
+  const increment = { PIECE: 1, GRAM: 100, MILLILITER: 100 }[input.dataset.unit];
+  const next = numericValue(input) + direction * increment;
+  if (!Number.isFinite(next) || next <= 0) return;
+  input.value = next;
+  updateConversion(input, input.dataset.unit, document.querySelector('#edit-shopping-conversion'));
+}
 function openShoppingEditor(item) {
+  if (shoppingEditorBusy) return;
+  shoppingEditorItem = item;
+  setShoppingEditorBusy(false);
+  showMessage(document.querySelector('#edit-shopping-error'), '');
   document.querySelector('#edit-shopping-id').value = item.id; document.querySelector('#edit-shopping-name').textContent = item.product.name;
-  document.querySelector('#delete-shopping-confirmation').hidden = true;
-  document.querySelector('#request-delete-shopping-item').hidden = false;
   const presence = item.product.inventoryTrackingMode === 'PRESENCE';
   document.querySelector('#edit-shopping-quantity-controls').hidden = presence;
   document.querySelector('#edit-shopping-presence').hidden = !presence;
-  document.querySelector('#edit-shopping-form').querySelector('button[type="submit"]').hidden = presence;
   const input = document.querySelector('#edit-shopping-quantity'); input.required = !presence;
   input.value = item.quantity ?? ''; configureQuantityInput(input, item.unit);
   document.querySelector('#edit-shopping-unit').textContent = displayUnit(item.unit); updateConversion(input, item.unit, document.querySelector('#edit-shopping-conversion'));
-  document.querySelector('#edit-shopping-dialog').showModal(); input.focus();
+  document.querySelector('#edit-shopping-dialog').showModal();
 }
-function closeShoppingEditor() { const dialog = document.querySelector('#edit-shopping-dialog'); if (dialog.open) dialog.close(); showMessage(document.querySelector('#edit-shopping-error'), ''); }
+function closeShoppingEditor(force = false) { if (shoppingEditorBusy && force !== true) return; const dialog = document.querySelector('#edit-shopping-dialog'); if (dialog.open) dialog.close(); showMessage(document.querySelector('#edit-shopping-error'), ''); }
 
 async function saveShoppingItem(event) {
   event.preventDefault(); const id = document.querySelector('#edit-shopping-id').value;
-  try { await jsonRequest(`${SHOPPING_API}/items/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ quantity: numericValue(document.querySelector('#edit-shopping-quantity')) }) }); closeShoppingEditor(); await loadShoppingList(); showToast('Varen er gemt'); }
+  if (shoppingEditorBusy || !document.querySelector('#edit-shopping-form').reportValidity()) return;
+  const quantity = shoppingEditorQuantity();
+  setShoppingEditorBusy(true);
+  try { await jsonRequest(`${SHOPPING_API}/items/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ quantity }) }); closeShoppingEditor(true); await loadShoppingList(); showToast('Varen er gemt'); }
   catch (error) { showMessage(document.querySelector('#edit-shopping-error'), error.message); }
+  finally { setShoppingEditorBusy(false); }
+}
+
+async function purchaseEditedShoppingItem() {
+  if (shoppingEditorBusy || !document.querySelector('#edit-shopping-form').reportValidity()) return;
+  const quantity = shoppingEditorQuantity();
+  setShoppingEditorBusy(true);
+  try { if (await purchaseShoppingItem(shoppingEditorItem, quantity)) closeShoppingEditor(true); }
+  catch (error) { showMessage(document.querySelector('#edit-shopping-error'), error.message); }
+  finally { setShoppingEditorBusy(false); }
 }
 
 async function deleteShoppingItem() {
+  if (shoppingEditorBusy) return;
   const id = document.querySelector('#edit-shopping-id').value;
-  try { await jsonRequest(`${SHOPPING_API}/items/${id}`, { method: 'DELETE' }); closeShoppingEditor(); await loadShoppingList(); showToast('Varen er fjernet fra indkøbslisten'); }
+  setShoppingEditorBusy(true);
+  try { await jsonRequest(`${SHOPPING_API}/items/${id}`, { method: 'DELETE' }); closeShoppingEditor(true); await loadShoppingList(); showToast('Varen er fjernet fra indkøbslisten'); }
   catch (error) { showMessage(document.querySelector('#edit-shopping-error'), error.message); }
+  finally { setShoppingEditorBusy(false); }
 }
 
 const recipeUnitLabels = { GRAM:'g', MILLILITER:'ml', PIECE:'stk', TEASPOON:'tsk', TABLESPOON:'spsk', DECILITER:'dl', GRINDER_TURN:'omgange' };
@@ -953,7 +1008,7 @@ function openRecipeEditor(recipe = null) {
   recipePreparationSteps=(recipe?.preparationSteps||[]).map(value=>({...value}));recipeEquipmentRequirements=(recipe?.equipmentRequirements||[]).map(value=>({...value}));
   recipePreparedComponents=(recipe?.preparedComponents||[]).map(value=>({...value,ingredients:(value.ingredients||[]).map(a=>({...a}))}));
   resetIngredientPicker(); renderRecipeEditor(); showMessage(document.querySelector('#recipe-error'), '');
-  document.querySelector('#recipe-editor-dialog').showModal(); document.querySelector('#recipe-name').focus();
+  document.querySelector('#recipe-editor-dialog').showModal();
 }
 
 function closeRecipeEditor() { const dialog = document.querySelector('#recipe-editor-dialog'); if (dialog.open) dialog.close(); resetIngredientPicker(); }
@@ -1255,11 +1310,13 @@ document.querySelector('#shopping-amount-form').addEventListener('submit', addSh
 document.querySelector('#shopping-add-quantity').addEventListener('input', event =>
   updateConversion(event.target, event.target.dataset.unit, document.querySelector('#shopping-add-conversion')));
 document.querySelector('#edit-shopping-form').addEventListener('submit', saveShoppingItem);
+document.querySelector('#purchase-edit-shopping').addEventListener('click', purchaseEditedShoppingItem);
+document.querySelector('#edit-shopping-minus').addEventListener('click', () => changeShoppingEditorQuantity(-1));
+document.querySelector('#edit-shopping-plus').addEventListener('click', () => changeShoppingEditorQuantity(1));
+document.querySelector('#edit-shopping-dialog').addEventListener('cancel', event => { event.preventDefault(); closeShoppingEditor(); });
 document.querySelector('#edit-shopping-quantity').addEventListener('input', event =>
   updateConversion(event.target, event.target.dataset.unit, document.querySelector('#edit-shopping-conversion')));
-document.querySelector('#request-delete-shopping-item').addEventListener('click', () => { document.querySelector('#request-delete-shopping-item').hidden = true; document.querySelector('#delete-shopping-confirmation').hidden = false; });
-document.querySelector('#cancel-delete-shopping-item').addEventListener('click', () => { document.querySelector('#request-delete-shopping-item').hidden = false; document.querySelector('#delete-shopping-confirmation').hidden = true; });
-document.querySelector('#delete-shopping-item').addEventListener('click', deleteShoppingItem);
+document.querySelector('#request-delete-shopping-item').addEventListener('click', deleteShoppingItem);
 document.querySelector('#close-edit-shopping').addEventListener('click', closeShoppingEditor);
 document.querySelector('#cancel-edit-shopping').addEventListener('click', closeShoppingEditor);
 document.querySelector('#clear-purchased').addEventListener('click', async () => {

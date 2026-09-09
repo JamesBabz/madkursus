@@ -416,6 +416,11 @@ body:has(dialog[open]) { overflow: hidden; }
 .edit-dialog :is(input, select, textarea, button) { scroll-margin-block: 4.75rem calc(5rem + env(safe-area-inset-bottom)); }
 .dialog-actions { gap: var(--space-2); }
 .dialog-actions > button { margin-top: 0; }
+.shopping-quantity-stepper { display: grid; grid-template-columns: 3rem minmax(0, 1fr) 3rem; align-items: center; gap: var(--space-2); }
+.shopping-quantity-stepper > button { min-height: 3rem; padding: .5rem; margin: 0; font-size: 1.5rem; }
+.shopping-quantity-stepper input { min-width: 0; }
+.shopping-edit-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.shopping-edit-actions > button { min-height: 3rem; }
 .inline-confirmation { padding: var(--space-4); background: #fff5f5; border-color: #efd0d0; }
 .inline-confirmation h3 { margin: 0 0 var(--space-2); color: #792b2b; }
 .inline-confirmation p { color: #6e4d4d; }

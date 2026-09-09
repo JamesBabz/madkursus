@@ -527,12 +527,19 @@ paths:
     post:
       tags: [shopping-list]
       operationId: purchaseShoppingListItem
+      requestBody:
+        required: false
+        description: Optional edited quantity, purchased atomically. Omit quantity to use the stored value; PRESENCE items have no quantity.
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ShoppingListQuantity'}
       responses:
         '200':
           description: Item purchased and Inventory updated
           content:
             application/json:
               schema: {$ref: '#/components/schemas/ShoppingListItem'}
+        '400': {$ref: '#/components/responses/badRequest'}
         '404': {$ref: '#/components/responses/notFound'}
   /v1/shopping-list/items/{id}/undo-purchase:
     parameters:

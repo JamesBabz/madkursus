@@ -84,6 +84,63 @@ class ShoppingListServiceTest {
         assertThat(service.purchase(id)).isSameAs(item); verifyNoInteractions(inventoryService); verify(port, never()).save(any());
     }
 
+    @Test void editedQuantityCanBeSavedWithoutPurchasing() {
+        UUID user = UUID.randomUUID(), id = UUID.randomUUID();
+        owned(item(id, user, product(user, "Æg", Unit.PIECE), "6", false));
+        when(port.save(any())).thenAnswer(i -> i.getArgument(0));
+        ShoppingListItem result = service.update(id, BigDecimal.TEN);
+        assertThat(result.quantity()).isEqualByComparingTo("10");
+        assertThat(result.purchased()).isFalse();
+        verifyNoInteractions(inventoryService);
+    }
+
+    @Test void editedPurchaseTransfersTenAndUndoReversesTenAndRetryDoesNotAddAgain() {
+        UUID user = UUID.randomUUID(), id = UUID.randomUUID();
+        Product eggs = product(user, "Æg", Unit.PIECE);
+        owned(item(id, user, eggs, "6", false));
+        when(port.save(any())).thenAnswer(i -> i.getArgument(0));
+        ShoppingListItem result = service.purchase(id, BigDecimal.TEN);
+        assertThat(result.quantity()).isEqualByComparingTo("10");
+        assertThat(result.purchased()).isTrue();
+        assertThat(result.purchasedAt()).isNotNull();
+        verify(inventoryService).add(eggs.id(), BigDecimal.TEN);
+        verify(port).save(result);
+        owned(result);
+        assertThat(service.purchase(id, new BigDecimal("12"))).isSameAs(result);
+        verify(inventoryService, times(1)).add(any(), any());
+        service.undoPurchase(id);
+        verify(inventoryService).removePurchasedQuantity(eggs.id(), BigDecimal.TEN);
+    }
+
+    @Test void invalidEditedPurchaseDoesNotMutateShoppingOrInventory() {
+        UUID user = UUID.randomUUID(), id = UUID.randomUUID();
+        owned(item(id, user, product(user, "Æg", Unit.PIECE), "6", false));
+        for (String quantity : new String[]{"0", "-1", "0.3"}) {
+            assertThatThrownBy(() -> service.purchase(id, new BigDecimal(quantity)))
+                    .isInstanceOf(InvalidInputException.class);
+        }
+        verifyNoInteractions(inventoryService);
+        verify(port, never()).save(any());
+    }
+
+    @Test void failedInventoryTransferDoesNotSaveEditedShoppingQuantity() {
+        UUID user = UUID.randomUUID(), id = UUID.randomUUID();
+        Product eggs = product(user, "Æg", Unit.PIECE);
+        owned(item(id, user, eggs, "6", false));
+        doThrow(new ConflictException("Inventory unavailable")).when(inventoryService).add(eggs.id(), BigDecimal.TEN);
+        assertThatThrownBy(() -> service.purchase(id, BigDecimal.TEN)).isInstanceOf(ConflictException.class);
+        verify(port, never()).save(any());
+    }
+
+    @Test void editedPurchaseKeepsSupportedHalfPieces() {
+        UUID user = UUID.randomUUID(), id = UUID.randomUUID();
+        Product eggs = product(user, "Æg", Unit.PIECE);
+        owned(item(id, user, eggs, "6", false));
+        when(port.save(any())).thenAnswer(i -> i.getArgument(0));
+        assertThat(service.purchase(id, new BigDecimal("6.5")).quantity()).isEqualByComparingTo("6.5");
+        verify(inventoryService).add(eggs.id(), new BigDecimal("6.5"));
+    }
+
     @Test void undoReversesExactInventoryQuantity() {
         UUID user = UUID.randomUUID(), id = UUID.randomUUID(); Product product = product(user, "Smør", Unit.GRAM);
         ShoppingListItem item = item(id, user, product, "250", true); owned(item); when(port.save(any())).thenAnswer(i -> i.getArgument(0));

@@ -27,7 +27,7 @@ public class ShoppingListApiDelegateImpl implements ShoppingListApiDelegate {
         return ResponseEntity.created(URI.create("/v1/shopping-list/items/" + item.getId())).body(item);
     }
     public ResponseEntity<ShoppingListItemDTO> updateShoppingListItem(UUID id, ShoppingListQuantityDTO request) { return ResponseEntity.ok(mapper.toDto(service.update(id, request.getQuantity()))); }
-    public ResponseEntity<ShoppingListItemDTO> purchaseShoppingListItem(UUID id) { return ResponseEntity.ok(mapper.toDto(service.purchase(id))); }
+    public ResponseEntity<ShoppingListItemDTO> purchaseShoppingListItem(UUID id, ShoppingListQuantityDTO request) { return ResponseEntity.ok(mapper.toDto(service.purchase(id, request == null ? null : request.getQuantity()))); }
     public ResponseEntity<ShoppingListItemDTO> undoShoppingListItemPurchase(UUID id) { return ResponseEntity.ok(mapper.toDto(service.undoPurchase(id))); }
     public ResponseEntity<Void> deleteShoppingListItem(UUID id) { service.delete(id); return ResponseEntity.noContent().build(); }
     public ResponseEntity<Void> clearPurchasedShoppingListItems() { service.clearPurchased(); return ResponseEntity.noContent().build(); }

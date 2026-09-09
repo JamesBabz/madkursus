@@ -76,8 +76,17 @@ public class ShoppingListService {
 
     @Transactional
     public ShoppingListItem purchase(UUID id) {
+        return purchase(id, null);
+    }
+
+    @Transactional
+    public ShoppingListItem purchase(UUID id, BigDecimal quantity) {
         ShoppingListItem item = ownedForUpdate(id);
         if (item.purchased()) return item;
+        if (quantity != null) {
+            requireValidQuantity(item.product(), quantity);
+            item = new ShoppingListItem(item.id(), item.userId(), item.product(), quantity, false, null);
+        }
         Boolean wasPresent = null;
         if (item.product().inventoryTrackingMode() == InventoryTrackingMode.PRESENCE) {
             wasPresent = !inventoryService.markAvailable(item.product().id());

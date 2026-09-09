@@ -367,13 +367,11 @@
       <input id="edit-shopping-id" type="hidden">
       <h3 id="edit-shopping-name"></h3>
       <div id="edit-shopping-quantity-controls"><label for="edit-shopping-quantity">Mængde</label>
-      <div class="quantity-field"><input id="edit-shopping-quantity" type="number" inputmode="numeric" min="1" step="1" required><span id="edit-shopping-unit"></span></div>
+      <div class="shopping-quantity-stepper"><button class="secondary-button" id="edit-shopping-minus" type="button" aria-label="Mindsk mængde">−</button><div class="quantity-field"><input id="edit-shopping-quantity" type="number" inputmode="numeric" min="1" step="1" required><span id="edit-shopping-unit"></span></div><button class="secondary-button" id="edit-shopping-plus" type="button" aria-label="Øg mængde">+</button></div>
       <p class="quantity-conversion" id="edit-shopping-conversion" aria-live="polite"></p></div>
       <p id="edit-shopping-presence" class="presence-label" hidden>Køb varen</p>
       <div class="notice error" id="edit-shopping-error" role="alert" hidden></div>
-      <button class="danger-button" id="request-delete-shopping-item" type="button">Fjern fra listen</button>
-      <section class="inline-confirmation" id="delete-shopping-confirmation" hidden><h3>Fjern vare fra indkøbslisten?</h3><p>Varen fjernes fra listen uden at ændre dit lager.</p><div class="dialog-actions"><button class="secondary-button" id="cancel-delete-shopping-item" type="button">Annuller</button><button class="danger-button" id="delete-shopping-item" type="button">Fjern vare</button></div></section>
-      <div class="dialog-actions"><button class="secondary-button" id="cancel-edit-shopping" type="button">Annuller</button><button class="primary-button" type="submit">Gem</button></div>
+      <div class="dialog-actions shopping-edit-actions"><button class="secondary-button" id="cancel-edit-shopping" type="button">Annuller</button><button class="danger-button" id="request-delete-shopping-item" type="button">Fjern</button><button class="secondary-button" id="save-shopping-item" type="submit">Gem</button><button class="primary-button" id="purchase-edit-shopping" type="button">Købt</button></div>
     </form>
   </dialog>
 
