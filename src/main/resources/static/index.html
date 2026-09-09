@@ -8,7 +8,7 @@
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/icons/icon.svg">
-  <link rel="stylesheet" href="/css/app.css?v=48">
+  <link rel="stylesheet" href="/css/app.css?v=50">
   <title>Madkursus</title>
 </head>
 <body>
@@ -215,10 +215,21 @@
           <button id="more-ai" type="button"><span class="nav-icon" data-icon="chat"></span><span><strong>Madhjælp</strong><small>Idéer til aftensmad med det, du har hjemme</small></span><span aria-hidden="true">›</span></button>
         <button id="more-products" type="button"><span class="nav-icon" data-icon="products"></span><span><strong>Produkter</strong><small>Administrer produkter og standardenheder</small></span><span aria-hidden="true">›</span></button>
         <button id="more-kitchen" type="button"><span class="nav-icon" data-icon="kitchen"></span><span><strong>Mit køkken</strong><small>Udstyr, kapacitet og varmeindstillinger</small></span><span aria-hidden="true">›</span></button>
+        <button id="more-recipe-import" type="button" hidden><span class="nav-icon" data-icon="recipe"></span><span><strong>Importér opskrift</strong><small>Valider en kladde og gem lokale kildefiler</small></span><span aria-hidden="true">›</span></button>
         <button id="more-nutrition" type="button" hidden><span class="nav-icon" data-icon="products"></span><span><strong>Fødevaredata</strong><small>Vedligehold kulhydratdata og kilder</small></span><span aria-hidden="true">›</span></button>
         <button id="more-logout" class="danger-row" type="button"><span class="nav-icon" data-icon="logout"></span><span><strong>Log ud</strong><small>Afslut din session på denne enhed</small></span><span aria-hidden="true">›</span></button>
       </div>
     </section>
+    <section id="recipe-import-view" aria-labelledby="recipe-import-title" hidden>
+      <div class="section-heading"><div><p class="eyebrow">Udviklerværktøj</p><h2 id="recipe-import-title">Importér opskrift</h2></div><button id="close-recipe-import" type="button" class="text-button">Tilbage til Mere</button></div>
+      <p>Indsæt din RecipeTemplateDraft fra madlavningschatten. Import gemmer kun lokale kildefiler; opskriften vises efter build og genstart.</p>
+      <label for="recipe-import-json">Opskriftens JSON</label>
+      <textarea id="recipe-import-json" rows="18" maxlength="500000" spellcheck="false" placeholder="Indsæt RecipeTemplateDraft JSON her"></textarea>
+      <div class="recipe-import-actions"><button id="recipe-import-validate" type="button" class="primary-button">Valider</button><button id="recipe-import-format" type="button" class="secondary-button">Formatér JSON</button><button id="recipe-import-clear" type="button" class="text-button">Ryd</button></div>
+      <div id="recipe-import-result" role="status" aria-live="polite"></div>
+      <button id="recipe-import-submit" type="button" class="primary-button" hidden>Importér</button>
+    </section>
+
     <section id="nutrition-admin-view" aria-labelledby="nutrition-admin-title" hidden>
       <div class="page-heading nutrition-heading"><div><p class="eyebrow">Administration</p><h2 id="nutrition-admin-title">Fødevaredata</h2><p class="page-subtitle">Central vedligeholdelse af ProductTemplate-kulhydratdata</p></div><button class="secondary-button compact-button" id="import-dtu-catalog" type="button">Importér DTU 5.5</button></div>
       <div class="nutrition-summary" aria-label="DTU-arbejdskøer"><button type="button" data-nutrition-queue="HAS_DATA"><strong id="nutrition-count-data">0</strong><span>Har data / mapped</span></button><button type="button" data-nutrition-queue="AUTO"><strong id="nutrition-count-auto">0</strong><span>Sikre kulhydratmatches</span></button><button type="button" data-nutrition-queue="READY"><strong id="nutrition-count-ready">0</strong><span>Klar til godkendelse</span></button><button type="button" data-nutrition-queue="REVIEW_REQUIRED"><strong id="nutrition-count-review">0</strong><span>Kræver gennemgang</span></button><button type="button" data-nutrition-queue="NO_MATCH"><strong id="nutrition-count-none">0</strong><span>Intet match</span></button></div>
@@ -468,8 +479,9 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden><span id="toast-message"></span><button id="toast-action" type="button" hidden></button></div>
 
-  <script src="/js/dialog-viewport.js?v=48" defer></script>
-  <script src="/js/ai-chat.js?v=48" defer></script>
-  <script src="/js/app.js?v=48" defer></script>
+  <script src="/js/dialog-viewport.js?v=50" defer></script>
+  <script src="/js/ai-chat.js?v=50" defer></script>
+  <script src="/js/recipe-import.js?v=50" defer></script>
+  <script src="/js/app.js?v=50" defer></script>
 </body>
 </html>

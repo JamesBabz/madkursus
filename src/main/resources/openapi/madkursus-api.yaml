@@ -18,6 +18,41 @@ tags:
   - name: cooking-process
   - name: nutrition-admin
 paths:
+  /v1/admin/recipe-template-import:
+    get:
+      tags: [recipe-template-import]
+      operationId: getRecipeTemplateImportStatus
+      responses:
+        '200': {description: Developer import availability, content: {application/json: {schema: {$ref: '#/components/schemas/RecipeTemplateImportStatus'}}}}
+        '403': {$ref: '#/components/responses/forbidden'}
+  /v1/admin/recipe-template-import/validate:
+    post:
+      tags: [recipe-template-import]
+      operationId: validateRecipeTemplateImport
+      description: Admin-only, explicitly enabled local source authoring. Body is raw RecipeTemplateDraft JSON text, not a JSON-encoded string. Never executes migrations.
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema: {type: string, minLength: 1, maxLength: 500000}
+      responses:
+        '200': {description: Validation or local import result, content: {application/json: {schema: {$ref: '#/components/schemas/RecipeTemplateImportResult'}}}}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '403': {$ref: '#/components/responses/forbidden'}
+  /v1/admin/recipe-template-import/import:
+    post:
+      tags: [recipe-template-import]
+      operationId: importRecipeTemplateDraft
+      description: Admin-only, explicitly enabled local source authoring. Body is raw RecipeTemplateDraft JSON text, not a JSON-encoded string. Never executes migrations.
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema: {type: string, minLength: 1, maxLength: 500000}
+      responses:
+        '200': {description: Validation or local import result, content: {application/json: {schema: {$ref: '#/components/schemas/RecipeTemplateImportResult'}}}}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '403': {$ref: '#/components/responses/forbidden'}
   /v1/ai/chat/model:
     get:
       tags: [ai]
@@ -783,6 +818,36 @@ components:
         application/json:
           schema: {$ref: '#/components/schemas/ErrorMessage'}
   schemas:
+    RecipeTemplateImportStatus:
+      type: object
+      properties:
+        enabled: {type: boolean}
+    RecipeTemplateImportError:
+      type: object
+      required: [path, message]
+      properties:
+        path: {type: string, description: 'JSON path for semantic errors; $ for document errors'}
+        message: {type: string}
+        line: {type: integer, description: 'Parser line for malformed JSON only'}
+        column: {type: integer, description: 'Parser column for malformed JSON only'}
+    RecipeTemplateImportResult:
+      type: object
+      properties:
+        valid: {type: boolean}
+        imported: {type: boolean}
+        key: {type: string}
+        name: {type: string}
+        action: {type: string, enum: [ADD, UPDATE]}
+        ingredients: {type: integer}
+        preparationSteps: {type: integer}
+        preparedComponents: {type: integer}
+        cookingProcesses: {type: integer}
+        textSteps: {type: integer}
+        processSteps: {type: integer}
+        warnings: {type: array, items: {type: string}}
+        errors: {type: array, items: {$ref: '#/components/schemas/RecipeTemplateImportError'}}
+        canonicalFile: {type: string}
+        migrationFile: {type: string}
     AiChatModel:
       type: object
       required: [model]

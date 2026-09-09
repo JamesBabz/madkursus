@@ -61,6 +61,47 @@ class RecipeTemplateDraftToolTest {
     }
 
     private RecipeTemplateDraftTool tool(){try{return new RecipeTemplateDraftTool(project);}catch(Exception e){throw new RuntimeException(e);}}
+    @Test void optionalStructuredReferenceAcceptsExplicitNullLikeOmission()throws Exception {
+        var value=referenceDraft("HVEDEMEL","TABLESPOON");
+        var part=obj(value.path("steps").get(0).path("instruction").path("parts").get(0));
+        String omittedSql=tool().prepare(value.toString()).sql();
+        part.putNull("quantity");part.putNull("unit");part.putNull("scaledNumber");
+        var prepared=tool().prepare(value.toString());
+        assertThat(prepared.sql()).isEqualTo(omittedSql);
+        part.remove("unit");assertThat(tool().prepare(value.toString()).sql()).isEqualTo(omittedSql);
+    }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.CsvSource({"AEG,PIECE,0.5","HVEDEMEL,TABLESPOON,0.5","HVEDEMEL,TEASPOON,0.25","HVEDEMEL,TEASPOON,0.375"})
+    void fractionalRecipeUnitsAreValidForTotalsAndPartialReferences(String product,String unit,String amount)throws Exception {
+        var value=referenceDraft(product,unit);
+        var part=obj(value.path("steps").get(0).path("instruction").path("parts").get(0));
+        part.put("quantity",new java.math.BigDecimal(amount));part.put("unit",unit);
+        assertThat(tool().prepare(value.toString()).sql()).contains("recipeIngredientId",unit);
+        obj(value.path("ingredients").get(0)).put("quantity",new java.math.BigDecimal(amount));
+        assertThat(tool().prepare(value.toString()).validation().ingredients()).isEqualTo(1);
+    }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings={"0","-0.5"})
+    void nonPositiveOptionalQuantitiesStillFail(String amount) {
+        var value=referenceDraft("HVEDEMEL","TABLESPOON");
+        var part=obj(value.path("steps").get(0).path("instruction").path("parts").get(0));
+        part.put("quantity",new java.math.BigDecimal(amount));part.put("unit","TABLESPOON");
+        write(value);assertInvalid("quantity must be greater than zero");
+    }
+    @Test void optionalReferenceDoesNotMakeRequiredIngredientQuantityOptionalOrAllowIncompleteOverrides()throws Exception {
+        var value=referenceDraft("HVEDEMEL","TABLESPOON");
+        var part=obj(value.path("steps").get(0).path("instruction").path("parts").get(0));
+        part.putNull("quantity");part.put("unit","TEASPOON");
+        assertThatThrownBy(()->tool().prepare(value.toString())).hasMessageContaining("both quantity and unit");
+        part.remove("unit");obj(value.path("ingredients").get(0)).putNull("quantity");
+        assertThatThrownBy(()->tool().prepare(value.toString())).hasMessageContaining("quantity must be greater than zero");
+    }
+    private ObjectNode referenceDraft(String product,String unit) {
+        ObjectNode root=JSON.createObjectNode().put("key","OPTIONAL_REFERENCE_TEST").put("name","Reference test");
+        root.putArray("ingredients").addObject().put("key","FOOD").put("productTemplate",product).put("quantity",2).put("unit",unit);
+        root.putArray("steps").addObject().put("type","TEXT").putObject("instruction").putArray("parts").addObject().put("ingredient","FOOD");
+        return root;
+    }
     private ObjectNode read(){try{return (ObjectNode)JSON.readTree(draft.toFile());}catch(Exception e){throw new RuntimeException(e);}}
     private ObjectNode canonicalRecipe(String key){try{for(JsonNode value:JSON.readTree(canonical.toFile()).path("recipes"))if(key.equals(value.path("key").asText()))return (ObjectNode)value.deepCopy();throw new AssertionError("Missing "+key);}catch(Exception e){throw new RuntimeException(e);}}
     private String canonicalProductId(String key){try{for(JsonNode value:JSON.readTree(project.resolve("src/main/resources/seed/product-templates.json").toFile()).path("products"))if(key.equals(value.path("key").asText()))return value.path("id").asText();throw new AssertionError("Missing "+key);}catch(Exception e){throw new RuntimeException(e);}}

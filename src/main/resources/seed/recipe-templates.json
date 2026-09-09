@@ -2087,6 +2087,230 @@
         "instruction" : "Sluk panden og servér karbonaderne med kartofler, gulerødder og brun pandesovs."
       } ],
       "id" : "bc01b52c-f60e-361b-9f13-ed11243413b6"
+    },
+    {
+      "key" : "CREMET_KYLLINGEPASTA_TOMAT",
+      "name" : "Cremet kyllingepasta i mild tomatsovs",
+      "description" : "Mild pastaret med kylling, rød peberfrugt og cremet tomatsovs. Pasta og sovs serveres separat.",
+      "ingredients" : [ {
+        "key" : "KYLLING",
+        "productTemplate" : "KYLLINGEBRYST",
+        "quantity" : 200,
+        "unit" : "GRAM"
+      }, {
+        "key" : "PENNE",
+        "productTemplate" : "PENNE",
+        "quantity" : 125,
+        "unit" : "GRAM"
+      }, {
+        "key" : "LOEG",
+        "productTemplate" : "LOEG",
+        "quantity" : 0.5,
+        "unit" : "PIECE"
+      }, {
+        "key" : "ROED_PEBERFRUGT",
+        "productTemplate" : "ROED_PEBERFRUGT",
+        "quantity" : 0.5,
+        "unit" : "PIECE"
+      }, {
+        "key" : "HAKKEDE_TOMATER",
+        "productTemplate" : "HAKKEDE_TOMATER",
+        "quantity" : 200,
+        "unit" : "GRAM"
+      }, {
+        "key" : "MADLAVNINGSFLOEDE",
+        "productTemplate" : "MADLAVNINGSFLOEDE",
+        "quantity" : 125,
+        "unit" : "MILLILITER"
+      }, {
+        "key" : "TOMATPURE",
+        "productTemplate" : "TOMATPURE",
+        "quantity" : 0.5,
+        "unit" : "TABLESPOON"
+      }, {
+        "key" : "RAPSOLIE",
+        "productTemplate" : "RAPSOLIE",
+        "quantity" : 0.5,
+        "unit" : "TABLESPOON"
+      }, {
+        "key" : "PAPRIKA",
+        "productTemplate" : "PAPRIKA",
+        "quantity" : 0.5,
+        "unit" : "TEASPOON"
+      }, {
+        "key" : "HVIDLOEGSPULVER",
+        "productTemplate" : "HVIDLOEGSPULVER",
+        "quantity" : 0.25,
+        "unit" : "TEASPOON"
+      }, {
+        "key" : "SALT",
+        "productTemplate" : "SALT",
+        "quantity" : 0.375,
+        "unit" : "TEASPOON"
+      }, {
+        "key" : "SORT_PEBER",
+        "productTemplate" : "SORT_PEBER",
+        "quantity" : 4,
+        "unit" : "GRINDER_TURN"
+      } ],
+      "preparation" : [ {
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Skær "
+          }, {
+            "ingredient" : "KYLLING"
+          }, {
+            "text" : " i tern på cirka 2 × 2 cm. Vask derefter hænder, kniv og skærebræt."
+          } ]
+        }
+      }, {
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Pil "
+          }, {
+            "ingredient" : "LOEG"
+          }, {
+            "text" : ", halvér det og skær det i små tern på cirka ½ cm."
+          } ]
+        }
+      }, {
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Skyl "
+          }, {
+            "ingredient" : "ROED_PEBERFRUGT"
+          }, {
+            "text" : ", fjern stilk, kerner og det hvide indeni, og skær den i stykker på cirka 1 × 1 cm."
+          } ]
+        }
+      } ],
+      "equipmentRequirements" : [ "STOVE", "POT", "PAN" ],
+      "steps" : [ {
+        "type" : "PROCESS",
+        "process" : "BOIL_PASTA",
+        "bindings" : {
+          "PASTA" : {
+            "ingredient" : "PENNE",
+            "quantity" : 125,
+            "unit" : "GRAM"
+          }
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Sæt den store pande på trin 7. Tilsæt "
+          }, {
+            "ingredient" : "RAPSOLIE"
+          }, {
+            "text" : " og varm olien i 1 minut."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Kom "
+          }, {
+            "ingredient" : "KYLLING"
+          }, {
+            "text" : " på panden og fordel kødet så godt som muligt i ét lag. Fordel "
+          }, {
+            "ingredient" : "SALT",
+            "quantity" : 0.125,
+            "unit" : "TEASPOON"
+          }, {
+            "text" : " og "
+          }, {
+            "ingredient" : "SORT_PEBER",
+            "quantity" : 2,
+            "unit" : "GRINDER_TURN"
+          }, {
+            "text" : " over kyllingen. Steg i 2 minutter uden at røre."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : "Vend kyllingen grundigt. Steg yderligere 2 minutter på trin 7, og vend rundt én gang efter 1 minut. Tag derefter kyllingen af panden og læg den på en ren tallerken."
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Behold panden på trin 7. Tilsæt "
+          }, {
+            "ingredient" : "LOEG"
+          }, {
+            "text" : " og steg i 2 minutter. Rør rundt cirka hvert 30. sekund."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Tilsæt "
+          }, {
+            "ingredient" : "ROED_PEBERFRUGT"
+          }, {
+            "text" : " og steg videre i 2 minutter på trin 7. Rør rundt cirka hvert 30. sekund."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Skru ned til trin 5. Tilsæt "
+          }, {
+            "ingredient" : "TOMATPURE"
+          }, {
+            "text" : ", "
+          }, {
+            "ingredient" : "PAPRIKA"
+          }, {
+            "text" : " og "
+          }, {
+            "ingredient" : "HVIDLOEGSPULVER"
+          }, {
+            "text" : ". Rør konstant i 30 sekunder."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Tilsæt "
+          }, {
+            "ingredient" : "HAKKEDE_TOMATER"
+          }, {
+            "text" : ", "
+          }, {
+            "ingredient" : "MADLAVNINGSFLOEDE"
+          }, {
+            "text" : ", de resterende "
+          }, {
+            "ingredient" : "SALT",
+            "quantity" : 0.25,
+            "unit" : "TEASPOON"
+          }, {
+            "text" : " og de resterende "
+          }, {
+            "ingredient" : "SORT_PEBER",
+            "quantity" : 2,
+            "unit" : "GRINDER_TURN"
+          }, {
+            "text" : ". Rør grundigt rundt i 30 sekunder."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : "Vent til sovsen småbobler. Lad den derefter småboble uden låg på trin 5 i 3 minutter. Rør rundt cirka hvert 30. sekund."
+      }, {
+        "type" : "TEXT",
+        "instruction" : "Kom kyllingen og saften fra tallerkenen tilbage i sovsen. Rør rundt og lad retten småboble på trin 5 i 3 minutter."
+      }, {
+        "type" : "TEXT",
+        "instruction" : "Sluk blusset. Server den kogte pasta separat med den cremede kyllinge-tomatsovs ovenpå eller ved siden af."
+      } ],
+      "id" : "73e2e208-a4ef-3517-94a1-ff7c87a79ede"
     }
   ]
 }

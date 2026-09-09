@@ -1,0 +1,72 @@
+{
+  "key": "IMPORT_QUANTITY_REGRESSION",
+  "name": "Import quantity regression",
+  "ingredients": [
+    {
+      "key": "PENNE",
+      "productTemplate": "PENNE",
+      "quantity": 100,
+      "unit": "GRAM"
+    },
+    {
+      "key": "EGG",
+      "productTemplate": "AEG",
+      "quantity": 0.5,
+      "unit": "PIECE"
+    },
+    {
+      "key": "OIL",
+      "productTemplate": "RAPSOLIE",
+      "quantity": 0.5,
+      "unit": "TABLESPOON"
+    },
+    {
+      "key": "SALT",
+      "productTemplate": "SALT",
+      "quantity": 0.375,
+      "unit": "TEASPOON"
+    },
+    {
+      "key": "FLOUR",
+      "productTemplate": "HVEDEMEL",
+      "quantity": 0.25,
+      "unit": "TEASPOON"
+    }
+  ],
+  "steps": [
+    {
+      "type": "PROCESS",
+      "process": "BOIL_PASTA",
+      "bindings": {
+        "PASTA": {
+          "ingredient": "PENNE",
+          "quantity": 100,
+          "unit": "GRAM"
+        }
+      }
+    },
+    {
+      "type": "TEXT",
+      "instruction": {
+        "parts": [
+          {
+            "ingredient": "EGG"
+          },
+          {
+            "ingredient": "OIL"
+          },
+          {
+            "ingredient": "SALT",
+            "quantity": 0.125,
+            "unit": "TEASPOON"
+          },
+          {
+            "ingredient": "FLOUR",
+            "quantity": null,
+            "unit": null
+          }
+        ]
+      }
+    }
+  ]
+}

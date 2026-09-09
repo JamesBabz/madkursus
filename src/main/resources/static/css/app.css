@@ -605,3 +605,14 @@ body:has(dialog[open]) .chat-launcher { visibility: hidden; }
   .chat-drawer .eyebrow, .chat-drawer .chat-model, .chat-drawer .field-help { display: none; }
   .chat-drawer .chat-input-row textarea { min-height: 2.75rem; height: 2.75rem; }
 }
+
+#recipe-import-json { width: 100%; box-sizing: border-box; resize: vertical; min-height: 16rem; font-family: ui-monospace, monospace; font-size: 16px; }
+.recipe-import-actions { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1rem 0; }
+#recipe-import-result { overflow-wrap: anywhere; margin: 1rem 0; }
+#recipe-import-result ul { padding-left: 1.3rem; }
+#recipe-import-view { padding-bottom: calc(6rem + env(safe-area-inset-bottom)); }
+
+.primary-nav .mobile-more.import-navigation { display: flex; }
+
+.recipe-import-error { margin-block: .75rem; padding: .75rem; border-left: 3px solid #b42318; overflow-wrap: anywhere; }
+.recipe-import-error p { margin: .35rem 0 0; }

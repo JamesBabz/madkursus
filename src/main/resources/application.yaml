@@ -31,6 +31,8 @@ server:
         max-age: 30d
 
 madkursus:
+  recipe-template-import:
+    enabled: ${RECIPE_TEMPLATE_IMPORT_ENABLED:true}
   ai:
     ollama:
       base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
@@ -45,13 +47,3 @@ logging:
     org.springframework.web.HttpLogging: OFF
     org.springframework.web.filter.CommonsRequestLoggingFilter: OFF
     org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor: INFO
-
-    dk:
-      jamesbabz:
-        madkursus:
-          service:
-            applications:
-              AiSuggestionValidator: DEBUG
-          outbound:
-            ollama:
-              OllamaChatAdapter: DEBUG
