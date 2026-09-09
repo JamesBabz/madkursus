@@ -133,7 +133,7 @@ public class ShoppingListService {
                 .orElseThrow(() -> new ResourceNotFoundException("Shopping list item", id));
     }
 
-    private void requireValidQuantity(Product product, BigDecimal quantity) {
+    void requireValidQuantity(Product product, BigDecimal quantity) {
         if (product.inventoryTrackingMode() == InventoryTrackingMode.PRESENCE) {
             if (quantity != null) throw new InvalidInputException("Presence-tracked shopping items have no quantity");
             return;

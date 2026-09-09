@@ -156,6 +156,7 @@
         <button class="add-button section-add-button" id="open-inventory-add" type="button"><span aria-hidden="true">+</span> Tilføj vare</button>
       </div>
       <p class="loading" id="inventory-loading" role="status">Henter lager…</p>
+      <button class="secondary-button text-list-action" id="copy-inventory" type="button" disabled>Kopiér lager</button>
       <div class="product-list" id="inventory-list" aria-live="polite"></div>
       <div class="empty-state" id="inventory-empty" hidden>
         <span class="empty-icon" data-icon="inventory"></span><h3>Dit lager er tomt</h3><p>Tilføj de varer, du har hjemme, så du kan holde styr på beholdningen.</p>
@@ -169,6 +170,7 @@
         <button class="add-button section-add-button" id="open-shopping-add" type="button"><span aria-hidden="true">+</span> Tilføj vare</button>
       </div>
       <p class="loading" id="shopping-loading" role="status">Henter indkøbsliste…</p>
+      <button class="secondary-button text-list-action" id="open-shopping-text" type="button">Indsæt liste</button>
       <div class="shopping-section" id="shopping-active-section">
         <div class="shopping-list" id="shopping-active-list" aria-live="polite"></div>
       </div>
@@ -358,6 +360,19 @@
       <p class="quantity-conversion" id="shopping-add-conversion" aria-live="polite"></p></div>
       <div class="notice error" id="shopping-add-error" role="alert" hidden></div>
       <div class="dialog-actions"><button class="secondary-button" id="back-shopping-search" type="button">Tilbage</button><button class="primary-button" type="submit">Tilføj</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="edit-dialog" id="shopping-text-dialog" aria-labelledby="shopping-text-title">
+    <form id="shopping-text-form">
+      <div class="section-heading"><h2 id="shopping-text-title">Indsæt liste</h2><button class="icon-button" id="close-shopping-text" type="button" aria-label="Luk">×</button></div>
+      <p>Én vare pr. linje. Mængder lægges til det, der allerede står på indkøbslisten.</p>
+      <label for="shopping-text-input">Indkøbsliste</label>
+      <textarea id="shopping-text-input" rows="9" maxlength="50000" required placeholder="Kyllingebryst: 400 g&#10;Æg 10 stk.&#10;Cola"></textarea>
+      <p class="help-text">Brug g, ml eller stk. Nye varer uden mængde tilføjes som varer, du skal have.</p>
+      <ul id="shopping-text-preview" aria-live="polite" hidden></ul>
+      <div class="notice error" id="shopping-text-error" role="alert" hidden></div>
+      <div class="dialog-actions"><button class="secondary-button" id="cancel-shopping-text" type="button">Annuller</button><button class="primary-button" id="preview-shopping-text" type="submit">Vis forslag</button><button class="primary-button" id="confirm-shopping-text" type="button" hidden>Tilføj til indkøb</button></div>
     </form>
   </dialog>
 

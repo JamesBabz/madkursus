@@ -26,13 +26,17 @@ public class ProductService {
     private final InventoryPort inventoryPort;
 
     public Product create(String name, ProductCategory category, Unit defaultUnit) {
+        return create(name, category, defaultUnit, InventoryTrackingMode.QUANTITY);
+    }
+
+    public Product create(String name, ProductCategory category, Unit defaultUnit, InventoryTrackingMode trackingMode) {
         UUID userId = currentUserProvider.currentUserId();
         String normalizedName = name.trim();
         if (productPort.existsByUserIdAndNormalizedName(userId, normalizedName)) {
             throw new DuplicateProductException(normalizedName);
         }
         return productPort.save(new Product(null, userId, null, normalizedName, category, defaultUnit,
-                InventoryTrackingMode.QUANTITY));
+                trackingMode));
     }
 
     public Product get(UUID id) {

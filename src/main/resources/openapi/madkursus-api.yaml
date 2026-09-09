@@ -521,6 +521,36 @@ paths:
         '204': {description: Item deleted}
         '404': {$ref: '#/components/responses/notFound'}
         '409': {$ref: '#/components/responses/conflict'}
+  /v1/shopping-list/import/preview:
+    post:
+      tags: [shopping-list-text]
+      operationId: previewShoppingListText
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema: {type: string, maxLength: 50000}
+      responses:
+        '200':
+          description: Validated lines; no data is changed
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ShoppingListTextResult'}
+  /v1/shopping-list/import:
+    post:
+      tags: [shopping-list-text]
+      operationId: importShoppingListText
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema: {type: string, maxLength: 50000}
+      responses:
+        '200':
+          description: Revalidated list, atomically added when valid
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ShoppingListTextResult'}
   /v1/shopping-list/items/{id}/purchase:
     parameters:
       - $ref: '#/components/parameters/id'
@@ -1154,6 +1184,25 @@ components:
       properties:
         productId: {type: string, format: uuid}
         quantity: {type: number, minimum: 0, exclusiveMinimum: true, multipleOf: 0.5, nullable: true, example: 500}
+    ShoppingListTextResult:
+      type: object
+      properties:
+        valid: {type: boolean}
+        imported: {type: boolean}
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShoppingListTextLine'
+    ShoppingListTextLine:
+      type: object
+      properties:
+        line: {type: integer}
+        text: {type: string}
+        name: {type: string, nullable: true}
+        quantity: {type: number, nullable: true}
+        unit: {$ref: '#/components/schemas/Unit'}
+        newProduct: {type: boolean}
+        error: {type: string, nullable: true}
     ShoppingListQuantity:
       type: object
       properties:

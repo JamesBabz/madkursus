@@ -513,18 +513,96 @@ function createInventoryCard(item) {
 
 function openInventoryReservations(item){document.querySelector('#inventory-reservation-title').textContent=item.product.name;const rows=(item.reservations||[]).map(detail=>{const row=document.createElement('article');row.className='reservation-detail-row';const name=document.createElement('strong');name.textContent=detail.recipeName;const amount=document.createElement('span');amount.textContent=detail.reservedQuantity==null?`${detail.portions} ${detail.portions===1?'portion':'portioner'}`:`${formatQuantity(detail.reservedQuantity)} ${displayUnit(detail.unit)}`;const plan=document.createElement('small');plan.textContent=detail.mealPlanName;row.append(name,amount,plan);return row;});document.querySelector('#inventory-reservation-list').replaceChildren(...rows);document.querySelector('#inventory-reservation-dialog').showModal();}
 
+let inventoryForCopy = [];
+function inventoryText(items) {
+  return items.filter(item => item.product.inventoryTrackingMode !== 'UNTRACKED').map(item => {
+    const name = item.product.name.replace(/\s+/g, ' ').trim();
+    const amount = item.product.inventoryTrackingMode === 'PRESENCE' ? 'har'
+      : `${formatQuantity(item.quantity)} ${item.unit === 'PIECE' ? 'stk.' : displayUnit(item.unit)}`;
+    return `- ${name}: ${amount}`;
+  }).join('\n');
+}
+async function copyInventory() {
+  try { await navigator.clipboard.writeText(inventoryText(inventoryForCopy)); showToast('Lager kopieret'); }
+  catch (error) { showToast('Lageret kunne ikke kopieres. Tillad adgang til udklipsholderen og prøv igen.', 'error'); }
+}
 async function loadInventory() {
   const loadingElement = document.querySelector('#inventory-loading');
   const empty = document.querySelector('#inventory-empty');
   loadingElement.hidden = false; empty.hidden = true;
+  document.querySelector('#copy-inventory').disabled = true;
   try {
     const items = await jsonRequest(INVENTORY_API);
+    inventoryForCopy = items;
+    document.querySelector('#copy-inventory').disabled = false;
     document.querySelector('#inventory-list').replaceChildren(...groupedProductRows(items, createInventoryCard));
     empty.hidden = items.length !== 0;
   } catch (error) {
     document.querySelector('#inventory-list').replaceChildren();
     showToast(`Lageret kunne ikke hentes. ${error.message}`, 'error');
   } finally { loadingElement.hidden = true; }
+}
+
+let shoppingTextBusy = false;
+let shoppingTextPreview = null;
+function invalidateShoppingText() {
+  shoppingTextPreview = null;
+  document.querySelector('#shopping-text-preview').hidden = true;
+  document.querySelector('#confirm-shopping-text').hidden = true;
+  document.querySelector('#preview-shopping-text').hidden = false;
+  showMessage(document.querySelector('#shopping-text-error'), '');
+}
+function openShoppingText() {
+  if (shoppingTextBusy) return;
+  document.querySelector('#shopping-text-form').reset(); invalidateShoppingText();
+  document.querySelector('#shopping-text-dialog').showModal();
+}
+function closeShoppingText(force = false) {
+  if (shoppingTextBusy && force !== true) return;
+  document.querySelector('#shopping-text-dialog').close(); invalidateShoppingText();
+}
+function renderShoppingTextResult(result) {
+  const host = document.querySelector('#shopping-text-preview');
+  host.replaceChildren(...result.items.map(item => {
+    const row = document.createElement('li');
+    row.textContent = item.error ? `Linje ${item.line}: ${item.text} — ${item.error}`
+      : `${item.name} — ${item.newProduct ? 'nyt produkt, ' : ''}${item.quantity == null ? 'tilføjes' : `+${formatQuantity(item.quantity)} ${item.unit === 'PIECE' ? 'stk.' : displayUnit(item.unit)}`}`;
+    return row;
+  }));
+  host.hidden = false;
+  document.querySelector('#confirm-shopping-text').hidden = !result.valid;
+  document.querySelector('#preview-shopping-text').hidden = result.valid;
+  if (!result.valid) showMessage(document.querySelector('#shopping-text-error'), 'Ret linjerne med fejl. Ingen varer er tilføjet.');
+}
+async function submitShoppingText(confirm = false) {
+  const form = document.querySelector('#shopping-text-form');
+  if (shoppingTextBusy || !form.reportValidity()) return;
+  const text = document.querySelector('#shopping-text-input').value;
+  if (confirm && shoppingTextPreview !== text) return;
+  shoppingTextBusy = true;
+  form.setAttribute('aria-busy', 'true');
+  form.querySelectorAll('button, textarea').forEach(control => { control.disabled = true; });
+  const button = document.querySelector(confirm ? '#confirm-shopping-text' : '#preview-shopping-text');
+  button.textContent = confirm ? 'Tilføjer…' : 'Kontrollerer…';
+  showMessage(document.querySelector('#shopping-text-error'), '');
+  try {
+    const result = await jsonRequest(`${SHOPPING_API}/import${confirm ? '' : '/preview'}`, {
+      method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: text
+    });
+    if (result.imported) {
+      closeShoppingText(true);
+      await Promise.all([loadShoppingList(), loadProducts()]); showToast('Listen er tilføjet til indkøb');
+    } else {
+      shoppingTextPreview = result.valid ? text : null;
+      renderShoppingTextResult(result);
+    }
+  } catch (error) { showMessage(document.querySelector('#shopping-text-error'), error.message); }
+  finally {
+    shoppingTextBusy = false; form.setAttribute('aria-busy', 'false');
+    form.querySelectorAll('button, textarea').forEach(control => { control.disabled = false; });
+    document.querySelector('#preview-shopping-text').textContent = 'Vis forslag';
+    document.querySelector('#confirm-shopping-text').textContent = 'Tilføj til indkøb';
+  }
 }
 
 function normalizeName(name) { return name.trim().toLocaleLowerCase('da-DK'); }
@@ -1310,6 +1388,14 @@ document.querySelector('#shopping-amount-form').addEventListener('submit', addSh
 document.querySelector('#shopping-add-quantity').addEventListener('input', event =>
   updateConversion(event.target, event.target.dataset.unit, document.querySelector('#shopping-add-conversion')));
 document.querySelector('#edit-shopping-form').addEventListener('submit', saveShoppingItem);
+document.querySelector('#copy-inventory').addEventListener('click', copyInventory);
+document.querySelector('#open-shopping-text').addEventListener('click', openShoppingText);
+document.querySelector('#close-shopping-text').addEventListener('click', closeShoppingText);
+document.querySelector('#cancel-shopping-text').addEventListener('click', closeShoppingText);
+document.querySelector('#shopping-text-dialog').addEventListener('cancel', event => { event.preventDefault(); closeShoppingText(); });
+document.querySelector('#shopping-text-input').addEventListener('input', invalidateShoppingText);
+document.querySelector('#shopping-text-form').addEventListener('submit', event => { event.preventDefault(); submitShoppingText(); });
+document.querySelector('#confirm-shopping-text').addEventListener('click', () => submitShoppingText(true));
 document.querySelector('#purchase-edit-shopping').addEventListener('click', purchaseEditedShoppingItem);
 document.querySelector('#edit-shopping-minus').addEventListener('click', () => changeShoppingEditorQuantity(-1));
 document.querySelector('#edit-shopping-plus').addEventListener('click', () => changeShoppingEditorQuantity(1));
