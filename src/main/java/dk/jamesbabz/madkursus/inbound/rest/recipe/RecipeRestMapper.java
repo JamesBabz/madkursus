@@ -38,10 +38,19 @@ public class RecipeRestMapper {
                 .toList();
         var preparation=recipe.preparationSteps().stream().map(value->new RecipePreparationStepDTO(value.instruction(),value.sortOrder()).id(value.id())).toList();
         return new RecipeDTO(recipe.id(), recipe.name(), ingredients, steps,preparation,recipe.equipmentOverview(),
-                recipe.createdAt().atOffset(ZoneOffset.UTC), recipe.updatedAt().atOffset(ZoneOffset.UTC),carbohydrates(recipe.carbohydrates()))
+                recipe.createdAt().atOffset(ZoneOffset.UTC), recipe.updatedAt().atOffset(ZoneOffset.UTC))
+                .carbohydrates(carbohydrates(recipe.carbohydrates()))
                 .description(recipe.description()).sourceTemplateId(recipe.sourceTemplateId()).preparedComponents(recipe.preparedComponents().stream().map(this::component).toList());
     }
-    private CarbohydrateResultDTO carbohydrates(dk.jamesbabz.madkursus.service.models.CarbohydrateResult value){return new CarbohydrateResultDTO(value.perPortionGrams(),value.totalGrams(),value.complete(),value.unknownIngredientCount(),value.ingredients().stream().map(i->new CarbohydrateIngredientResultDTO(i.recipeIngredientId(),i.productTemplateId(),i.name(),i.known()).grams(i.grams())).toList());}
+    private CarbohydrateResultDTO carbohydrates(dk.jamesbabz.madkursus.service.models.CarbohydrateResult value) {
+        if (value == null) {
+            return null;
+        }
+        return new CarbohydrateResultDTO(value.perPortionGrams(), value.totalGrams(), value.complete(),
+                value.unknownIngredientCount(), value.ingredients().stream()
+                .map(i -> new CarbohydrateIngredientResultDTO(i.recipeIngredientId(), i.productTemplateId(),
+                        i.name(), i.known()).grams(i.grams())).toList());
+    }
 
     private CookingProcessBindingDTO binding(dk.jamesbabz.madkursus.service.models.CookingProcessBinding binding) {
         var value = binding.value()==null?new CookingProcessValue(null,null,null,null,null,null,null):binding.value();

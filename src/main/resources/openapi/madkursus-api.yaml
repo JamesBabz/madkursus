@@ -1425,7 +1425,7 @@ components:
         renderedProcess: {allOf: [{$ref: '#/components/schemas/RenderedCookingProcess'}], nullable: true}
     Recipe:
       type: object
-      required: [id, name, ingredients, steps, preparationSteps, equipment, createdAt, updatedAt, carbohydrates]
+      required: [id, name, ingredients, steps, preparationSteps, equipment, createdAt, updatedAt]
       properties:
         id: {type: string, format: uuid}
         name: {type: string}
@@ -1438,7 +1438,7 @@ components:
         updatedAt: {type: string, format: date-time}
         sourceTemplateId: {type: string, format: uuid, nullable: true, readOnly: true}
         preparedComponents: {type: array, items: {$ref: '#/components/schemas/PreparedComponent'}}
-        carbohydrates: {$ref: '#/components/schemas/CarbohydrateResult'}
+        carbohydrates: {allOf: [{$ref: '#/components/schemas/CarbohydrateResult'}], nullable: true}
     CarbohydrateIngredientResult:
       type: object
       required: [recipeIngredientId, productTemplateId, name, known]
