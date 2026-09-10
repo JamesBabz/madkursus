@@ -265,3 +265,21 @@ test('uncertain known recipes never claim there is enough stock', async () => {
   assert.match(card.children[1].textContent,/Tjek mængderne/);
   assert.doesNotMatch(card.children[1].textContent,/Du har alt/);
 });
+
+test('plan candidates render all eight cards with only the existing open action', async () => {
+  const s = setup();
+  s.example.fire('click');
+  const candidates = Array.from({length: 8}, (_, i) => ({id: `recipe-${i}`, name: `Ret ${i}`, source: 'RECIPE', state: 'COOKABLE'}));
+  s.resolve({answer: '8 kandidater til 5 måltider, 2 portioner', knownRecipes: [], mealPlanProposal: {requestedMealCount: 5, defaultPortions: 2, candidates}});
+  await tick();
+  const message = s.messages.children.at(-1);
+  const cards = message.children.filter(c => c.className === 'chat-recipe-card');
+  assert.equal(cards.length, 8);
+  for (const card of cards) {
+    assert.equal(card.children.length, 3);
+    assert.equal(card.children[2].textContent, 'Åbn opskrift');
+    assert.equal(card.children[2].type, 'button');
+  }
+  cards[7].children[2].fire('click');
+  assert.deepEqual(s.opened, [candidates[7]]);
+});

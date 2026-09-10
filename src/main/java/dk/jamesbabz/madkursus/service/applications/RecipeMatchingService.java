@@ -29,6 +29,13 @@ public class RecipeMatchingService {
     }
 
     public List<RecipeMatch> findMatches(Integer maximum, Set<UUID> preferredTemplateIds, int portions) {
+        return findMatches(maximum, preferredTemplateIds, portions, false, Set.of());
+    }
+    public List<RecipeMatch> findOwnedMatches(Integer maximum, Set<UUID> preferredTemplateIds, Set<UUID> excludedTemplateIds, int portions) {
+        return findMatches(maximum, preferredTemplateIds, portions, true, excludedTemplateIds);
+    }
+    private List<RecipeMatch> findMatches(Integer maximum, Set<UUID> preferredTemplateIds, int portions,
+                                        boolean ownedOnly, Set<UUID> excludedTemplateIds) {
         if (portions < 1) throw new InvalidInputException("Portions must be positive");
         if (maximum != null && (maximum < 0 || maximum > 20)) throw new InvalidInputException("Maximum additional ingredients must be between 0 and 20");
         UUID user = currentUser.currentUserId();
@@ -36,8 +43,11 @@ public class RecipeMatchingService {
         var own = recipes.findAllByUserId(user).stream().filter(r -> user.equals(r.userId())).toList();
         var copied = own.stream().map(Recipe::sourceTemplateId).filter(Objects::nonNull).collect(Collectors.toSet());
         List<RecipeMatch> matches = new ArrayList<>();
-        for (var recipe : own) matches.add(match(recipe.id(), RecipeMatch.Source.RECIPE, recipe.name(), recipe.ingredients(), stock, portions));
-        for (var template : templates.search(null)) {
+        for (var recipe : own) {
+            if (recipe.ingredients().stream().anyMatch(i -> i.productTemplate() != null && i.productTemplate().id() != null && excludedTemplateIds.contains(i.productTemplate().id()))) continue;
+            matches.add(match(recipe.id(), RecipeMatch.Source.RECIPE, recipe.name(), recipe.ingredients(), stock, portions));
+        }
+        for (var template : ownedOnly ? List.<RecipeTemplate>of() : templates.search(null)) {
             if (!template.active() || copied.contains(template.id())) continue;
             var ingredients = template.ingredients().stream().map(i -> new RecipeIngredient(i.id(), i.productTemplate(), i.quantity(), i.unit(), i.preparation(), i.sortOrder())).toList();
             matches.add(match(template.id(), RecipeMatch.Source.TEMPLATE, template.name(), ingredients, stock, portions));

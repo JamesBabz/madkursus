@@ -513,3 +513,62 @@ This supersedes historical physical-stock and hidden-uncertainty descriptions
 above for **known-recipe discovery**. AI-generated inspiration still has its
 separate physical-stock validation contract. No planning intent, chat draft,
 selection action, endpoint or shopping confirmation is introduced here.
+
+## Phase 2: read-only meal-plan candidate discovery
+
+The small intent contract adds `MEAL_PLAN_DISCOVERY`, nullable integer
+`requestedMealCount`, and `limitedIngredientTerms` alongside `inventoryAware`,
+`preferredIngredientTerms`, and `excludedIngredientTerms`. Weekday ranges describe
+meal counts only; there is no date field. The provider receives only its small
+classification prompt/schema and the current message, without inventory context.
+
+`AiChatService` delegates this intent directly to `MealPlanDiscoveryService`.
+Java defaults an omitted count to 5 and rejects counts outside 1–14 with a Danish
+validation answer. Every candidate is evaluated independently at 2 portions.
+`RecipeMatchingService.findOwnedMatches` restricts eligibility to the current
+user's recipes before matching, without consulting recipe templates. It reuses
+Phase 1 availability after existing reservations and the existing ranker.
+
+Preferences, exclusions and limited terms use `IngredientPreferenceResolver`
+and the reviewed ProductTemplate discovery-term mechanism. Preferences influence
+ranking; resolved exclusions remove recipes containing those identities. Terms
+that cannot be resolved are reported separately and are not claimed as enforced.
+Limited terms retain their original wording, resolved identity union and unresolved
+terms, but frequency limits are never enforced in this phase. The migrated catalog
+resolves chicken to seven identities and resolves egg; generic pasta is unresolved.
+
+The response adds optional `mealPlanProposal` with `requestedMealCount`,
+`defaultPortions`, `candidates` (existing `AiKnownRecipe` cards),
+`unresolvedPreferredIngredientTerms`, `unresolvedExcludedIngredientTerms`,
+`limitedIngredientTerms`, `limitedIngredientTemplateIds`, and
+`unresolvedLimitedIngredientTerms`. Plan candidates are not duplicated in
+`knownRecipes`. The bound is `min(requestedMealCount + 3, 10)`. A shortage is based
+on the total eligible owned recipes, not on the display cap. Requests over ten
+also explain that only ten candidates are displayed.
+
+The frontend renders the proposal's cards using the existing safe-text renderer
+and open-recipe action. No selection controls, draft, dates, collective preview,
+saving, shopping mutation or recipe copying exist in this route. No full AI meal
+generation is called after classification, even when no owned recipes qualify.
+
+Automated classifier tests use stubbed provider JSON to verify the prompt,
+schema and parsing contract. Live gemma3:4b regression checks also exercise the
+negation/reduction phrases. The original egg failure was reproduced as a wrong
+positive preference in provider output; the stored canonical egg identity and
+owned recipe ingredient reference match. The original pasta failure returned
+the same term in both excluded and limited lists.
+
+Intent calls now use temperature 0, explicit whole-phrase examples, and a framed,
+JSON-quoted user message. The plan intent defensively removes an exclusion when
+the same trimmed, case-insensitive, Unicode-normalized term is also limited.
+Distinct hard exclusions remain; ordinary meal discovery is unchanged. The small
+contract cannot represent separate hard and frequency constraints on the exact
+same term, so LIMITED wins that contradiction. No phrase matching or ingredient
+mappings were added to Java.
+
+The two original prompts were verified through the production adapter/resolver/
+matcher against the local database with a read-only connection: canonical egg
+recipes were excluded and unresolved pasta produced only the limited warning.
+The provider can still emit overlapping lists; normalization handles that before
+resolution or eligibility filtering. Live model quality should still be checked
+when changing model or classifier instructions.

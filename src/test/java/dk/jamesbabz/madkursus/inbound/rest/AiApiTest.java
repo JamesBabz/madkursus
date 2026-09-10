@@ -28,6 +28,29 @@ class AiApiTest {
     @MockitoBean AiChatService service;
     @MockitoBean UserDetailsService userDetailsService;
 
+    @Test void transportsPlanMetadataAndReusesKnownRecipeCards() throws Exception {
+        var id = java.util.UUID.randomUUID();
+        var candidate = new dk.jamesbabz.madkursus.service.models.RecipeMatch(id,
+                dk.jamesbabz.madkursus.service.models.RecipeMatch.Source.RECIPE, "Dinner",
+                dk.jamesbabz.madkursus.service.models.RecipeMatch.State.COOKABLE,
+                java.util.List.of(), java.util.List.of(), java.util.Set.of());
+        var plan = new dk.jamesbabz.madkursus.service.models.MealPlanProposal(5, 2, java.util.List.of(candidate),
+                java.util.List.of("unknown"), java.util.List.of("exclusion"), java.util.List.of("pasta"), java.util.Set.of(id), java.util.List.of("pasta"));
+        when(service.chat("Plan", null)).thenReturn(new AiChatResponse("Candidates", java.util.List.of(), plan));
+        mvc.perform(post("/v1/ai/chat").with(user("cook")).with(csrf()).contentType("application/json").content("{\"message\":\"Plan\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.knownRecipes").isEmpty())
+                .andExpect(jsonPath("$.mealPlanProposal.requestedMealCount").value(5))
+                .andExpect(jsonPath("$.mealPlanProposal.defaultPortions").value(2))
+                .andExpect(jsonPath("$.mealPlanProposal.candidates[0].id").value(id.toString()))
+                .andExpect(jsonPath("$.mealPlanProposal.candidates[0].source").value("RECIPE"))
+                .andExpect(jsonPath("$.mealPlanProposal.unresolvedPreferredIngredientTerms[0]").value("unknown"))
+                .andExpect(jsonPath("$.mealPlanProposal.unresolvedExcludedIngredientTerms[0]").value("exclusion"))
+                .andExpect(jsonPath("$.mealPlanProposal.limitedIngredientTerms[0]").value("pasta"))
+                .andExpect(jsonPath("$.mealPlanProposal.limitedIngredientTemplateIds[0]").value(id.toString()))
+                .andExpect(jsonPath("$.mealPlanProposal.unresolvedLimitedIngredientTerms[0]").value("pasta"));
+    }
+
     @Test
     void returnsConfiguredChatModelWithoutCaching() throws Exception {
         when(service.configuredModel()).thenReturn("gemma3:4b");

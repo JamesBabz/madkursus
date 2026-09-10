@@ -92,7 +92,8 @@ function createAiChat(root, request, openKnownRecipe = () => {}) {
       });
       if (turn !== generation) return;
       if (typeof result?.answer !== 'string' || !result.answer.trim()) throw new Error('Empty answer');
-      append('assistant', result.answer, Array.isArray(result.knownRecipes) ? result.knownRecipes : []);
+      const candidates = result.mealPlanProposal?.candidates ?? result.knownRecipes;
+      append('assistant', result.answer, Array.isArray(candidates) ? candidates : []);
     } catch (failure) {
       if (turn !== generation) return;
       error.textContent = failure.status === 401 ? t("chat.sessionExpired")

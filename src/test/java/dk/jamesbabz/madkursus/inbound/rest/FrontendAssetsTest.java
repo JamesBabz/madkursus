@@ -11,6 +11,7 @@ class FrontendAssetsTest {
     void frontendContainsAuthAndCsrfIntegrationAndNeverCachesApi() throws Exception {
         String html = resource("static/index.html");
         String javascript = resource("static/js/app.js");
+        assertThat(resource("static/js/locales/da.js")).contains("g pr. portion", "ukendt bidrag", "Vis fordeling", "Vis ukendte");
         String worker = resource("static/service-worker.js");
         assertThat(html).contains("login-form", "register-form", "auth-tab-login", "auth-tab-register", "logout");
         assertThat(html).contains("auth-success").doesNotContain("show-register", "show-login");
@@ -24,15 +25,15 @@ class FrontendAssetsTest {
         assertThat(javascript).contains("showToast", "setTimeout", "2600", "searchRequestId",
                 "templateSearch.value = ''", "method: 'PATCH'", "openProductEditor");
         assertThat(html).contains("recipe-carbohydrates", "recipe-template-carbohydrates");
-        assertThat(javascript).contains("renderCarbohydrates", "g pr. portion", "ukendt bidrag", "Vis fordeling");
-        assertThat(html).contains("show-nutrition", "more-nutrition", "nutrition-admin-view", "nutrition-edit-form", "Fødevaredata");
-        assertThat(javascript).contains("renderAdminNavigation", "currentUser?.admin === true", "currentUser = await jsonRequest(`${AUTH_API}/login`", "renderUnknownCarbohydrates", "Vis ukendte", "Mangler kulhydratdata", "NUTRITION_ADMIN_API");
+        assertThat(javascript).contains("renderCarbohydrates", "nutrition.carbohydrates.perPortion", "nutrition.carbohydrates.unknownContribution", "nutrition.carbohydrates.showBreakdown");
+        assertThat(html).contains("show-nutrition", "more-nutrition", "nutrition-admin-view", "nutrition-edit-form", "nutrition.title");
+        assertThat(javascript).contains("renderAdminNavigation", "currentUser?.admin === true", "currentUser = await jsonRequest(`${AUTH_API}/login`", "renderUnknownCarbohydrates", "nutrition.showUnknown", "nutrition.missingCarbohydrates", "NUTRITION_ADMIN_API");
         assertThat(html).contains("nutrition-list-header", "nutrition-admin-list", "nutrition-dtu-status", "nutrition-match-dialog");
-        assertThat(html).contains("Klar til godkendelse", "Intet match", "Sikre kulhydratmatches", "Godkend sikre kulhydratmatches", "select-all-nutrition", "nutrition-bulk-confirm-dialog");
-        assertThat(html).contains("Forslag", "Søg i hele DTU-kataloget", "semantisk plausible kandidater");
-        assertThat(javascript).contains("nutrition-product-name", "nutrition-cell", "nutrition-row-actions", "approveSelectedDtu", "approveSafeDtu", "AUTO_EQUIVALENT_CARBOHYDRATE", "requestApproveSelectedDtu", "Søg i DTU", "Åbn Fødevaredata");
-        assertThat(worker).contains("madkursus-shell-v50", "/css/app.css?v=50", "/js/dialog-viewport.js?v=50", "/js/app.js?v=50");
-        assertThat(html).contains("/css/app.css?v=50", "/js/dialog-viewport.js?v=50", "/js/app.js?v=50");
+        assertThat(html).contains("nutrition.dtu.readyForApproval", "nutrition.dtu.noMatch", "nutrition.dtu.safeMatches", "nutrition.dtu.approveSafe", "select-all-nutrition", "nutrition-bulk-confirm-dialog");
+        assertThat(html).contains("nutrition.dtu.suggestions", "nutrition.dtu.searchCatalog", "nutrition.dtu.suggestionsHint");
+        assertThat(javascript).contains("nutrition-product-name", "nutrition-cell", "nutrition-row-actions", "approveSelectedDtu", "approveSafeDtu", "AUTO_EQUIVALENT_CARBOHYDRATE", "requestApproveSelectedDtu", "nutrition.dtu.search", "nutrition.openData");
+        assertThat(worker).contains("madkursus-shell-v52", "/css/app.css?v=52", "/js/dialog-viewport.js?v=52", "/js/app.js?v=52");
+        assertThat(html).contains("/css/app.css?v=52", "/js/dialog-viewport.js?v=52", "/js/app.js?v=52");
         assertThat(html).contains("inventory-view", "inventory-add-dialog", "edit-inventory-dialog");
         assertThat(javascript).contains("/v1/inventory", "searchInventoryCandidates", "from-template",
                 "loadInventory", "showToast", "inventorySearchRequestId");
@@ -41,8 +42,8 @@ class FrontendAssetsTest {
         assertThat(html.indexOf("id=\"show-inventory\"")).isLessThan(html.indexOf("id=\"show-products\""));
         assertThat(javascript).contains("inventoryConversion", "Intl.NumberFormat('da-DK'", "value / 1000");
         assertThat(javascript).contains("showView('inventory')", "requestProductDeletion", "method: 'DELETE'",
-                "Produktet findes stadig på lager");
-        assertThat(html).contains("request-delete-product", "delete-product-confirmation", "+ Tilføj produkt")
+                "products.stillInInventory");
+        assertThat(html).contains("request-delete-product", "delete-product-confirmation", "products.addShortcut")
                 .doesNotContain("id=\"refresh-products\"");
         assertThat(html.indexOf("id=\"open-form\"")).isGreaterThan(html.indexOf("id=\"products-title\""));
         assertThat(html).contains("shopping-view", "shopping-add-dialog", "edit-shopping-dialog",
@@ -51,9 +52,9 @@ class FrontendAssetsTest {
                 "attachShoppingGestures", "pointerdown", "pointermove", "600", "clear-purchased", "undoShoppingItem",
                 "searchShoppingCandidates", "shoppingSearchRequestId");
         assertThat(worker).contains("request.method !== 'GET'", "url.pathname.startsWith('/v1/')");
-        assertThat(html).contains("edit-product-tracking-mode", "Præcis mængde", "Kun om jeg har varen",
+        assertThat(html).contains("edit-product-tracking-mode", "inventory.tracking.quantity", "inventory.tracking.presence",
                 "edit-inventory-presence", "edit-shopping-presence");
-        assertThat(javascript).contains("inventoryTrackingMode", "PRESENCE", "På lager", "Køb",
+        assertThat(javascript).contains("inventoryTrackingMode", "PRESENCE", "inventory.onHand", "shoppingList.purchase",
                 "input.step = unit === 'PIECE' ? '0.5' : '1'", "formatQuantity", "da-DK");
         assertThat(javascript).contains("input.min = allowZero ? '0' : (unit === 'PIECE' ? '0.5' : '1')",
                 "candidate.defaultTrackingMode", "candidate.inventoryTrackingMode",
@@ -66,34 +67,34 @@ class FrontendAssetsTest {
                 "recipe-template-search", "recipe-portions");
         assertThat(html.indexOf("id=\"show-recipes\"")).isLessThan(html.indexOf("id=\"show-products\""));
         assertThat(javascript).contains("/v1/recipes", "searchRecipeTemplates", "scaledDecimal", "recipePortions = 2",
-                "Avancerede indstillinger", "INGREDIENT_LIST", "p.source||'INPUT'", "renderProcessDetails", "process-details", "durationSummary", "recipePreparedComponents", "preparedComponentId", "inputSummary",
+                "recipes.process.advancedSettings", "INGREDIENT_LIST", "p.source||'INPUT'", "renderProcessDetails", "process-details", "durationSummary", "recipePreparedComponents", "preparedComponentId", "inputSummary",
                 "productTemplateId", "method:editingRecipeId?'PATCH':'POST'");
-        assertThat(javascript).contains("const scaled=scaledDecimal(ingredient.quantity, recipePortions)", "recipeUnitLabel(ingredient.unit,scaled)");
+        assertThat(javascript).contains("const quantity=ingredient.quantity", "recipeUnitLabel(ingredient.unit,quantity)");
         assertThat(html).contains("add-process-step", "cooking-process-select", "cooking-process-parameters");
         assertThat(javascript).contains("/v1/cooking-processes", "openProcessPicker", "type:'PROCESS'", "renderedProcess");
-        assertThat(javascript).contains("durationMinutes", "durationSeconds", "minutter", "sekunder",
-                "recipeIngredientId", "allocatedForIngredient", "Ingen ingredienser er tilføjet til opskriften endnu.");
+        assertThat(javascript).contains("durationMinutes", "durationSeconds", "recipes.process.minutes", "recipes.process.seconds",
+                "recipeIngredientId", "allocatedForIngredient", "recipes.process.validation.ingredientsRequired");
         assertThat(html).contains("plan-recipes", "recipe-plan-dialog", "calculate-recipe-plan", "add-recipe-missing", "cook-recipe");
         assertThat(javascript).contains("calculate-requirements", "add-missing-to-shopping-list", "/cook", "recipePlanSelections",
                 "button.disabled=true", "trackingMode==='PRESENCE'", "r.warning");
-        assertThat(html).contains("recipe-plan-requirements", "Samlet behov").doesNotContain("id=\"recipe-plan-available\"", "id=\"recipe-plan-missing\"");
+        assertThat(html).contains("recipe-plan-requirements", "mealPlan.totalRequirements").doesNotContain("id=\"recipe-plan-available\"", "id=\"recipe-plan-missing\"");
         assertThat(javascript).contains("renderRecipePlanPreview", "scaledDecimal(ingredient.quantity,portions)",
-                "Du skal bruge", "Du har", "På lager", "Reserveret", "Tilgængelig", "Mangler:", "Du har nok");
+                "inventory.required", "inventory.owned", "inventory.onHand", "inventory.reserved", "inventory.available", "inventory.missingAmount", "inventory.sufficient");
         assertThat(html).contains("show-meal-plans", "meal-plans-panel", "request-save-meal-plan", "meal-plan-detail-dialog",
                 "meal-plan-requirements", "meal-plan-add-missing");
         assertThat(javascript).contains("/v1/meal-plans", "saveCurrentMealPlan", "loadMealPlans", "openMealPlan",
-                "changePlannedPortions", "cookPlanned", "togglePlannedSkip", "Færdig ✓");
+                "changePlannedPortions", "cookPlanned", "togglePlannedSkip", "mealPlan.completedSummary");
         assertThat(html).contains("show-recipe-templates", "recipe-templates-panel", "recipe-template-detail-dialog",
-                "Føj til mine opskrifter");
+                "recipes.catalog.addToLibrary");
         assertThat(javascript).contains("/v1/recipe-templates", "loadRecipeTemplates", "initialPortions=2",
                 "add-to-my-recipes", "userRecipeId");
-        assertThat(html).contains("show-kitchen", "kitchen-view", "kitchen-equipment-dialog", "Mit køkken",
+        assertThat(html).contains("show-kitchen", "kitchen-view", "kitchen-equipment-dialog", "equipment.title",
                 "data-equipment-fields=\"STOVE\"", "data-equipment-fields=\"OVEN\"");
         assertThat(javascript).contains("/v1/kitchen-equipment", "loadKitchenEquipment", "openKitchenEquipment",
                 "saveKitchenEquipment", "deleteKitchenEquipment", "liters", "centimeters", "userRecipeId");
         assertThat(html).contains("data-heat=\"LOW\"", "data-heat=\"MEDIUM_LOW\"", "data-heat=\"MEDIUM_HIGH\"");
         assertThat(javascript).contains("suggestedHeatMappings");
-        assertThat(html).contains("inventory-reservation-dialog", "Planlagt til");
+        assertThat(html).contains("inventory-reservation-dialog", "inventory.reservationsTitle");
         assertThat(javascript).contains("reservedQuantity", "physicalQuantity", "availableQuantity",
                 "plannedShortfall", "openInventoryReservations");
     }
@@ -127,17 +128,17 @@ class FrontendAssetsTest {
         String html = resource("static/index.html");
         String app = resource("static/js/app.js");
         String chat = resource("static/js/ai-chat.js");
-        assertThat(html).contains("chat-launcher", "chat-drawer", "chat-minimize", "Åbn Madhjælp", "aria-haspopup=\"dialog\"",
-                "show-ai", "more-ai", "ai-view", "Madhjælp", "chat-input", "chat-send",
+        assertThat(html).contains("chat-launcher", "chat-drawer", "chat-minimize", "data-i18n-aria-label=\"chat.open\"", "aria-haspopup=\"dialog\"",
+                "show-ai", "more-ai", "ai-view", "chat.assistantName", "chat-input", "chat-send",
                 "data-chat-prompt", "aria-live=\"polite\"", "maxlength=\"4000\"");
-        assertThat(html.indexOf("/js/ai-chat.js?v=50")).isLessThan(html.indexOf("/js/app.js?v=50"));
+        assertThat(html.indexOf("/js/ai-chat.js?v=52")).isLessThan(html.indexOf("/js/app.js?v=52"));
         assertThat(app).contains("createAiChat(document.querySelector('#chat-component'), jsonRequest,",
                 "aiChat.reset()", "showView('ai')");
         assertThat(chat).contains("'/v1/ai/chat'", "JSON.stringify({ message,", "maxAdditionalIngredients", "content.textContent = text")
                 .doesNotContain("innerHTML", "localStorage", "sessionStorage", "11434", "llama3.1");
         assertThat(html).contains("aria-modal=\"false\"");
         assertThat(chat).doesNotContain("showModal");
-        assertThat(resource("static/service-worker.js")).contains("/js/ai-chat.js?v=50");
+        assertThat(resource("static/service-worker.js")).contains("/js/ai-chat.js?v=52");
         assertThat(resource("static/css/app.css")).contains("white-space: pre-wrap", ".chat-message-user", ".chat-message-assistant");
     }
 

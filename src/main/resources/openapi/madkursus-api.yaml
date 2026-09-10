@@ -916,8 +916,26 @@ components:
           description: Plain Danish text assembled from validated meal proposals; never raw model JSON or a model-authored purchase list.
         knownRecipes:
           type: array
-          description: Verified stored recipes for one portion. Empty or absent for AI meal ideas.
+          description: Verified stored recipes evaluated for two portions. Empty or absent for AI meal ideas.
           items: {$ref: '#/components/schemas/AiKnownRecipe'}
+        mealPlanProposal:
+          $ref: '#/components/schemas/MealPlanProposal'
+    MealPlanProposal:
+      type: object
+      description: Read-only owned recipe discovery. Candidates evaluated independently. Limited terms are not enforced.
+      required: [requestedMealCount, defaultPortions, candidates, unresolvedPreferredIngredientTerms, unresolvedExcludedIngredientTerms, limitedIngredientTerms, limitedIngredientTemplateIds, unresolvedLimitedIngredientTerms]
+      properties:
+        requestedMealCount: {type: integer, minimum: 1, maximum: 14}
+        defaultPortions: {type: integer, minimum: 2, maximum: 2}
+        candidates:
+          type: array
+          maxItems: 10
+          items: {$ref: '#/components/schemas/AiKnownRecipe'}
+        unresolvedPreferredIngredientTerms: {type: array, items: {type: string}}
+        unresolvedExcludedIngredientTerms: {type: array, items: {type: string}}
+        limitedIngredientTerms: {type: array, items: {type: string}}
+        limitedIngredientTemplateIds: {type: array, items: {type: string, format: uuid}}
+        unresolvedLimitedIngredientTerms: {type: array, items: {type: string}}
     AiKnownRecipe:
       type: object
       required: [id, source, name, state, missingIngredientCount, missingIngredients, uncertainIngredients]

@@ -195,7 +195,7 @@ class OllamaChatAdapterTest {
             org.mockito.Mockito.when(templates.search(null,true)).thenReturn(List.of());
             org.mockito.Mockito.when(inventory.getAll()).thenReturn(java.util.stream.IntStream.range(0,3).mapToObj(i ->
                     new InventoryItem(java.util.UUID.randomUUID(),new Product(java.util.UUID.randomUUID(),java.util.UUID.randomUUID(),"Food"+i,ProductCategory.OTHER,Unit.GRAM),java.math.BigDecimal.TEN)).toList());
-            var service=new dk.jamesbabz.madkursus.service.applications.AiChatService(inventory,adapter,templates,new dk.jamesbabz.madkursus.service.applications.AiSuggestionValidator(),org.mockito.Mockito.mock(dk.jamesbabz.madkursus.service.applications.RecipeMatchingService.class),
+            var service=new dk.jamesbabz.madkursus.service.applications.AiChatService(org.mockito.Mockito.mock(dk.jamesbabz.madkursus.service.applications.MealPlanDiscoveryService.class),inventory,adapter,templates,new dk.jamesbabz.madkursus.service.applications.AiSuggestionValidator(),org.mockito.Mockito.mock(dk.jamesbabz.madkursus.service.applications.RecipeMatchingService.class),
                     org.mockito.Mockito.mock(dk.jamesbabz.madkursus.service.ports.AiIntentPort.class),
                     new dk.jamesbabz.madkursus.service.applications.IngredientPreferenceResolver(templates),
                     org.mockito.Mockito.mock(dk.jamesbabz.madkursus.service.ports.CurrentUserProvider.class));
@@ -220,13 +220,14 @@ class OllamaChatAdapterTest {
                 .andExpect(jsonPath("$.model").value("configured-model"))
                 .andExpect(jsonPath("$.stream").value(false))
                 .andExpect(jsonPath("$.messages.length()").value(2))
+                .andExpect(jsonPath("$.options.temperature").value(0))
                 .andExpect(jsonPath("$.messages[0].content").value(OllamaChatAdapter.INTENT_PROMPT))
-                .andExpect(jsonPath("$.messages[1].content").value(message))
-                .andExpect(jsonPath("$.format.properties.intent.enum").value(org.hamcrest.Matchers.contains("MEAL_DISCOVERY","GENERAL_COOKING","OTHER")))
+                .andExpect(jsonPath("$.messages[1].content").value(OllamaChatAdapter.INTENT_USER_PROMPT + new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(message)))
+                .andExpect(jsonPath("$.format.properties.intent.enum").value(org.hamcrest.Matchers.contains("MEAL_DISCOVERY","MEAL_PLAN_DISCOVERY","GENERAL_COOKING","OTHER")))
                 .andExpect(r -> {
                     var wire=new com.fasterxml.jackson.databind.ObjectMapper().readTree(((org.springframework.mock.http.client.MockClientHttpRequest)r).getBodyAsString());
-                    assertThat(wire.get("format").toString().length()).isLessThan(800);
-                    assertThat(wire.get("messages").get(0).get("content").asText().length()).isLessThan(600);
+                    assertThat(wire.get("format").toString().length()).isLessThan(1200);
+                    assertThat(wire.get("messages").get(0).get("content").asText().length()).isLessThan(2600);
                 }).andRespond(withSuccess(body,MediaType.APPLICATION_JSON));
         var interpreted=adapter.interpret(message);
         assertThat(interpreted.intent()).isEqualTo(kind);assertThat(interpreted.inventoryAware()).isTrue();
@@ -239,6 +240,65 @@ class OllamaChatAdapterTest {
         var body=new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(java.util.Map.of("done",true,"message",java.util.Map.of("role","assistant","content",content)));
         server.expect(requestTo("http://home-server:11434/api/chat")).andRespond(withSuccess(body,MediaType.APPLICATION_JSON));
         assertThatThrownBy(()->adapter.interpret("Dinner?")).isInstanceOf(AiUnavailableException.class);server.verify();
+    }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.CsvSource({"Lav en madplan for 5 dage,5", "Jeg skal bruge aftensmad mandag til fredag,5", "Lav en madplan for 7 dage gerne kylling,7", "Lav 5 retter uden æg,5", "Lav en madplan til 5 dage men ikke pasta hver dag,5"})
+    void parsesPlanIntentWithoutDates(String message, int count) throws Exception {
+        mockServer();
+        var intent = new AiChatIntent(AiChatIntent.Intent.MEAL_PLAN_DISCOVERY, false,
+                message.contains("kylling") ? List.of("kylling") : List.of(),
+                message.contains("æg") ? List.of("æg") : List.of(), count,
+                message.contains("pasta") ? List.of("pasta") : List.of());
+        var json = new com.fasterxml.jackson.databind.ObjectMapper();
+        var body = json.writeValueAsString(java.util.Map.of("done", true, "message", java.util.Map.of("role", "assistant", "content", json.writeValueAsString(intent))));
+        server.expect(requestTo("http://home-server:11434/api/chat"))
+            .andExpect(jsonPath("$.format.properties.requestedMealCount.type").value(org.hamcrest.Matchers.contains("integer", "null")))
+            .andExpect(jsonPath("$.messages[1].content").value(OllamaChatAdapter.INTENT_USER_PROMPT + new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(message)))
+            .andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
+        var result = adapter.interpret(message);
+        assertThat(result).isEqualTo(intent);
+        assertThat(json.writeValueAsString(result)).doesNotContain("date", "2026");
+        if (message.contains("pasta")) assertThat(result.excludedIngredientTerms()).isEmpty();
+        server.verify();
+    }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.CsvSource({
+        "uden pasta,pasta,false", "ikke pasta,pasta,false",
+        "ikke pasta hver dag,pasta,true", "ikke for meget pasta,pasta,true",
+        "gerne mindre pasta,pasta,true", "5 retter uden æg,æg,false"
+    })
+    void preservesConstraintPolarityInStructuredOutput(String phrase, String term, boolean limited) throws Exception {
+        mockServer();
+        var json = new com.fasterxml.jackson.databind.ObjectMapper();
+        var intent = new AiChatIntent(AiChatIntent.Intent.MEAL_PLAN_DISCOVERY, false, List.of(),
+                limited ? List.of() : List.of(term), 5, limited ? List.of(term) : List.of());
+        var body = json.writeValueAsString(java.util.Map.of("done", true, "message", java.util.Map.of(
+                "role", "assistant", "content", json.writeValueAsString(intent))));
+        server.expect(requestTo("http://home-server:11434/api/chat"))
+                .andExpect(jsonPath("$.options.temperature").value(0))
+                .andExpect(jsonPath("$.messages[1].content").value(OllamaChatAdapter.INTENT_USER_PROMPT + json.writeValueAsString(phrase)))
+                .andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
+        var result = adapter.interpret(phrase);
+        assertThat(result).isEqualTo(intent);
+        assertThat(result.preferredIngredientTerms()).isEmpty();
+        assertThat(OllamaChatAdapter.INTENT_PROMPT).contains("mutually exclusive", "A negated ingredient is NEVER preferred",
+                "ikke pasta hver dag", "gerne mindre pasta", "ikke for meget pasta", "limitedIngredientTerms");
+        server.verify();
+    }
+    @Test void contradictoryRawPlanOutputKeepsLimitedTermOnly() throws Exception {
+        mockServer();
+        // Raw JSON intentionally bypasses the record constructor to reproduce live provider overlap.
+        String content = """
+                {"intent":"MEAL_PLAN_DISCOVERY","inventoryAware":false,"requestedMealCount":5,
+                 "preferredIngredientTerms":[],"excludedIngredientTerms":[" PASTA "],"limitedIngredientTerms":["pasta"]}
+                """;
+        var json = new com.fasterxml.jackson.databind.ObjectMapper();
+        var body = json.writeValueAsString(java.util.Map.of("done", true, "message", java.util.Map.of("role", "assistant", "content", content)));
+        server.expect(requestTo("http://home-server:11434/api/chat")).andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
+        var result = adapter.interpret("Lav en madplan til 5 dage, men ikke pasta hver dag");
+        assertThat(result.excludedIngredientTerms()).isEmpty();
+        assertThat(result.limitedIngredientTerms()).containsExactly("pasta");
+        server.verify();
     }
     @Test void intentTimeoutDoesNotChangeProviderFailureContract() {
         mockServer();server.expect(requestTo("http://home-server:11434/api/chat")).andRespond(withException(new SocketTimeoutException("Timed out")));

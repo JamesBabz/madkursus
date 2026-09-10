@@ -17,6 +17,27 @@ class RecipeMatchingServiceTest {
     final RecipeTemplatePort templates = mock(RecipeTemplatePort.class);
     final RecipeMatchingService service = new RecipeMatchingService(current, new InventoryAvailabilityService(inventory, plans, current, new RecipeQuantityNormalizer()), recipes, templates, new RecipeQuantityNormalizer(), new RecipeMatchRanker());
     @BeforeEach void setup() { when(current.currentUserId()).thenReturn(user); }
+    @Test void ownedPlanDiscoveryExcludesIdentitiesAndReusesReservationsAndRanking() {
+        var egg = template("Egg", Unit.GRAM);
+        var chicken = template("Chicken", Unit.GRAM);
+        var other = template("Other", Unit.GRAM);
+        when(recipes.findAllByUserId(user)).thenReturn(List.of(
+                recipe("A egg", ingredient(egg, "10", RecipeUnit.GRAM)),
+                recipe("Z chicken", ingredient(chicken, "100", RecipeUnit.GRAM)),
+                recipe("B other", ingredient(other, "10", RecipeUnit.GRAM))));
+        when(inventory.findAllByUserId(user)).thenReturn(List.of(stock(chicken, "200")));
+        when(plans.findAllByUserId(user)).thenReturn(List.of(plan(chicken, "100", RecipeUnit.GRAM, PlannedRecipeStatus.PLANNED)));
+        var result = service.findOwnedMatches(null, Set.of(chicken.id()), Set.of(egg.id()), 2);
+        assertThat(result).extracting(RecipeMatch::name).containsExactly("Z chicken", "B other");
+        assertThat(result).allMatch(r -> r.source() == RecipeMatch.Source.RECIPE);
+        assertThat(result.getFirst().missingIngredients().getFirst().shortage()).isEqualByComparingTo("100");
+        verifyNoInteractions(templates);
+        assertThat(service.findOwnedMatches(0, Set.of(), Set.of(egg.id()), 2)).isEmpty();
+    }
+    @Test void templateCatalogIsNeverUsedToFillOwnedCandidates() {
+        assertThat(service.findOwnedMatches(null, Set.of(), Set.of(), 2)).isEmpty();
+        verifyNoInteractions(templates);
+    }
     @Test void twoPortionsScaleRequirementsBeforeShortagesFilteringAndRanking() {
         var pasta=template("Pasta",Unit.GRAM);
         var larger=recipe("A larger",ingredient(pasta,"200",RecipeUnit.GRAM));

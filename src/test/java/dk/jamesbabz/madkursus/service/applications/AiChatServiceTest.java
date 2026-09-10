@@ -22,7 +22,7 @@ class AiChatServiceTest {
     private final AiIntentPort intents = mock(AiIntentPort.class);
     private final RecipeMatchingService matching = mock(RecipeMatchingService.class);
     private final UUID userId = UUID.randomUUID();
-    private final AiChatService service = new AiChatService(new InventoryService(inventoryPort,
+    private final AiChatService service = new AiChatService(new MealPlanDiscoveryService(matching, new IngredientPreferenceResolver(templates)), new InventoryService(inventoryPort,
             mock(ProductService.class), templates, new SecurityCurrentUserProvider(), mock(InventoryAvailabilityService.class)),
             aiPort, templates, new AiSuggestionValidator(), matching, intents, new IngredientPreferenceResolver(templates), new SecurityCurrentUserProvider());
     @BeforeEach void setup() {
@@ -30,6 +30,38 @@ class AiChatServiceTest {
         when(templates.search(null,true)).thenReturn(List.of());
         when(aiPort.chat(any())).thenReturn(new AiMealProposal(AiMealProposal.Reply.NO_SUGGESTIONS,List.of()));
     }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(ints = {0, 5, 7, 10, 14, 15})
+    void planDiscoveryNeverGeneratesMeals(int count) {
+        when(intents.interpret(any())).thenReturn(new AiChatIntent(AiChatIntent.Intent.MEAL_PLAN_DISCOVERY,
+                true, List.of(), List.of(), count, List.of()));
+        var result = service.chat("Lav en madplan for " + count + " dage");
+        if (count == 0 || count == 15) assertThat(result.answer()).contains("1 og 14");
+        else {
+            assertThat(result.mealPlanProposal().requestedMealCount()).isEqualTo(count);
+            assertThat(result.answer()).contains("ikke nok kendte opskrifter");
+        }
+        verifyNoInteractions(aiPort, inventoryPort);
+    }
+
+    @Test void threeOwnedCandidatesForFiveMealsNeverTriggerGeneration() {
+        when(intents.interpret(any())).thenReturn(new AiChatIntent(AiChatIntent.Intent.MEAL_PLAN_DISCOVERY,
+                true, List.of(), List.of(), 5, List.of()));
+        var candidates = java.util.stream.IntStream.range(0, 3).mapToObj(i -> new RecipeMatch(UUID.randomUUID(),
+                RecipeMatch.Source.RECIPE, "Dinner " + i, RecipeMatch.State.COOKABLE, List.of(), List.of(), java.util.Set.of())).toList();
+        when(matching.findOwnedMatches(null, java.util.Set.of(), java.util.Set.of(), 2)).thenReturn(candidates);
+        var result = service.chat("Lav en madplan for 5 dage");
+        assertThat(result.mealPlanProposal().candidates()).isEqualTo(candidates);
+        assertThat(result.answer()).contains("ikke nok kendte opskrifter");
+        verifyNoInteractions(aiPort, inventoryPort);
+    }
+    @Test void unrelatedIntentRetainsExistingChatRoute() {
+        when(intents.interpret(any())).thenReturn(new AiChatIntent(AiChatIntent.Intent.OTHER, false, List.of(), List.of()));
+        assertThat(service.chat("Fortæl om biler").mealPlanProposal()).isNull();
+        verify(aiPort).chat(any());
+        verifyNoInteractions(matching);
+    }
+
     private void authenticate(UUID id) {
         var user = new AuthenticatedUser(id,"cook","unused",true);
         SecurityContextHolder.getContext().setAuthentication(UsernamePasswordAuthenticationToken.authenticated(user,null,user.getAuthorities()));
@@ -207,7 +239,7 @@ class AiChatServiceTest {
         when(intents.interpret(any())).thenReturn(new AiChatIntent(AiChatIntent.Intent.MEAL_DISCOVERY,true,List.of("kylling"),List.of()));
         var current=new SecurityCurrentUserProvider();
         var realMatcher=new RecipeMatchingService(current,new InventoryAvailabilityService(inventoryPort,mock(MealPlanPort.class),current,new RecipeQuantityNormalizer()),recipes,catalog,new RecipeQuantityNormalizer(),new RecipeMatchRanker());
-        var subject=new AiChatService(mock(InventoryService.class),aiPort,templates,new AiSuggestionValidator(),realMatcher,intents,new IngredientPreferenceResolver(templates),current);
+        var subject=new AiChatService(new MealPlanDiscoveryService(matching, new IngredientPreferenceResolver(templates)), mock(InventoryService.class),aiPort,templates,new AiSuggestionValidator(),realMatcher,intents,new IngredientPreferenceResolver(templates),current);
         assertThat(subject.chat("Jeg har lyst til kylling i dag").knownRecipes()).extracting(RecipeMatch::name).containsExactly("Kylling i karry","Frikadeller");
         assertThat(subject.chat("Jeg har lyst til kylling i dag",0).knownRecipes()).extracting(RecipeMatch::name).containsExactly("Frikadeller");
         verify(aiPort,never()).chat(any());

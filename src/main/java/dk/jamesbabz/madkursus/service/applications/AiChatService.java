@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AiChatService {
     public static final int MEAL_DISCOVERY_PORTIONS = 2;
+    private final MealPlanDiscoveryService mealPlanDiscovery;
     private final InventoryService inventoryService;
     private final AiChatPort aiChatPort;
     private final ProductTemplateService templateService;
@@ -60,6 +61,7 @@ public class AiChatService {
             try {
                 var intent = intentPort.interpret(message);
                 if (intent == null) throw new dk.jamesbabz.madkursus.service.exceptions.AiUnavailableException();
+                if (intent.intent() == AiChatIntent.Intent.MEAL_PLAN_DISCOVERY) return mealPlanDiscovery.discover(intent, maxAdditionalIngredients);
                 if (intent.intent() == AiChatIntent.Intent.MEAL_DISCOVERY && intent.excludedIngredientTerms().isEmpty()) {
                     preferred = preferenceResolver.resolve(intent.preferredIngredientTerms());
                     log.info("AI intent routing intent={} preferredTermCount={} resolvedPreferenceCount={}", intent.intent(), intent.preferredIngredientTerms().size(), preferred.size());
