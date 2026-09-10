@@ -2311,6 +2311,268 @@
         "instruction" : "Sluk blusset. Server den kogte pasta separat med den cremede kyllinge-tomatsovs ovenpå eller ved siden af."
       } ],
       "id" : "73e2e208-a4ef-3517-94a1-ff7c87a79ede"
+    },
+    {
+      "key" : "HAKKEBOEFFER_KARTOFLER_GULEROEDDER_BRUN_PANDESOVS",
+      "name" : "Hakkebøffer med kartofler, gulerødder og brun pandesovs",
+      "description" : "Hakkebøffer med kogte kartofler og gulerødder samt brun pandesovs lavet på stegeresterne fra bøfferne.",
+      "ingredients" : [ {
+        "key" : "HAKKET_OKSEKOED",
+        "productTemplate" : "HAKKET_OKSEKOED",
+        "quantity" : 200,
+        "unit" : "GRAM"
+      }, {
+        "key" : "KARTOFFEL",
+        "productTemplate" : "KARTOFFEL",
+        "quantity" : 250,
+        "unit" : "GRAM"
+      }, {
+        "key" : "GULEROD",
+        "productTemplate" : "GULEROD",
+        "quantity" : 125,
+        "unit" : "GRAM"
+      }, {
+        "key" : "LOEG",
+        "productTemplate" : "LOEG",
+        "quantity" : 0.5,
+        "unit" : "PIECE"
+      }, {
+        "key" : "SMOER",
+        "productTemplate" : "SMOER",
+        "quantity" : 7.5,
+        "unit" : "GRAM"
+      }, {
+        "key" : "HVEDEMEL",
+        "productTemplate" : "HVEDEMEL",
+        "quantity" : 0.5,
+        "unit" : "TABLESPOON"
+      }, {
+        "key" : "LETMAELK",
+        "productTemplate" : "LETMAELK",
+        "quantity" : 1.5,
+        "unit" : "DECILITER"
+      }, {
+        "key" : "OKSEBOUILLON",
+        "productTemplate" : "OKSEBOUILLON",
+        "quantity" : 0.125,
+        "unit" : "PIECE"
+      }, {
+        "key" : "MADKULOER",
+        "productTemplate" : "MADKULOER",
+        "quantity" : 0.25,
+        "unit" : "TEASPOON"
+      }, {
+        "key" : "SALT",
+        "productTemplate" : "SALT",
+        "quantity" : 0.5,
+        "unit" : "TEASPOON"
+      }, {
+        "key" : "SORT_PEBER",
+        "productTemplate" : "SORT_PEBER",
+        "quantity" : 6,
+        "unit" : "GRINDER_TURN"
+      } ],
+      "preparation" : [ {
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Skræl "
+          }, {
+            "ingredient" : "KARTOFFEL"
+          }, {
+            "text" : ". Skær store kartofler over, så stykkerne er nogenlunde lige store."
+          } ]
+        }
+      }, {
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Skræl "
+          }, {
+            "ingredient" : "GULEROD"
+          }, {
+            "text" : " og skær dem i cirka 2 cm stykker."
+          } ]
+        }
+      }, {
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Kom kartofler og gulerødder i en gryde. Hæld koldt vand i, til det står cirka 2 cm over grøntsagerne. Tilsæt "
+          }, {
+            "ingredient" : "SALT",
+            "quantity" : 0.125,
+            "unit" : "TEASPOON"
+          }, {
+            "text" : ". Sæt låg på gryden, men tænd ikke for komfuret endnu."
+          } ]
+        }
+      }, {
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Pil "
+          }, {
+            "ingredient" : "LOEG"
+          }, {
+            "text" : " og skær det i små tern på cirka ½ cm."
+          } ]
+        }
+      }, {
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Del "
+          }, {
+            "ingredient" : "HAKKET_OKSEKOED"
+          }, {
+            "text" : " i portioner på cirka 100 g og form dem til runde bøffer på cirka 1½–2 cm tykkelse. Tryk kødet sammen uden at ælte det."
+          } ]
+        }
+      } ],
+      "equipmentRequirements" : [ "STOVE", "POT", "PAN", "THERMOMETER" ],
+      "steps" : [ {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Sæt gryden med kartofler og gulerødder på trin 9 med låg. Når vandet koger tydeligt, skru ned til trin 6 og kog i 20 minutter."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Fordel "
+          }, {
+            "ingredient" : "SALT",
+            "quantity" : 0.125,
+            "unit" : "TEASPOON"
+          }, {
+            "text" : " og "
+          }, {
+            "ingredient" : "SORT_PEBER",
+            "quantity" : 3,
+            "unit" : "GRINDER_TURN"
+          }, {
+            "text" : " over den ene side af hakkebøfferne."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : "Sæt en stor tør pande på trin 7 og varm den i 2 minutter."
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Læg hakkebøfferne på panden med den krydrede side nedad. Fordel "
+          }, {
+            "ingredient" : "SALT",
+            "quantity" : 0.125,
+            "unit" : "TEASPOON"
+          }, {
+            "text" : " og "
+          }, {
+            "ingredient" : "SORT_PEBER",
+            "quantity" : 3,
+            "unit" : "GRINDER_TURN"
+          }, {
+            "text" : " over oversiden. Steg bøfferne i 3 minutter uden at flytte dem."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : "Vend hakkebøfferne og steg dem i 3 minutter på den anden side på trin 7."
+      }, {
+        "type" : "TEXT",
+        "instruction" : "Mål kernetemperaturen fra siden ind i midten af den tykkeste bøf. Lad bøfferne fortsætte på trin 7, indtil kernetemperaturen når 70 °C. Tag derefter bøfferne af panden og læg dem på en ren tallerken. Behold stegeresterne på panden."
+      }, {
+        "type" : "TEXT",
+        "instruction" : "Når kartofler og gulerødder har kogt i 20 minutter, stik en lille kniv i en af de største kartofler. Når kniven glider let igennem, hæld vandet fra og sæt gryden tilbage uden låg."
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Sæt panden på trin 6. Tilsæt "
+          }, {
+            "ingredient" : "SMOER"
+          }, {
+            "text" : ". Når smørret er smeltet, tilsæt "
+          }, {
+            "ingredient" : "LOEG"
+          }, {
+            "text" : " og steg i 2 minutter. Rør rundt cirka hvert 30. sekund."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Tilsæt "
+          }, {
+            "ingredient" : "HVEDEMEL"
+          }, {
+            "text" : " og rør mel, løg, smør og stegerester grundigt sammen i 30 sekunder."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Skru ned til trin 5. Tilsæt først "
+          }, {
+            "ingredient" : "LETMAELK",
+            "quantity" : 0.5,
+            "unit" : "DECILITER"
+          }, {
+            "text" : " og rør konstant i 30 sekunder."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Tilsæt yderligere "
+          }, {
+            "ingredient" : "LETMAELK",
+            "quantity" : 0.5,
+            "unit" : "DECILITER"
+          }, {
+            "text" : " og rør konstant i 30 sekunder."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Tilsæt de sidste "
+          }, {
+            "ingredient" : "LETMAELK",
+            "quantity" : 0.5,
+            "unit" : "DECILITER"
+          }, {
+            "text" : ", "
+          }, {
+            "ingredient" : "OKSEBOUILLON"
+          }, {
+            "text" : ", "
+          }, {
+            "ingredient" : "MADKULOER"
+          }, {
+            "text" : " og "
+          }, {
+            "ingredient" : "SALT",
+            "quantity" : 0.125,
+            "unit" : "TEASPOON"
+          }, {
+            "text" : ". Rør grundigt i 30 sekunder."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : "Lad sovsen varme på trin 5, til den småbobler. Lad den derefter småboble i 2 minutter og rør cirka hvert 30. sekund."
+      }, {
+        "type" : "TEXT",
+        "instruction" : "Læg hakkebøfferne og saften fra tallerkenen tilbage i sovsen. Hold panden på trin 4 i 2 minutter og vend bøfferne efter 1 minut."
+      }, {
+        "type" : "TEXT",
+        "instruction" : "Sluk for panden og server hakkebøfferne med kartofler, gulerødder og brun pandesovs."
+      } ],
+      "id" : "cf89624f-31af-3cf6-8108-32c6ac20e700"
     }
   ]
 }
