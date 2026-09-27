@@ -166,10 +166,12 @@ function showAuthenticatedApp() {
 let recipeImportEnabled = false;
 let recipeImportNavigationEpoch = 0;
 const recipeImport = createRecipeImport({document, request: jsonRequest});
+const feedback = createFeedback({document, request: jsonRequest, showToast, isAdmin: () => currentUser?.admin === true});
 function renderAdminNavigation() {
   const admin = currentUser?.admin === true;
   document.querySelector('#show-nutrition').hidden = !admin;
   document.querySelector('#more-nutrition').hidden = !admin;
+  document.querySelector('#more-feedback-admin').hidden = !admin;
   recipeImportEnabled = false;
   document.querySelector('#show-more').classList.remove('import-navigation');
   document.querySelector('#more-recipe-import').hidden = true;
@@ -186,6 +188,7 @@ function showUnauthenticatedApp() {
   aiChatLauncher.close();
   aiChat.reset();
   recipeImport.reset();
+  feedback.reset();
   currentUser = null;
   renderAdminNavigation();
   application.hidden = true;
@@ -412,6 +415,7 @@ async function loadProducts() {
 }
 
 function showView(view) {
+  if (view === 'feedback-admin' && !currentUser?.admin) return;
   if (view === 'recipe-import' && (!currentUser?.admin || !recipeImportEnabled)) return;
   aiChatLauncher.close();
   document.querySelector('#chat-launcher').hidden = view === 'ai';
@@ -422,11 +426,14 @@ function showView(view) {
   const kitchenActive = view === 'kitchen';
   const mealPlansActive = view === 'meal-plans';
   const moreActive = view === 'more';
+  const feedbackActive = view === 'feedback-admin';
+  document.querySelector('#feedback-admin-view').hidden = !feedbackActive;
+  if (feedbackActive) feedback.load();
   const nutritionActive = view === 'nutrition-admin';
   const importActive = view === 'recipe-import';
   document.querySelector('#recipe-import-view').hidden = !importActive;
   const aiActive = view === 'ai';
-  const moreNavActive = moreActive || productsActive || kitchenActive || nutritionActive || aiActive || importActive;
+  const moreNavActive = moreActive || productsActive || kitchenActive || nutritionActive || aiActive || importActive || feedbackActive;
   document.querySelector('#ai-view').hidden = !aiActive;
   document.querySelector('#show-ai').classList.toggle('active', aiActive);
   if (aiActive) { aiChat.scrollToLatest(); aiChat.refreshModel(); }
@@ -1488,4 +1495,6 @@ if ('serviceWorker' in navigator) {
 initialize();
 
 document.querySelector('#more-recipe-import').addEventListener('click', () => showView('recipe-import'));
+document.querySelector('#more-feedback-admin').addEventListener('click', () => showView('feedback-admin'));
+document.querySelector('#close-feedback-admin').addEventListener('click', () => showView('more'));
 document.querySelector('#close-recipe-import').addEventListener('click', () => showView('more'));

@@ -8,7 +8,7 @@
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/icons/icon.svg">
-  <link rel="stylesheet" href="/css/app.css?v=53">
+  <link rel="stylesheet" href="/css/app.css?v=54">
   <title>Madkursus</title>
 </head>
 <body>
@@ -61,7 +61,7 @@
       <button class="nav-button secondary-nav" id="show-products" type="button"><span class="nav-icon" data-icon="products"></span><span data-i18n="products.title"></span></button>
       <button class="nav-button secondary-nav" id="show-kitchen" type="button"><span class="nav-icon" data-icon="kitchen"></span><span data-i18n="equipment.title"></span></button>
       <button class="nav-button secondary-nav" id="show-nutrition" type="button" hidden><span class="nav-icon" data-icon="products"></span><span data-i18n="nutrition.title"></span></button>
-      <button class="nav-button mobile-more" id="show-more" type="button"><span class="nav-icon" data-icon="more"></span><span data-i18n="navigation.more"></span></button>
+      <button class="nav-button" id="show-more" type="button"><span class="nav-icon" data-icon="more"></span><span data-i18n="navigation.more"></span></button>
     </nav>
     <button class="logout-button sidebar-logout" id="logout" type="button"><span class="nav-icon" data-icon="logout"></span><span data-i18n="auth.logout"></span></button>
   </aside>
@@ -214,6 +214,8 @@
     <section id="more-view" aria-labelledby="more-title" hidden>
       <div class="page-heading"><p class="eyebrow" data-i18n="common.settings"></p><h2 id="more-title" data-i18n="navigation.more"></h2><p class="page-subtitle" data-i18n="navigation.moreDescription"></p></div>
         <div class="settings-list">
+        <button id="more-send-feedback" type="button"><span class="nav-icon" data-icon="chat"></span><span><strong data-i18n="feedback.sendTitle"></strong><small data-i18n="feedback.sendHint"></small></span><span aria-hidden="true">›</span></button>
+        <button id="more-feedback-admin" type="button" hidden><span class="nav-icon" data-icon="chat"></span><span><strong data-i18n="feedback.adminTitle"></strong><small data-i18n="feedback.adminHint"></small></span><span aria-hidden="true">›</span></button>
           <button id="more-ai" type="button"><span class="nav-icon" data-icon="chat"></span><span><strong data-i18n="chat.assistantName"></strong><small data-i18n="navigation.chatDescription"></small></span><span aria-hidden="true">›</span></button>
         <button id="more-products" type="button"><span class="nav-icon" data-icon="products"></span><span><strong data-i18n="products.title"></strong><small data-i18n="navigation.productsDescription"></small></span><span aria-hidden="true">›</span></button>
         <button id="more-kitchen" type="button"><span class="nav-icon" data-icon="kitchen"></span><span><strong data-i18n="equipment.title"></strong><small data-i18n="navigation.equipmentDescription"></small></span><span aria-hidden="true">›</span></button>
@@ -244,12 +246,30 @@
       <div id="nutrition-admin-list" class="nutrition-admin-list"></div>
       <button class="secondary-button full-button" id="close-nutrition-admin" type="button" data-i18n="common.back"></button>
     </section>
+    <section id="feedback-admin-view" aria-labelledby="feedback-admin-title" hidden>
+      <div class="section-heading"><h2 id="feedback-admin-title" data-i18n="feedback.adminTitle"></h2><button id="reload-feedback" class="secondary-button" type="button" data-i18n="feedback.reload"></button></div>
+      <p id="feedback-admin-message" role="status" hidden></p>
+      <div id="feedback-admin-list" class="feedback-list"></div>
+      <button id="close-feedback-admin" class="secondary-button full-button" type="button" data-i18n="common.back"></button>
+    </section>
   </main>
   </div>
 
   <dialog class="edit-dialog" id="nutrition-edit-dialog"><form id="nutrition-edit-form"><div class="section-heading"><h2 id="nutrition-edit-title" data-i18n="nutrition.editHeading"></h2><button class="icon-button" id="close-nutrition-edit" type="button">×</button></div><input id="nutrition-template-id" type="hidden"><label><span data-i18n="nutrition.carbohydratesGrams"></span><input id="nutrition-grams" type="text" inputmode="decimal" required></label><div class="field-pair"><label><span data-i18n="nutrition.basis"></span><input id="nutrition-basis" type="text" inputmode="decimal" value="100" required></label><label><span data-i18n="common.unit"></span><select id="nutrition-basis-unit"><option value="GRAM" data-i18n="units.gramShort"></option><option value="MILLILITER" data-i18n="units.milliliterShort"></option><option value="PIECE" data-i18n="units.pieceShort"></option></select></label></div><label><span data-i18n="nutrition.source"></span><input id="nutrition-source" required placeholder="" data-i18n-placeholder="nutrition.sourcePlaceholder"></label><label><span data-i18n="nutrition.provider"></span><input id="nutrition-provider" placeholder="" data-i18n-placeholder="nutrition.providerPlaceholder"></label><label><span data-i18n="nutrition.externalFoodId"></span><input id="nutrition-external-id"></label><label><span data-i18n="nutrition.sourceVersion"></span><input id="nutrition-source-version"></label><label><span data-i18n="nutrition.sourceUrl"></span><input id="nutrition-source-url" type="url"></label><label><span data-i18n="common.note"></span><textarea id="nutrition-note" rows="2"></textarea></label><div class="notice error" id="nutrition-edit-error" hidden></div><div class="dialog-actions"><button class="secondary-button" id="cancel-nutrition-edit" type="button" data-i18n="common.cancel"></button><button class="primary-button" type="submit" data-i18n="common.save"></button></div></form></dialog>
   <dialog class="edit-dialog" id="nutrition-match-dialog"><form method="dialog"><div class="section-heading"><div><p class="eyebrow" data-i18n="nutrition.dtu.reference"></p><h2 id="nutrition-match-title" data-i18n="nutrition.dtu.selectFood"></h2></div><button class="icon-button" id="close-nutrition-match" type="button">×</button></div><p class="help-text"><strong data-i18n="nutrition.dtu.suggestions"></strong> <span data-i18n="nutrition.dtu.suggestionsHint"></span></p><label><span data-i18n="nutrition.dtu.searchCatalog"></span><input id="nutrition-dtu-search" type="search" placeholder="" data-i18n-placeholder="nutrition.dtu.searchPlaceholder"></label><p class="help-text" data-i18n="nutrition.dtu.manualSearchHint"></p><div id="nutrition-dtu-results" class="dtu-results"></div></form></dialog>
   <dialog class="edit-dialog confirmation-dialog" id="nutrition-bulk-confirm-dialog"><div class="section-heading"><h2 data-i18n="nutrition.dtu.confirmApproval"></h2><button class="icon-button" id="close-nutrition-bulk-confirm" type="button">×</button></div><p id="nutrition-bulk-confirm-text"></p><p class="help-text" data-i18n="nutrition.dtu.approvalHint"></p><div class="dialog-actions"><button class="secondary-button" id="cancel-nutrition-bulk-confirm" type="button" data-i18n="common.cancel"></button><button class="primary-button" id="confirm-nutrition-bulk" type="button" data-i18n="nutrition.dtu.approveSelected"></button></div></dialog>
+
+  <dialog class="edit-dialog" id="feedback-dialog" aria-labelledby="feedback-dialog-title">
+    <form id="feedback-form">
+      <div class="section-heading"><h2 id="feedback-dialog-title" data-i18n="feedback.sendTitle"></h2><button id="close-feedback" class="icon-button" type="button" data-i18n-aria-label="common.close">×</button></div>
+      <label for="feedback-type" data-i18n="feedback.type"></label>
+      <select id="feedback-type" required><option value="FEEDBACK" data-i18n="feedback.typeFeedback"></option><option value="BUG" data-i18n="feedback.typeBug"></option></select>
+      <label for="feedback-title" data-i18n="feedback.title"></label><input id="feedback-title" type="text" maxlength="200" required>
+      <label for="feedback-description" data-i18n="feedback.description"></label><textarea id="feedback-description" rows="6" maxlength="10000" required></textarea>
+      <p id="feedback-error" class="error-message" role="alert" hidden></p>
+      <div class="dialog-actions"><button id="cancel-feedback" class="secondary-button" type="button" data-i18n="common.cancel"></button><button id="send-feedback" class="primary-button" type="submit" data-i18n="feedback.send"></button></div>
+    </form>
+  </dialog>
 
   <dialog class="edit-dialog" id="edit-product-dialog" aria-labelledby="edit-product-title">
     <form id="edit-product-form">
@@ -492,14 +512,15 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden><span id="toast-message"></span><button id="toast-action" type="button" hidden></button></div>
 
-  <script src="/js/locales/da.js?v=53" defer></script>
-  <script src="/js/i18n.js?v=53" defer></script>
-  <script src="/js/dialog-viewport.js?v=53" defer></script>
-  <script src="/js/vendor/marked.umd.js?v=53" defer></script>
-  <script src="/js/vendor/purify.min.js?v=53" defer></script>
-  <script src="/js/chat-markdown.js?v=53" defer></script>
-  <script src="/js/ai-chat.js?v=53" defer></script>
-  <script src="/js/recipe-import.js?v=53" defer></script>
-  <script src="/js/app.js?v=53" defer></script>
+  <script src="/js/locales/da.js?v=54" defer></script>
+  <script src="/js/i18n.js?v=54" defer></script>
+  <script src="/js/dialog-viewport.js?v=54" defer></script>
+  <script src="/js/vendor/marked.umd.js?v=54" defer></script>
+  <script src="/js/vendor/purify.min.js?v=54" defer></script>
+  <script src="/js/chat-markdown.js?v=54" defer></script>
+  <script src="/js/ai-chat.js?v=54" defer></script>
+  <script src="/js/recipe-import.js?v=54" defer></script>
+  <script src="/js/feedback.js?v=54" defer></script>
+  <script src="/js/app.js?v=54" defer></script>
 </body>
 </html>

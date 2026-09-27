@@ -18,6 +18,60 @@ tags:
   - name: cooking-process
   - name: nutrition-admin
 paths:
+  /v1/feedback:
+    post:
+      tags: [feedback]
+      operationId: submitFeedback
+      summary: Submit feedback as the authenticated user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/FeedbackInput'}
+      responses:
+        '201': {description: Feedback submitted}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '401': {$ref: '#/components/responses/unauthorized'}
+        '403': {$ref: '#/components/responses/forbidden'}
+  /v1/admin/feedback:
+    get:
+      tags: [feedback]
+      operationId: getFeedback
+      summary: List all feedback, admin only
+      responses:
+        '200': {description: Feedback newest first, content: {application/json: {schema: {type: array, items: {$ref: '#/components/schemas/Feedback'}}}}}
+        '401': {$ref: '#/components/responses/unauthorized'}
+        '403': {$ref: '#/components/responses/forbidden'}
+  /v1/admin/feedback/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: {type: string, format: uuid}
+    patch:
+      tags: [feedback]
+      operationId: updateFeedbackStatus
+      summary: Change feedback status, admin only
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/FeedbackStatusInput'}
+      responses:
+        '200': {description: Updated feedback, content: {application/json: {schema: {$ref: '#/components/schemas/Feedback'}}}}
+        '400': {$ref: '#/components/responses/badRequest'}
+        '401': {$ref: '#/components/responses/unauthorized'}
+        '403': {$ref: '#/components/responses/forbidden'}
+        '404': {$ref: '#/components/responses/notFound'}
+    delete:
+      tags: [feedback]
+      operationId: deleteFeedback
+      summary: Delete feedback, admin only
+      responses:
+        '204': {description: Feedback deleted}
+        '401': {$ref: '#/components/responses/unauthorized'}
+        '403': {$ref: '#/components/responses/forbidden'}
+        '404': {$ref: '#/components/responses/notFound'}
   /v1/admin/recipe-template-import:
     get:
       tags: [recipe-template-import]
@@ -855,6 +909,35 @@ components:
         application/json:
           schema: {$ref: '#/components/schemas/ErrorMessage'}
   schemas:
+    FeedbackType:
+      type: string
+      enum: [FEEDBACK, BUG]
+    FeedbackStatus:
+      type: string
+      enum: [OPEN, IN_PROGRESS, DONE]
+    FeedbackInput:
+      type: object
+      required: [type, title, description]
+      properties:
+        type: {$ref: '#/components/schemas/FeedbackType'}
+        title: {type: string, minLength: 1, maxLength: 200}
+        description: {type: string, minLength: 1, maxLength: 10000}
+    FeedbackStatusInput:
+      type: object
+      required: [status]
+      properties:
+        status: {$ref: '#/components/schemas/FeedbackStatus'}
+    Feedback:
+      type: object
+      required: [id, type, title, description, status, createdBy, createdAt]
+      properties:
+        id: {type: string, format: uuid}
+        type: {$ref: '#/components/schemas/FeedbackType'}
+        title: {type: string}
+        description: {type: string}
+        status: {$ref: '#/components/schemas/FeedbackStatus'}
+        createdBy: {type: string, format: uuid, description: ID of the submitting user}
+        createdAt: {type: string, format: date-time}
     RecipeTemplateImportStatus:
       type: object
       properties:

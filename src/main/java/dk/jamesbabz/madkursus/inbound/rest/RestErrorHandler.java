@@ -71,6 +71,21 @@ public class RestErrorHandler {
         return response(HttpStatus.BAD_REQUEST, exception.getMessage(), List.of());
     }
 
+    @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
+    ResponseEntity<ErrorMessageDTO> unreadableRequest() {
+        return response(HttpStatus.BAD_REQUEST, "Invalid request body", List.of());
+    }
+
+    @ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class)
+    ResponseEntity<ErrorMessageDTO> unsupportedMethod() {
+        return response(HttpStatus.METHOD_NOT_ALLOWED, "Request method not supported", List.of());
+    }
+
+    @ExceptionHandler(org.springframework.web.servlet.resource.NoResourceFoundException.class)
+    ResponseEntity<ErrorMessageDTO> missingResource() {
+        return response(HttpStatus.NOT_FOUND, "Resource not found", List.of());
+    }
+
     @ExceptionHandler(Exception.class)
     ResponseEntity<ErrorMessageDTO> unexpected(Exception exception) {
         UUID correlationId = UUID.randomUUID();

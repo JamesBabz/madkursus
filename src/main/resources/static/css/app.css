@@ -642,3 +642,8 @@ body:has(dialog[open]) .chat-launcher { visibility: hidden; }
 .chat-markdown blockquote { padding-left: .7rem; border-left: 3px solid var(--color-border); }
 .chat-markdown > :first-child { margin-top: 0; }
 .chat-markdown > :last-child { margin-bottom: 0; }
+.feedback-list { display: grid; gap: 1rem; margin-block: 1rem; }
+.feedback-card { padding: 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-card); background: var(--color-surface); overflow-wrap: anywhere; min-width: 0; }
+.feedback-card h3 { margin-top: 0; }
+.feedback-description { white-space: pre-wrap; }
+.feedback-card > button { margin-top: .75rem; }

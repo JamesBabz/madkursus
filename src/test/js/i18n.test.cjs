@@ -31,7 +31,7 @@ test('known validation is localized and unknown technical details survive the AP
 });
 test('all static and literal JS keys exist and translations contain no HTML entities',()=>{
   const base=path.join(__dirname,'../../main/resources/static');
-  for(const file of ['index.html','js/app.js','js/ai-chat.js','js/recipe-import.js','js/i18n.js']){
+  for(const file of ['index.html','js/app.js','js/ai-chat.js','js/recipe-import.js','js/feedback.js','js/i18n.js']){
     const source=fs.readFileSync(path.join(base,file),'utf8');
     const keys=[...source.matchAll(/\bt\(["']([^"']+)["']\s*(?=[,)])/g),...source.matchAll(/data-i18n(?:-[\w-]+)?="([^"]+)"/g)];
     for(const [,key]of keys)assert.ok(Object.hasOwn(dictionary,key),file+': '+key);
