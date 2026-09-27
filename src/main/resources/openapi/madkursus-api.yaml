@@ -913,7 +913,7 @@ components:
       properties:
         answer:
           type: string
-          description: Plain Danish text assembled from validated meal proposals; never raw model JSON or a model-authored purchase list.
+          description: Plain text cooking guidance or Java-presented discovery results. Cooking guidance follows the user language and does not verify application state.
         knownRecipes:
           type: array
           description: Verified stored recipes evaluated for two portions. Empty or absent for AI meal ideas.

@@ -2573,6 +2573,122 @@
         "instruction" : "Sluk for panden og server hakkebøfferne med kartofler, gulerødder og brun pandesovs."
       } ],
       "id" : "cf89624f-31af-3cf6-8108-32c6ac20e700"
+    },
+    {
+      "key" : "SIMPEL_FLUFFY_AEGGEKAGE_MED_BACON",
+      "name" : "Simpel fluffy æggekage med bacon",
+      "description" : "Blød og fluffy æggekage stegt langsomt på panden og serveret med sprødstegt bacon.",
+      "ingredients" : [ {
+        "key" : "AEG",
+        "productTemplate" : "AEG",
+        "quantity" : 3,
+        "unit" : "PIECE"
+      }, {
+        "key" : "BACON",
+        "productTemplate" : "BACON",
+        "quantity" : 75,
+        "unit" : "GRAM"
+      }, {
+        "key" : "LETMAELK",
+        "productTemplate" : "LETMAELK",
+        "quantity" : 45,
+        "unit" : "MILLILITER"
+      }, {
+        "key" : "SALT",
+        "productTemplate" : "SALT",
+        "quantity" : 0.25,
+        "unit" : "TEASPOON"
+      }, {
+        "key" : "SORT_PEBER",
+        "productTemplate" : "SORT_PEBER",
+        "quantity" : 5,
+        "unit" : "GRINDER_TURN"
+      }, {
+        "key" : "SMOER",
+        "productTemplate" : "SMOER",
+        "quantity" : 5,
+        "unit" : "GRAM"
+      } ],
+      "preparation" : [ {
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Slå "
+          }, {
+            "ingredient" : "AEG"
+          }, {
+            "text" : " ud i en skål. Tilsæt "
+          }, {
+            "ingredient" : "LETMAELK"
+          }, {
+            "text" : ", "
+          }, {
+            "ingredient" : "SALT"
+          }, {
+            "text" : " og "
+          }, {
+            "ingredient" : "SORT_PEBER"
+          }, {
+            "text" : ". Pisk i 30 sekunder, til blandingen er ensartet."
+          } ]
+        }
+      } ],
+      "steps" : [ {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Sæt en tør, kold pande på 6/9. Læg "
+          }, {
+            "ingredient" : "BACON"
+          }, {
+            "text" : " på panden i hele skiver. Steg 4 minutter på første side og 3 minutter på den anden side. Hvis baconen stadig er lys og blød, steg 1 minut ekstra på hver side. Tag baconen af panden, og behold baconfedtet på panden."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Skru panden ned på 4/9. Tilsæt "
+          }, {
+            "ingredient" : "SMOER"
+          }, {
+            "text" : " og lad det smelte i cirka 30 sekunder. Vip panden, så fedtstoffet fordeles over bunden."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Giv æggeblandingen en kort omrøring og hæld den på panden. Lad den stå urørt i 1 minut."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Træk forsigtigt den stivnede æggemasse fra kanten ind mod midten, og vip panden, så flydende æg løber ud i de tomme områder. Gentag cirka hvert 30. sekund i 2 minutter. Stop derefter med at røre."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Læg den stegte bacon oven på æggekagen. Læg låg på panden, behold varmen på 4/9, og steg uden at løfte låget i 3 minutter."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Sluk for varmen, og lad æggekagen stå på eftervarmen med låget på i 2 minutter. Tag låget af. Æggekagen er færdig, når der ikke længere er synligt flydende æg på toppen. Den skal stadig være blød og fluffy."
+          } ]
+        }
+      } ],
+      "equipmentRequirements" : [ {
+        "equipmentType" : "STOVE"
+      }, {
+        "equipmentType" : "PAN"
+      } ],
+      "id" : "d64a0705-7720-37d2-8936-131a1dc6444b"
     }
   ]
 }

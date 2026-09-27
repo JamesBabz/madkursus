@@ -28,7 +28,9 @@ public class OllamaChatAdapter implements AiChatPort, dk.jamesbabz.madkursus.ser
     static final String INTENT_PROMPT = """
             Classify the user message, never answer it. Return the requested JSON fields only.
             MEAL_PLAN_DISCOVERY means meal plans or multiple meals/days. MEAL_DISCOVERY means meal ideas.
-            GENERAL_COOKING means cooking instructions. OTHER means unrelated.
+            GENERAL_COOKING means food/kitchen questions: techniques, substitutions, cooking times,
+            temperatures, quantities, storage, freezing/reheating or troubleshooting. OTHER means unrelated.
+            Asking how much rice for 3 people is GENERAL_COOKING, not a request for multiple meals.
             requestedMealCount is explicit meals/days, or null if omitted; no model default and no dates.
             "aftensmad mandag til fredag" means 5 meals. inventoryAware means mentions available food.
             Ingredient lists are mutually exclusive: less often/less amount is LIMITED; completely without is EXCLUDED;
@@ -171,6 +173,31 @@ public class OllamaChatAdapter implements AiChatPort, dk.jamesbabz.madkursus.ser
     }
 
     @Override
+    public String answerCooking(AiChatRequest request) {
+        var messages = request.messages().stream()
+                .map(message -> new Message(message.role().name().toLowerCase(Locale.ROOT), message.content())).toList();
+        long started = System.nanoTime();
+        log.info("AI cooking answer started model={} promptCharacters={}", model,
+                messages.stream().mapToInt(message -> message.content().length()).sum());
+        try {
+            var response = client.post().uri("/api/chat").contentType(MediaType.APPLICATION_JSON)
+                    .body(new CookingRequest(model, messages, false)).retrieve().body(ChatResponse.class);
+            if (response == null || !response.done() || response.message() == null
+                    || !"assistant".equals(response.message().role()) || response.message().content() == null
+                    || response.message().content().isBlank() || response.message().content().length() > 20000)
+                throw new AiUnavailableException();
+            log.info("AI cooking answer completed model={} durationMs={}", model, elapsed(started));
+            return response.message().content().strip();
+        } catch (RestClientException exception) {
+            log.warn("AI cooking answer failed model={} reason=PROVIDER_FAILURE durationMs={}", model, elapsed(started));
+            throw new AiUnavailableException(exception);
+        } catch (AiUnavailableException exception) {
+            log.warn("AI cooking answer failed model={} reason=INVALID_RESPONSE durationMs={}", model, elapsed(started));
+            throw exception;
+        }
+    }
+
+    @Override
     public AiMealProposal chat(AiChatRequest request) {
         var messages = new java.util.ArrayList<>(request.messages().stream()
                 .map(message -> new Message(message.role().name().toLowerCase(Locale.ROOT), message.content()))
@@ -230,6 +257,7 @@ public class OllamaChatAdapter implements AiChatPort, dk.jamesbabz.madkursus.ser
     private static long elapsed(long start) { return (System.nanoTime() - start) / 1_000_000; }
     private record Envelope(AiMealProposal.Reply reply, List<JsonNode> suggestions) {}
     private record IntentRequest(String model, List<Message> messages, boolean stream, JsonNode format, java.util.Map<String, Integer> options) {}
+    private record CookingRequest(String model, List<Message> messages, boolean stream) {}
     private record ChatRequest(String model, List<Message> messages, boolean stream, JsonNode format) {}
     @JsonIgnoreProperties(ignoreUnknown = true)
     private record Message(String role, String content) {}

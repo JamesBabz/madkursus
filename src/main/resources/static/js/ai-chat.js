@@ -1,6 +1,6 @@
 // CommonJS is used by the focused Node tests; browsers use the shared global helper.
 /* In-memory chat UI. Transport is supplied by the application's session/CSRF helper. */
-function createAiChat(root, request, openKnownRecipe = () => {}) {
+function createAiChat(root, request, openKnownRecipe = () => {}, renderAnswer = renderChatMarkdown) {
   const t = typeof module !== "undefined" && module.exports ? require("./i18n.js").t : globalThis.t;
   const find = id => root.querySelector(`#chat-${id}`);
   const form = find('form'), input = find('input'), send = find('send');
@@ -51,8 +51,13 @@ function createAiChat(root, request, openKnownRecipe = () => {}) {
     message.className = `chat-message chat-message-${role}`;
     const label = root.ownerDocument.createElement('strong');
     label.textContent = role === 'user' ? t("chat.userName") : t("chat.assistantName");
-    const content = root.ownerDocument.createElement('p');
-    content.textContent = text;
+    const content = root.ownerDocument.createElement(role === 'assistant' ? 'div' : 'p');
+    if (role === 'assistant') {
+      content.className = 'chat-markdown';
+      renderAnswer(content, text);
+    } else {
+      content.textContent = text;
+    }
     message.append(label, content);
     for (const recipe of recipes) {
       if (!recipe || typeof recipe.id !== 'string' || typeof recipe.name !== 'string' || !['RECIPE', 'TEMPLATE'].includes(recipe.source)) continue;

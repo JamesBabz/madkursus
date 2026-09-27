@@ -76,6 +76,16 @@ class AiApiTest {
         verify(service).chat("What can I make?", null);
     }
 
+    @Test void conversationalAnswerHasNoRecipeCardsOrPlanProposal() throws Exception {
+        String question = "Hvor længe skal kartofler koge?";
+        String answer = "Det afhænger af størrelsen. Prøv, om de er møre.";
+        when(service.chat(question, null)).thenReturn(new AiChatResponse(answer));
+        mvc.perform(post("/v1/ai/chat").with(user("cook")).with(csrf()).contentType("application/json")
+                .content(new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(java.util.Map.of("message", question))))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.answer").value(answer))
+                .andExpect(jsonPath("$.knownRecipes").isEmpty()).andExpect(jsonPath("$.mealPlanProposal").doesNotExist());
+    }
+
     @ParameterizedTest
     @ValueSource(ints = {-1, 21})
     void rejectsInvalidAdditionalIngredientLimit(int limit) throws Exception {

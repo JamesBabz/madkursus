@@ -59,6 +59,60 @@ class OllamaChatAdapterTest {
         server.verify();
     }
 
+    @Test void cookingAnswerUsesConfiguredModelAndPlainTextWithoutRecipeSchema() throws Exception {
+        mockServer();
+        String question = "Hvor længe skal kartofler koge?";
+        String answer = "Prøv med en kniv, om kartoflerne er møre. Ændr tiden efter størrelsen.";
+        var cookingRequest = new AiChatRequest(List.of(new AiChatMessage(AiChatMessage.Role.SYSTEM, "Small cooking prompt"),
+                new AiChatMessage(AiChatMessage.Role.USER, question)));
+        var body = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(java.util.Map.of(
+                "done", true, "message", java.util.Map.of("role", "assistant", "content", answer)));
+        server.expect(requestTo("http://home-server:11434/api/chat"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(jsonPath("$.model").value("configured-model"))
+                .andExpect(jsonPath("$.stream").value(false))
+                .andExpect(jsonPath("$.format").doesNotExist())
+                .andExpect(jsonPath("$.messages.length()").value(2))
+                .andExpect(jsonPath("$.messages[0].content").value("Small cooking prompt"))
+                .andExpect(jsonPath("$.messages[1].content").value(question))
+                .andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
+        assertThat(adapter.answerCooking(cookingRequest)).isEqualTo(answer);
+        server.verify();
+    }
+    @ParameterizedTest
+    @ValueSource(strings = {"", "not json", "null", "{}", "{\"done\":true}",
+            "{\"message\":{\"role\":\"assistant\",\"content\":\" \"},\"done\":true}",
+            "{\"message\":{\"role\":\"assistant\",\"content\":\"partial\"},\"done\":false}",
+            "{\"message\":{\"role\":\"user\",\"content\":\"wrong role\"},\"done\":true}"})
+    void malformedCookingResponseIsUnavailable(String body) {
+        mockServer();
+        server.expect(requestTo("http://home-server:11434/api/chat")).andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
+        assertThatThrownBy(() -> adapter.answerCooking(request)).isInstanceOf(AiUnavailableException.class);
+        server.verify();
+    }
+    @Test void oversizedCookingResponseIsUnavailable() throws Exception {
+        mockServer();
+        var body = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(java.util.Map.of(
+                "done", true, "message", java.util.Map.of("role", "assistant", "content", "x".repeat(20001))));
+        server.expect(requestTo("http://home-server:11434/api/chat")).andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
+        assertThatThrownBy(() -> adapter.answerCooking(request)).isInstanceOf(AiUnavailableException.class);
+        server.verify();
+    }
+    @Test void cookingHttpFailureUsesExistingProviderIndependentException() {
+        mockServer();
+        server.expect(requestTo("http://home-server:11434/api/chat"))
+                .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR).body("private provider details"));
+        assertThatThrownBy(() -> adapter.answerCooking(request)).isInstanceOf(AiUnavailableException.class)
+                .hasMessageNotContaining("private provider details");
+        server.verify();
+    }
+    @Test void cookingTimeoutUsesExistingProviderIndependentException() {
+        mockServer();
+        server.expect(requestTo("http://home-server:11434/api/chat")).andRespond(withException(new SocketTimeoutException("Read timed out")));
+        assertThatThrownBy(() -> adapter.answerCooking(request)).isInstanceOf(AiUnavailableException.class);
+        server.verify();
+    }
+
     @Test
     void convertsHttpErrorToProviderIndependentFailure() {
         mockServer();
@@ -195,8 +249,10 @@ class OllamaChatAdapterTest {
             org.mockito.Mockito.when(templates.search(null,true)).thenReturn(List.of());
             org.mockito.Mockito.when(inventory.getAll()).thenReturn(java.util.stream.IntStream.range(0,3).mapToObj(i ->
                     new InventoryItem(java.util.UUID.randomUUID(),new Product(java.util.UUID.randomUUID(),java.util.UUID.randomUUID(),"Food"+i,ProductCategory.OTHER,Unit.GRAM),java.math.BigDecimal.TEN)).toList());
+            var intents = org.mockito.Mockito.mock(dk.jamesbabz.madkursus.service.ports.AiIntentPort.class);
+            org.mockito.Mockito.when(intents.interpret(org.mockito.ArgumentMatchers.any())).thenReturn(new AiChatIntent(AiChatIntent.Intent.OTHER, false, List.of(), List.of()));
             var service=new dk.jamesbabz.madkursus.service.applications.AiChatService(org.mockito.Mockito.mock(dk.jamesbabz.madkursus.service.applications.MealPlanDiscoveryService.class),inventory,adapter,templates,new dk.jamesbabz.madkursus.service.applications.AiSuggestionValidator(),org.mockito.Mockito.mock(dk.jamesbabz.madkursus.service.applications.RecipeMatchingService.class),
-                    org.mockito.Mockito.mock(dk.jamesbabz.madkursus.service.ports.AiIntentPort.class),
+                    intents,
                     new dk.jamesbabz.madkursus.service.applications.IngredientPreferenceResolver(templates),
                     org.mockito.Mockito.mock(dk.jamesbabz.madkursus.service.ports.CurrentUserProvider.class));
             var content="{\"reply\":\""+reply+"\",\"suggestions\":"+meal+"}";

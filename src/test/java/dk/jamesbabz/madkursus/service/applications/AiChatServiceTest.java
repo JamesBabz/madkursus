@@ -27,6 +27,7 @@ class AiChatServiceTest {
             aiPort, templates, new AiSuggestionValidator(), matching, intents, new IngredientPreferenceResolver(templates), new SecurityCurrentUserProvider());
     @BeforeEach void setup() {
         authenticate(userId);
+        when(intents.interpret(any())).thenReturn(new AiChatIntent(AiChatIntent.Intent.OTHER, false, List.of(), List.of()));
         when(templates.search(null,true)).thenReturn(List.of());
         when(aiPort.chat(any())).thenReturn(new AiMealProposal(AiMealProposal.Reply.NO_SUGGESTIONS,List.of()));
     }
@@ -118,7 +119,7 @@ class AiChatServiceTest {
         assertThatThrownBy(()->service.chat("Dinner?",-1)).isInstanceOf(InvalidInputException.class);
         SecurityContextHolder.clearContext();
         assertThatThrownBy(()->service.chat("Dinner?")).isInstanceOf(org.springframework.security.authentication.AuthenticationCredentialsNotFoundException.class);
-        verifyNoInteractions(inventoryPort);verify(aiPort,never()).chat(any());
+        verifyNoInteractions(inventoryPort);verify(aiPort,never()).chat(any());verify(aiPort,never()).answerCooking(any());
     }
     @Test void providerFailureRemainsUnavailable() {
         when(inventoryPort.findAllByUserId(userId)).thenReturn(List.of());when(aiPort.chat(any())).thenThrow(new AiUnavailableException());
@@ -126,7 +127,7 @@ class AiChatServiceTest {
     }
     @Test void metadataDoesNotGenerateOrReadInventory() {
         when(aiPort.configuredModel()).thenReturn("gemma3:4b");assertThat(service.configuredModel()).isEqualTo("gemma3:4b");
-        verifyNoInteractions(inventoryPort);verify(aiPort,never()).chat(any());
+        verifyNoInteractions(inventoryPort);verify(aiPort,never()).chat(any());verify(aiPort,never()).answerCooking(any());
     }
     @Test void compactReferencesKeepIdentityAndExcludeRedundantCatalogEntries() {
         var owned = new ProductTemplate(UUID.randomUUID(),"Owned",ProductCategory.VEGETABLE,Unit.PIECE,List.of(),true);
@@ -153,7 +154,7 @@ class AiChatServiceTest {
         var match=new RecipeMatch(UUID.randomUUID(),RecipeMatch.Source.RECIPE,"Kødboller i tomatsovs med pasta",RecipeMatch.State.COOKABLE,List.of(),List.of());
         when(matching.findMatches(null,java.util.Set.of(),2)).thenReturn(List.of(match));
         assertThat(service.chat("Hvad kan jeg lave med det jeg har i mit inventar?").knownRecipes()).containsExactly(match);
-        verify(aiPort,never()).chat(any());
+        verify(aiPort,never()).chat(any());verify(aiPort,never()).answerCooking(any());
         when(inventoryPort.findAllByUserId(userId)).thenReturn(List.of());
         service.chat("Hvad kan jeg lave uden æg?");verify(aiPort).chat(any());verify(matching,times(1)).findMatches(any(),any(),eq(2));
     }
@@ -173,7 +174,7 @@ class AiChatServiceTest {
         var match=new RecipeMatch(UUID.randomUUID(),RecipeMatch.Source.RECIPE,"Kødboller i tomatsovs med pasta",RecipeMatch.State.COOKABLE,List.of(),List.of());
         when(matching.findMatches(null,java.util.Set.of(),2)).thenReturn(List.of(match));
         assertThat(service.chat(message).knownRecipes()).containsExactly(match);
-        verify(matching).findMatches(null,java.util.Set.of(),2);verify(aiPort,never()).chat(any());
+        verify(matching).findMatches(null,java.util.Set.of(),2);verify(aiPort,never()).chat(any());verify(aiPort,never()).answerCooking(any());
     }
     @org.junit.jupiter.params.ParameterizedTest
     @org.junit.jupiter.params.provider.ValueSource(strings={"Hvad kan jeg lave uden æg?", "Hvad kan jeg lave med kylling?", "Hvordan laver jeg pasta?", "Genstart min server", "Hvad kan jeg lave? Jeg har lyst til kylling i dag."})
@@ -191,7 +192,7 @@ class AiChatServiceTest {
         var known=new RecipeMatch(UUID.randomUUID(),RecipeMatch.Source.RECIPE,"Known",RecipeMatch.State.COOKABLE,List.of(),List.of());
         when(matching.findMatches(null,java.util.Set.of(),2)).thenReturn(List.of(known));
         assertThat(service.chat(message).knownRecipes()).containsExactly(known);
-        verify(intents).interpret(message);verify(aiPort,never()).chat(any());
+        verify(intents).interpret(message);verify(aiPort,never()).chat(any());verify(aiPort,never()).answerCooking(any());
     }
     @Test void exactTermIdentityIsPassedToMatchingWithTheHardLimit() {
         var chicken=new ProductTemplate(UUID.randomUUID(),"Kylling",ProductCategory.MEAT,Unit.GRAM,List.of(),true);
@@ -200,32 +201,87 @@ class AiChatServiceTest {
         var known=new RecipeMatch(UUID.randomUUID(),RecipeMatch.Source.RECIPE,"Known",RecipeMatch.State.COOKABLE,List.of(),List.of());
         when(matching.findMatches(0,java.util.Set.of(chicken.id()),2)).thenReturn(List.of(known));
         assertThat(service.chat("Jeg har lyst til kylling i dag",0).knownRecipes()).containsExactly(known);
-        verify(matching).findMatches(0,java.util.Set.of(chicken.id()),2);verify(aiPort,never()).chat(any());
+        verify(matching).findMatches(0,java.util.Set.of(chicken.id()),2);verify(aiPort,never()).chat(any());verify(aiPort,never()).answerCooking(any());
     }
     @Test void unresolvedPreferenceDoesNotBlockKnownRecipes() {
         when(intents.interpret(any())).thenReturn(new AiChatIntent(AiChatIntent.Intent.MEAL_DISCOVERY,false,List.of("unknown"),List.of()));
         var known=new RecipeMatch(UUID.randomUUID(),RecipeMatch.Source.RECIPE,"Known",RecipeMatch.State.COOKABLE,List.of(),List.of());
         when(matching.findMatches(null,java.util.Set.of(),2)).thenReturn(List.of(known));
         assertThat(service.chat("Jeg har lyst til noget nyt").knownRecipes()).containsExactly(known);
-        verify(aiPort,never()).chat(any());
+        verify(aiPort,never()).chat(any());verify(aiPort,never()).answerCooking(any());
     }
-    @Test void cookingQuestionsAndExclusionsKeepExistingChatBehavior() {
-        when(inventoryPort.findAllByUserId(userId)).thenReturn(List.of());
-        when(intents.interpret("Hvordan koger jeg pasta?")).thenReturn(new AiChatIntent(AiChatIntent.Intent.GENERAL_COOKING,false,List.of(),List.of()));
-        service.chat("Hvordan koger jeg pasta?");verify(aiPort).chat(any());verifyNoInteractions(matching);
-        clearInvocations(aiPort);
+    @Test void exclusionsKeepExistingMealDiscoveryBehavior() {
         when(intents.interpret("Noget uden æg")).thenReturn(new AiChatIntent(AiChatIntent.Intent.MEAL_DISCOVERY,false,List.of(),List.of("æg")));
-        service.chat("Noget uden æg");verify(aiPort).chat(any());verifyNoInteractions(matching);
+        service.chat("Noget uden æg");
+        verify(aiPort).chat(any());
+        verify(aiPort, never()).answerCooking(any());
+        verifyNoInteractions(matching);
     }
-    @Test void interpreterFailureFallsBackToExistingChatRatherThanFailingTheRequest() {
-        when(inventoryPort.findAllByUserId(userId)).thenReturn(List.of());
-        when(intents.interpret(any())).thenThrow(new AiUnavailableException());
-        assertThat(service.chat("Yo hvad kan jeg bikse sammen?").answer()).isNotBlank();verify(aiPort).chat(any());
+    @Test void interpreterFailureDoesNotFallThroughToAnyGenerationOrInventoryContext() {
+        var failure = new AiUnavailableException();
+        when(intents.interpret(any())).thenThrow(failure);
+        assertThatThrownBy(() -> service.chat("Yo hvad kan jeg bikse sammen?")).isSameAs(failure);
+        verifyNoInteractions(aiPort, inventoryPort, templates, matching);
+    }
+    @Test void absentIntentIsUnavailableWithoutGeneration() {
+        when(intents.interpret(any())).thenReturn(null);
+        assertThatThrownBy(() -> service.chat("Hvor længe skal kartofler koge?")).isInstanceOf(AiUnavailableException.class);
+        verifyNoInteractions(aiPort, inventoryPort, templates, matching);
+    }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings = {
+        "Hvor længe skal kartofler koge?", "Hvorfor blev min sovs for tynd?",
+        "Kan jeg bruge mælk i stedet for fløde?", "Hvilken kernetemperatur skal kylling have?",
+        "Hvordan laver jeg sovs fra panden?", "Hvad er forskellen på at stege og sautere?",
+        "Hvor meget ris skal jeg bruge til 3 personer?", "Kan jeg fryse det her?",
+        "Hvor længe kan det holde sig i køleskabet?", "How long should potatoes boil?"
+    })
+    void generalCookingUsesOnlySmallPromptAndCurrentMessageWithoutApplicationState(String message) {
+        when(intents.interpret(message)).thenReturn(new AiChatIntent(AiChatIntent.Intent.GENERAL_COOKING, true, List.of(), List.of()));
+        String answer = "Det afhænger af størrelsen. Prøv med en kniv, om kartoflerne er møre.";
+        when(aiPort.answerCooking(any())).thenReturn(answer);
+        // A discovery-only UI limit must not trigger inventory/catalog loading for a cooking question.
+        var result = service.chat(message, 0);
+        assertThat(result.answer()).isEqualTo(answer);
+        assertThat(result.knownRecipes()).isEmpty();
+        assertThat(result.mealPlanProposal()).isNull();
+        var captured = ArgumentCaptor.forClass(AiChatRequest.class);
+        verify(aiPort).answerCooking(captured.capture());
+        var messages = captured.getValue().messages();
+        assertThat(messages).hasSize(2);
+        assertThat(messages.get(0).role()).isEqualTo(AiChatMessage.Role.SYSTEM);
+        assertThat(messages.get(0).content()).hasSizeLessThan(1300).contains("simple Markdown")
+                .contains("beginner-friendly", "Danish", "food safety", "uncertainty", "clarifying question", "not checked")
+                .doesNotContain("AVAILABLE INGREDIENTS", "CATALOG REFERENCES", "Reply contract", "p0", "t0");
+        assertThat(messages.get(1)).isEqualTo(new AiChatMessage(AiChatMessage.Role.USER, message));
+        verifyNoMoreInteractions(aiPort);
+        // No reads or mutations are possible on these paths; no domain dependency is invoked.
+        verifyNoInteractions(inventoryPort, templates, matching);
+    }
+    @Test void cookingProviderFailurePropagatesWithoutMealGenerationFallback() {
+        when(intents.interpret(any())).thenReturn(new AiChatIntent(AiChatIntent.Intent.GENERAL_COOKING, false, List.of(), List.of()));
+        var failure = new AiUnavailableException();
+        when(aiPort.answerCooking(any())).thenThrow(failure);
+        assertThatThrownBy(() -> service.chat("Hvordan laver jeg sovs?")).isSameAs(failure);
+        verify(aiPort).answerCooking(any());
+        verifyNoMoreInteractions(aiPort);
+        verifyNoInteractions(inventoryPort, templates, matching);
+    }
+    @Test void cookingRequestsDoNotAccumulateServerSideHistory() {
+        when(intents.interpret(any())).thenReturn(new AiChatIntent(AiChatIntent.Intent.GENERAL_COOKING, false, List.of(), List.of()));
+        when(aiPort.answerCooking(any())).thenReturn("Et svar");
+        service.chat("Hvor længe skal kartofler koge?");
+        service.chat("Kan jeg fryse det her?");
+        var captured = ArgumentCaptor.forClass(AiChatRequest.class);
+        verify(aiPort, times(2)).answerCooking(captured.capture());
+        assertThat(captured.getAllValues().get(1).messages()).hasSize(2)
+                .noneMatch(m -> m.content().contains("kartofler"));
+        assertThat(captured.getAllValues().get(1).messages().getLast().content()).isEqualTo("Kan jeg fryse det her?");
     }
     @Test void quickActionAndConfidentStockQuestionNeverNeedInterpretation() {
         when(matching.findMatches(null,java.util.Set.of(),2)).thenReturn(List.of(new RecipeMatch(UUID.randomUUID(),RecipeMatch.Source.RECIPE,"Known",RecipeMatch.State.COOKABLE,List.of(),List.of())));
         service.chat("Hvad kan jeg lave?"); service.chat("Hvad kan jeg lave med det jeg har på lager?");
-        verifyNoInteractions(intents);verify(aiPort,never()).chat(any());
+        verifyNoInteractions(intents);verify(aiPort,never()).chat(any());verify(aiPort,never()).answerCooking(any());
     }
     @Test void interpretedPreferenceFlowsThroughRealMatcherAndRankerButZeroLimitWins() {
         var chicken=new ProductTemplate(UUID.randomUUID(),"Kylling",ProductCategory.MEAT,Unit.GRAM,List.of(),true);
@@ -242,6 +298,6 @@ class AiChatServiceTest {
         var subject=new AiChatService(new MealPlanDiscoveryService(matching, new IngredientPreferenceResolver(templates)), mock(InventoryService.class),aiPort,templates,new AiSuggestionValidator(),realMatcher,intents,new IngredientPreferenceResolver(templates),current);
         assertThat(subject.chat("Jeg har lyst til kylling i dag").knownRecipes()).extracting(RecipeMatch::name).containsExactly("Kylling i karry","Frikadeller");
         assertThat(subject.chat("Jeg har lyst til kylling i dag",0).knownRecipes()).extracting(RecipeMatch::name).containsExactly("Frikadeller");
-        verify(aiPort,never()).chat(any());
+        verify(aiPort,never()).chat(any());verify(aiPort,never()).answerCooking(any());
     }
 }

@@ -414,17 +414,17 @@ all chicken cuts. No substitutions or new aliases are introduced.
 The existing matcher applies the selector's hard limit before preference ranking.
 Known matches return immediately, without creative meal generation. Inventory is
 always user-scoped regardless of inventoryAware (which is interpretation metadata).
-GENERAL_COOKING/OTHER, requests with exclusions, and discovery without known matches
-retain the existing chat path. Exclusions are detected but deterministic exclusion
+OTHER, ordinary discovery requests with exclusions, and ordinary discovery without
+known matches retain the existing meal-proposal path. GENERAL_COOKING now takes
+the small conversational path described below. Exclusions are detected but deterministic exclusion
 filtering is deferred; bypassing known results avoids silently disregarding them.
 Natural-language numeric limits outside the existing deterministic router are not
 newly extracted: use the selector for a reliable hard constraint.
 
-Timeouts, malformed JSON and unknown intent values are logged and fall back to the
-existing chat path. This prevents a classifier-only error from failing a request,
-but cannot make an unavailable Ollama provider available. Two sequential provider
-calls can increase latency on fallback; no timeout was increased and live speed
-is not established by mocked tests. HTTP/OpenAPI/frontend contracts are unchanged.
+Intent timeouts, malformed JSON and unknown intent values now propagate the
+existing AiUnavailableException/HTTP 503 response without attempting generation
+or loading inventory/catalog context. Cooking-answer failures use the same error
+contract. Deterministic quick actions continue to bypass intent interpretation.
 
 Verification: full Gradle check (including OpenAPI and packaged security checks),
 frontend state tests and browser tests at desktop/mobile widths. New deterministic
@@ -572,3 +572,50 @@ recipes were excluded and unresolved pasta produced only the limited warning.
 The provider can still emit overlapping lists; normalization handles that before
 resolution or eligibility filtering. Live model quality should still be checked
 when changing model or classifier instructions.
+
+## Conversational GENERAL_COOKING answers
+
+GENERAL_COOKING returns immediately through `AiChatPort.answerCooking`, implemented
+by the existing Ollama adapter. It sends just a small cooking system prompt and
+the current user message to the configured model, with streaming disabled and no
+meal-proposal JSON schema. It never loads inventory, catalog, matching results or
+reservations, and does not call mutation services. An ingredient-limit selection
+in the UI does not affect this route. Discovery and meal-plan candidates retain
+their existing Java/domain paths.
+
+The prompt asks for practical, beginner-friendly guidance in the user's language,
+useful quantities/times/temperatures, conservative food-safety guidance, and clear
+uncertainty. It forbids invented claims about checked or changed application state.
+It asks for clarification when food or necessary context is unspecified.
+
+The adapter requires a completed, nonblank assistant response of at most 20,000
+characters; provider errors or invalid responses use AiUnavailableException.
+The API uses the existing `answer` field, empty `knownRecipes`, and no meal-plan
+proposal. The frontend renders the answer as sanitized Markdown, without new controls.
+
+The browser retains visible messages but sends only the latest message and optional
+maxAdditionalIngredients. No conversation history is sent or persisted, so vague
+follow-ups such as "Kan jeg fryse det her?" require clarification. This task adds
+neither memory nor a cooking-knowledge rules engine. Model knowledge and intent
+classification remain model-dependent; deterministic application state stays in Java.
+
+
+## Safe Markdown in chat
+
+The page and floating drawer move the same chat component. Assistant answer text
+passes through the shared `chat-markdown.js` renderer: locally bundled Marked
+18.0.14 parses Markdown, then DOMPurify 3.4.16 returns a sanitized DOM fragment.
+Only formatting elements and ordered-list start attributes are allowed. Links
+retain their text but are not clickable; images, embedded content, styles and
+interactive HTML are removed. There is no syntax highlighting or table layout.
+User messages, recipe names and card summaries remain plain text.
+
+Paragraphs, emphasis, lists, line breaks, headings and code are styled within the
+existing bubbles; long code wraps on mobile. Dependencies and their licenses are
+under `static/js/vendor`, cached in the versioned app shell without a runtime CDN.
+The cooking prompt permits simple Markdown but does not require an answer template.
+
+Run `node --test src/test/js/*.test.cjs` with Playwright available. Browser tests
+use Edge (`CHAT_TEST_BROWSER_CHANNEL=msedge` for the shared chat tests). The Markdown
+browser tests use the real parser/sanitizer and assert DOM structure, sanitization
+and mobile wrapping; the shared chat tests also cover cards and page/drawer moves.

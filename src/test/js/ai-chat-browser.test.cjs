@@ -35,10 +35,16 @@ for (const width of [1280, 390, 320]) {
             assert.deepEqual(Object.keys(request.postDataJSON()), ['message']);
             assert.equal(request.headers()['x-xsrf-token'], 'test-csrf');
             await new Promise(resolve => setTimeout(resolve, 250));
-            body = { answer: 'Kendte opskrifter.\n<img src=x onerror=alert(1)>', knownRecipes: [
+            body = { answer: '**Kendte opskrifter.**\n\n* Smag til.\n* Rør rundt.\n<img src=x onerror=alert(1)>', knownRecipes: [
               { id: 'known-recipe', source: 'RECIPE', name: 'Kødboller i tomatsovs med pasta', state: 'COOKABLE', missingIngredients: [], uncertainIngredients: [] },
               { id: 'known-template', source: 'TEMPLATE', name: 'Chili', state: 'NEAR_MATCH', missingIngredients: ['Bønner'], uncertainIngredients: [] }
             ] };
+          }
+          if (pathname === '/v1/ai/chat' && requests.length === 2) {
+            body = { answer: '**Vælg imellem 8 kandidater** til 5 måltider.', mealPlanProposal: {
+              requestedMealCount: 5, defaultPortions: 2,
+              candidates: Array.from({ length: 8 }, (_, i) => ({ id: 'known-recipe', source: 'RECIPE', name: `Ret ${i + 1}`, state: 'COOKABLE' }))
+            } };
           }
           return route.fulfill({ json: body });
         }
@@ -77,6 +83,8 @@ for (const width of [1280, 390, 320]) {
       await launcher.click();
       await page.locator('.chat-message-assistant').waitFor();
       assert.equal(requests.length, 1);
+      assert.equal(await drawer.locator('.chat-markdown strong').textContent(), 'Kendte opskrifter.');
+      assert.equal(await drawer.locator('.chat-markdown ul > li').count(), 2);
       assert.equal(await page.locator('#chat-messages img').count(), 0);
       assert.equal(await page.locator('#chat-empty').isVisible(), false);
       const messageBox = await page.locator('#chat-messages').boundingBox(), composerBox = await page.locator('#chat-form').boundingBox();
@@ -88,7 +96,7 @@ for (const width of [1280, 390, 320]) {
         assert.equal(await page.locator(dialog).evaluate(el => el.matches(':modal')), true);
         await page.keyboard.press('Escape'); await launcher.click();
       }
-      await page.locator('#chat-input').fill('Hvad med suppe?');
+      await page.locator('#chat-input').fill('**Hvad med suppe?** <img src=x>');
       await page.keyboard.press('Escape');
       await drawer.waitFor({ state: 'hidden' });
       assert.equal(await launcher.evaluate(element => element === document.activeElement), true);
@@ -97,11 +105,23 @@ for (const width of [1280, 390, 320]) {
       assert.equal(await launcher.isVisible(), false);
       await page.waitForFunction(() => document.querySelector('#chat-model').textContent === 'Bruger model: browser-test-model:4b');
       assert.equal(await page.locator('#ai-view #chat-model').isVisible(), true);
-      assert.equal(await page.locator('#chat-input').inputValue(), 'Hvad med suppe?');
+      assert.equal(await page.locator('#chat-input').inputValue(), '**Hvad med suppe?** <img src=x>');
+      assert.equal(await page.locator('#ai-view .chat-markdown strong').textContent(), 'Kendte opskrifter.');
       await page.locator('#chat-send').click();
       await page.waitForFunction(() => document.querySelectorAll('.chat-message-assistant').length === 2);
+      assert.equal(await page.locator('.chat-message-user').last().locator('p').textContent(), '**Hvad med suppe?** <img src=x>');
+      assert.equal(await page.locator('.chat-message-user p img, .chat-message-user p strong').count(), 0);
+      const proposal = page.locator('.chat-message-assistant').last();
+      assert.equal(await proposal.locator('.chat-recipe-card').count(), 8);
+      assert.equal(await proposal.locator('.chat-markdown strong').textContent(), 'Vælg imellem 8 kandidater');
+      assert.equal(await proposal.locator('input,select').count(), 0);
+      assert.equal(await proposal.locator('button').count(), 8);
+      await proposal.locator('button').first().click();
+      await page.locator('#recipe-detail-dialog').waitFor({ state: 'visible' });
+      await page.keyboard.press('Escape');
       await page.locator('#show-inventory').click();
       await launcher.click();
+      assert.equal(await drawer.locator('.chat-markdown strong').last().textContent(), 'Vælg imellem 8 kandidater');
       assert.equal(await page.locator('.chat-message-assistant').count(), 2);
       await page.locator('#show-shopping').click();
       assert.equal(await drawer.isVisible(), false);

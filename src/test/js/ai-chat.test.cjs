@@ -2,7 +2,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { createAiChat, createAiChatLauncher } = require('../../main/resources/static/js/ai-chat.js');
 
-// Small DOM double: test the same event handlers and safe rendering used in the browser.
+// Small DOM double for chat flow/card tests. Real Markdown and sanitization are covered in browser tests.
 class Element {
   constructor() { this.children = []; this.listeners = {}; this.dataset = {}; this.value = ''; this.textContent = ''; this.hidden = false; this.scrollHeight = 100; }
   addEventListener(type, listener) { this.listeners[type] = listener; }
@@ -36,7 +36,7 @@ function setup(modelRequest = () => Promise.resolve({ model: 'test-model:4b' }))
     if (url === '/v1/ai/chat/model') return modelRequest(url, options);
     calls.push({ url, ...options });
     return new Promise((yes, no) => { resolve = yes; reject = no; });
-  }, recipe => opened.push(recipe));
+  }, recipe => opened.push(recipe), (element, text) => { element.textContent = text; });
   return { ...elements, root, example, ui, calls, opened, resolve: answer => resolve(answer), reject: error => reject(error) };
 }
 const tick = () => new Promise(resolve => setImmediate(resolve));
@@ -139,7 +139,7 @@ test('native Escape close restores the component and keeps provider errors for r
   assert.equal(s.error.hidden, false); assert.equal(s.input.value, s.example.textContent);
 });
 
-test('sends only the latest message and displays both roles safely with line breaks', async () => {
+test('sends only the latest message and passes the answer to the renderer', async () => {
   const s = setup();
   s.input.value = 'Kartofler uden æg?'; s.form.fire('submit');
   assert.equal(s.calls[0].url, '/v1/ai/chat');
