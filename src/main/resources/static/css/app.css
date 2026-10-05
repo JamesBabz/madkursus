@@ -647,3 +647,4 @@ body:has(dialog[open]) .chat-launcher { visibility: hidden; }
 .feedback-card h3 { margin-top: 0; }
 .feedback-description { white-space: pre-wrap; }
 .feedback-card > button { margin-top: .75rem; }
+#shopping-new-product-fields { min-width: 0; margin: 0; padding: 0; border: 0; }

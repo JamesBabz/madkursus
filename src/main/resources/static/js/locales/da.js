@@ -1,6 +1,8 @@
 /* Danish UI dictionary. Keys are stable identifiers; values may use {named} placeholders. */
 (function (root) {
   const messages = {
+  "shoppingList.newProduct": "Opret produkt",
+  "shoppingList.createNamedProduct": "Opret \"{name}\" og tilføj til indkøbslisten",
   "feedback.sendTitle": "Send feedback",
   "feedback.sendHint": "Del en idé eller meld en fejl",
   "feedback.adminTitle": "Feedback",

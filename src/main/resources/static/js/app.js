@@ -62,6 +62,7 @@ let selectedInventoryCandidate = null;
 let shoppingSearchTimer;
 let shoppingSearchRequestId = 0;
 let selectedShoppingCandidate = null;
+let shoppingAddBusy = false;
 let currentRecipes = [];
 let currentRecipe = null;
 let recipePortions = 2;
@@ -485,6 +486,16 @@ function configureQuantityInput(input, unit, allowZero = false) {
   input.dataset.unit = unit;
 }
 
+function configureShoppingQuantityInput(input, unit) {
+  configureQuantityInput(input, unit);
+
+  if (unit === 'PIECE') {
+    input.step = '1';
+    input.min = '1';
+    input.inputMode = 'numeric';
+  }
+}
+
 function candidateTrackingMode(candidate) {
   return candidate.source === 'template' ? candidate.defaultTrackingMode : candidate.inventoryTrackingMode;
 }
@@ -739,19 +750,23 @@ async function deleteInventory() {
   catch (error) { showMessage(document.querySelector('#edit-inventory-error'), error.message); }
 }
 
+function createUserProduct(form) {
+  const data = new FormData(form);
+  const payload = {
+    name: data.get('name').trim(), category: data.get('category'), defaultUnit: data.get('defaultUnit')
+  };
+  return jsonRequest(PRODUCT_API, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+  });
+}
+
 async function createProduct(event) {
   event.preventDefault();
   showMessage(errorMessage, '');
   saveButton.disabled = true;
   saveButton.textContent = t("common.saving");
-  const data = new FormData(productForm);
-  const payload = {
-    name: data.get('name').trim(), category: data.get('category'), defaultUnit: data.get('defaultUnit')
-  };
   try {
-    const created = await jsonRequest(PRODUCT_API, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
-    });
+    const created = await createUserProduct(productForm);
     productForm.reset();
     setFormOpen(false);
     await loadProducts();
@@ -891,6 +906,9 @@ async function searchShoppingCandidates(search) {
     const names = new Set(products.map(product => normalizeName(product.name)));
     const catalog = templates.filter(template => template.defaultTrackingMode !== 'UNTRACKED').filter(template => !names.has(normalizeName(template.name))).map(template => ({ ...template, source: 'template' }));
     document.querySelector('#shopping-search-results').replaceChildren(...[...owned, ...catalog].slice(0, 20).map(shoppingCandidateRow));
+    const create = document.querySelector('#shopping-create-product');
+    create.hidden = !query || names.has(query) || templates.some(template => normalizeName(template.name) === query);
+    create.textContent = t("shoppingList.createNamedProduct", {name: search.trim()});
   } catch (error) { if (requestId === shoppingSearchRequestId) showToast(t("recipes.searchFailed", {message: error.message}), 'error'); }
 }
 
@@ -901,37 +919,81 @@ function resetShoppingAdd() {
   document.querySelector('#shopping-amount-form').reset(); document.querySelector('#shopping-add-conversion').textContent = '';
   document.querySelector('#shopping-add-quantity-controls').hidden = false;
   document.querySelector('#shopping-add-quantity').required = true;
+  document.querySelector('#shopping-create-product').hidden = true;
+  showShoppingNewProductFields(false);
   showMessage(document.querySelector('#shopping-add-error'), '');
 }
 
 function openShoppingAdd() { resetShoppingAdd(); document.querySelector('#shopping-add-dialog').showModal(); searchShoppingCandidates(''); }
-function closeShoppingAdd() { const dialog = document.querySelector('#shopping-add-dialog'); if (dialog.open) dialog.close(); resetShoppingAdd(); }
+function closeShoppingAdd() { if (shoppingAddBusy) return; const dialog = document.querySelector('#shopping-add-dialog'); if (dialog.open) dialog.close(); resetShoppingAdd(); }
+
+function showShoppingNewProductFields(show) {
+  const fields = document.querySelector('#shopping-new-product-fields');
+  fields.hidden = fields.disabled = !show;
+}
+
+function selectNewShoppingProduct() {
+  const name = document.querySelector('#shopping-search').value.trim();
+  if (!name) return;
+  document.querySelector('#shopping-product-name').value = name;
+  document.querySelector('#shopping-product-category').value = 'OTHER';
+  document.querySelector('#shopping-product-unit').value = 'PIECE';
+  selectShoppingCandidate({source: 'new', name, defaultUnit: 'PIECE', inventoryTrackingMode: 'QUANTITY'});
+}
 
 function selectShoppingCandidate(candidate) {
+  clearTimeout(shoppingSearchTimer); shoppingSearchRequestId++;
   selectedShoppingCandidate = candidate;
+  showShoppingNewProductFields(candidate.source === 'new');
+  showMessage(document.querySelector('#shopping-add-error'), '');
   const presence = candidateTrackingMode(candidate) === 'PRESENCE';
   document.querySelector('#shopping-search-step').hidden = true; document.querySelector('#shopping-amount-form').hidden = false;
   document.querySelector('#shopping-selected-name').textContent = candidate.name; document.querySelector('#shopping-selected-unit').textContent = displayUnit(candidate.defaultUnit);
   document.querySelector('#shopping-add-quantity-controls').hidden = presence;
   const input = document.querySelector('#shopping-add-quantity'); input.required = !presence;
   if (presence) { document.querySelector('#shopping-selected-unit').textContent = ''; return; }
-  configureQuantityInput(input, candidate.defaultUnit); input.focus();
+  configureShoppingQuantityInput(input, candidate.defaultUnit); input.focus();
 }
 
 async function addShoppingItem(event) {
-  event.preventDefault(); if (!selectedShoppingCandidate) return;
+  event.preventDefault(); if (!selectedShoppingCandidate || shoppingAddBusy) return;
   const quantity = candidateTrackingMode(selectedShoppingCandidate) === 'PRESENCE'
     ? null : numericValue(document.querySelector('#shopping-add-quantity'));
   await submitShoppingCandidate(quantity);
 }
 
 async function submitShoppingCandidate(quantity) {
-  const url = selectedShoppingCandidate.source === 'product' ? `${SHOPPING_API}/items` : `${SHOPPING_API}/items/from-template/${selectedShoppingCandidate.id}`;
-  const payload = selectedShoppingCandidate.source === 'product'
-    ? { productId: selectedShoppingCandidate.id, ...(quantity == null ? {} : { quantity }) }
-    : (quantity == null ? {} : { quantity });
-  try { await jsonRequest(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const name = selectedShoppingCandidate.name; closeShoppingAdd(); await Promise.all([loadShoppingList(), loadProducts()]); showToast(t("shoppingList.itemAdded", {name: name})); }
+  if (shoppingAddBusy) return;
+  showMessage(document.querySelector('#shopping-add-error'), '');
+  const form = document.querySelector('#shopping-amount-form');
+  if (selectedShoppingCandidate.source === 'new' && !document.querySelector('#shopping-product-name').value.trim()) {
+    showMessage(document.querySelector('#shopping-add-error'), t("validation.valueMissing")); return;
+  }
+  // Read the shared Product form before disabling controls. The server owns all creation rules.
+  const creation = selectedShoppingCandidate.source === 'new' ? createUserProduct(form) : null;
+  shoppingAddBusy = true;
+  const controls = document.querySelectorAll('#shopping-add-dialog input, #shopping-add-dialog select, #shopping-add-dialog button');
+  controls.forEach(control => control.disabled = true);
+  try {
+    if (creation) {
+      const created = await creation;
+      // Retain this product if the subsequent shopping request fails; retry only adds it.
+      selectedShoppingCandidate = {...created, source: 'product'};
+      showShoppingNewProductFields(false);
+      document.querySelector('#shopping-selected-name').textContent = created.name;
+    }
+    const candidate = selectedShoppingCandidate;
+    const url = candidate.source === 'product' ? `${SHOPPING_API}/items` : `${SHOPPING_API}/items/from-template/${candidate.id}`;
+    const payload = candidate.source === 'product'
+      ? { productId: candidate.id, ...(quantity == null ? {} : { quantity }) }
+      : (quantity == null ? {} : { quantity });
+    await jsonRequest(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    shoppingAddBusy = false; closeShoppingAdd();
+    await Promise.all([loadShoppingList(), loadProducts()]);
+    showToast(t("shoppingList.itemAdded", {name: candidate.name}));
+  }
   catch (error) { showMessage(document.querySelector('#shopping-add-error'), error.message); }
+  finally { shoppingAddBusy = false; controls.forEach(control => control.disabled = false); }
 }
 
 let shoppingEditorItem = null;
@@ -966,7 +1028,7 @@ function openShoppingEditor(item) {
   document.querySelector('#edit-shopping-quantity-controls').hidden = presence;
   document.querySelector('#edit-shopping-presence').hidden = !presence;
   const input = document.querySelector('#edit-shopping-quantity'); input.required = !presence;
-  input.value = item.quantity ?? ''; configureQuantityInput(input, item.unit);
+  input.value = item.quantity ?? ''; configureShoppingQuantityInput(input, item.unit);
   document.querySelector('#edit-shopping-unit').textContent = displayUnit(item.unit); updateConversion(input, item.unit, document.querySelector('#edit-shopping-conversion'));
   document.querySelector('#edit-shopping-dialog').showModal();
 }
@@ -1389,13 +1451,35 @@ document.querySelector('#open-shopping-add').addEventListener('click', openShopp
 document.querySelector('#shopping-empty-add').addEventListener('click', openShoppingAdd);
 document.querySelector('#close-shopping-add').addEventListener('click', closeShoppingAdd);
 document.querySelector('#shopping-add-dialog').addEventListener('close', resetShoppingAdd);
+document.querySelector('#shopping-add-dialog').addEventListener('cancel', event => { if (shoppingAddBusy) event.preventDefault(); });
+document.querySelector('#shopping-create-product').addEventListener('click', selectNewShoppingProduct);
+// Keep the same category/unit choices as the Products form.
+for (const [target, source] of [['shopping-product-category', 'category'], ['shopping-product-unit', 'default-unit']]) {
+  document.getElementById(target).replaceChildren(...[...document.getElementById(source).options].map(option => option.cloneNode(true)));
+}
+document.querySelector('#shopping-product-unit').addEventListener('change', event => {
+  if (selectedShoppingCandidate?.source !== 'new') return;
+  selectedShoppingCandidate.defaultUnit = event.target.value;
+  document.querySelector('#shopping-selected-unit').textContent = displayUnit(event.target.value);
+  configureQuantityInput(document.querySelector('#shopping-add-quantity'), event.target.value);
+  document.querySelector('#shopping-add-conversion').textContent = '';
+});
 document.querySelector('#back-shopping-search').addEventListener('click', () => {
   selectedShoppingCandidate = null; document.querySelector('#shopping-amount-form').hidden = true;
+  showShoppingNewProductFields(false);
   document.querySelector('#shopping-search-step').hidden = false; document.querySelector('#shopping-search').focus();
+  searchShoppingCandidates(document.querySelector('#shopping-search').value);
 });
 document.querySelector('#shopping-search').addEventListener('input', event => {
   clearTimeout(shoppingSearchTimer); shoppingSearchRequestId++; const search = event.target.value;
+  document.querySelector('#shopping-create-product').hidden = true;
   if (!search) searchShoppingCandidates(''); else shoppingSearchTimer = setTimeout(() => searchShoppingCandidates(search), 250);
+});
+// The focused search input consumes Escape to clear itself, so dismiss the dialog explicitly.
+document.querySelector('#shopping-search').addEventListener('keydown', event => {
+  if (event.key !== 'Escape') return;
+  event.preventDefault();
+  closeShoppingAdd();
 });
 document.querySelector('#shopping-amount-form').addEventListener('submit', addShoppingItem);
 document.querySelector('#shopping-add-quantity').addEventListener('input', event =>

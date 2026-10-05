@@ -32,8 +32,8 @@ class FrontendAssetsTest {
         assertThat(html).contains("nutrition.dtu.readyForApproval", "nutrition.dtu.noMatch", "nutrition.dtu.safeMatches", "nutrition.dtu.approveSafe", "select-all-nutrition", "nutrition-bulk-confirm-dialog");
         assertThat(html).contains("nutrition.dtu.suggestions", "nutrition.dtu.searchCatalog", "nutrition.dtu.suggestionsHint");
         assertThat(javascript).contains("nutrition-product-name", "nutrition-cell", "nutrition-row-actions", "approveSelectedDtu", "approveSafeDtu", "AUTO_EQUIVALENT_CARBOHYDRATE", "requestApproveSelectedDtu", "nutrition.dtu.search", "nutrition.openData");
-        assertThat(worker).contains("madkursus-shell-v54", "/css/app.css?v=54", "/js/dialog-viewport.js?v=54", "/js/app.js?v=54");
-        assertThat(html).contains("/css/app.css?v=54", "/js/dialog-viewport.js?v=54", "/js/app.js?v=54");
+        assertThat(worker).contains("madkursus-shell-v55", "/css/app.css?v=55", "/js/dialog-viewport.js?v=55", "/js/app.js?v=55");
+        assertThat(html).contains("/css/app.css?v=55", "/js/dialog-viewport.js?v=55", "/js/app.js?v=55");
         assertThat(html).contains("inventory-view", "inventory-add-dialog", "edit-inventory-dialog");
         assertThat(javascript).contains("/v1/inventory", "searchInventoryCandidates", "from-template",
                 "loadInventory", "showToast", "inventorySearchRequestId");
@@ -132,19 +132,19 @@ class FrontendAssetsTest {
                 "show-ai", "more-ai", "ai-view", "chat.assistantName", "chat-input", "chat-send",
                 "data-chat-prompt", "aria-live=\"polite\"", "maxlength=\"4000\"");
         for (String asset : new String[]{"vendor/marked.umd.js", "vendor/purify.min.js", "chat-markdown.js"}) {
-            assertThat(html).contains("/js/" + asset + "?v=54");
-            assertThat(html.indexOf("/js/" + asset + "?v=54")).isLessThan(html.indexOf("/js/ai-chat.js?v=54"));
-            assertThat(resource("static/service-worker.js")).contains("/js/" + asset + "?v=54");
+            assertThat(html).contains("/js/" + asset + "?v=55");
+            assertThat(html.indexOf("/js/" + asset + "?v=55")).isLessThan(html.indexOf("/js/ai-chat.js?v=55"));
+            assertThat(resource("static/service-worker.js")).contains("/js/" + asset + "?v=55");
             assertThat(resource("static/js/" + asset)).isNotBlank();
         }
-        assertThat(html.indexOf("/js/ai-chat.js?v=54")).isLessThan(html.indexOf("/js/app.js?v=54"));
+        assertThat(html.indexOf("/js/ai-chat.js?v=55")).isLessThan(html.indexOf("/js/app.js?v=55"));
         assertThat(app).contains("createAiChat(document.querySelector('#chat-component'), jsonRequest,",
                 "aiChat.reset()", "showView('ai')");
         assertThat(chat).contains("'/v1/ai/chat'", "JSON.stringify({ message,", "maxAdditionalIngredients", "content.textContent = text")
                 .doesNotContain("innerHTML", "localStorage", "sessionStorage", "11434", "llama3.1");
         assertThat(html).contains("aria-modal=\"false\"");
         assertThat(chat).doesNotContain("showModal");
-        assertThat(resource("static/service-worker.js")).contains("/js/ai-chat.js?v=54");
+        assertThat(resource("static/service-worker.js")).contains("/js/ai-chat.js?v=55");
         assertThat(resource("static/css/app.css")).contains("white-space: pre-wrap", ".chat-message-user", ".chat-message-assistant");
     }
 
