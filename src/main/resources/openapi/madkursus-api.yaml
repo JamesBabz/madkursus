@@ -929,7 +929,7 @@ components:
         status: {$ref: '#/components/schemas/FeedbackStatus'}
     Feedback:
       type: object
-      required: [id, type, title, description, status, createdBy, createdAt]
+      required: [id, type, title, description, status, createdBy, createdByUsername, createdAt]
       properties:
         id: {type: string, format: uuid}
         type: {$ref: '#/components/schemas/FeedbackType'}
@@ -937,6 +937,7 @@ components:
         description: {type: string}
         status: {$ref: '#/components/schemas/FeedbackStatus'}
         createdBy: {type: string, format: uuid, description: ID of the submitting user}
+        createdByUsername: {type: string, description: Current username of the submitting user, readOnly: true}
         createdAt: {type: string, format: date-time}
     RecipeTemplateImportStatus:
       type: object
@@ -1469,6 +1470,7 @@ components:
       type: object
       required: [sortOrder]
       properties:
+        structuredInstruction: {allOf: [{$ref: '#/components/schemas/RecipeStructuredInstruction'}], nullable: true}
         type:
           allOf: [{$ref: '#/components/schemas/RecipeStepType'}]
           default: TEXT
@@ -1491,6 +1493,7 @@ components:
       type: object
       required: [instruction, sortOrder]
       properties:
+        structuredInstruction: {allOf: [{$ref: '#/components/schemas/RecipeStructuredInstruction'}], nullable: true}
         id: {type: string, format: uuid, nullable: true}
         instruction: {type: string, minLength: 1}
         sortOrder: {type: integer, minimum: 1}
@@ -1517,6 +1520,7 @@ components:
       type: object
       required: [id, type, sortOrder, parameterBindings]
       properties:
+        structuredInstruction: {allOf: [{$ref: '#/components/schemas/RecipeStructuredInstruction'}], nullable: true}
         id: {type: string, format: uuid}
         type: {$ref: '#/components/schemas/RecipeStepType'}
         instruction: {type: string, minLength: 1, nullable: true}
@@ -1528,6 +1532,7 @@ components:
       type: object
       required: [id, name, ingredients, steps, preparationSteps, equipment, createdAt, updatedAt]
       properties:
+        equipmentRequirements: {type: array, items: {$ref: '#/components/schemas/RecipeEquipmentRequirementInput'}}
         id: {type: string, format: uuid}
         name: {type: string}
         description: {type: string, nullable: true}
@@ -1540,6 +1545,20 @@ components:
         sourceTemplateId: {type: string, format: uuid, nullable: true, readOnly: true}
         preparedComponents: {type: array, items: {$ref: '#/components/schemas/PreparedComponent'}}
         carbohydrates: {allOf: [{$ref: '#/components/schemas/CarbohydrateResult'}], nullable: true}
+    RecipeStructuredInstruction:
+      type: object
+      required: [parts]
+      properties:
+        parts: {type: array, items: {$ref: '#/components/schemas/RecipeInstructionPart'}}
+    RecipeInstructionPart:
+      type: object
+      properties:
+        text: {type: string, nullable: true}
+        recipeIngredientId: {type: string, format: uuid, nullable: true}
+        quantity: {type: number, nullable: true}
+        unit: {allOf: [{$ref: '#/components/schemas/RecipeUnit'}], nullable: true}
+        preparedComponentId: {type: string, format: uuid, nullable: true}
+        scaledNumber: {type: number, nullable: true}
     CarbohydrateIngredientResult:
       type: object
       required: [recipeIngredientId, productTemplateId, name, known]
@@ -1643,6 +1662,10 @@ components:
       type: object
       required: [portions]
       properties:
+        completionId:
+          type: string
+          format: uuid
+          description: Optional unique cooking completion identity. Reuse for retries of the same recipe and portions to avoid duplicate consumption.
         portions: {type: number, exclusiveMinimum: 0}
     CookRecipeResult:
       type: object

@@ -134,8 +134,9 @@ public class InventoryService {
         UUID userId = currentUserProvider.currentUserId();
         var item = inventoryPort.findByProductIdAndUserId(productId, userId);
         if (item.isEmpty()) return new Consumption(BigDecimal.ZERO, requested);
-        BigDecimal deducted = item.get().quantity().min(requested);
-        BigDecimal remaining = item.get().quantity().subtract(deducted);
+        BigDecimal available = item.get().quantity().max(BigDecimal.ZERO);
+        BigDecimal deducted = available.min(requested);
+        BigDecimal remaining = available.subtract(deducted);
         if (remaining.signum() == 0) inventoryPort.deleteByIdAndUserId(item.get().id(), userId);
         else inventoryPort.save(new InventoryItem(item.get().id(), product, remaining));
         return new Consumption(deducted, requested.subtract(deducted));

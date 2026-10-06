@@ -3,7 +3,7 @@ const {chromium}=require('playwright');
 const fs=require('node:fs/promises');
 const path=require('node:path');
 const assert=require('node:assert/strict');
-for(const scenario of [{width:1280,admin:true,enabled:true},{width:390,admin:true,enabled:true},{width:390,admin:true,enabled:false},{width:1280,admin:false,enabled:true}]) {
+for(const scenario of [320,390,1280].flatMap(width=>[{width,admin:true,enabled:true},{width,admin:true,enabled:false},{width,admin:false,enabled:true}])) {
   test(`recipe import ${JSON.stringify(scenario)}`,async()=>{
     const browser=await chromium.launch({headless:true,channel:process.env.CHAT_TEST_BROWSER_CHANNEL||'msedge'});
     try {
@@ -27,9 +27,9 @@ for(const scenario of [{width:1280,admin:true,enabled:true},{width:390,admin:tru
         const file=path.join(__dirname,'../../main/resources/static',url.pathname==='/'?'index.html':url.pathname);
         try{return route.fulfill({body:await fs.readFile(file),contentType:url.pathname.endsWith('.js')?'text/javascript':url.pathname.endsWith('.css')?'text/css':'text/html'});}catch{return route.fulfill({status:404,body:''});}
       });
-      await page.goto('http://madkursus.test/');await page.locator('#application').waitFor();
-      if(!scenario.admin||!scenario.enabled){assert.equal(await page.locator('#more-recipe-import').isVisible(),false);assert.deepEqual(errors,[]);return;}
-      await page.locator('#show-more').click();await page.locator('#more-recipe-import').click();
+      const statusResponse=scenario.admin?page.waitForResponse(r=>new URL(r.url()).pathname==='/v1/admin/recipe-template-import'):null;await page.goto('http://madkursus.test/');await page.locator('#application').waitFor();if(statusResponse){await statusResponse;await page.waitForFunction(enabled=>recipeImportEnabled===enabled,scenario.enabled);}await page.locator('#show-more').click();
+      if(!scenario.admin||!scenario.enabled){assert.equal(await page.locator('#more-recipe-import').isVisible(),false);assert.equal(await page.locator('#more-recipe-import').getAttribute('hidden'),'');assert.equal(calls.length,0);assert.deepEqual(errors,[]);return;}
+      await page.locator('#more-recipe-import').click();
       const input=page.locator('#recipe-import-json'),submit=page.locator('#recipe-import-submit');
       assert.equal(await submit.isVisible(),false);
       await input.fill('{');await page.locator('#recipe-import-validate').click();

@@ -33,7 +33,7 @@ for (const template of [false, true]) {
         recipeUnitLabels: {GRAM: 'g', PIECE: 'stk.'},
         RECIPE_API: '/v1/recipes', RECIPE_TEMPLATE_API: '/v1/recipe-templates',
         currentRecipe: {id: 'recipe'}, currentRecipeTemplate: {id: 'recipe'},
-        renderCarbohydrates() {}, renderUnknownCarbohydrates() {},
+        renderCarbohydrates() {}, renderUnknownCarbohydrates() {}, recipeCooking: null,
         async jsonRequest(url) {
           requests.push(url);
           const portions = Number(new URL(url, 'http://test').searchParams.get('portions'));

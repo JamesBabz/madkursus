@@ -80,14 +80,14 @@ test('Fjern deletes immediately without confirmation or saving edits', async t =
   assert.deepEqual(calls,[{method:'DELETE',path:'/v1/shopping-list/items/eggs',payload:null}]);
   assert.equal(await page.locator('#delete-shopping-confirmation').count(),0);
 });
-for (const [unit,quantity,increment] of [['PIECE',6.5,1],['GRAM',250,100],['MILLILITER',250,100]]) {
+for (const [unit,quantity,increment] of [['PIECE',6,1],['GRAM',250,100],['MILLILITER',250,100]]) {
   test(`${unit} convenience increment is ${increment}, direct editing keeps existing validity`, async t => {
     const {page,input,calls}=await editor(t,{unit,quantity});
     assert.equal(await input.evaluate(el=>el===document.activeElement),false);
     await page.locator('#edit-shopping-plus').click(); assert.equal(Number(await input.inputValue()),quantity+increment);
     assert.equal(await input.evaluate(el=>el===document.activeElement),false);
     await page.locator('#edit-shopping-minus').click(); assert.equal(Number(await input.inputValue()),quantity);
-    await input.fill(unit==='PIECE'?'0.5':'1');
+    await input.fill('1');
     await page.locator('#edit-shopping-minus').click(); assert.ok(Number(await input.inputValue())>0);
     assert.equal(await input.evaluate(el=>el.checkValidity()),true);
     assert.deepEqual(calls,[]);

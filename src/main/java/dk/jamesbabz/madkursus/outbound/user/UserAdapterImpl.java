@@ -1,6 +1,10 @@
 package dk.jamesbabz.madkursus.outbound.user;
 
 import java.util.Optional;
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import dk.jamesbabz.madkursus.outbound.user.details.UserJpaRepository;
 import dk.jamesbabz.madkursus.outbound.user.mappers.UserEntityMapper;
@@ -18,4 +22,9 @@ public class UserAdapterImpl implements UserPort {
     public User save(User user) { return mapper.toModel(repository.save(mapper.toEntity(user))); }
     public Optional<User> findByUsername(String username) { return repository.findByUsername(username).map(mapper::toModel); }
     public boolean existsByUsername(String username) { return repository.existsByUsername(username); }
+    public Map<UUID, String> findUsernamesByIds(Collection<UUID> ids) {
+        if (ids.isEmpty()) return Map.of();
+        return repository.findUsernamesByIds(ids).stream()
+                .collect(Collectors.toMap(UserJpaRepository.Username::getId, UserJpaRepository.Username::getUsername));
+    }
 }

@@ -67,6 +67,14 @@ With PostgreSQL running, use:
 On Windows, use `.\gradlew.bat bootRun`. Then open
 <http://localhost:8080/api/health>; it returns `{"status":"UP"}`.
 
+`bootRun` selects the `local` Spring profile, which enables the admin-only recipe
+template authoring utility. Packaged/server runs use the base configuration and
+keep recipe import disabled without any environment variable. To use the local
+configuration when running from an IDE or a jar, explicitly select the `local`
+profile. Automated tests do not inherit it; import tests explicitly opt in.
+An explicit active profile (for example `SPRING_PROFILES_ACTIVE=production` or
+`--spring.profiles.active=production`) overrides the local `bootRun` default.
+
 The default database connection can be overridden with the `DB_URL`,
 `DB_USERNAME`, and `DB_PASSWORD` environment variables. The HTTP port can be
 overridden with `SERVER_PORT`.

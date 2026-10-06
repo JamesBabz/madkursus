@@ -55,4 +55,19 @@ class RecipeRestMapperTest {
         return new Recipe(UUID.randomUUID(), UUID.randomUUID(), null, "Dinner", null, Instant.now(), Instant.now(),
                 List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), result);
     }
+
+    @Test void exposesEquipmentAndRoundTripsStructuredInstructionData() {
+        UUID ingredient=UUID.randomUUID(),component=UUID.randomUUID();
+        var instruction=new RecipeStructuredInstruction(List.of(new RecipeInstructionPart("Use ",null,null,null,null,null),
+                new RecipeInstructionPart(null,ingredient,new BigDecimal("0.25"),RecipeUnit.PIECE,null,null),
+                new RecipeInstructionPart(null,null,null,null,component,null),new RecipeInstructionPart(null,null,null,null,null,new BigDecimal("2"))));
+        var recipe=new Recipe(UUID.randomUUID(),UUID.randomUUID(),null,"Dinner",null,Instant.now(),Instant.now(),List.of(),
+                List.of(new RecipeStep(UUID.randomUUID(),RecipeStepType.TEXT,"Use egg",1,null,List.of(),null,instruction)),
+                List.of(new RecipePreparationStep(UUID.randomUUID(),"Prepare",1,instruction)),
+                List.of(new RecipeEquipmentRequirement(UUID.randomUUID(),EquipmentType.PAN,"Small pan",1)),List.of(),List.of());
+        var dto=mapper.toDto(recipe);
+        assertThat(dto.getEquipmentRequirements()).singleElement().satisfies(e->{assertThat(e.getLabel()).isEqualTo("Small pan");assertThat(e.getEquipmentType().name()).isEqualTo("PAN");});
+        assertThat(mapper.structured(dto.getSteps().getFirst().getStructuredInstruction())).isEqualTo(instruction);
+        assertThat(mapper.structured(dto.getPreparationSteps().getFirst().getStructuredInstruction())).isEqualTo(instruction);
+    }
 }

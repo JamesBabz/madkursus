@@ -3,8 +3,10 @@ package dk.jamesbabz.madkursus.service.applications;
 import dk.jamesbabz.madkursus.service.exceptions.InvalidInputException;
 import dk.jamesbabz.madkursus.service.exceptions.ResourceNotFoundException;
 import dk.jamesbabz.madkursus.service.models.Feedback;
+import dk.jamesbabz.madkursus.service.models.FeedbackDetails;
 import dk.jamesbabz.madkursus.service.ports.CurrentUserProvider;
 import dk.jamesbabz.madkursus.service.ports.FeedbackPort;
+import dk.jamesbabz.madkursus.service.ports.UserPort;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FeedbackService {
     private final FeedbackPort port;
     private final CurrentUserProvider currentUser;
+    private final UserPort users;
 
     @Transactional
     public void submit(Feedback.Type type, String title, String description) {
@@ -29,14 +32,19 @@ public class FeedbackService {
                 currentUser.currentUserId(), Instant.now()));
     }
 
-    public List<Feedback> getAll() { return port.findAll(); }
+    public List<FeedbackDetails> getAll() { return details(port.findAll()); }
+
+    private List<FeedbackDetails> details(List<Feedback> values) {
+        var usernames = users.findUsernamesByIds(values.stream().map(Feedback::createdBy).distinct().toList());
+        return values.stream().map(value -> new FeedbackDetails(value, usernames.get(value.createdBy()))).toList();
+    }
 
     @Transactional
-    public Feedback updateStatus(UUID id, Feedback.Status status) {
+    public FeedbackDetails updateStatus(UUID id, Feedback.Status status) {
         if (status == null) throw new InvalidInputException("Feedback status is required");
         Feedback old = get(id);
-        return port.save(new Feedback(old.id(), old.type(), old.title(), old.description(), status,
-                old.createdBy(), old.createdAt()));
+        return details(List.of(port.save(new Feedback(old.id(), old.type(), old.title(), old.description(), status,
+                old.createdBy(), old.createdAt())))).getFirst();
     }
 
     @Transactional

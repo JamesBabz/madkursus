@@ -68,6 +68,12 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+// bootRun is the documented local-development entry point. Tests and packaged
+// server runs do not inherit this profile; an explicit active profile overrides it.
+tasks.named('bootRun') {
+	systemProperty 'spring.profiles.default', System.getProperty('spring.profiles.default', 'local')
+}
+
 tasks.register('validateRecipeTemplateDraft', JavaExec) {
 	group = 'recipe templates'
 	description = 'Validate one RecipeTemplate draft without changing files.'

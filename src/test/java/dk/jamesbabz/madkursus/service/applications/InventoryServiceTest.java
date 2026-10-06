@@ -30,6 +30,33 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class InventoryServiceTest {
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.CsvSource({"PIECE,10,4", "PIECE,6,0", "PIECE,2,0", "PIECE,0,0", "GRAM,10,4", "GRAM,6,0", "GRAM,2,0", "GRAM,0,0", "MILLILITER,10,4", "MILLILITER,6,0", "MILLILITER,2,0", "MILLILITER,0,0"})
+    void cookingClampsEveryNumericUnit(Unit unit, String recorded, String remaining) {
+        UUID user = UUID.randomUUID(), id = UUID.randomUUID(), itemId = UUID.randomUUID();
+        Product product = product(id, user, "Ingredient", unit);
+        when(currentUserProvider.currentUserId()).thenReturn(user); when(productService.get(id)).thenReturn(product);
+        when(port.findByProductIdAndUserId(id, user)).thenReturn(Optional.of(new InventoryItem(itemId, product, new BigDecimal(recorded))));
+        var result = service.consumeUpToAvailable(id, new BigDecimal("6"));
+        assertThat(result.deducted()).isEqualByComparingTo(new BigDecimal(recorded).min(new BigDecimal("6")));
+        if (remaining.equals("0")) {verify(port).deleteByIdAndUserId(itemId, user); verify(port, never()).save(any());}
+        else verify(port).save(argThat(item -> item.quantity().compareTo(new BigDecimal(remaining)) == 0));
+    }
+
+    @Test void cookingMissingStockDoesNotCreateNegativeInventory() {
+        UUID user = UUID.randomUUID(), id = UUID.randomUUID(); Product product = product(id, user, "Eggs", Unit.PIECE);
+        when(currentUserProvider.currentUserId()).thenReturn(user); when(productService.get(id)).thenReturn(product);
+        when(port.findByProductIdAndUserId(id, user)).thenReturn(Optional.empty());
+        assertThat(service.consumeUpToAvailable(id, new BigDecimal("6")).deducted()).isZero();
+        verify(port, never()).save(any());
+    }
+
+    @Test void cookingPresenceKeepsAvailabilityWithoutInventingQuantities() {
+        UUID id = UUID.randomUUID(); Product product = new Product(id, UUID.randomUUID(), UUID.randomUUID(), "Salt", ProductCategory.OTHER, Unit.GRAM, dk.jamesbabz.madkursus.service.models.InventoryTrackingMode.PRESENCE);
+        when(productService.get(id)).thenReturn(product);
+        assertThat(service.consumeUpToAvailable(id, new BigDecimal("6"))).isEqualTo(new InventoryService.Consumption(BigDecimal.ZERO, BigDecimal.ZERO));
+        org.mockito.Mockito.verifyNoInteractions(port);
+    }
     @Mock InventoryPort port;
     @Mock ProductService productService;
     @Mock ProductTemplateService templateService;

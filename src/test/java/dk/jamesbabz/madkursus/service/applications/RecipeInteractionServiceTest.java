@@ -15,6 +15,31 @@ class RecipeInteractionServiceTest {
 
  @BeforeEach void inventoryDefault(){lenient().when(currentUser.currentUserId()).thenReturn(user);lenient().when(inventoryPort.findAllByUserId(user)).thenReturn(List.of());lenient().when(mealPlanPort.findAllByUserId(user)).thenReturn(List.of());var normalizer=new RecipeQuantityNormalizer();var availability=new InventoryAvailabilityService(inventoryPort,mealPlanPort,currentUser,normalizer);service=new RecipeInteractionService(recipes,inventory,shopping,history,currentUser,availability,normalizer);}
 
+ @Test void completionIdentityMakesLostResponseRetryConsumptionFree() {
+  Recipe recipe=recipe("Dinner",ingredient(rice,"6",RecipeUnit.GRAM)); UUID completion=UUID.randomUUID();
+  when(recipes.get(recipe.id())).thenReturn(recipe); when(history.save(any())).thenAnswer(c->c.getArgument(0));
+  var first=service.cookOnce(recipe.id(),BigDecimal.ONE,completion);
+  when(history.findByIdAndUserId(completion,user)).thenReturn(Optional.of(first.history()));
+  assertThat(service.cookOnce(recipe.id(),BigDecimal.ONE,completion).history()).isEqualTo(first.history());
+  verify(history,times(1)).save(any()); verify(history,times(2)).lockUserCompletion(user);
+  assertThatThrownBy(()->service.cookOnce(recipe.id(),BigDecimal.TEN,completion)).isInstanceOf(dk.jamesbabz.madkursus.service.exceptions.ConflictException.class);
+  verifyNoInteractions(inventory);
+ }
+
+ @Test void insufficientIngredientDoesNotBlockOtherConsumptionOrHistoryInEitherContext() {
+  Recipe recipe=recipe("Dinner",ingredient(rice,"6",RecipeUnit.GRAM),ingredient(onion,"6",RecipeUnit.PIECE));
+  Product a=product(rice,InventoryTrackingMode.QUANTITY),b=product(onion,InventoryTrackingMode.QUANTITY);
+  when(recipes.get(recipe.id())).thenReturn(recipe);
+  when(inventoryPort.findAllByUserId(user)).thenReturn(List.of(new InventoryItem(UUID.randomUUID(),a,new BigDecimal("10")),new InventoryItem(UUID.randomUUID(),b,new BigDecimal("2"))));
+  when(inventory.consumeUpToAvailable(a.id(),new BigDecimal("6"))).thenReturn(new InventoryService.Consumption(new BigDecimal("6"),BigDecimal.ZERO));
+  when(inventory.consumeUpToAvailable(b.id(),new BigDecimal("6"))).thenReturn(new InventoryService.Consumption(new BigDecimal("2"),new BigDecimal("4")));
+  when(history.save(any())).thenAnswer(c->c.getArgument(0));
+  assertThat(service.cook(recipe.id(),BigDecimal.ONE).warnings()).hasSize(1);
+  assertThat(service.cook(recipe.id(),BigDecimal.ONE,UUID.randomUUID()).warnings()).hasSize(1);
+  verify(inventory,times(2)).consumeUpToAvailable(a.id(),new BigDecimal("6"));
+  verify(inventory,times(2)).consumeUpToAvailable(b.id(),new BigDecimal("6")); verify(history,times(2)).save(any());
+ }
+
  @Test void aggregatesAllRecipesBeforeSubtractingInventoryAndKeepsIndependentPortions(){
   Recipe a=recipe("A",ingredient(rice,"100",RecipeUnit.GRAM),ingredient(onion,"0.5",RecipeUnit.PIECE));Recipe b=recipe("B",ingredient(rice,"50",RecipeUnit.GRAM));
   Product riceProduct=product(rice,InventoryTrackingMode.QUANTITY);when(recipes.get(a.id())).thenReturn(a);when(recipes.get(b.id())).thenReturn(b);when(inventoryPort.findAllByUserId(user)).thenReturn(List.of(new InventoryItem(UUID.randomUUID(),riceProduct,new BigDecimal("250"))));

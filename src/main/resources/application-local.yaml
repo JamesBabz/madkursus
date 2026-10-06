@@ -1,0 +1,4 @@
+# Activated by bootRun for local authoring; not included in the base/test profile.
+madkursus:
+  recipe-template-import:
+    enabled: true

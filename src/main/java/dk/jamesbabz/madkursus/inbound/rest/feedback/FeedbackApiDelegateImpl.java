@@ -4,6 +4,7 @@ import dk.jamesbabz.madkursus.inbound.rest.FeedbackApiDelegate;
 import dk.jamesbabz.madkursus.inbound.rest.dto.*;
 import dk.jamesbabz.madkursus.service.applications.FeedbackService;
 import dk.jamesbabz.madkursus.service.models.Feedback;
+import dk.jamesbabz.madkursus.service.models.FeedbackDetails;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
@@ -38,9 +39,10 @@ public class FeedbackApiDelegateImpl implements FeedbackApiDelegate {
         return ResponseEntity.noContent().build();
     }
 
-    private FeedbackDTO dto(Feedback value) {
+    private FeedbackDTO dto(FeedbackDetails details) {
+        Feedback value = details.feedback();
         return new FeedbackDTO(value.id(), FeedbackTypeDTO.valueOf(value.type().name()), value.title(),
-                value.description(), FeedbackStatusDTO.valueOf(value.status().name()), value.createdBy(),
+                value.description(), FeedbackStatusDTO.valueOf(value.status().name()), value.createdBy(), details.createdByUsername(),
                 value.createdAt().atOffset(ZoneOffset.UTC));
     }
 }

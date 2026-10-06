@@ -74,6 +74,10 @@ class FeedbackIntegrationTest {
                 .andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].id").value(second.toString()))
                 .andExpect(jsonPath("$[1].createdBy").value(userId.toString()))
+                .andExpect(jsonPath("$[1].createdByUsername").value(member.username()))
+                .andExpect(jsonPath("$[0].createdByUsername").value(admin.username()))
+                .andExpect(jsonPath("$[0].passwordHash").doesNotExist())
+                .andExpect(jsonPath("$[0].enabled").doesNotExist())
                 .andExpect(jsonPath("$[1].title").value("Title"))
                 .andExpect(jsonPath("$[1].description").value("Details"))
                 .andExpect(jsonPath("$[1].type").value("FEEDBACK"))
@@ -82,13 +86,32 @@ class FeedbackIntegrationTest {
         for (String value : new String[]{"IN_PROGRESS", "DONE", "OPEN"}) {
             mvc.perform(patch("/v1/admin/feedback/{id}", first).with(user(admin)).with(csrf())
                     .contentType("application/json").content("{\"status\":\"" + value + "\",\"title\":\"Changed\"}"))
-                    .andExpect(status().isOk()).andExpect(jsonPath("$.status").value(value));
+                    .andExpect(status().isOk()).andExpect(jsonPath("$.status").value(value))
+                    .andExpect(jsonPath("$.createdBy").value(userId.toString()))
+                    .andExpect(jsonPath("$.createdByUsername").value(member.username()));
             assertThat(jdbc.queryForObject("select status from feedback where id=?", String.class, first)).isEqualTo(value);
             assertThat(jdbc.queryForMap("select title,description,type,created_by,created_at from feedback where id=?", first)).isEqualTo(original);
         }
         mvc.perform(delete("/v1/admin/feedback/{id}", first).with(user(admin)).with(csrf())).andExpect(status().isNoContent());
         assertThat(jdbc.queryForObject("select count(*) from feedback where id=?", Integer.class, first)).isZero();
         assertThat(jdbc.queryForObject("select count(*) from feedback where id=?", Integer.class, second)).isEqualTo(1);
+    }
+
+    @Test void usernameIsCurrentPresentationDataWithoutChangingStoredCreatorIdentity() throws Exception {
+        UUID id = submit(member, "BUG");
+        try {
+            jdbc.update("update users set username=? where id=?", "æble", userId);
+            mvc.perform(get("/v1/admin/feedback").with(user(admin)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[0].createdBy").value(userId.toString()))
+                    .andExpect(jsonPath("$[0].createdByUsername").value("æble"));
+            mvc.perform(patch("/v1/admin/feedback/{id}", id).with(user(admin)).with(csrf())
+                    .contentType("application/json").content("{\"status\":\"IN_PROGRESS\"}"))
+                    .andExpect(status().isOk()).andExpect(jsonPath("$.createdByUsername").value("æble"));
+            assertThat(jdbc.queryForObject("select created_by from feedback where id=?", UUID.class, id)).isEqualTo(userId);
+        } finally {
+            jdbc.update("update users set username=? where id=?", member.username(), userId);
+        }
     }
 
     @Test void memberCannotListUpdateOrDeleteEvenTheirOwnSubmission() throws Exception {

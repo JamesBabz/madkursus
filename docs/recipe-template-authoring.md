@@ -169,9 +169,13 @@ databaseforbindelser, brugerdata, Inventory eller MealPlans.
 
 ## Import direkte i appen (lokalt udviklerværktøj)
 
-Start appen fra projektroden med `RECIPE_TEMPLATE_IMPORT_ENABLED=true` og log ind
-med den eksisterende administratorbruger (`ADMIN_USERNAME`). Flaget er
-**false som standard**. Intet er aktiveret automatisk i produktion. Den interne
+Start appen fra projektroden med `./gradlew bootRun` (Windows: `.\gradlew.bat bootRun`)
+og log ind med den eksisterende administratorbruger (`ADMIN_USERNAME`). `bootRun`
+vælger Spring-profilen `local`, hvor import er aktiveret. I IDE/jar-kørsler kan
+profilen vælges eksplicit med `--spring.profiles.active=local`. Basiskonfigurationen
+er **false som standard**; server/produktion kræver ingen deaktiverende miljøvariabel.
+Automatiserede tests arver ikke lokalprofilen og aktiverer kun import eksplicit,
+når testen kræver det. Den interne
 property `madkursus.recipe-template-import.project-directory` kan pege på en lokal
 checkout; normalværdien er `.`. Browseren kan aldrig vælge filstier.
 

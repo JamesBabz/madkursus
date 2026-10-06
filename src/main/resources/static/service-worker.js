@@ -1,18 +1,18 @@
-const CACHE_NAME = 'madkursus-shell-v55';
+const CACHE_NAME = 'madkursus-shell-v69';
 const APP_SHELL = [
-  '/js/locales/da.js?v=55',
+  '/js/locales/da.js?v=69',
   '/js/i18n.js?v=55',
   '/js/recipe-import.js?v=55',
-  '/js/feedback.js?v=55',
+  '/js/feedback.js?v=69',
   '/js/vendor/marked.umd.js?v=55',
   '/js/vendor/purify.min.js?v=55',
   '/js/chat-markdown.js?v=55',
   '/js/ai-chat.js?v=55',
   '/',
   '/index.html',
-  '/css/app.css?v=55',
-  '/js/dialog-viewport.js?v=55',
-  '/js/app.js?v=55',
+  '/css/app.css?v=68',
+  '/js/dialog-viewport.js?v=59',
+  '/js/app.js?v=68',
   '/manifest.json',
   '/icons/icon.svg',
   '/icons/maskable-icon.svg'

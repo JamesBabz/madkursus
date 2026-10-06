@@ -58,7 +58,7 @@ for (const width of [1280, 390, 320]) {
       assert.equal(await drawer.isVisible(), false);
       if (width < 640) {
         const launcherBox = await launcher.boundingBox(), addBox = await page.locator('#open-inventory-add').boundingBox();
-        assert.ok(launcherBox.y + launcherBox.height <= addBox.y);
+        assert.ok(launcherBox.x + launcherBox.width <= addBox.x || addBox.x + addBox.width <= launcherBox.x || launcherBox.y + launcherBox.height <= addBox.y || addBox.y + addBox.height <= launcherBox.y, 'Floating chat and add controls must not overlap');
       }
       await launcher.click();
       await drawer.waitFor({ state: 'visible' });

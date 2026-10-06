@@ -55,7 +55,7 @@ async function shopping(t, {width = 390, failCreate = false, failAdd = false} = 
 
 test('existing quantity and presence products still use the normal shopping endpoint', async t => {
   const {page, calls} = await shopping(t);
-  for (const [name, id, quantity] of [['Eggs', 'existing', 1.5], ['Salt', 'presence', null]]) {
+  for (const [name, id, quantity] of [['Eggs', 'existing', 2], ['Salt', 'presence', null]]) {
     await page.locator('#shopping-search').fill(name);
     await page.locator('#shopping-search-results button').filter({hasText: name}).click();
     assert.equal(await page.locator('#shopping-new-product-fields').isVisible(), false);

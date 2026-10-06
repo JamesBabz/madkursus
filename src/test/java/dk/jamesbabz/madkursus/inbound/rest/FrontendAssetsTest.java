@@ -8,6 +8,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class FrontendAssetsTest {
     @Test
+    void recipeImportRequiresExplicitConfigurationOptIn() throws Exception {
+        assertThat(resource("application.yaml"))
+                .contains("enabled: ${RECIPE_TEMPLATE_IMPORT_ENABLED:false}")
+                .doesNotContain("RECIPE_TEMPLATE_IMPORT_ENABLED:true");
+    }
+    @Test
     void frontendContainsAuthAndCsrfIntegrationAndNeverCachesApi() throws Exception {
         String html = resource("static/index.html");
         String javascript = resource("static/js/app.js");
@@ -32,8 +38,12 @@ class FrontendAssetsTest {
         assertThat(html).contains("nutrition.dtu.readyForApproval", "nutrition.dtu.noMatch", "nutrition.dtu.safeMatches", "nutrition.dtu.approveSafe", "select-all-nutrition", "nutrition-bulk-confirm-dialog");
         assertThat(html).contains("nutrition.dtu.suggestions", "nutrition.dtu.searchCatalog", "nutrition.dtu.suggestionsHint");
         assertThat(javascript).contains("nutrition-product-name", "nutrition-cell", "nutrition-row-actions", "approveSelectedDtu", "approveSafeDtu", "AUTO_EQUIVALENT_CARBOHYDRATE", "requestApproveSelectedDtu", "nutrition.dtu.search", "nutrition.openData");
-        assertThat(worker).contains("madkursus-shell-v55", "/css/app.css?v=55", "/js/dialog-viewport.js?v=55", "/js/app.js?v=55");
-        assertThat(html).contains("/css/app.css?v=55", "/js/dialog-viewport.js?v=55", "/js/app.js?v=55");
+        assertThat(worker).containsPattern("madkursus-shell-v\\d+");
+        for (String asset : new String[]{"/css/app.css", "/js/dialog-viewport.js", "/js/app.js", "/js/locales/da.js", "/js/feedback.js"}) {
+            var versionedAsset = java.util.regex.Pattern.compile(java.util.regex.Pattern.quote(asset) + "\\?v=\\d+").matcher(html);
+            assertThat(versionedAsset.find()).as("Versioned asset %s", asset).isTrue();
+            assertThat(worker).contains(versionedAsset.group());
+        }
         assertThat(html).contains("inventory-view", "inventory-add-dialog", "edit-inventory-dialog");
         assertThat(javascript).contains("/v1/inventory", "searchInventoryCandidates", "from-template",
                 "loadInventory", "showToast", "inventorySearchRequestId");
@@ -67,7 +77,7 @@ class FrontendAssetsTest {
                 "recipe-template-search", "recipe-portions");
         assertThat(html.indexOf("id=\"show-recipes\"")).isLessThan(html.indexOf("id=\"show-products\""));
         assertThat(javascript).contains("/v1/recipes", "searchRecipeTemplates", "scaledDecimal", "recipePortions = 2",
-                "recipes.process.advancedSettings", "INGREDIENT_LIST", "p.source||'INPUT'", "renderProcessDetails", "process-details", "durationSummary", "recipePreparedComponents", "preparedComponentId", "inputSummary",
+                "recipes.editor.timerDetails", "INGREDIENT_LIST", "p.source||'INPUT'", "renderProcessDetails", "process-details", "durationSummary", "recipePreparedComponents", "preparedComponentId", "inputSummary",
                 "productTemplateId", "method:editingRecipeId?'PATCH':'POST'");
         assertThat(javascript).contains("const quantity=ingredient.quantity", "recipeUnitLabel(ingredient.unit,quantity)");
         assertThat(html).contains("add-process-step", "cooking-process-select", "cooking-process-parameters");
@@ -78,12 +88,12 @@ class FrontendAssetsTest {
         assertThat(javascript).contains("calculate-requirements", "add-missing-to-shopping-list", "/cook", "recipePlanSelections",
                 "button.disabled=true", "trackingMode==='PRESENCE'", "r.warning");
         assertThat(html).contains("recipe-plan-requirements", "mealPlan.totalRequirements").doesNotContain("id=\"recipe-plan-available\"", "id=\"recipe-plan-missing\"");
-        assertThat(javascript).contains("renderRecipePlanPreview", "scaledDecimal(ingredient.quantity,portions)",
+        assertThat(javascript).contains("renderRecipePlanPreview", "scaledDecimal(ingredient.quantity, portions)",
                 "inventory.required", "inventory.owned", "inventory.onHand", "inventory.reserved", "inventory.available", "inventory.missingAmount", "inventory.sufficient");
         assertThat(html).contains("show-meal-plans", "meal-plans-panel", "request-save-meal-plan", "meal-plan-detail-dialog",
                 "meal-plan-requirements", "meal-plan-add-missing");
         assertThat(javascript).contains("/v1/meal-plans", "saveCurrentMealPlan", "loadMealPlans", "openMealPlan",
-                "changePlannedPortions", "cookPlanned", "togglePlannedSkip", "mealPlan.completedSummary");
+                "changePlannedPortions", "openPlannedRecipe", "plannedRecipeId", "cookCurrentRecipe", "togglePlannedSkip", "mealPlan.completedSummary");
         assertThat(html).contains("show-recipe-templates", "recipe-templates-panel", "recipe-template-detail-dialog",
                 "recipes.catalog.addToLibrary");
         assertThat(javascript).contains("/v1/recipe-templates", "loadRecipeTemplates", "initialPortions=2",
@@ -111,9 +121,10 @@ class FrontendAssetsTest {
                 "overflow-y: auto",
                 "overscroll-behavior: contain",
                 "scroll-padding-block",
-                "html:has(dialog[open]), body:has(dialog[open])",
-                ".edit-dialog > form > .dialog-actions:last-child",
+                "body:has(dialog[open])",
+                ".edit-dialog .dialog-footer",
                 "var(--dialog-viewport-bottom)");
+        assertThat(css).doesNotContain(".dialog-actions:last-child");
         assertThat(javascript).contains(
                 "function updateDialogViewport()",
                 "window.visualViewport",
@@ -137,7 +148,7 @@ class FrontendAssetsTest {
             assertThat(resource("static/service-worker.js")).contains("/js/" + asset + "?v=55");
             assertThat(resource("static/js/" + asset)).isNotBlank();
         }
-        assertThat(html.indexOf("/js/ai-chat.js?v=55")).isLessThan(html.indexOf("/js/app.js?v=55"));
+        assertThat(html.indexOf("/js/ai-chat.js?v=55")).isLessThan(html.indexOf("/js/app.js?v="));
         assertThat(app).contains("createAiChat(document.querySelector('#chat-component'), jsonRequest,",
                 "aiChat.reset()", "showView('ai')");
         assertThat(chat).contains("'/v1/ai/chat'", "JSON.stringify({ message,", "maxAdditionalIngredients", "content.textContent = text")

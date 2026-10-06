@@ -4,8 +4,8 @@ function keepFocusedDialogControlVisible(viewport) {
     const dialog = activeControl?.closest?.('dialog[open], #chat-drawer:not([hidden])');
     if (!dialog) return;
 
-    const header = dialog.querySelector(':scope > .section-heading, :scope > form > .section-heading:first-child');
-    const actions = dialog.querySelector(':scope > .dialog-actions:last-child, :scope > form > .dialog-actions:last-child');
+    const header = dialog.querySelector('.dialog-header, :scope > .section-heading');
+    const actions = [...dialog.querySelectorAll('.dialog-footer')].find(node => node.checkVisibility());
     const controlBounds = activeControl.getBoundingClientRect();
     const visibleTop = Math.max(viewport.offsetTop, header?.getBoundingClientRect().bottom ?? viewport.offsetTop);
     const viewportBottom = viewport.offsetTop + viewport.height;

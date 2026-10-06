@@ -64,7 +64,27 @@ public class RecipeInteractionService {
     }
 
     @Transactional public RecipeCookResult cook(UUID recipeId,BigDecimal portions){return cook(recipeId,portions,null);}
+    public void lockCompletion() { historyPort.lockUserCompletion(currentUser.currentUserId()); }
+
+    @Transactional public RecipeCookResult cookOnce(UUID recipeId, BigDecimal portions, UUID completionId) {
+        if (completionId == null || portions == null || portions.signum() <= 0) throw new InvalidInputException("Completion identity and positive portions are required");
+        lockCompletion();
+        var completed = historyPort.findByIdAndUserId(completionId, currentUser.currentUserId());
+        if (completed.isPresent()) {
+            RecipeCookHistory history = completed.get();
+            if (!recipeId.equals(history.recipeId()) || portions.compareTo(history.portions()) != 0)
+                throw new dk.jamesbabz.madkursus.service.exceptions.ConflictException("Completion identity already used for a different recipe or portions");
+            return new RecipeCookResult(recipeService.get(recipeId), portions, history, List.of(), List.of());
+        }
+        return complete(recipeId, portions, null, completionId);
+    }
+
     @Transactional public RecipeCookResult cook(UUID recipeId,BigDecimal portions,UUID excludedMealPlanId){
+        lockCompletion();
+        return complete(recipeId, portions, excludedMealPlanId, null);
+    }
+
+    private RecipeCookResult complete(UUID recipeId,BigDecimal portions,UUID excludedMealPlanId,UUID completionId){
         Recipe recipe=recipeService.get(recipeId); RecipeRequirementCalculation calculation=calculate(List.of(new RecipeSelection(recipeId,portions)),excludedMealPlanId); List<String>warnings=new ArrayList<>();
         for(RecipeRequirement requirement:calculation.requirements()){
             if(requirement.trackingMode()==InventoryTrackingMode.UNTRACKED)continue;
@@ -80,7 +100,7 @@ public class RecipeInteractionService {
             InventoryService.Consumption consumption=inventoryService.consumeUpToAvailable(requirement.product().id(),amount);
             if(consumption.shortage().signum()>0)warnings.add(format(consumption.shortage(),requirement.unit())+" "+requirement.productTemplate().name()+" blev brugt ud over registreret lager");
         }
-        RecipeCookHistory history=historyPort.save(new RecipeCookHistory(null,currentUser.currentUserId(),recipe.id(),recipe.name(),portions,Instant.now()));
+        RecipeCookHistory history=historyPort.save(new RecipeCookHistory(completionId,currentUser.currentUserId(),recipe.id(),recipe.name(),portions,Instant.now()));
         return new RecipeCookResult(recipe,portions,history,calculation.requirements(),List.copyOf(warnings));
     }
     public BigDecimal roundUp(BigDecimal value,Unit unit){return QuantityRoundingPolicy.forInventory(value,unit);}

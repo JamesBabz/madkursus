@@ -29,18 +29,27 @@ public class RecipeRestMapper {
         var steps = recipe.steps().stream()
                 .map(step -> new RecipeStepDTO(step.id(), RecipeStepTypeDTO.valueOf(step.type().name()),
                         step.sortOrder(), step.parameterBindings().stream().map(this::binding).toList())
-                        .instruction(step.instruction()).cookingProcessId(step.cookingProcessId())
+                        .instruction(step.instruction()).cookingProcessId(step.cookingProcessId()).structuredInstruction(structured(step.structuredInstruction()))
                         .renderedProcess(step.renderedProcess() == null ? null : new RenderedCookingProcessDTO(
                                 step.renderedProcess().instructions(), step.renderedProcess().completionCriterion(),
                                 step.renderedProcess().warnings()).processName(step.renderedProcess().processName())
                                 .activeDurationSeconds(step.renderedProcess().activeDurationSeconds()).passiveDurationSeconds(step.renderedProcess().passiveDurationSeconds())
                                 .durationSummary(step.renderedProcess().durationSummary()).preparationInstructions(step.renderedProcess().preparationInstructions()).inputSummary(step.renderedProcess().inputSummary())))
                 .toList();
-        var preparation=recipe.preparationSteps().stream().map(value->new RecipePreparationStepDTO(value.instruction(),value.sortOrder()).id(value.id())).toList();
+        var preparation=recipe.preparationSteps().stream().map(value->new RecipePreparationStepDTO(value.instruction(),value.sortOrder()).id(value.id()).structuredInstruction(structured(value.structuredInstruction()))).toList();
         return new RecipeDTO(recipe.id(), recipe.name(), ingredients, steps,preparation,recipe.equipmentOverview(),
                 recipe.createdAt().atOffset(ZoneOffset.UTC), recipe.updatedAt().atOffset(ZoneOffset.UTC))
                 .carbohydrates(carbohydrates(recipe.carbohydrates()))
+                .equipmentRequirements(recipe.equipmentRequirements().stream().map(e->new RecipeEquipmentRequirementInputDTO(e.sortOrder()).id(e.id()).equipmentType(e.equipmentType()==null?null:EquipmentTypeDTO.valueOf(e.equipmentType().name())).label(e.label())).toList())
                 .description(recipe.description()).sourceTemplateId(recipe.sourceTemplateId()).preparedComponents(recipe.preparedComponents().stream().map(this::component).toList());
+    }
+    private RecipeStructuredInstructionDTO structured(dk.jamesbabz.madkursus.service.models.RecipeStructuredInstruction value) {
+        if(value==null)return null;
+        return new RecipeStructuredInstructionDTO(value.parts().stream().map(p->new RecipeInstructionPartDTO().text(p.text()).recipeIngredientId(p.recipeIngredientId()).preparedComponentId(p.preparedComponentId()).quantity(p.quantity()).unit(p.unit()==null?null:RecipeUnitDTO.valueOf(p.unit().name())).scaledNumber(p.scaledNumber())).toList());
+    }
+    public dk.jamesbabz.madkursus.service.models.RecipeStructuredInstruction structured(RecipeStructuredInstructionDTO value) {
+        if(value==null)return null;
+        return new dk.jamesbabz.madkursus.service.models.RecipeStructuredInstruction(value.getParts().stream().map(p->new dk.jamesbabz.madkursus.service.models.RecipeInstructionPart(p.getText(),p.getRecipeIngredientId(),p.getQuantity(),p.getUnit()==null?null:dk.jamesbabz.madkursus.service.models.RecipeUnit.valueOf(p.getUnit().name()),p.getPreparedComponentId(),p.getScaledNumber())).toList());
     }
     private CarbohydrateResultDTO carbohydrates(dk.jamesbabz.madkursus.service.models.CarbohydrateResult value) {
         if (value == null) {
@@ -64,7 +73,7 @@ public class RecipeRestMapper {
                 .number(value.number()).text(value.text());
 
     }
-    private PreparedComponentDTO component(PreparedComponent value){return new PreparedComponentDTO(value.key(),value.name(),value.sortOrder(),value.ingredients().stream().map(a->new PreparedComponentIngredientDTO(a.recipeIngredientId(),a.quantity(),RecipeUnitDTO.valueOf(a.unit().name()),a.sortOrder()).id(a.id()).productTemplate(productTemplateMapper.toDto(a.productTemplate()))).toList(),value.preparationSteps().stream().map(p->new RecipePreparationStepDTO(p.instruction(),p.sortOrder()).id(p.id())).toList()).id(value.id());}
+    private PreparedComponentDTO component(PreparedComponent value){return new PreparedComponentDTO(value.key(),value.name(),value.sortOrder(),value.ingredients().stream().map(a->new PreparedComponentIngredientDTO(a.recipeIngredientId(),a.quantity(),RecipeUnitDTO.valueOf(a.unit().name()),a.sortOrder()).id(a.id()).productTemplate(productTemplateMapper.toDto(a.productTemplate()))).toList(),value.preparationSteps().stream().map(p->new RecipePreparationStepDTO(p.instruction(),p.sortOrder()).id(p.id()).structuredInstruction(structured(p.structuredInstruction()))).toList()).id(value.id());}
 
     public RecipeRequirementDTO toDto(RecipeRequirement requirement) {
         return new RecipeRequirementDTO(productTemplateMapper.toDto(requirement.productTemplate()),

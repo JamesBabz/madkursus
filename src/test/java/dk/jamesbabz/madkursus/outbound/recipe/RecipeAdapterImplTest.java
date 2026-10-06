@@ -48,14 +48,18 @@ class RecipeAdapterImplTest {
         when(repository.findByIdAndUserId(recipeId,userId)).thenReturn(Optional.of(managed));
         when(entityManager.getReference(ProductTemplateEntity.class,templateId)).thenReturn(templateEntity);
         when(templateMapper.toModel(templateEntity)).thenReturn(template);
+        var flushedChildren=new java.util.ArrayList<List<Integer>>();
+        doAnswer(call->{flushedChildren.add(List.of(managed.getSteps().size(),managed.getIngredients().size()));return null;}).when(repository).flush();
 
         Recipe result=new RecipeAdapterImpl(repository,templateMapper,entityManager).save(update);
 
         assertThat(result.id()).isEqualTo(recipeId); assertThat(result.name()).isEqualTo("Efter");
         assertThat(managed.getIngredients()).hasSize(1); assertThat(managed.getIngredients().getFirst().getId()).isNull();
         assertThat(managed.getSteps()).hasSize(1); assertThat(managed.getSteps().getFirst().getInstruction()).isEqualTo("Efter");
-        verify(repository,times(2)).flush(); verify(repository,never()).save(any());
+        assertThat(flushedChildren).containsExactly(List.of(0,1),List.of(0,0),List.of(1,1));
+        verify(repository,never()).save(any());
         verify(entityManager).getReference(ProductTemplateEntity.class,templateId);
+        verify(entityManager).clear();
         verifyNoMoreInteractions(entityManager);
     }
 
