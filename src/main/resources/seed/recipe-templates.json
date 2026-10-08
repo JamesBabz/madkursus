@@ -2689,6 +2689,256 @@
         "equipmentType" : "PAN"
       } ],
       "id" : "d64a0705-7720-37d2-8936-131a1dc6444b"
+    },
+    {
+      "key" : "KYLLING_I_KARRY_MED_RIS",
+      "name" : "Kylling i karrysovs med ris",
+      "description" : "Kyllingebryst med løg og gulerødder i en cremet karrysovs, serveret med basmatiris. Mængder til én stor portion. Bouillonmængden er estimeret ud fra en terning på 10 g.",
+      "ingredients" : [ {
+        "key" : "KYLLING",
+        "productTemplate" : "KYLLINGEBRYST",
+        "quantity" : 250,
+        "unit" : "GRAM"
+      }, {
+        "key" : "RIS",
+        "productTemplate" : "BASMATIRIS",
+        "quantity" : 90,
+        "unit" : "GRAM"
+      }, {
+        "key" : "LOEG",
+        "productTemplate" : "LOEG",
+        "quantity" : 0.5,
+        "unit" : "PIECE"
+      }, {
+        "key" : "GULEROD",
+        "productTemplate" : "GULEROD",
+        "quantity" : 100,
+        "unit" : "GRAM"
+      }, {
+        "key" : "FLOEDE",
+        "productTemplate" : "MADLAVNINGSFLOEDE",
+        "quantity" : 125,
+        "unit" : "MILLILITER"
+      }, {
+        "key" : "MAELK",
+        "productTemplate" : "LETMAELK",
+        "quantity" : 75,
+        "unit" : "MILLILITER"
+      }, {
+        "key" : "SMOER",
+        "productTemplate" : "SMOER",
+        "quantity" : 7.5,
+        "unit" : "GRAM"
+      }, {
+        "key" : "MEL",
+        "productTemplate" : "HVEDEMEL",
+        "quantity" : 0.5,
+        "unit" : "TABLESPOON"
+      }, {
+        "key" : "KARRY",
+        "productTemplate" : "KARRY",
+        "quantity" : 1,
+        "unit" : "TEASPOON"
+      }, {
+        "key" : "BOUILLON",
+        "productTemplate" : "GROENTSAGSBOUILLON",
+        "quantity" : 2.5,
+        "unit" : "GRAM"
+      }, {
+        "key" : "SALT",
+        "productTemplate" : "SALT",
+        "quantity" : 0.375,
+        "unit" : "TEASPOON"
+      }, {
+        "key" : "PEBER",
+        "productTemplate" : "SORT_PEBER",
+        "quantity" : 4,
+        "unit" : "GRINDER_TURN"
+      }, {
+        "key" : "OLIE",
+        "productTemplate" : "RAPSOLIE",
+        "quantity" : 0.5,
+        "unit" : "TABLESPOON"
+      } ],
+      "equipmentRequirements" : [ "STOVE", "PAN", "POT", "THERMOMETER" ],
+      "preparation" : [ {
+        "instruction" : "Find en stor stegepande, en gryde med låg, skærebræt, kniv, grydeske, piskeris, køkkenvægt, målebæger og måleskeer frem."
+      }, {
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Skær "
+          }, {
+            "ingredient" : "KYLLING"
+          }, {
+            "text" : " i tern på ca. 2 × 2 cm. Vask hænder, kniv og skærebræt grundigt bagefter."
+          } ]
+        }
+      }, {
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Pil og hak "
+          }, {
+            "ingredient" : "LOEG"
+          }, {
+            "text" : " i tern på ca. ½ cm."
+          } ]
+        }
+      }, {
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Skræl "
+          }, {
+            "ingredient" : "GULEROD"
+          }, {
+            "text" : " og skær dem på tværs i runde skiver på ca. 3 mm."
+          } ]
+        }
+      }, {
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Afvej "
+          }, {
+            "ingredient" : "RIS"
+          }, {
+            "text" : " og mål "
+          }, {
+            "scaledNumber" : 180
+          }, {
+            "text" : " ml koldt vand pr. portion op. Kom ris, vand og "
+          }, {
+            "ingredient" : "SALT",
+            "quantity" : 0.125,
+            "unit" : "TEASPOON"
+          }, {
+            "text" : " i gryden. Læg låget klar."
+          } ]
+        }
+      }, {
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Mål "
+          }, {
+            "ingredient" : "FLOEDE"
+          }, {
+            "text" : " og "
+          }, {
+            "ingredient" : "MAELK"
+          }, {
+            "text" : " op, gerne i samme målebæger."
+          } ]
+        }
+      }, {
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Mål "
+          }, {
+            "ingredient" : "KARRY"
+          }, {
+            "text" : ", "
+          }, {
+            "ingredient" : "MEL"
+          }, {
+            "text" : ", "
+          }, {
+            "ingredient" : "SMOER"
+          }, {
+            "text" : " og "
+          }, {
+            "ingredient" : "OLIE"
+          }, {
+            "text" : " op. Stil bouillon, resten af saltet og peber klar."
+          } ]
+        }
+      } ],
+      "steps" : [ {
+        "type" : "TEXT",
+        "instruction" : "Sæt gryden med ris og vand på komfuret ved 9/9 med låg på. Når vandet koger tydeligt, skru ned til 2/9. Lad risene simre under låg i 12 minutter. Sluk derefter, flyt gryden til et koldt blus, og lad risene hvile med låg på i 10 minutter."
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Varm den store stegepande op på 7/9 i 2 minutter. Tilsæt "
+          }, {
+            "ingredient" : "OLIE"
+          }, {
+            "text" : " og vent 30 sekunder. Fordel "
+          }, {
+            "ingredient" : "KYLLING"
+          }, {
+            "text" : " på panden. Steg 2 minutter uden at røre, vend stykkerne, og steg yderligere 3 minutter, mens du vender dem et par gange. Flyt kyllingen til en ren tallerken. Den færdigtilberedes senere i sovsen."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Skru ned til 6/9. Tilsæt "
+          }, {
+            "ingredient" : "LOEG"
+          }, {
+            "text" : " og "
+          }, {
+            "ingredient" : "GULEROD"
+          }, {
+            "text" : ". Steg i 4 minutter, og rør cirka hvert 30. sekund. Tilsæt "
+          }, {
+            "ingredient" : "SMOER"
+          }, {
+            "text" : " og lad det smelte i 30 sekunder. Tilsæt "
+          }, {
+            "ingredient" : "KARRY"
+          }, {
+            "text" : " og rør i 30 sekunder."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Drys "
+          }, {
+            "ingredient" : "MEL"
+          }, {
+            "text" : " over grøntsagerne og rør i 30 sekunder. Skru ned til 5/9. Hæld først lidt af den opmålte mælk/fløde-blanding på panden under omrøring. Tilsæt derefter resten lidt ad gangen, indtil al "
+          }, {
+            "ingredient" : "FLOEDE"
+          }, {
+            "text" : " og "
+          }, {
+            "ingredient" : "MAELK"
+          }, {
+            "text" : " er brugt."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : {
+          "parts" : [ {
+            "text" : "Smuldr "
+          }, {
+            "ingredient" : "BOUILLON"
+          }, {
+            "text" : " i sovsen. Tilsæt "
+          }, {
+            "ingredient" : "SALT",
+            "quantity" : 0.25,
+            "unit" : "TEASPOON"
+          }, {
+            "text" : " og "
+          }, {
+            "ingredient" : "PEBER"
+          }, {
+            "text" : ". Rør grundigt, indtil bouillonen er opløst, og varm sovsen op, til den bobler forsigtigt."
+          } ]
+        }
+      }, {
+        "type" : "TEXT",
+        "instruction" : "Kom kyllingen og eventuel saft fra tallerkenen tilbage i sovsen. Skru ned til 4/9. Lad retten simre forsigtigt i 8 minutter, og rør hvert andet minut. Kontrollér det største kyllingestykke med et stegetermometer. Kernetemperaturen skal være mindst 75 °C. Hvis den er lavere, fortsæt tilberedningen og mål igen."
+      }, {
+        "type" : "TEXT",
+        "instruction" : "Sluk for varmen. Løsn de færdige ris forsigtigt med en gaffel, og servér kylling og karrysovs ovenpå eller ved siden af risene."
+      } ],
+      "id" : "55871139-31ad-33a0-ae61-ff3439dde75d"
     }
   ]
 }
